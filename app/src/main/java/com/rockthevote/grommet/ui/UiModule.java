@@ -1,5 +1,7 @@
 package com.rockthevote.grommet.ui;
 
+import com.rockthevote.grommet.ui.registration.MainActivity;
+
 import javax.inject.Singleton;
 
 import dagger.Module;

@@ -3,7 +3,7 @@ package com.rockthevote.grommet.data.api.model;
 import android.support.annotation.NonNull;
 
 public enum Title {
-    MR("Mr"), MS("Ms"), MRS("Mrs"), MISS("Miss"), EMPTY("");
+    EMPTY("--"), MR("Mr"), MS("Ms"), MRS("Mrs"), MISS("Miss");
 
     private final String title;
 
