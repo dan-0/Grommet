@@ -1,5 +1,24 @@
 <resources>
+    <dimen name="increment">54dp</dimen>
+    <item name="match_parent" type="dimen">-1</item>
+    <item name="wrap_content" type="dimen">-2</item>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="detail_horizontal_padding">16dp</dimen>
+    <dimen name="detail_vertical_padding">16dp</dimen>
+
+    <dimen name="detail_backdrop_height">256dp</dimen>
+    <dimen name="card_margin">16dp</dimen>
+    <dimen name="card_radius">4dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="card_width">@dimen/match_parent</dimen>
+    <dimen name="toolbar_height">@dimen/increment</dimen>
+
+    <dimen name="list_item_height">72dp</dimen>
+    <dimen name="title_height">80dp</dimen>
+    <dimen name="content_margin">80dp</dimen>
+    <dimen name="content_area_padding">8dp</dimen>
 </resources>
