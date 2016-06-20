@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
 import com.rockthevote.grommet.data.LumberYard;
 import com.rockthevote.grommet.util.Intents;
 

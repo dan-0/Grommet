@@ -7,7 +7,6 @@ import android.support.v4.app.ShareCompat;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
-
 import com.mattprecious.telescope.Lens;
 import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.data.LumberYard;

@@ -7,7 +7,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.ui.misc.EmptyTextWatcher;
 import com.rockthevote.grommet.util.Strings;

@@ -1,16 +1,19 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.ui.ViewContainer;
+import com.rockthevote.grommet.ui.registration.EligibilityFragment;
+import com.rockthevote.grommet.ui.registration.PersonalInfoFragment;
+import com.rockthevote.grommet.ui.registration.RegisterFragment;
+import com.rockthevote.grommet.ui.registration.RegistrationPagerAdapter;
 
 import javax.inject.Inject;
 
@@ -32,6 +35,7 @@ public final class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = getLayoutInflater();
 
+        Injector.obtain(getApplication()).inject(this);
         ObjectGraph appGraph = Injector.obtain(getApplication());
         appGraph.inject(this);
 
@@ -43,14 +47,13 @@ public final class MainActivity extends Activity {
         ButterKnife.bind(this, container);
 
         setupViewPager();
-
     }
 
     private void setupViewPager(){
         RegistrationPagerAdapter adapter = new RegistrationPagerAdapter(getFragmentManager());
-        adapter.addFragment(new EligibilityFragment(), "Eligibility");
-        adapter.addFragment(new PersonalInfoFragment(), "Personal Info");
-        adapter.addFragment(new EligibilityFragment(), "Register");
+        adapter.addFragment(new EligibilityFragment(), getString(R.string.fragment_title_eligibility));
+        adapter.addFragment(new PersonalInfoFragment(), getString(R.string.fragment_title_personal_info));
+        adapter.addFragment(new RegisterFragment(), getString(R.string.fragment_title_register));
 
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(5);

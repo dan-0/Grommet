@@ -3,7 +3,7 @@ package com.rockthevote.grommet.data.api.model;
 import android.support.annotation.NonNull;
 
 public enum Suffix {
-    JR("Jr."), SR("Sr."), SECOND("II"), THIRD("III"), FOURTH("IV"), EMPTY("");
+    JR("Jr"), SR("Sr"), SECOND("II"), THIRD("III"), FOURTH("IV"), EMPTY("");
 
     private final String suffix;
 

@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewDebug;
 
-
 import com.rockthevote.grommet.ui.ActivityHierarchyServer;
 
 import java.io.IOException;

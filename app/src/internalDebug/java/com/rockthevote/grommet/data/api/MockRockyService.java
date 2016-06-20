@@ -14,7 +14,6 @@ import javax.inject.Singleton;
 
 import retrofit2.adapter.rxjava.Result;
 import retrofit2.http.Body;
-import retrofit2.http.Query;
 import retrofit2.mock.BehaviorDelegate;
 import retrofit2.mock.Calls;
 import retrofit2.mock.MockRetrofit;
