@@ -6,6 +6,7 @@
     </string>
 
     <!--Eligibility Fragment Strings-->
+    <string name="fragment_title_eligibility">Eligibility</string>
     <string name="label_us_citizen">I am a U.S. Citizen</string>
     <string name="label_eighteen_or_older">I will be 18 or older by the next election</string>
     <string name="label_has_id">I have a driver\'s license or state ID card.</string>
@@ -13,28 +14,51 @@
     <string name="label_first_name">First Name</string>
     <string name="label_last_name">Last Name</string>
     <string name="label_suffix">Suffix</string>
-    <string name="label_street">Street Address</string>
-    <string name="label_zip_code">Zip Code</string>
+
     <string name="label_email">Email Address</string>
     <string name="label_birthday">Birthday</string>
     <string name="label_phone">Phone Number</string>
     <string name="label_phone_type">Type</string>
-    <string name="section_survey">Survey Questions (optional)</string>
-    <string name="label_school">If you are in school, where do you go?</string>
-    <string name="label_issue">What issue do you care most about?</string>
     <string name="label_receive_email">Receive email from Rock the Vote</string>
-    <string name="label_receive_text">Send me txt messages from Rock the Vote</string>
     <string name="section_label_eligibility">Eligibility</string>
     <string name="section_label_basic_info">Basic Info</string>
     <string name="section_label_new_registrant">New Registrant</string>
-
     <string name="eighteen_or_older_err">You must be 18 or older to vote</string>
     <string name="us_citizen_err">You must be a U.S. citizen</string>
 
 
     <!--Personal Information Strings-->
+    <string name="fragment_title_personal_info">Personal Info</string>
     <string name="section_label_personal_info">Personal Information</string>
     <string name="section_label_name">Name</string>
-    <string name="section_label_address">Address</string>
+    <string name="section_label_previous_name">Previous Name</string>
+    <string name="section_label_home_address">Home Address</string>
+    <string name="section_label_mailing_address">Mailing Address</string>
+    <string name="section_label_previous_address">Previous Address</string>
+    <string name="section_label_phone">Phone</string>
+    <string name="label_street">Street Address</string>
+    <string name="label_city">City</string>
+    <string name="label_zip_code">Zip Code</string>
+    <string name="label_state">State</string>
+    <string name="label_unit_num">Unit #</string>
+    <string name="checkbox_mailing_address_is_different"> I get my mail from a different address from the one above</string>
+    <string name="checkbox_address_changed">I have changed my address</string>
+    <string name="checkbox_name_changed">I have changed my name</string>
+    <string name="label_receive_text">Send me txt messages from Rock the Vote</string>
+
+    <!--Register Fragment Strings-->
+    <string name="fragment_title_register">Register</string>
+    <string name="section_label_gender">Gender</string>
+    <string name="section_label_race">Race</string>
+    <string name="section_label_party">Political Party</string>
+    <string name="section_label_verification">Verification</string>
+    <string name="label_male">male</string>
+    <string name="label_female">female</string>
+    <string name="label_drivers_license_id">Driver\'s License ID</string>
+    <string name="signature_description">sign here</string>
+    <string name="label_button_register">Register</string>
+    <string name="label_tos_prefix">I Agree to the </string>
+    <string name="label_tos_link">Terms of Service</string>
+
 
 </resources>

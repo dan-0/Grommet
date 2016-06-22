@@ -1,4 +1,4 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui;
 
 import com.rockthevote.grommet.GrommetModule;
 

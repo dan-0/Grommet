@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.madge.MadgeFrameLayout;
 import com.jakewharton.scalpel.ScalpelFrameLayout;
+import com.mattprecious.telescope.TelescopeLayout;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.LumberYard;
 import com.rockthevote.grommet.data.PixelGridEnabled;
@@ -23,7 +24,6 @@ import com.rockthevote.grommet.data.SeenDebugDrawer;
 import com.rockthevote.grommet.ui.ViewContainer;
 import com.rockthevote.grommet.ui.bugreport.BugReportLens;
 import com.rockthevote.grommet.util.EmptyActivityLifecycleCallbacks;
-import com.mattprecious.telescope.TelescopeLayout;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

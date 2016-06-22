@@ -34,7 +34,7 @@ def gitTimestamp() {
 }
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.3"
 
 //    signingConfigs {
@@ -46,7 +46,7 @@ android {
     defaultConfig {
         applicationId "com.rockthevote.grommet"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 24
 
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
@@ -135,6 +135,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
     compile 'com.squareup.retrofit2:converter-moshi:2.0.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
+    compile 'com.github.gcacace:signature-pad:1.2.0'
     internalDebugCompile 'com.squareup.retrofit2:retrofit-mock:2.0.0'
 
     compile 'com.jakewharton:butterknife:8.0.1'

@@ -6,12 +6,14 @@
     <dimen name="card_margin">24dp</dimen>
     <dimen name="fab_margin">24dp</dimen>
 
-    <!--8x increment of 64-->
+    <!--10x increment of 64-->
     <dimen name="card_width">640dp</dimen>
 
     <!--2x increment-->
     <dimen name="toolbar_height">128dp</dimen>
 
+    <!--4x increment-->
+    <dimen name="signature_height">256dp</dimen>
 
 
 

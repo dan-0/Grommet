@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 

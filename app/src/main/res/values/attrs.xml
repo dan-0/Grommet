@@ -4,4 +4,9 @@
     <attr name="widthRatio" format="integer"/>
     <attr name="heightRatio" format="integer"/>
   </declare-styleable>
+
+  <declare-styleable name="GrommetView">
+    <attr name="section_title" format="reference"/>
+  </declare-styleable>
+
 </resources>

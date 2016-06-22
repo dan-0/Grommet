@@ -1,6 +1,5 @@
 package com.rockthevote.grommet.ui;
 
-import com.rockthevote.grommet.ui.registration.MainActivity;
 
 import javax.inject.Singleton;
 
@@ -21,7 +20,9 @@ public final class UiModule {
         return ViewContainer.DEFAULT;
     }
 
-    @Provides @Singleton ActivityHierarchyServer provideActivityHierarchyServer() {
+    @Provides
+    @Singleton
+    ActivityHierarchyServer provideActivityHierarchyServer() {
         return ActivityHierarchyServer.NONE;
     }
 }

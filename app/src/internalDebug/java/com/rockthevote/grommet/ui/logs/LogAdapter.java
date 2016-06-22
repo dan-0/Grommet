@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.ui.misc.BindableAdapter;
 

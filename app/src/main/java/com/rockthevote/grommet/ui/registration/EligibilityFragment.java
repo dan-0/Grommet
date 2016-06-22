@@ -1,15 +1,15 @@
 package com.rockthevote.grommet.ui.registration;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mobsandgeeks.saripaar.ValidationError;
@@ -18,6 +18,7 @@ import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.ui.misc.TilStringValidator;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -31,16 +32,17 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class EligibilityFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
-
+public class EligibilityFragment extends BaseRegistrationFragment implements DatePickerDialog.OnDateSetListener {
 
     @Email
-    @BindView(R.id.edittext_email)
-    EditText editTextEmail;
+    @BindView(R.id.text_input_layout_email)
+    TextInputLayout textInputEmail;
+    @BindView(R.id.edittext_email) TextInputEditText editTextEmail;
 
     @NotEmpty
-    @BindView(R.id.edittext_birthday)
-    EditText editTextBirthday;
+    @BindView(R.id.til_birthday)
+    TextInputLayout tilBirthday;
+    @BindView(R.id.edittext_birthday) TextInputEditText editTextBirthday;
 
     @Checked(messageResId = R.string.eighteen_or_older_err)
     @BindView(R.id.checkbox_is_eighteen)
@@ -51,18 +53,19 @@ public class EligibilityFragment extends Fragment implements DatePickerDialog.On
     CheckBox checkBoxIsUSCitizen;
 
     @BindView(R.id.checkbox_first_time) CheckBox checkBoxIsFirstTime;
-    @BindView(R.id.checkbox_has_id) CheckBox checkBoxHasID;
 
-
-    private Validator validator;
+    Validator validator;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_eligibility, container, false);
-        ButterKnife.bind(this, v);
+        setContentView(R.layout.fragment_eligibility);
+        View v = super.onCreateView(inflater, container, savedInstanceState);
 
+        ButterKnife.bind(this, v);
         validator = new Validator(this);
+        validator.registerAdapter(TextInputLayout.class, new TilStringValidator());
+
         return v;
     }
 
@@ -105,8 +108,8 @@ public class EligibilityFragment extends Fragment implements DatePickerDialog.On
                     for (ValidationError error : errors) {
                         View view = error.getView();
                         String message = error.getCollatedErrorMessage(getActivity());
-                        if (view instanceof EditText) {
-                            ((EditText) view).setError(message);
+                        if (view instanceof TextInputLayout) {
+                            ((TextInputLayout) view).setError(message);
                         } else if (view instanceof CheckBox) {
                             ((CheckBox) view).setError(message);
                         }
@@ -118,4 +121,5 @@ public class EligibilityFragment extends Fragment implements DatePickerDialog.On
             validator.validate();
         });
     }
+
 }
