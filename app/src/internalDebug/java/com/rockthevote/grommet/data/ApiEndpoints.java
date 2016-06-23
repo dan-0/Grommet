@@ -4,9 +4,7 @@ import com.rockthevote.grommet.data.api.ApiModule;
 
 public enum ApiEndpoints {
     PRODUCTION("Production", ApiModule.PRODUCTION_API_URL.toString()),
-    MOCK_MODE("Mock Mode", "http://localhost/mock/"),
-    CUSTOM("Custom", null);
-
+    MOCK_MODE("Mock Mode", "http://localhost/mock/");
     public final String name;
     public final String url;
 
@@ -26,7 +24,7 @@ public enum ApiEndpoints {
                 return value;
             }
         }
-        return CUSTOM;
+        return PRODUCTION;
     }
 
     public static boolean isMockMode(String endpoint) {

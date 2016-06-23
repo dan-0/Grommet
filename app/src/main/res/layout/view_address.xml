@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:columnCount="3"
     android:useDefaultMargins="false">
 
     <View
-        style="@style/Grommet.Divider"
+        style="@style/GrommetDivider"
         android:layout_width="match_parent"
         android:layout_columnSpan="3"
-        android:layout_marginTop="40dp"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
         />
 
     <TextView
         android:id="@+id/address_section_title"
-        style="@style/Grommet.Content_Area"
+        style="@style/GrommetContentArea"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_height"
         android:layout_columnSpan="3"
-        tools:text="@string/section_label_mailing_address"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        tools:text="@string/section_label_mailing_address"
         />
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_street_address"
         android:layout_width="0dp"
-        android:layout_columnWeight=".7"
+        android:layout_columnSpan="3"
         android:layout_gravity="fill_horizontal"
+        android:layout_marginEnd="@dimen/content_margin"
         android:layout_marginStart="@dimen/content_margin"
+        app:errorEnabled="true"
         >
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/edittext_street"
+            android:id="@+id/street"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:hint="@string/label_street"
@@ -42,31 +48,40 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
-        android:layout_columnSpan="2"
-        android:layout_columnWeight=".3"
         android:layout_gravity="fill_horizontal"
-        android:layout_marginEnd="@dimen/content_margin"
+        android:layout_marginStart="@dimen/content_margin"
+        app:errorEnabled="true"
         >
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/edittext_unit"
+            android:id="@+id/unit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:hint="@string/label_unit_num"
-            android:inputType="number"
-            android:maxEms="5"/>
+            android:inputType="number"/>
 
     </android.support.design.widget.TextInputLayout>
 
+    <Spinner
+        android:id="@+id/spinner_county"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/list_item_height"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal|top"
+        android:layout_marginEnd="@dimen/content_margin"
+        android:layout_marginTop="8dp"/>
+
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_city"
         android:layout_width="0dp"
         android:layout_columnWeight=".7"
         android:layout_gravity="fill_horizontal"
         android:layout_marginStart="@dimen/content_margin"
+        app:errorEnabled="true"
         >
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/edittext_city"
+            android:id="@+id/city"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:hint="@string/label_city"
@@ -75,30 +90,34 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_state"
         android:layout_width="0dp"
         android:layout_columnWeight=".3"
         android:layout_gravity="fill_horizontal"
+        app:errorEnabled="true"
         >
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/edittext_state"
+            android:id="@+id/state"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:hint="@string/label_state"
-            android:inputType="number"
+            android:inputType="text"
             />
 
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_zip_code"
         android:layout_width="0dp"
         android:layout_columnWeight=".3"
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
+        app:errorEnabled="true"
         >
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/edittext_zip_code"
+            android:id="@+id/zip"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:hint="@string/label_zip_code"

@@ -2,8 +2,10 @@ package com.rockthevote.grommet.ui.registration;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+
+import com.rockthevote.grommet.R;
 
 import java.util.Calendar;
 
@@ -30,6 +32,11 @@ public class DatePickerDialogFragment extends DialogFragment {
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        return new DatePickerDialog(getActivity(), listener, year, month, day);
+        DatePickerDialog dialog = new DatePickerDialog(
+                getActivity(),
+                R.style.GrommetDatePickerDialog,
+                listener,
+                year, month, day);
+        return dialog;
     }
 }

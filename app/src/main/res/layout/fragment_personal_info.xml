@@ -17,24 +17,32 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="start|bottom"
-        app:section_title="@string/section_label_name"/>
+        app:name_type="CURRENT"/>
 
     <CheckBox
         android:id="@+id/name_changed"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
         android:layout_columnSpan="2"
         android:layout_marginStart="@dimen/content_margin"
         android:text="@string/checkbox_name_changed"/>
 
+    <View
+        android:id="@+id/previous_name_divider"
+        style="@style/GrommetDivider"
+        android:layout_width="match_parent"
+        android:layout_columnSpan="2"
+        android:visibility="gone"/>
+
     <com.rockthevote.grommet.ui.views.NameView
         android:id="@+id/previous_name"
-        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="start|bottom"
         android:visibility="gone"
-        app:section_title="@string/section_label_previous_name"/>
+        app:name_type="PREVIOUS"
+        tools:visibility="visible"/>
 
     <com.rockthevote.grommet.ui.views.AddressView
         android:id="@+id/home_address"
@@ -42,51 +50,53 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="start|bottom"
-        app:section_title="@string/section_label_home_address"/>
+        app:address_type="REGISTRATION"/>
 
     <CheckBox
         android:id="@+id/mailing_address_is_different"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
         android:layout_columnSpan="2"
         android:layout_marginStart="@dimen/content_margin"
         android:text="@string/checkbox_mailing_address_is_different"/>
 
     <com.rockthevote.grommet.ui.views.AddressView
         android:id="@+id/mailing_address"
-        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="start|bottom"
         android:visibility="gone"
-        app:section_title="@string/section_label_mailing_address"
+        app:address_type="MAILING"
+        tools:visibility="visible"
         />
 
     <CheckBox
         android:id="@+id/address_changed"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
         android:layout_columnSpan="2"
         android:layout_marginStart="@dimen/content_margin"
         android:text="@string/checkbox_address_changed"/>
 
     <com.rockthevote.grommet.ui.views.AddressView
         android:id="@+id/previous_address"
-        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="start|bottom"
         android:visibility="gone"
-        app:section_title="@string/section_label_previous_address"
+        app:address_type="PREVIOUS"
+        tools:visibility="visible"
         />
 
     <View
-        style="@style/Grommet.Divider"
+        style="@style/GrommetDivider"
         android:layout_width="match_parent"
         android:layout_columnSpan="2"/>
 
     <TextView
-        style="@style/Grommet.Content_Area"
+        style="@style/GrommetContentArea"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_height"
         android:layout_columnSpan="2"
@@ -95,14 +105,16 @@
         />
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_phone_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight=".7"
         android:layout_gravity="fill_horizontal"
-        android:layout_marginStart="@dimen/content_margin">
+        android:layout_marginStart="@dimen/content_margin"
+        app:errorEnabled="true">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/edittext_phone"
+            android:id="@+id/phone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:hint="@string/label_phone"
@@ -115,13 +127,13 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/list_item_height"
         android:layout_columnWeight=".3"
-        android:layout_gravity="fill_horizontal|bottom"
-        android:layout_marginBottom="3dp"
-        android:layout_marginEnd="@dimen/content_margin"/>
+        android:layout_gravity="fill_horizontal|top"
+        android:layout_marginEnd="@dimen/content_margin"
+        android:layout_marginTop="8dp"/>
 
     <CheckBox
         android:id="@+id/checkbox_can_receive_text"
-        style="@style/Grommet.Content_Area"
+        style="@style/GrommetContentArea"
         android:layout_columnSpan="2"
         android:text="@string/label_receive_text"/>
 

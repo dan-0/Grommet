@@ -5,13 +5,35 @@
         There are no applications available to handle this action.
     </string>
 
+    <string name="navigation_label_previous">previous</string>
+    <string name="navigation_label_next">next</string>
+
+    <!--Nav Drawer Strings-->
+    <string name="nav_title_home">Home</string>
+    <string name="nav_title_settings">Settings</string>
+    <string name="incomplete_profile_alert">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip before registering voters.</string>
+    <string name="dialog_no_thanks">No Thanks</string>
+    <string name="dialog_enter_info">Enter Info</string>
+
+    <!--Main Activity Strings-->
+    <string name="label_total_registered">Total Registered</string>
+    <string name="label_registered_today">Registered Today</string>
+    <string name="button_label_new_voter">New Voter</string>
+
+    <!--Registration Activity Strings-->
+    <string name="action_cancel">Cancel</string>
+    <string name="cancel_dialog_message">Cancel current registration?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+
     <!--Eligibility Fragment Strings-->
-    <string name="fragment_title_eligibility">Eligibility</string>
+    <string name="fragment_title_new_registrant">New Registrant</string>
     <string name="label_us_citizen">I am a U.S. Citizen</string>
     <string name="label_eighteen_or_older">I will be 18 or older by the next election</string>
     <string name="label_has_id">I have a driver\'s license or state ID card.</string>
     <string name="label_first_time_voter">I am registering to vote for the first time</string>
     <string name="label_first_name">First Name</string>
+    <string name="label_middle_name">Middle Name</string>
     <string name="label_last_name">Last Name</string>
     <string name="label_suffix">Suffix</string>
 
@@ -32,7 +54,7 @@
     <string name="section_label_personal_info">Personal Information</string>
     <string name="section_label_name">Name</string>
     <string name="section_label_previous_name">Previous Name</string>
-    <string name="section_label_home_address">Home Address</string>
+    <string name="section_label_registration_address">Registration Address</string>
     <string name="section_label_mailing_address">Mailing Address</string>
     <string name="section_label_previous_address">Previous Address</string>
     <string name="section_label_phone">Phone</string>
@@ -41,13 +63,15 @@
     <string name="label_zip_code">Zip Code</string>
     <string name="label_state">State</string>
     <string name="label_unit_num">Unit #</string>
+    <string name="label_county">County</string>
     <string name="checkbox_mailing_address_is_different"> I get my mail from a different address from the one above</string>
     <string name="checkbox_address_changed">I have changed my address</string>
     <string name="checkbox_name_changed">I have changed my name</string>
     <string name="label_receive_text">Send me txt messages from Rock the Vote</string>
+    <string name="county_empty_error">County Required</string>
 
     <!--Register Fragment Strings-->
-    <string name="fragment_title_register">Register</string>
+    <string name="fragment_title_additional_info">Additional Info</string>
     <string name="section_label_gender">Gender</string>
     <string name="section_label_race">Race</string>
     <string name="section_label_party">Political Party</string>
@@ -57,8 +81,38 @@
     <string name="label_drivers_license_id">Driver\'s License ID</string>
     <string name="signature_description">sign here</string>
     <string name="label_button_register">Register</string>
-    <string name="label_tos_prefix">I Agree to the </string>
-    <string name="label_tos_link">Terms of Service</string>
+    <string name="label_agreement_prefix">I have read the \u0020</string>
+    <string name="label_agreement_link">Voter Registration Agreement</string>
+    <string name="agreement_neutral_button">done</string>
+    <string name="voter_registration_agreement_title">Voter Registration Agreement</string>
+
+    <!--Additional Info Strings-->
+    <string name="label_preferred_language">Preferred Language</string>
+    <string name="label_has_drivers_license">I have my driver\'s license number</string>
+
+    <!--Review and Confirm Fragment Strings-->
+    <string name="fragment_title_review">Review</string>
+    <string name="voter_agreement_text">I have reviewed the above information, and it is true and accurate to the best of my knowledge.</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="name_phrase_formatter">{title} {first_name} {middle_name} {last_name} {suffix}</string>
+    <string name="section_label_contact_info">Contact</string>
+    <string name="review_confirm_instructions">Please review the following information and confirm its accuracy.</string>
+    <string name="section_label_signature">Signature</string>
+    <string name="signature_instructions">Please use stylus for signature capture</string>
+    <string name="signature_pad_error">Signature is required</string>
+
+    <!-- Strings related to Settings -->
+    <string name="pref_key_partner_id">partner_id</string>
+    <string name="pref_key_canvasser_name">canvasser_name</string>
+    <string name="pref_key_event_zip_code">event_zip</string>
+    <string name="pref_key_event_name">event_name</string>
+
+    <string name="pref_title_partner_id">Partner ID</string>
+    <string name="pref_title_canvaser_name">Canvaser Name</string>
+    <string name="pref_title_event_zip_code">Event Zip Code</string>
+    <string name="pref_title_event_name">Event Name</string>
+
+
 
 
 </resources>

@@ -1,77 +1,140 @@
 package com.rockthevote.grommet.ui;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
 
+import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.ui.registration.EligibilityFragment;
-import com.rockthevote.grommet.ui.registration.PersonalInfoFragment;
-import com.rockthevote.grommet.ui.registration.RegisterFragment;
-import com.rockthevote.grommet.ui.registration.RegistrationPagerAdapter;
+import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.prefs.CanvasserName;
+import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.data.prefs.EventName;
+import com.rockthevote.grommet.data.prefs.EventZip;
+import com.rockthevote.grommet.data.prefs.PartnerId;
+import com.rockthevote.grommet.ui.registration.RegistrationActivity;
+import com.rockthevote.grommet.ui.settings.SettingsActivity;
+import com.rockthevote.grommet.util.Strings;
+import com.squareup.sqlbrite.BriteDatabase;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.ObjectGraph;
+import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.CompositeSubscription;
 
-public final class MainActivity extends Activity {
+import static com.rockthevote.grommet.data.db.model.RockyRequest.SELECT_BY_STATUS;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
+
+public final class MainActivity extends BaseActivity {
+
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.total_registered) TextView totalRegistered;
+    @BindView(R.id.registered_today) TextView registeredToday;
+
+    @Inject
+    @PartnerId
+    Preference<String> partnerIdPref;
+
+    @Inject
+    @CanvasserName
+    Preference<String> canvasserNamePref;
+
+    @Inject
+    @EventName
+    Preference<String> eventNamePref;
+
+    @Inject
+    @EventZip
+    Preference<String> eventZipPref;
+
+    @Inject
+    @CurrentRockyRequestId
+    Preference<Long> currentRockyRequestId;
 
     @Inject ViewContainer viewContainer;
 
-    @BindView(R.id.viewPager) ViewPager viewPager;
-    @BindView(R.id.tabLayout) TabLayout tabLayout;
+    @Inject BriteDatabase db;
 
-    private ObjectGraph activityGraph;
+    private CompositeSubscription subscriptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LayoutInflater inflater = getLayoutInflater();
-
-        Injector.obtain(getApplication()).inject(this);
-        ObjectGraph appGraph = Injector.obtain(getApplication());
-        appGraph.inject(this);
-
-        activityGraph = appGraph.plus(new MainActivityModule(this));
-
-        ViewGroup container = viewContainer.forActivity(this);
-
-        inflater.inflate(R.layout.activity_main, container);
-        ButterKnife.bind(this, container);
-
-        setupViewPager();
-    }
-
-    private void setupViewPager(){
-        RegistrationPagerAdapter adapter = new RegistrationPagerAdapter(getFragmentManager());
-        adapter.addFragment(new EligibilityFragment(), getString(R.string.fragment_title_eligibility));
-        adapter.addFragment(new PersonalInfoFragment(), getString(R.string.fragment_title_personal_info));
-        adapter.addFragment(new RegisterFragment(), getString(R.string.fragment_title_register));
-
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(5);
-
-        tabLayout.setupWithViewPager(viewPager);
+        View v = getLayoutInflater().inflate(R.layout.activity_main, getContentView());
+        ButterKnife.bind(this, v);
     }
 
     @Override
-    public Object getSystemService(@NonNull String name) {
-        if (Injector.matchesService(name)) {
-            return activityGraph;
-        }
-        return super.getSystemService(name);
+    protected void onResume() {
+        super.onResume();
+        subscriptions = new CompositeSubscription();
+
+        //TODO update this once we have the networking portion complete
+        subscriptions.add(db.createQuery(RockyRequest.TABLE, SELECT_BY_STATUS, FORM_COMPLETE.toString())
+                .mapToList(RockyRequest.MAPPER)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rockyRequests -> {
+                    totalRegistered.setText(String.valueOf(rockyRequests.size()));
+                    registeredToday.setText(String.valueOf(rockyRequests.size()));
+                }));
     }
 
     @Override
-    protected void onDestroy() {
-        activityGraph = null;
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        subscriptions.unsubscribe();
+    }
+
+    @OnClick(R.id.button_new_voter)
+    public void onClick(View v) {
+
+        Observable.just(partnerIdPref.get(),
+                canvasserNamePref.get(),
+                eventNamePref.get(),
+                eventZipPref.get())
+                .all(s -> !Strings.isBlank(s))
+                .subscribe(noneAreEmpty -> {
+                    if (noneAreEmpty) {
+                        createNewVoterRecord();
+                        startActivity(new Intent(this, RegistrationActivity.class));
+                    } else {
+                        new AlertDialog.Builder(this)
+                                .setMessage(R.string.incomplete_profile_alert)
+                                .setNegativeButton(R.string.dialog_no_thanks, (dialogInterface, i) -> dialogInterface.dismiss())
+                                .setPositiveButton(R.string.dialog_enter_info, (dialogInterface, i) -> {
+                                    startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                                }).create().show();
+                    }
+                });
+    }
+
+    private void createNewVoterRecord() {
+        long rockyRequestRowId = db.insert(RockyRequest.TABLE, new RockyRequest.Builder()
+                .status(IN_PROGRESS)
+                .partnerId(partnerIdPref.get())
+                .partnerTrackingId(eventZipPref.get())
+                .sourceTrackingId(canvasserNamePref.get())
+                .openTrackingId(eventNamePref.get())
+                .build());
+
+        currentRockyRequestId.set(rockyRequestRowId);
+    }
+
+    @Override
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
+    @Override
+    protected int getSelfNavDrawerItem() {
+        return R.id.nav_home;
     }
 }

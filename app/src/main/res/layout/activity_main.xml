@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,44 +9,98 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="112dp"
-        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:titleEnabled="false"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="bottom"
-                app:tabGravity="center"
-                app:tabMode="fixed"/>
-
-        </android.support.design.widget.CollapsingToolbarLayout>
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/content_margin"
+            android:paddingTop="@dimen/content_area_padding"
+            android:columnCount="2"
+            android:useDefaultMargins="true"
+            >
+
+            <TextView
+                android:id="@+id/total_registered"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/content_margin"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center_horizontal"
+                tools:text="100"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"/>
+
+            <TextView
+                android:id="@+id/registered_today"
+                android:layout_width="0dp"
+                android:layout_marginEnd="@dimen/content_margin"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center_horizontal"
+                tools:text="25"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/content_margin"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center_horizontal"
+                android:paddingBottom="@dimen/content_area_padding"
+                android:text="@string/label_total_registered"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textColor="@color/colorSecondaryText"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"/>
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_marginEnd="@dimen/content_margin"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center_horizontal"
+                android:paddingBottom="@dimen/content_area_padding"
+                android:text="@string/label_registered_today"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textColor="@color/colorSecondaryText"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginEnd="@dimen/content_margin"
+                android:layout_marginStart="@dimen/content_margin"
+                android:background="@color/divider"
+                android:layout_columnSpan="2"
+                android:layout_gravity="fill_horizontal"/>
+
+            <Button
+                android:id="@+id/button_new_voter"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:paddingTop="@dimen/content_area_padding"
+                android:text="@string/button_label_new_voter"
+                android:layout_columnSpan="2"
+                android:layout_gravity="center_horizontal"
+                />
+        </GridLayout>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

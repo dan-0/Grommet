@@ -1,12 +1,12 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="None">
     </style>
 
     <!-- Base application theme. -->
-    <style name="Theme.Grommet" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowActionBarOverlay">true</item>
+    <style name="GrommetTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
 
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -15,7 +15,23 @@
         <item name="android:spinnerStyle">@android:style/Widget.Material.Spinner.Underlined</item>
     </style>
 
-    <style name="Grommet.Divider" parent="None">
+    <style name="RegistrationTheme" parent="GrommetTheme">
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="Grommet.TextAppearance.Title" parent="@android:style/TextAppearance.Material.Title">
+        <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
+
+    <style name="GrommetDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:datePickerStyle">@style/GrommetDatePicker</item>
+    </style>
+
+    <style name="GrommetDatePicker" parent="android:Widget.Material.Light.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+    </style>
+
+    <style name="GrommetDivider" parent="None">
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_marginTop">@dimen/content_area_padding</item>
@@ -25,21 +41,21 @@
         <item name="android:layout_marginStart">@dimen/content_margin</item>
     </style>
 
-    <style name="Grommet.Content_Area" parent="None">
+    <style name="GrommetContentArea" parent="None">
         <item name="android:layout_gravity">start|fill_horizontal</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginStart">@dimen/content_margin</item>
         <item name="android:layout_marginEnd">@dimen/content_margin</item>
     </style>
 
-    <style name="Grommet.Content_Area_Left" parent="None">
+    <style name="GrommetContentAreaLeft" parent="None">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_gravity">start|fill_horizontal</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginStart">@dimen/content_margin</item>
     </style>
 
-    <style name="Grommet.Content_Area_Right" parent="None">
+    <style name="GrommetContentAreaRight" parent="None">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_gravity">start|fill_horizontal</item>
         <item name="android:gravity">center_vertical</item>

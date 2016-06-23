@@ -2,7 +2,7 @@
 <resources>
   <style name="Theme.Grommet.Debug" parent="android:Theme.Material.NoActionBar">
   </style>
-  <style name="Theme.Grommet.External" parent="Theme.Grommet">
+  <style name="Theme.Grommet.External" parent="GrommetTheme">
   </style>
 
   <style name="Widget.Grommet.DebugDrawer.Header" parent="None">

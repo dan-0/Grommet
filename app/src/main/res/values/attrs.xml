@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <declare-styleable name="AspectRatioImageView">
-    <attr name="widthRatio" format="integer"/>
-    <attr name="heightRatio" format="integer"/>
-  </declare-styleable>
+    <declare-styleable name="AspectRatioImageView">
+        <attr name="widthRatio" format="integer"/>
+        <attr name="heightRatio" format="integer"/>
+    </declare-styleable>
 
-  <declare-styleable name="GrommetView">
-    <attr name="section_title" format="reference"/>
-  </declare-styleable>
+    <declare-styleable name="AddressView">
+        <attr name="address_type" format="enum">
+            <enum name="MAILING" value="1"/>
+            <enum name="PREVIOUS" value="2"/>
+            <enum name="REGISTRATION" value="3"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="NameView">
+        <attr name="name_type" format="enum">
+            <enum name="CURRENT" value="1"/>
+            <enum name="PREVIOUS" value="2"/>
+        </attr>
+    </declare-styleable>
 
 </resources>

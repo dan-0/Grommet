@@ -1,0 +1,62 @@
+package com.rockthevote.grommet.util;
+
+import android.support.annotation.Nullable;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+public class Dates {
+
+    private static final String TIME_ZONE_UTC = "UTC";
+    private static final String SHORT_DATE_FORMAT = "yyyy-MM-dd";
+
+    public static Date parseISO8601_Date(String date) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        df.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
+
+
+        Date ret = new Date();
+        try {
+            ret = df.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return ret;
+    }
+
+    @Nullable
+    public static Date parseISO8601_ShortDate(String date){
+        if(Strings.isBlank(date)){
+            return null;
+        }
+
+        DateFormat df = new SimpleDateFormat(SHORT_DATE_FORMAT);
+
+        Date ret = new Date();
+        try {
+            ret = df.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return ret;
+    }
+
+
+    public static String formatAsISO8601_ShortDate(Date date) {
+        if(null == date){
+            return "";
+        }
+
+        DateFormat df = new SimpleDateFormat(SHORT_DATE_FORMAT);
+        df.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
+
+        return df.format(date);
+    }
+
+
+}
