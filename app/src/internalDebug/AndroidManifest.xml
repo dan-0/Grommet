@@ -11,11 +11,10 @@
     <application>
         <activity
             android:name="com.rockthevote.grommet.ui.DebugActivity"
-            android:icon="@drawable/dev_app_icon"
             android:label="Grommet Dev Settings"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Grommet.Debug">
+            android:theme="@style/GrommetTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

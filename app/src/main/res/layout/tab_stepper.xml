@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/tab_content"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/transparent"
+              android:gravity="center"
+              android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/step_number"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/stepper_icon"
+        android:gravity="center"
+        android:textAllCaps="false"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        tools:text="1"/>
+
+    <TextView
+        android:id="@+id/step_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/content_area_padding"
+        android:textAllCaps="false"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"
+        android:textColor="@color/stepper_text_color"
+        tools:text="step 1"
+        tools:textColor="@android:color/black"/>
+
+
+</LinearLayout>

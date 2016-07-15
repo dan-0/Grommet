@@ -38,7 +38,7 @@
     <ImageView
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/dev_app_icon"
+        android:src="@mipmap/ic_launcher"
         />
   </LinearLayout>
 
@@ -89,15 +89,6 @@
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
-        />
-    <ImageButton
-        android:id="@+id/debug_network_endpoint_edit"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:src="@drawable/debug_drawer_icon_edit"
-        android:background="?android:attr/actionBarItemBackground"
-        android:visibility="gone"
         />
   </LinearLayout>
 
@@ -179,13 +170,15 @@
 
   <TextView
       android:layout_gravity="start|center_vertical"
-      android:text="Repositories"
+      android:text="Registration"
       style="@style/Widget.Grommet.DebugDrawer.RowTitle"
+      android:visibility="gone"
       />
   <Spinner
-      android:id="@+id/debug_repositories_response"
+      android:id="@+id/debug_registration_response"
       android:layout_width="0dp"
       android:layout_gravity="start|center_vertical|fill_horizontal"
+      android:visibility="gone"
       />
 
   <!-- USER INTERFACE SECTION -->

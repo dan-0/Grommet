@@ -54,8 +54,7 @@ public final class DebugViewContainer implements ViewContainer {
   static class ViewHolder {
     @BindView(R.id.debug_drawer_layout) DebugDrawerLayout drawerLayout;
     @BindView(R.id.debug_drawer) ViewGroup debugDrawer;
-    @BindView(R.id.telescope_container)
-    TelescopeLayout telescopeLayout;
+    @BindView(R.id.telescope_container) TelescopeLayout telescopeLayout;
     @BindView(R.id.madge_container) MadgeFrameLayout madgeFrameLayout;
     @BindView(R.id.debug_content) ScalpelFrameLayout content;
   }

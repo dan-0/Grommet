@@ -72,6 +72,7 @@ android {
 
     lintOptions {
         abortOnError false
+        ignore 'InvalidPackage'// Provided AutoValue pulls in Guava and friends. Doesn't end up in APK.
     }
 
     dexOptions {
@@ -116,33 +117,24 @@ configurations.all {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
 
+    compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:support-v13:${supportLibVersion}"
     compile "com.android.support:support-annotations:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
 
-    compile 'com.squareup.dagger:dagger:1.2.2'
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
 
-
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.0.1'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0'
-    compile 'com.squareup.retrofit2:converter-moshi:2.0.0'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
-    compile 'com.github.gcacace:signature-pad:1.2.0'
     internalDebugCompile 'com.squareup.retrofit2:retrofit-mock:2.0.0'
 
-    compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
-    compile 'com.jakewharton.timber:timber:4.0.1'
-    compile 'com.jakewharton.byteunits:byteunits:0.9.1'
-    compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
+
+    provided 'com.google.auto.value:auto-value:1.2-rc1'
+    apt 'com.google.auto.value:auto-value:1.2-rc1'
+    apt 'com.ryanharter.auto.value:auto-value-parcel:0.2.0'
+
     internalDebugCompile 'com.jakewharton.madge:madge:1.1.3'
     internalDebugCompile 'com.jakewharton.scalpel:scalpel:1.1.2'
     internalDebugCompile 'com.jakewharton:process-phoenix:1.0.2'
@@ -150,15 +142,7 @@ dependencies {
     internalCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     productionCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
 
-    compile 'io.reactivex:rxjava:1.1.0'
-    compile 'io.reactivex:rxandroid:1.1.0'
-
-    compile 'com.jakewharton.threetenabp:threetenabp:1.0.2'
-
     internalCompile 'com.mattprecious.telescope:telescope:1.5.0@aar'
-
-    compile 'com.f2prateek.rx.preferences:rx-preferences:1.0.0'
-    compile 'com.mobsandgeeks:android-saripaar:2.0.3'
 
 //    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
 
@@ -172,5 +156,25 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.27'
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.0.1'
+    compile 'com.squareup.retrofit2:retrofit:2.0.0'
+    compile 'com.squareup.retrofit2:converter-moshi:2.0.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
+    compile 'com.github.gcacace:signature-pad:1.2.0'
+    compile 'com.jakewharton:butterknife:8.0.1'
+    compile 'com.jakewharton.timber:timber:4.0.1'
+    compile 'com.jakewharton.byteunits:byteunits:0.9.1'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
+    compile 'com.squareup.phrase:phrase:1.1.0'
+    compile 'com.squareup.sqlbrite:sqlbrite:0.6.3'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'com.jakewharton.threetenabp:threetenabp:1.0.3'
+    compile 'com.f2prateek.rx.preferences:rx-preferences:1.0.0'
+    compile 'com.mobsandgeeks:android-saripaar:2.0.3'
 }
 

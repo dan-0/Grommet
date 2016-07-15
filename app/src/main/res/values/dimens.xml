@@ -17,10 +17,11 @@
     <dimen name="card_width">@dimen/match_parent</dimen>
     <dimen name="toolbar_height">@dimen/increment</dimen>
 
-    <dimen name="list_item_height">72dp</dimen>
+    <dimen name="list_item_height">56dp</dimen>
     <dimen name="title_height">80dp</dimen>
     <dimen name="content_margin">80dp</dimen>
     <dimen name="content_area_padding">8dp</dimen>
+    <dimen name="dialog_content_margin">40dp</dimen>
 
     <!--4x increment-->
     <dimen name="signature_height">216dp</dimen>

@@ -1,15 +1,17 @@
 package com.rockthevote.grommet.data.api.model;
 
 
+import com.rockthevote.grommet.data.db.model.Name;
+
 public final class Voter {
 
     public final boolean is_us_citizen;
     public final boolean is_of_age;
 
-    public final Title title;
+    public final Name.Prefix title;
     public final String first_name;
     public final String last_name;
-    public final Suffix suffix;
+    public final Name.Suffix suffix;
 
     public final     String address;
     public final String zip_code;
@@ -50,10 +52,10 @@ public final class Voter {
         private boolean is_us_citizen;
         private boolean is_of_age;
 
-        private Title title = Title.EMPTY;
+        private Name.Prefix title = Name.Prefix.MR;
         private String first_name;
         private String last_name;
-        private Suffix suffix = Suffix.EMPTY;
+        private Name.Suffix suffix = Name.Suffix.EMPTY;
 
         private String address;
         private String zip_code;
@@ -79,7 +81,7 @@ public final class Voter {
             return this;
         }
 
-        public Builder title(Title value) {
+        public Builder title(Name.Prefix value) {
             this.title = value;
             return this;
         }
@@ -94,7 +96,7 @@ public final class Voter {
             return this;
         }
 
-        public Builder suffix(Suffix value) {
+        public Builder suffix(Name.Suffix value) {
             this.suffix = value;
             return this;
         }
