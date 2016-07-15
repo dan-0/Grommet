@@ -37,14 +37,22 @@ android {
     compileSdkVersion 24
     buildToolsVersion "23.0.3"
 
-//    signingConfigs {
-//        grommet {
-//
-//        }
-//    }
+    signingConfigs {
+        grommet {
+            storeFile file('../keys/grommet.keystore')
+            storePassword System.env['KEYSTORE_PASSWORD']
+            keyAlias 'grommetKey'
+            keyPassword System.env['KEY_PASSWORD']
+        }
+        debug {
+            storeFile file('../keys/debug.keystore')
+            storePassword 'android'
+            keyAlias 'grommetDebugKey'
+            keyPassword 'android'
+        }
+    }
 
     defaultConfig {
-        applicationId "com.rockthevote.grommet"
         minSdkVersion 21
         targetSdkVersion 24
 
@@ -53,11 +61,18 @@ android {
 
         buildConfigField 'String', 'GIT_SHA', "\"${gitSha()}\""
         buildConfigField 'long', 'GIT_TIMESTAMP', "${gitTimestamp()}L"
+
+        signingConfig signingConfigs.grommet
     }
 
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+        }
+        release{
+            minifyEnabled false
         }
     }
 
@@ -144,7 +159,6 @@ dependencies {
 
     internalCompile 'com.mattprecious.telescope:telescope:1.5.0@aar'
 
-//    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
 
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
