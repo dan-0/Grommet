@@ -12,9 +12,10 @@ public class Dates {
 
     private static final String TIME_ZONE_UTC = "UTC";
     private static final String SHORT_DATE_FORMAT = "yyyy-MM-dd";
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm'Z'";
 
     public static Date parseISO8601_Date(String date) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        DateFormat df = new SimpleDateFormat(DATE_FORMAT);
         df.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
 
 
@@ -26,6 +27,17 @@ public class Dates {
         }
 
         return ret;
+    }
+
+    public static String formatAsISO8601_Date(Date date) {
+        if(null == date){
+            return "";
+        }
+
+        DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+        df.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
+
+        return df.format(date);
     }
 
     @Nullable

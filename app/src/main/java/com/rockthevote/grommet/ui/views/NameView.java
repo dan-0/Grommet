@@ -8,7 +8,6 @@ import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
@@ -47,13 +46,13 @@ public class NameView extends FrameLayout {
 
     @NotEmpty
     @BindView(R.id.til_first_name) TextInputLayout firstNameTIL;
-    @BindView(R.id.first_name) EditText firstName;
+    @BindView(R.id.first_name) EditText firstNameEditText;
 
-    @BindView(R.id.middle_name) EditText middleName;
+    @BindView(R.id.middle_name) EditText middleNameEditText;
 
     @NotEmpty
     @BindView(R.id.til_last_name) TextInputLayout lastNameTIL;
-    @BindView(R.id.last_name) EditText lastName;
+    @BindView(R.id.last_name) EditText lastNameEditText;
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
 
@@ -134,57 +133,22 @@ public class NameView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        subscriptions.add(RxTextView.afterTextChangeEvents(firstName)
+        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(firstNameEditText),
+                RxTextView.afterTextChangeEvents(middleNameEditText),
+                RxTextView.afterTextChangeEvents(lastNameEditText),
+                RxAdapterView.itemSelections(spinnerTitle),
+                RxAdapterView.itemSelections(spinnerSuffix),
+                (firstName, middleName, lastName, titlePos, suffixPos) -> new Name.Builder()
+                        .firstName(firstName.editable().toString())
+                        .middleName(middleName.editable().toString())
+                        .lastName(lastName.editable().toString())
+                        .prefix(titleEnumAdapter.getItem(titlePos))
+                        .suffix(suffixEnumAdapter.getItem(suffixPos))
+                        .build())
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> {
-                    Name.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Name.Builder()
-                                    .firstName(event.editable().toString())
-                                    .build());
-                }));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(middleName)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> {
-                    Name.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Name.Builder()
-                                    .middleName(event.editable().toString())
-                                    .build());
-                }));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(lastName)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(2)
-                .subscribe(event -> {
-                    Name.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Name.Builder()
-                                    .lastName(event.editable().toString())
-                                    .build());
-                }));
-
-        subscriptions.add(RxAdapterView.itemSelections(spinnerTitle)
-                .observeOn(Schedulers.io())
-                .skip(2)
-                .subscribe(pos -> {
-                    Name.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Name.Builder()
-                                    .prefix(titleEnumAdapter.getItem(pos))
-                                    .build());
-                }));
-
-        subscriptions.add(RxAdapterView.itemSelections(spinnerSuffix)
-                .observeOn(Schedulers.io())
-                .skip(2)
-                .subscribe(pos -> {
-                    Name.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Name.Builder()
-                                    .suffix(suffixEnumAdapter.getItem(pos))
-                                    .build());
+                .subscribe(contentValues -> {
+                    Name.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
                 }));
     }
 

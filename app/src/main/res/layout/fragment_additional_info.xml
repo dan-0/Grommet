@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     android:columnCount="2"
     android:useDefaultMargins="true"
@@ -13,7 +14,9 @@
 
 
     <TextView
+        android:layout_height="@dimen/list_item_height"
         android:layout_marginStart="@dimen/content_margin"
+        android:gravity="bottom"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/section_label_race"
@@ -23,15 +26,19 @@
     <Spinner
         android:id="@+id/spinner_race"
         android:layout_width="0dp"
+        android:layout_height="@dimen/list_item_height"
         android:layout_columnWeight="1"
-        android:layout_gravity="fill_horizontal|bottom"
+        android:layout_gravity="fill_horizontal|top"
         android:layout_marginEnd="@dimen/content_margin"
+        android:layout_marginTop="11dp"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
         />
 
     <TextView
+        android:layout_height="@dimen/list_item_height"
         android:layout_marginStart="@dimen/content_margin"
+        android:gravity="bottom"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/section_label_party"
@@ -42,9 +49,11 @@
     <Spinner
         android:id="@+id/spinner_party"
         android:layout_width="0dp"
+        android:layout_height="@dimen/list_item_height"
         android:layout_columnWeight="1"
-        android:layout_gravity="fill_horizontal|bottom"
+        android:layout_gravity="fill_horizontal|top"
         android:layout_marginEnd="@dimen/content_margin"
+        android:layout_marginTop="11dp"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
         />
@@ -58,6 +67,7 @@
         android:layout_marginStart="@dimen/content_margin"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
+        app:errorEnabled="true"
         >
 
         <android.support.design.widget.TextInputEditText
@@ -84,7 +94,7 @@
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
         android:layout_marginStart="@dimen/content_margin"
-        android:visibility="gone"
+        android:visibility="gone" app:errorEnabled="true"
         tools:visibility="visible">
 
         <android.support.design.widget.TextInputEditText

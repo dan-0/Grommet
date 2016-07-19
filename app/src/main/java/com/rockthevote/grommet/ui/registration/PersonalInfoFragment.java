@@ -3,6 +3,7 @@ package com.rockthevote.grommet.ui.registration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,11 @@ import android.widget.Spinner;
 import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Length;
+import com.mobsandgeeks.saripaar.annotation.Optional;
+import com.mobsandgeeks.saripaar.annotation.Or;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.model.PhoneType;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
@@ -42,6 +45,12 @@ import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
 
 
 public class PersonalInfoFragment extends BaseRegistrationFragment {
+    private static final String PHONE_REGEX = ""    // sdd = space, dot, or dash
+            + "(^$|)|"                           // empty string
+            + "(\\+[0-9]+[\\- \\.]*)?"              // +<digits><sdd>*
+            + "(\\([0-9]+\\)[\\- \\.]*)?"           // (<digits>)<sdd>*
+            + "([0-9][0-9\\- \\.]+[0-9])";          // <digit><digit|sdd>+<digit>
+
 
     @BindView(R.id.name) NameView name;
     @BindView(R.id.name_changed) CheckBox nameChanged;
@@ -55,7 +64,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     @BindView(R.id.address_changed) CheckBox addressChanged;
     @BindView(R.id.phone) EditText phone;
 
-    @NotEmpty
+    @Pattern(regex = PHONE_REGEX, messageResId = R.string.phone_format_error)
     @BindView(R.id.til_phone_number) TextInputLayout phoneNumber;
     @BindView(R.id.spinner_phone_type) Spinner spinnerPhoneType;
 
@@ -65,9 +74,9 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
 
     private EnumAdapter<PhoneType> phoneTypeEnumAdapter;
 
-    private ObservableValidator validator;
-
     private CompositeSubscription subscriptions;
+    private PhoneNumberFormattingTextWatcher phoneFormatter;
+    private ObservableValidator validator;
 
     @Nullable
     @Override
@@ -79,9 +88,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         ButterKnife.bind(this, view);
-        validator = new ObservableValidator(this, getActivity());
 
         phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), PhoneType.class);
         spinnerPhoneType.setAdapter(phoneTypeEnumAdapter);
@@ -90,7 +97,10 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onResume() {
         super.onResume();
+        validator = new ObservableValidator(this, getContext());
         subscriptions = new CompositeSubscription();
+        phoneFormatter = new PhoneNumberFormattingTextWatcher();
+        phone.addTextChangedListener(phoneFormatter);
 
         subscriptions.add(RxTextView.afterTextChangeEvents(phone)
                 .observeOn(Schedulers.io())
@@ -108,7 +118,6 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
         subscriptions.add(RxAdapterView.itemSelections(spinnerPhoneType)
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(2)
                 .subscribe(pos -> {
                     db.update(RockyRequest.TABLE,
                             new RockyRequest.Builder()
@@ -124,6 +133,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onPause() {
         super.onPause();
         subscriptions.unsubscribe();
+        phone.removeTextChangedListener(phoneFormatter);
     }
 
     @OnCheckedChanged(R.id.mailing_address_is_different)

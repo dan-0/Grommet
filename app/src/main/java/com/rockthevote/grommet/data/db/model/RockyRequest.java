@@ -190,6 +190,10 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
             return this;
         }
 
+        public Builder generateDate(){
+            values.put(GENERATED_DATE, Dates.formatAsISO8601_Date(new Date()));
+            return this;
+        }
 
         public Builder dateOfBirth(Date date) {
             values.put(DATE_OF_BIRTH, Dates.formatAsISO8601_ShortDate(date));

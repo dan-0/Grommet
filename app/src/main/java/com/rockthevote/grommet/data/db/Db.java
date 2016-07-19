@@ -47,10 +47,6 @@ public final class Db {
         return cursor.getInt(cursor.getColumnIndexOrThrow(columnName));
     }
 
-    public static Date getDate(Cursor cursor, String columnName){
-        return Dates.parseISO8601_Date(getString(cursor, columnName));
-    }
-
     public static byte[] getBlob(Cursor cursor, String columnName){
         return cursor.getBlob(cursor.getColumnIndexOrThrow(columnName));
 

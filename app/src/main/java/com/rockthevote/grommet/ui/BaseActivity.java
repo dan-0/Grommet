@@ -51,9 +51,6 @@ public class BaseActivity extends AppCompatActivity {
     private ViewGroup container;
     @Inject ViewContainer viewContainer;
 
-    @Inject
-    @PartnerId
-    Preference<String> partnerIdPref;
 
     @Inject
     @CanvasserName
@@ -62,11 +59,6 @@ public class BaseActivity extends AppCompatActivity {
     @Inject
     @EventName
     Preference<String> eventNamePref;
-
-    @Inject
-    @EventZip
-    Preference<String> eventZipPref;
-
 
     private CompositeSubscription subscriptions;
 
@@ -89,15 +81,6 @@ public class BaseActivity extends AppCompatActivity {
         }
 
     }
-
-//    @Override
-//    protected void onPostCreate(Bundle savedInstanceState) {
-//        super.onPostCreate(savedInstanceState);
-//
-//        if (getSelfNavDrawerItem() != NAVDRAWER_INVALID) {
-//            setUpNavDrawer();
-//        }
-//    }
 
     @Override
     protected void onResume() {
@@ -139,21 +122,13 @@ public class BaseActivity extends AppCompatActivity {
 
         View header = drawer.getHeaderView(0);
         TextView canvasserName = (TextView) header.findViewById(R.id.drawer_canvasser_name);
-        TextView partnerId = (TextView) header.findViewById(R.id.drawer_partner_id);
         TextView eventName = (TextView) header.findViewById(R.id.drawer_event_name);
-        TextView eventZip = (TextView) header.findViewById(R.id.drawer_event_zip);
 
         subscriptions.add(canvasserNamePref.asObservable()
                 .subscribe(canvasserName::setText));
 
-        subscriptions.add(partnerIdPref.asObservable()
-                .subscribe(partnerId::setText));
-
         subscriptions.add(eventNamePref.asObservable()
                 .subscribe(eventName::setText));
-
-        subscriptions.add(eventZipPref.asObservable()
-                .subscribe(eventZip::setText));
 
     }
 

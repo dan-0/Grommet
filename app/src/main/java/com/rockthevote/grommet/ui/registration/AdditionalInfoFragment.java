@@ -15,7 +15,6 @@ import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterId;
@@ -90,7 +89,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         subscriptions.add(RxAdapterView.itemSelections(raceSpinner)
                 .observeOn(Schedulers.io())
-                .skip(2)
+                .skip(1)
                 .subscribe(pos -> {
                     db.update(RockyRequest.TABLE,
                             new RockyRequest.Builder()
@@ -101,7 +100,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         subscriptions.add(RxAdapterView.itemSelections(partySpinner)
                 .observeOn(Schedulers.io())
-                .skip(2)
+                .skip(1)
                 .subscribe(pos -> {
                     db.update(RockyRequest.TABLE,
                             new RockyRequest.Builder()
