@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.ShareCompat;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
-import com.mattprecious.telescope.EmailLens;
 import com.mattprecious.telescope.Lens;
 import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.data.LumberYard;
@@ -28,7 +26,7 @@ import static com.rockthevote.grommet.ui.bugreport.BugReportView.Report;
  * Pops a dialog asking for more information about the bug report and then creates an email with a
  * JIRA-formatted body.
  */
-public final class BugReportLens implements Lens, BugReportDialog.ReportListener {
+public final class BugReportLens extends Lens implements BugReportDialog.ReportListener {
     private final Activity context;
     private final LumberYard lumberYard;
 
@@ -149,4 +147,5 @@ public final class BugReportLens implements Lens, BugReportDialog.ReportListener
                 return String.valueOf(displayMetrics.densityDpi);
         }
     }
+
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.api.model.ApiAdditionalInfo;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -97,6 +98,8 @@ public final class MainActivity extends BaseActivity {
 
     @OnClick(R.id.button_new_voter)
     public void onClick(View v) {
+
+
 
         Observable.just(partnerIdPref.get(),
                 canvasserNamePref.get(),

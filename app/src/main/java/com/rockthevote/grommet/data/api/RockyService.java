@@ -1,7 +1,7 @@
 package com.rockthevote.grommet.data.api;
 
 
-import com.rockthevote.grommet.data.api.model.Voter;
+import com.rockthevote.grommet.data.api.model.ApiRockyRequest;
 
 import retrofit2.adapter.rxjava.Result;
 import retrofit2.http.Body;
@@ -11,5 +11,5 @@ import rx.Observable;
 public interface RockyService {
 
     @POST("register")
-    Observable<Result> register(@Body Voter Voter);
+    Observable<Result> register(@Body ApiRockyRequest rockyRequest);
 }

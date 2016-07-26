@@ -10,6 +10,9 @@ apply plugin: 'me.tatarka.retrolambda'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
     jcenter()
 }
 
@@ -148,17 +151,19 @@ dependencies {
 
     provided 'com.google.auto.value:auto-value:1.2-rc1'
     apt 'com.google.auto.value:auto-value:1.2-rc1'
-    apt 'com.ryanharter.auto.value:auto-value-parcel:0.2.0'
+    apt 'com.ryanharter.auto.value:auto-value-parcel:0.2.3-rc2'
+    apt 'com.ryanharter.auto.value:auto-value-moshi:0.4.0-rc2'
+    provided 'com.ryanharter.auto.value:auto-value-moshi:0.4.0-rc2'
 
     internalDebugCompile 'com.jakewharton.madge:madge:1.1.3'
     internalDebugCompile 'com.jakewharton.scalpel:scalpel:1.1.2'
     internalDebugCompile 'com.jakewharton:process-phoenix:1.0.2'
 
-    internalCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
-    productionCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-SNAPSHOT'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-SNAPSHOT'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-SNAPSHOT'
 
-    internalCompile 'com.mattprecious.telescope:telescope:1.5.0@aar'
-
+    internalCompile 'com.mattprecious.telescope:telescope:2.1.0'
 
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'

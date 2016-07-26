@@ -40,7 +40,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + RockyRequest.REG_IS_MAIL + " INTEGER DEFAULT " + Db.BOOLEAN_TRUE + ","
             + RockyRequest.RACE + " TEXT,"
             + RockyRequest.PARTY + " TEXT,"
-            + RockyRequest.SIGNATURE + " BLOB"
+            + RockyRequest.SIGNATURE + " BLOB,"
+            + RockyRequest.LATITUDE + " REAL,"
+            + RockyRequest.LONGITUDE + " REAL"
             + ")";
 
     private static final String CREATE_ADDRESS = ""
@@ -68,7 +70,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + Name.TITLE_PREFIX + " TEXT NOT NULL DEFAULT " + Name.Prefix.MR.toString() + ","
             + Name.TITLE_SUFFIX + " TEXT,"
             + "UNIQUE (" + Name.ROCKY_REQUEST_ID + " , " + Name.TYPE + ")"
-            +")";
+            + ")";
 
     private static final String CREATE_VOTER_CLASSIFICATION = ""
             + "CREATE TABLE " + VoterClassification.TABLE + "("

@@ -14,12 +14,8 @@ import android.widget.Spinner;
 import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.mobsandgeeks.saripaar.annotation.Length;
-import com.mobsandgeeks.saripaar.annotation.Optional;
-import com.mobsandgeeks.saripaar.annotation.Or;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.data.api.model.PhoneType;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -72,7 +68,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
 
     @Inject BriteDatabase db;
 
-    private EnumAdapter<PhoneType> phoneTypeEnumAdapter;
+    private EnumAdapter<RockyRequest.PhoneType> phoneTypeEnumAdapter;
 
     private CompositeSubscription subscriptions;
     private PhoneNumberFormattingTextWatcher phoneFormatter;
@@ -90,7 +86,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), PhoneType.class);
+        phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), RockyRequest.PhoneType.class);
         spinnerPhoneType.setAdapter(phoneTypeEnumAdapter);
     }
 

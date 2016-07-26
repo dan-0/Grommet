@@ -98,6 +98,7 @@ public class RegistrationActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.registration, menu);
+
         return true;
     }
 
