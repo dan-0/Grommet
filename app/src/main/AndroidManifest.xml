@@ -4,11 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <supports-screens android:smallScreens="false"
-                      android:normalScreens="false"
-                      android:largeScreens="true"
-                      android:xlargeScreens="true"
-                      android:requiresSmallestWidthDp="600" />
+    <!--<supports-screens-->
+        <!--android:largeScreens="true"-->
+        <!--android:normalScreens="false"-->
+        <!--android:requiresSmallestWidthDp="600"-->
+        <!--android:smallScreens="false"-->
+        <!--android:xlargeScreens="true"/>-->
 
     <application
         android:name=".GrommetApp"
@@ -19,20 +20,23 @@
         android:theme="@style/GrommetTheme">
         <activity
             android:name=".ui.MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/RegistrationTheme"
             android:name=".ui.registration.RegistrationActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:theme="@style/RegistrationTheme"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity
             android:name=".ui.settings.SettingsActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

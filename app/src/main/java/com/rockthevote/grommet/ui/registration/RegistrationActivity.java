@@ -28,9 +28,11 @@ import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
+import static android.support.v4.view.ViewPager.OnPageChangeListener;
 
 
 public class RegistrationActivity extends BaseActivity {
+
     @Inject ViewContainer viewContainer;
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
     @Inject BriteDatabase db;
@@ -44,6 +46,8 @@ public class RegistrationActivity extends BaseActivity {
 
     private RegistrationPagerAdapter adapter;
 
+    private OnPageChangeListener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +58,6 @@ public class RegistrationActivity extends BaseActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         setupViewPager();
     }
 
@@ -75,48 +74,23 @@ public class RegistrationActivity extends BaseActivity {
         for (int i = 0; i < tabStrip.getChildCount(); i++) {
             tabStrip.getChildAt(i).setClickable(false);
         }
-
-        updateNavigation(viewPager.getCurrentItem());
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            int prevPage = viewPager.getCurrentItem();
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-                updateNavigation(position);
-
-                //only check if we're swiping right
-                if (position - 1 == prevPage) {
-                    ((BaseRegistrationFragment) adapter.getItem(prevPage))
-                            .verify()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(isValid -> {
-                                if (isValid) {
-                                    tabLayout.enableTabAtPosition(position);
-                                    prevPage = position;
-                                } else {
-                                    viewPager.setCurrentItem(prevPage);
-                                }
-                            });
-                } else {
-                    prevPage = position;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-
     }
 
-    private void updateNavigation(int pagePosition){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listener = new RegistrationPageListener();
+        viewPager.addOnPageChangeListener(listener);
+        updateNavigation(viewPager.getCurrentItem());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        viewPager.removeOnPageChangeListener(listener);
+    }
+
+    private void updateNavigation(int pagePosition) {
         previousButton.setEnabled(pagePosition != 0);
         nextButton.setEnabled(pagePosition != adapter.getCount() - 1);
     }
@@ -184,6 +158,41 @@ public class RegistrationActivity extends BaseActivity {
                             viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
                         }
                     });
+        }
+    }
+
+    private class RegistrationPageListener implements OnPageChangeListener {
+        private int prevPage = viewPager.getCurrentItem();
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+
+            updateNavigation(position);
+
+            //only check if we're swiping right
+            if (position - 1 == prevPage) {
+                ((BaseRegistrationFragment) adapter.getItem(prevPage))
+                        .verify()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(isValid -> {
+                            if (isValid) {
+                                tabLayout.enableTabAtPosition(position);
+                                prevPage = position;
+                            } else {
+                                viewPager.setCurrentItem(prevPage);
+                            }
+                        });
+            } else {
+                prevPage = position;
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
         }
     }
 

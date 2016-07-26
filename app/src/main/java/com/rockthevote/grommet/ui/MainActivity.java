@@ -70,6 +70,8 @@ public final class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         View v = getLayoutInflater().inflate(R.layout.activity_main, getContentView());
         ButterKnife.bind(this, v);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
     }
 
     @Override
@@ -123,6 +125,7 @@ public final class MainActivity extends BaseActivity {
                 .partnerTrackingId(eventZipPref.get())
                 .sourceTrackingId(canvasserNamePref.get())
                 .openTrackingId(eventNamePref.get())
+                .generateDate()
                 .build());
 
         currentRockyRequestId.set(rockyRequestRowId);

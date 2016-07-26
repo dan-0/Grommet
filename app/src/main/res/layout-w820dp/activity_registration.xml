@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -59,19 +60,19 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="@dimen/card_width"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_height="@dimen/increment"
         app:cardBackgroundColor="@color/colorPrimary"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="false"
-        app:layout_behavior="com.rockthevote.grommet.ui.misc.LinearLayoutBehavior"
+        app:layout_behavior="com.rockthevote.grommet.ui.misc.BottomBarBehavior"
         >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/increment"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <Button
                 android:id="@+id/button_previous"
@@ -81,7 +82,7 @@
                 android:layout_weight="1"
                 android:gravity="start|center"
                 android:text="@string/navigation_label_previous"
-                android:textColor="@android:color/white"/>
+                android:textColor="@color/selector_enabled_text_color"/>
 
             <Button
                 android:id="@+id/button_next"
@@ -91,7 +92,7 @@
                 android:layout_weight="1"
                 android:gravity="end|center"
                 android:text="@string/navigation_label_next"
-                android:textColor="@android:color/white"/>
+                android:textColor="@color/selector_enabled_text_color"/>
 
         </LinearLayout>
 

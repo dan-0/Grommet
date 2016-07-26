@@ -190,5 +190,6 @@ dependencies {
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.3'
     compile 'com.f2prateek.rx.preferences:rx-preferences:1.0.0'
     compile 'com.mobsandgeeks:android-saripaar:2.0.3'
+    compile 'com.jaredrummler:material-spinner:1.0.9'
 }
 

@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,22 +43,20 @@ public class AddressView extends FrameLayout {
 
     @NotEmpty
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
-    @BindView(R.id.street) TextInputEditText street;
+    @BindView(R.id.street) EditText streetEditText;
 
-    @BindView(R.id.unit) TextInputEditText unit;
+    @BindView(R.id.unit) EditText unitEditText;
     @BindView(R.id.spinner_county) Spinner counties;
 
     @NotEmpty
     @BindView(R.id.til_city) TextInputLayout cityTIL;
-    @BindView(R.id.city) TextInputEditText city;
+    @BindView(R.id.city) EditText cityEditText;
 
-    @NotEmpty
-    @BindView(R.id.til_state) TextInputLayout stateTIL;
-    @BindView(R.id.state) TextInputEditText state;
+    @BindView(R.id.spinner_state) Spinner states;
 
     @NotEmpty
     @BindView(R.id.til_zip_code) TextInputLayout zipTIL;
-    @BindView(R.id.zip) TextInputEditText zip;
+    @BindView(R.id.zip) EditText zipEditText;
 
     @BindView(R.id.address_section_title) TextView sectionTitle;
 
@@ -70,6 +69,8 @@ public class AddressView extends FrameLayout {
     ObservableValidator validator;
 
     private ArrayAdapter<CharSequence> countyAdapter;
+
+    private ArrayAdapter<CharSequence> stateAdapter;
 
     private Address.Type type;
 
@@ -136,75 +137,37 @@ public class AddressView extends FrameLayout {
                 R.array.pa_counties, android.R.layout.simple_spinner_item);
         countyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         counties.setAdapter(countyAdapter);
+
+        stateAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.states, android.R.layout.simple_spinner_item);
+        stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        states.setAdapter(stateAdapter);
+        states.setSelection(stateAdapter.getPosition("PA"));
+
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        subscriptions.add(RxTextView.afterTextChangeEvents(street)
+        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(streetEditText),
+                RxTextView.afterTextChangeEvents(unitEditText),
+                RxTextView.afterTextChangeEvents(cityEditText),
+                RxAdapterView.itemSelections(states),
+                RxTextView.afterTextChangeEvents(zipEditText),
+                RxAdapterView.itemSelections(counties),
+                (street, unit, city, statePos, zip, countyPos) -> new Address.Builder()
+                        .streetName(street.editable().toString())
+                        .subAddress(unit.editable().toString())
+                        .municipalJurisdiction(city.editable().toString())
+                        .state(stateAdapter.getItem(statePos).toString())
+                        .zip(zip.editable().toString())
+                        .county(countyAdapter.getItem(countyPos).toString())
+                        .build())
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> {
-                    Address.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Address.Builder()
-                                    .streetName(event.editable().toString())
-                                    .build());
-                }));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(unit)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> {
-                    Address.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Address.Builder()
-                                    .subAddress(event.editable().toString())
-                                    .build());
-                }));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(city)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> {
-                    Address.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Address.Builder()
-                                    .municipalJurisdiction(event.editable().toString())
-                                    .build());
-                }));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(state)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> {
-                    Address.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Address.Builder()
-                                    .state(event.editable().toString())
-                                    .build());
-                }));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(zip)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> {
-                    Address.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Address.Builder()
-                                    .zip(event.editable().toString())
-                                    .build());
-                }));
-
-        subscriptions.add(RxAdapterView.itemSelections(counties)
-                .observeOn(Schedulers.io())
-                .skip(2)
-                .subscribe(pos -> {
-                    Address.insertOrUpdate(db, rockyRequestRowId.get(), type,
-                            new Address.Builder()
-                                    .county(countyAdapter.getItem(pos).toString())
-                                    .build());
+                .subscribe(contentValues -> {
+                    Address.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
                 }));
 
     }

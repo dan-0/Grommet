@@ -69,6 +69,7 @@
     <string name="checkbox_name_changed">I have changed my name</string>
     <string name="label_receive_text">Send me txt messages from Rock the Vote</string>
     <string name="county_empty_error">County Required</string>
+    <string name="phone_format_error">Invalid phone number</string>
 
     <!--Register Fragment Strings-->
     <string name="fragment_title_additional_info">Additional Info</string>

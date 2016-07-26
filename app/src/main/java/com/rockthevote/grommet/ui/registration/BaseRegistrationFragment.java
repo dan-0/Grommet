@@ -42,4 +42,6 @@ public class BaseRegistrationFragment extends Fragment {
         return Observable.just(true);
     }
 
+
+
 }

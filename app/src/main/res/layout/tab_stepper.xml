@@ -29,7 +29,7 @@
         android:paddingStart="@dimen/content_area_padding"
         android:textAllCaps="false"
         android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"
-        android:textColor="@color/stepper_text_color"
+        android:textColor="@color/selector_enabled_text_color"
         tools:text="step 1"
         tools:textColor="@android:color/black"/>
 
