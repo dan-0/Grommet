@@ -15,11 +15,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 @Module(
         complete = false,
-        library = true,
-        injects = {
-//                OauthService.class
-
-        }
+        library = true
 )
 public final class ApiModule {
     public static final HttpUrl PRODUCTION_API_URL = HttpUrl.parse("https://api.rocky.gov/");

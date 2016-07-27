@@ -8,10 +8,14 @@ import com.f2prateek.rx.preferences.RxSharedPreferences;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
+import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.api.RockyAdapterFactory;
+import com.rockthevote.grommet.data.db.DbModule;
+import com.rockthevote.grommet.data.prefs.AppRegTotal;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
+import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.squareup.moshi.Moshi;
@@ -25,6 +29,7 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -33,7 +38,11 @@ import static com.jakewharton.byteunits.DecimalByteUnit.MEGABYTES;
 
 @Module(
         includes = {
-                ApiModule.class
+                ApiModule.class,
+                DbModule.class
+        },
+        injects = {
+                RegistrationService.class
         },
         complete = false,
         library = true
@@ -49,8 +58,28 @@ public final class DataModule {
 
     @Provides
     @Singleton
+    ReactiveLocationProvider provideReactiveLocationProvider(Application app){
+        return new ReactiveLocationProvider(app);
+    }
+
+    @Provides
+    @Singleton
     RxSharedPreferences provideRxSharedPreferences(SharedPreferences prefs) {
         return RxSharedPreferences.create(prefs);
+    }
+
+    @Provides
+    @Singleton
+    @EventRegTotal
+    Preference<Integer> provideEventRegTotal(RxSharedPreferences prefs, Application app){
+        return prefs.getInteger(app.getResources().getString(R.string.pref_key_event_reg_total), 0);
+    }
+
+    @Provides
+    @Singleton
+    @AppRegTotal
+    Preference<Integer> provideAppRegTotal(RxSharedPreferences prefs, Application app){
+        return prefs.getInteger(app.getResources().getString(R.string.pref_key_app_reg_total), 0);
     }
 
     @Provides
@@ -84,7 +113,7 @@ public final class DataModule {
     @Provides
     @Singleton
     @CurrentRockyRequestId
-    Preference<Long> provideCurrentRockyRequestId(RxSharedPreferences prefs){
+    Preference<Long> provideCurrentRockyRequestId(RxSharedPreferences prefs) {
         return prefs.getLong("cur_rocky_request_id");
     }
 

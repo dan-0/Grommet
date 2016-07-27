@@ -2,10 +2,10 @@ package com.rockthevote.grommet.ui;
 
 
 import com.rockthevote.grommet.ui.registration.AdditionalInfoFragment;
+import com.rockthevote.grommet.ui.registration.NewRegistrantFragment;
 import com.rockthevote.grommet.ui.registration.PersonalInfoFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
 import com.rockthevote.grommet.ui.registration.ReviewAndConfirmFragment;
-import com.rockthevote.grommet.ui.registration.NewRegistrantFragment;
 import com.rockthevote.grommet.ui.settings.SettingsActivity;
 import com.rockthevote.grommet.ui.settings.SettingsFragment;
 import com.rockthevote.grommet.ui.views.AddressView;

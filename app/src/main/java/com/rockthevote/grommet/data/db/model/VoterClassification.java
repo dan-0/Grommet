@@ -29,6 +29,12 @@ public abstract class VoterClassification implements Parcelable, BaseColumns {
             + TYPE + " = ? "
             + " LIMIT 1";
 
+    public static final String SELECT_BY_ROCKY_REQUEST_ID = ""
+            + "SELECT * FROM "
+            + TABLE
+            + " WHERE "
+            + ROCKY_REQUEST_ID + " = ? ";
+
     public abstract long id();
 
     public abstract long rockyRequestId();
@@ -42,7 +48,7 @@ public abstract class VoterClassification implements Parcelable, BaseColumns {
         public VoterClassification call(Cursor cursor) {
             long id = Db.getLong(cursor, _ID);
             long rockyRequestId = Db.getLong(cursor, ROCKY_REQUEST_ID);
-            Type type = Type.valueOf(Db.getString(cursor, TYPE));
+            Type type = Type.fromString(Db.getString(cursor, TYPE));
             boolean assertion = Db.getBoolean(cursor, ASSERTION);
 
             return new AutoValue_VoterClassification(id, rockyRequestId, type, assertion);

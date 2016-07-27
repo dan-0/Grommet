@@ -22,16 +22,11 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventZip;
-import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.settings.SettingsActivity;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 

@@ -17,7 +17,7 @@
 
     <!--Main Activity Strings-->
     <string name="label_total_registered">Total Registered</string>
-    <string name="label_registered_today">Registered Today</string>
+    <string name="label_registered_event">Registered This Event</string>
     <string name="button_label_new_voter">New Voter</string>
 
     <!--Registration Activity Strings-->
@@ -102,11 +102,13 @@
     <string name="signature_instructions">Please use stylus for signature capture</string>
     <string name="signature_pad_error">Signature is required</string>
 
-    <!-- Strings related to Settings -->
+    <!-- Preference Strings -->
     <string name="pref_key_partner_id">partner_id</string>
     <string name="pref_key_canvasser_name">canvasser_name</string>
     <string name="pref_key_event_zip_code">event_zip</string>
     <string name="pref_key_event_name">event_name</string>
+    <string name="pref_key_event_reg_total">event_reg_total</string>
+    <string name="pref_key_app_reg_total">app_reg_total</string>
 
     <string name="pref_title_partner_id">Partner ID</string>
     <string name="pref_title_canvaser_name">Canvaser Name</string>

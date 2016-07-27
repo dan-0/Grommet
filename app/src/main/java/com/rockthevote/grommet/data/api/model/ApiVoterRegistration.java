@@ -2,11 +2,16 @@ package com.rockthevote.grommet.data.api.model;
 
 
 import com.google.auto.value.AutoValue;
+import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.util.Dates;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.util.List;
+
+import static com.rockthevote.grommet.data.db.model.Name.Gender;
+import static com.rockthevote.grommet.data.db.model.Name.Prefix;
 
 @AutoValue
 public abstract class ApiVoterRegistration {
@@ -94,4 +99,33 @@ public abstract class ApiVoterRegistration {
         abstract ApiVoterRegistration build();
     }
 
+    public static ApiVoterRegistration fromDb(RockyRequest rockyRequest,
+                                              ApiAddress mailingAddress,
+                                              ApiAddress previousRegistrationAddress,
+                                              ApiAddress registrationAddress,
+                                              ApiName name,
+                                              ApiName previousName,
+                                              List<ApiVoterClassification> voterClassifications,
+                                              ApiSignature signature,
+                                              List<ApiVoterId> voterIds,
+                                              List<ApiContactMethod> contactMethods,
+                                              List<ApiAdditionalInfo> additionalInfo) {
+        return builder()
+                .dateOfBirth(Dates.formatAsISO8601_ShortDate(rockyRequest.dateOfBirth()))
+                .mailingAddress(mailingAddress)
+                .previousRegistrationAddress(previousRegistrationAddress)
+                .registrationAddress(registrationAddress)
+                .regIsMail(rockyRequest.regIsMail())
+                .name(name)
+                .previousName(previousName)
+                .gender(Gender.fromPrefix(Prefix.fromString(name.titlePrefix())).toString())
+                .race(rockyRequest.race().toString())
+                .party(rockyRequest.party().toString())
+                .voterClassifications(voterClassifications)
+                .signature(signature)
+                .voterIds(voterIds)
+                .contactMethods(contactMethods)
+                .additionalInfo(additionalInfo)
+                .build();
+    }
 }

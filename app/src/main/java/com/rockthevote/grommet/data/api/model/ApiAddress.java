@@ -2,12 +2,11 @@ package com.rockthevote.grommet.data.api.model;
 
 
 import com.google.auto.value.AutoValue;
-import com.ryanharter.auto.value.moshi.MoshiAdapterFactory;
+import com.rockthevote.grommet.data.db.model.Address;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.ToJson;
 
 import java.io.IOException;
 
@@ -67,6 +66,7 @@ public abstract class ApiAddress {
             this.stateAdapter = moshi.adapter(String.class);
             this.zipAdapter = moshi.adapter(String.class);
         }
+
         @Override
         public ApiAddress fromJson(JsonReader reader) throws IOException {
             reader.beginObject();
@@ -115,6 +115,7 @@ public abstract class ApiAddress {
             reader.endObject();
             return new AutoValue_ApiAddress(streetName, subAddress, municipalJurisdiction, county, state, zip);
         }
+
         @Override
         public void toJson(JsonWriter writer, ApiAddress value) throws IOException {
             writer.beginObject();
@@ -162,5 +163,16 @@ public abstract class ApiAddress {
             writer.endObject();
             writer.endObject();
         }
+    }
+
+    public static ApiAddress fromDb(Address address) {
+        return builder()
+                .state(address.state())
+                .municipalJurisdiction(address.municipalJurisdiction())
+                .county(address.county())
+                .streetName(address.streetName())
+                .subAddress(address.subAddress())
+                .zipCode(address.zip())
+                .build();
     }
 }

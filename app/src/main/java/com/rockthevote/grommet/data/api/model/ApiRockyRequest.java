@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.data.api.model;
 
 import com.google.auto.value.AutoValue;
+import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -9,8 +10,11 @@ import com.squareup.moshi.Moshi;
 @AutoValue
 public abstract class ApiRockyRequest {
 
+    /*
+     * language the info was collected in (i.e. english or spanish) english is default
+     */
     @Json(name = "lang")
-    abstract String preferredLanguage();
+    abstract String lang();
 
     @Json(name = "phone_type")
     abstract String phoneType();
@@ -63,6 +67,7 @@ public abstract class ApiRockyRequest {
 
     static Builder builder() {
         return new AutoValue_ApiRockyRequest.Builder()
+                .lang("english")
                 .optInEmail(false)
                 .optInSms(false)
                 .optInVolunteer(false)
@@ -76,7 +81,7 @@ public abstract class ApiRockyRequest {
 
     @AutoValue.Builder
     abstract static class Builder {
-        abstract Builder preferredLanguage(String value);
+        abstract Builder lang(String value);
 
         abstract Builder phoneType(String value);
 
@@ -111,4 +116,22 @@ public abstract class ApiRockyRequest {
         abstract ApiRockyRequest build();
     }
 
+    public static ApiRockyRequest fromDb(RockyRequest rockyRequest,
+                                         ApiVoterRecordsRequest voterRecordsRequest,
+                                         ApiGeoLocation geoLocation) {
+
+        return builder()
+                .phoneType(rockyRequest.phoneType().toString())
+                .partnerId(rockyRequest.partnerId())
+                .optInEmail(rockyRequest.optInEmail())
+                .optInSms(rockyRequest.optInSMS())
+                .optInVolunteer(rockyRequest.optInVolunteer())
+                .sourceTrackingId(rockyRequest.sourceTrackingId())
+                .partnerTrackingId(rockyRequest.partnerTrackingId())
+                .geoLocation(geoLocation)
+                .openTrackingId(rockyRequest.openTrackingId())
+                .voterRecordsRequest(voterRecordsRequest)
+                .build();
+
+    }
 }

@@ -1,16 +1,12 @@
 package com.rockthevote.grommet.ui.views;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

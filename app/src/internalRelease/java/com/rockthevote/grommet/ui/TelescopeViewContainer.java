@@ -1,8 +1,8 @@
 package com.rockthevote.grommet.ui;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -10,12 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import com.f2prateek.rx.preferences.Preference;
 import com.f2prateek.rx.preferences.RxSharedPreferences;
-
 import com.mattprecious.telescope.Lens;
 import com.mattprecious.telescope.TelescopeLayout;
 import com.rockthevote.grommet.R;
@@ -26,6 +22,9 @@ import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 @Singleton
 public final class TelescopeViewContainer implements ViewContainer {

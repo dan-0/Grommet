@@ -1,8 +1,9 @@
 package com.rockthevote.grommet.ui;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 
 @Module(
     overrides = true,

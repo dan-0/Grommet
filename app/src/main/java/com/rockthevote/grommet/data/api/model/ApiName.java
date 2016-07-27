@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.data.api.model;
 
 import com.google.auto.value.AutoValue;
+import com.rockthevote.grommet.data.db.model.Name;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -43,5 +44,15 @@ public abstract class ApiName {
         abstract Builder titleSuffix(String value);
 
         abstract ApiName build();
+    }
+
+    public static ApiName fromDb(Name name) {
+        return builder()
+                .firstName(name.firstName())
+                .lastName(name.lastName())
+                .middleName(name.middleName())
+                .titlePrefix(name.titlePrefix().toString())
+                .titleSuffix(name.titleSuffix().toString())
+                .build();
     }
 }

@@ -1,6 +1,8 @@
 package com.rockthevote.grommet.data.api.model;
 
 import com.google.auto.value.AutoValue;
+import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.util.Dates;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -21,7 +23,8 @@ public abstract class ApiVoterRecordsRequest {
     }
 
     static Builder builder() {
-        return new AutoValue_ApiVoterRecordsRequest.Builder();
+        return new AutoValue_ApiVoterRecordsRequest.Builder()
+                .type("registration");
     }
 
     @AutoValue.Builder
@@ -33,5 +36,13 @@ public abstract class ApiVoterRecordsRequest {
         abstract Builder voterRegistration(ApiVoterRegistration value);
 
         abstract ApiVoterRecordsRequest build();
+    }
+
+    public static ApiVoterRecordsRequest fromDb(RockyRequest rockyRequest,
+                                                ApiVoterRegistration apiVoterRegistration){
+        return builder()
+                .generatedDate(Dates.formatAsISO8601_Date(rockyRequest.generatedDate()))
+                .voterRegistration(apiVoterRegistration)
+                .build();
     }
 }

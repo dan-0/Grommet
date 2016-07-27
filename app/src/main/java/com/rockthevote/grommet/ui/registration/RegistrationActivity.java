@@ -27,8 +27,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
 import static android.support.v4.view.ViewPager.OnPageChangeListener;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
 
 
 public class RegistrationActivity extends BaseActivity {

@@ -19,6 +19,7 @@ public abstract class VoterId implements Parcelable, BaseColumns {
     public static String ROCKY_REQUEST_ID = "rocky_request_id";
     public static String TYPE = "type";
     public static String VALUE = "value";
+    public static String ATTEST_NO_SUCH_ID = "attest_no_such_id";
 
     private static final String SELECT_BY_TYPE = ""
             + "SELECT * FROM "
@@ -29,6 +30,12 @@ public abstract class VoterId implements Parcelable, BaseColumns {
             + TYPE + " = ? "
             + " LIMIT 1";
 
+    public static final String SELECT_BY_ROCKY_REQUEST_ID = ""
+            + "SELECT * FROM "
+            + TABLE
+            + " WHERE "
+            + ROCKY_REQUEST_ID + " = ? ";
+
     public abstract long id();
 
     public abstract long rockyRequestId();
@@ -37,16 +44,18 @@ public abstract class VoterId implements Parcelable, BaseColumns {
 
     public abstract String value();
 
+    public abstract boolean attestNoSuchId();
 
     public static final Func1<Cursor, VoterId> MAPPER = new Func1<Cursor, VoterId>() {
         @Override
         public VoterId call(Cursor cursor) {
             long id = Db.getLong(cursor, _ID);
             long rockyRequestId = Db.getLong(cursor, ROCKY_REQUEST_ID);
-            Type type = Type.valueOf(Db.getString(cursor, TYPE));
+            Type type = Type.fromString(Db.getString(cursor, TYPE));
             String value = Db.getString(cursor, VALUE);
+            boolean attestNoSuchId = Db.getBoolean(cursor, ATTEST_NO_SUCH_ID);
 
-            return new AutoValue_VoterId(id, rockyRequestId, type, value);
+            return new AutoValue_VoterId(id, rockyRequestId, type, value, attestNoSuchId);
         }
     };
 
@@ -91,6 +100,11 @@ public abstract class VoterId implements Parcelable, BaseColumns {
 
         public Builder value(String value) {
             values.put(VALUE, value);
+            return this;
+        }
+
+        public Builder attestNoSuchId(boolean value){
+            values.put(ATTEST_NO_SUCH_ID, value);
             return this;
         }
 

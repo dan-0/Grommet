@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0-alpha4'
+        classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath('com.stanfy.spoon:spoon-gradle-plugin:1.0.3') {
             // Workaround for https://github.com/stanfy/spoon-gradle-plugin/issues/33
@@ -22,7 +22,7 @@ buildscript {
 
 ext {
     espressoVersion = '2.2.1'
-    supportLibVersion = '24.0.0'
+    supportLibVersion = '24.1.1'
     okhttpVersion = '2.7.4'
 }
 

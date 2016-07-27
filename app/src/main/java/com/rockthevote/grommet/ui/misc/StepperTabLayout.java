@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 
 import com.rockthevote.grommet.ui.views.StepperTabView;

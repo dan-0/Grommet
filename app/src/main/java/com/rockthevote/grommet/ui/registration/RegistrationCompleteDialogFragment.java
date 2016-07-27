@@ -2,7 +2,6 @@ package com.rockthevote.grommet.ui.registration;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import java.util.TimerTask;
 
 public class RegistrationCompleteDialogFragment extends DialogFragment {
 
-    private static final String REG_TIMER_KEY = "reg_timer_key";
     private long delay = 1500;
 
     private Timer timer;

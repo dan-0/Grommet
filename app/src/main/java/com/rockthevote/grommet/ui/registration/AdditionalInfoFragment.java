@@ -32,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
@@ -50,7 +51,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @BindView(R.id.drivers_license_checkbox) CheckBox hasDriversLicense;
 
     @NotEmpty
-    @BindView(R.id.drivers_license) EditText driversLicense;
+    @BindView(R.id.drivers_license) EditText driversLicenseEditText;
 
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
@@ -61,6 +62,8 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private CompositeSubscription subscriptions;
     private EnumAdapter<Race> raceEnumAdapter;
     private EnumAdapter<Party> partyEnumAdapter;
+
+    private final PublishSubject<Boolean> hasDriversLicenseChecked = PublishSubject.create();
 
     @Nullable
     @Override
@@ -121,16 +124,17 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                                     .build());
                 }));
 
-        subscriptions.add(RxTextView.afterTextChangeEvents(driversLicense)
-                .observeOn(Schedulers.io())
+        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(driversLicenseEditText),
+                hasDriversLicenseChecked,
+                (driversLicense, checkChange) -> new VoterId.Builder()
+                        .type(DRIVERS_LICENSE)
+                        .value(driversLicense.editable().toString())
+                        .attestNoSuchId(checkChange)
+                        .build()).observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> {
-                    VoterId.insertOrUpdate(db, rockyRequestRowId.get(), DRIVERS_LICENSE,
-                            new VoterId.Builder()
-                                    .type(DRIVERS_LICENSE)
-                                    .value(event.editable().toString())
-                                    .build());
+                .observeOn(Schedulers.io())
+                .subscribe(contentValues -> {
+                    VoterId.insertOrUpdate(db, rockyRequestRowId.get(), DRIVERS_LICENSE, contentValues);
                 }));
 
     }
@@ -143,6 +147,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @OnCheckedChanged(R.id.drivers_license_checkbox)
     public void onCheckChanged(boolean checked) {
         driversLicenseTIL.setVisibility(checked ? View.VISIBLE : View.GONE);
+        hasDriversLicenseChecked.onNext(checked);
     }
 
 
