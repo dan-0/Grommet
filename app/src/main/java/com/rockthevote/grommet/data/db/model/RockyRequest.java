@@ -4,10 +4,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.rockthevote.grommet.data.api.model.PhoneType;
 import com.rockthevote.grommet.data.db.Db;
 import com.rockthevote.grommet.util.Dates;
 
@@ -37,6 +37,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public static final String RACE = "race";
     public static final String PARTY = "party";
     public static final String SIGNATURE = "signature";
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
 
     public static final String SELECT_BY_ID = ""
             + "SELECT * FROM "
@@ -95,6 +97,10 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     @Nullable
     public abstract byte[] signature();
 
+    public abstract long latitude();
+
+    public abstract long longitude();
+
     public static final Func1<Cursor, RockyRequest> MAPPER = cursor -> {
         long id = Db.getLong(cursor, _ID);
         Status status = Status.fromString(Db.getString(cursor, STATUS));
@@ -115,11 +121,14 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         Race race = Race.fromString(Db.getString(cursor, RACE));
         Party party = Party.fromString(Db.getString(cursor, PARTY));
         byte[] signature = Db.getBlob(cursor, SIGNATURE);
+        long latitude = Db.getLong(cursor, LATITUDE);
+        long longitude = Db.getLong(cursor, LONGITUDE);
 
         return new AutoValue_RockyRequest(id, status, language, phoneType, partnerId, optInEmail, optInSMS,
                 optInVolunteer, partnerOptInSMS, partnerOptInEmail,
                 sourceTrackingId, partnerTrackingId, openTrackingId,
-                generatedDate, dateOfBirth, regIsMail, race, party, signature);
+                generatedDate, dateOfBirth, regIsMail, race, party, signature,
+                latitude, longitude);
     };
 
     public static final class Builder {
@@ -190,7 +199,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
             return this;
         }
 
-        public Builder generateDate(){
+        public Builder generateDate() {
             values.put(GENERATED_DATE, Dates.formatAsISO8601_Date(new Date()));
             return this;
         }
@@ -226,6 +235,16 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
          */
         public Builder signature(byte[] signature) {
             values.put(SIGNATURE, signature);
+            return this;
+        }
+
+        public Builder latitude(long latitude) {
+            values.put(LATITUDE, latitude);
+            return this;
+        }
+
+        public Builder longitude(long longitude) {
+            values.put(LONGITUDE, longitude);
             return this;
         }
 
@@ -320,6 +339,32 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
                 }
             }
             return ABANDONED;
+        }
+    }
+
+    public static enum PhoneType {
+        MOBILE("Mobile"), HOME("Home"), WORK("Work");
+
+        private final String phoneType;
+
+        PhoneType(String phoneType) {
+            this.phoneType = phoneType;
+        }
+
+        @Override
+        public String toString() {
+            return phoneType;
+        }
+
+        @NonNull
+        public static PhoneType fromString(String phoneType) {
+            for (PhoneType value : PhoneType.values()) {
+                if (value.phoneType.equals(phoneType)) {
+                    return value;
+                }
+            }
+            //use mobile as default
+            return MOBILE;
         }
     }
 }

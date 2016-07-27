@@ -8,6 +8,7 @@ import com.f2prateek.rx.preferences.RxSharedPreferences;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
+import com.rockthevote.grommet.data.api.RockyAdapterFactory;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
@@ -91,6 +92,7 @@ public final class DataModule {
     @Singleton
     Moshi provideMoshi() {
         return new Moshi.Builder()
+                .add(RockyAdapterFactory.create())
                 .build();
     }
 
