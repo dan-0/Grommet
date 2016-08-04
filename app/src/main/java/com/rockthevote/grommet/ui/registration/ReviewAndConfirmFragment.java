@@ -1,10 +1,9 @@
 package com.rockthevote.grommet.ui.registration;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,14 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.prefs.AppRegTotal;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -40,7 +41,7 @@ import static com.rockthevote.grommet.data.db.model.Address.Type.MAILING;
 import static com.rockthevote.grommet.data.db.model.Address.Type.REGISTRATION;
 import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.EMAIL;
 import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
-import static com.rockthevote.grommet.data.db.model.Name.Type.CURRENT;
+import static com.rockthevote.grommet.data.db.model.Name.Type.CURRENT_NAME;
 
 public class ReviewAndConfirmFragment extends BaseRegistrationFragment implements SignaturePad.OnSignedListener {
 
@@ -62,6 +63,9 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @BindView(R.id.signature_pad) SignaturePad signaturePad;
     @BindView(R.id.signature_pad_error) TextView signaturePadError;
     @BindView(R.id.button_register) Button buttonRegister;
+
+    @Inject @EventRegTotal Preference<Integer> eventRegTotal;
+    @Inject @AppRegTotal Preference<Integer> appRegTotal;
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
 
@@ -90,7 +94,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         signaturePad.setOnSignedListener(this);
 
         subscriptions.add(db.createQuery(Name.TABLE, Name.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), CURRENT.toString()})
+                new String[]{String.valueOf(rockyRequestRowId.get()), CURRENT_NAME.toString()})
                 .mapToOne(Name.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(name -> {
@@ -188,6 +192,8 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
     }
 
+    // the default value is set in the datamodule
+    @SuppressWarnings("ConstantConditions")
     @OnClick(R.id.button_register)
     public void onRegisterClick(View v) {
         if (!signaturePad.isEmpty()) {
@@ -197,6 +203,15 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                             .status(RockyRequest.Status.FORM_COMPLETE)
                             .build(),
                     RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
+
+            Intent regService = new Intent(getContext(), RegistrationService.class);
+            getActivity().startService(regService);
+
+            int totalEvent = eventRegTotal.get();
+            eventRegTotal.set(++totalEvent);
+
+            int totalApp = appRegTotal.get();
+            appRegTotal.set(++totalApp);
 
             new RegistrationCompleteDialogFragment().show(getFragmentManager(), "complete_dialog");
         } else {

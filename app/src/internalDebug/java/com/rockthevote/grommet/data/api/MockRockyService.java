@@ -55,7 +55,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Observable<Result> register(@Body ApiRockyRequest rockyRequest) {
+    public Observable<Result<RegistrationResponse>> register(@Body ApiRockyRequest rockyRequest) {
         RegistrationResponse response = getResponse(MockRegistrationResponse.class).response;
 
         return delegate.returning(Calls.response(response)).register(rockyRequest);

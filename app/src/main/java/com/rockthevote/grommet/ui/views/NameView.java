@@ -92,10 +92,10 @@ public class NameView extends FrameLayout {
                 int val = typedArray.getInt(R.styleable.NameView_name_type, 0);
                 switch (val) {
                     case 1:
-                        type = Name.Type.CURRENT;
+                        type = Name.Type.CURRENT_NAME;
                         break;
                     case 2:
-                        type = Name.Type.PREVIOUS;
+                        type = Name.Type.PREVIOUS_NAME;
                         break;
                 }
             } finally {
@@ -113,10 +113,10 @@ public class NameView extends FrameLayout {
         validator = new ObservableValidator(this, getContext());
 
         switch (type) {
-            case CURRENT:
+            case CURRENT_NAME:
                 sectionTitle.setText(R.string.section_label_name);
                 break;
-            case PREVIOUS:
+            case PREVIOUS_NAME:
                 sectionTitle.setText(R.string.section_label_previous_name);
                 break;
         }

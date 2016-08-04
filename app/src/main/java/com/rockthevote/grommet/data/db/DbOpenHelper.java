@@ -48,7 +48,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_ADDRESS = ""
             + "CREATE TABLE " + Address.TABLE + "("
             + Address._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + Address.ROCKY_REQUEST_ID + " INTEGER NOT NULL REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + "),"
+            + Address.ROCKY_REQUEST_ID + " INTEGER NOT NULL,"
             + Address.TYPE + " TEXT NOT NULL,"
             + Address.STREET_NAME + " TEXT,"
             + Address.SUB_ADDRESS + " TEXT,"
@@ -56,55 +56,62 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + Address.COUNTY + " TEXT,"
             + Address.STATE + " TEXT,"
             + Address.ZIP + " TEXT,"
-            + "UNIQUE (" + Address.ROCKY_REQUEST_ID + " , " + Address.TYPE + ")"
+            + "UNIQUE (" + Address.ROCKY_REQUEST_ID + " , " + Address.TYPE + "),"
+            + "FOREIGN KEY (" + Address.ROCKY_REQUEST_ID + ") REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + ") ON DELETE CASCADE "
             + ")";
 
     private static final String CREATE_NAME = ""
             + "CREATE TABLE " + Name.TABLE + "("
             + Name._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + Name.ROCKY_REQUEST_ID + " INTEGER NOT NULL REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + "),"
+            + Name.ROCKY_REQUEST_ID + " INTEGER NOT NULL,"
             + Name.TYPE + " TEXT NOT NULL,"
             + Name.FIRST_NAME + " TEXT,"
             + Name.LAST_NAME + " TEXT,"
             + Name.MIDDLE_NAME + " TEXT,"
             + Name.TITLE_PREFIX + " TEXT NOT NULL DEFAULT " + Name.Prefix.MR.toString() + ","
             + Name.TITLE_SUFFIX + " TEXT,"
-            + "UNIQUE (" + Name.ROCKY_REQUEST_ID + " , " + Name.TYPE + ")"
+            + "UNIQUE (" + Name.ROCKY_REQUEST_ID + " , " + Name.TYPE + "),"
+            + "FOREIGN KEY (" + Name.ROCKY_REQUEST_ID + ") REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + ") ON DELETE CASCADE "
             + ")";
 
     private static final String CREATE_VOTER_CLASSIFICATION = ""
             + "CREATE TABLE " + VoterClassification.TABLE + "("
             + VoterClassification._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + VoterClassification.ROCKY_REQUEST_ID + " INTEGER NOT NULL REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + "),"
+            + VoterClassification.ROCKY_REQUEST_ID + " INTEGER NOT NULL,"
             + VoterClassification.TYPE + " TEXT,"
             + VoterClassification.ASSERTION + " INTEGER,"
-            + "UNIQUE (" + VoterClassification.ROCKY_REQUEST_ID + " , " + VoterClassification.TYPE + ")"
+            + "UNIQUE (" + VoterClassification.ROCKY_REQUEST_ID + " , " + VoterClassification.TYPE + "),"
+            + "FOREIGN KEY (" + VoterClassification.ROCKY_REQUEST_ID + ") REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + ") ON DELETE CASCADE "
             + ")";
 
     private static final String CREATE_VOTER_ID = ""
             + "CREATE TABLE " + VoterId.TABLE + "("
             + VoterId._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + VoterId.ROCKY_REQUEST_ID + " INTEGER NOT NULL REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + "),"
+            + VoterId.ROCKY_REQUEST_ID + " INTEGER NOT NULL,"
             + VoterId.TYPE + " TEXT NOT NULL,"
-            + VoterId.VALUE + " TEXT ,"
-            + "UNIQUE (" + VoterId.ROCKY_REQUEST_ID + " , " + VoterId.TYPE + ")"
+            + VoterId.VALUE + " TEXT,"
+            + VoterId.ATTEST_NO_SUCH_ID + " INTEGER,"
+            + "UNIQUE (" + VoterId.ROCKY_REQUEST_ID + " , " + VoterId.TYPE + "),"
+            + "FOREIGN KEY (" + VoterId.ROCKY_REQUEST_ID + ") REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + ") ON DELETE CASCADE "
             + ")";
 
     private static final String CREATE_CONTACT_METHOD = ""
             + "CREATE TABLE " + ContactMethod.TABLE + "("
             + ContactMethod._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + ContactMethod.ROCKY_REQUEST_ID + " INTEGER NOT NULL REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + "),"
+            + ContactMethod.ROCKY_REQUEST_ID + " INTEGER NOT NULL,"
             + ContactMethod.TYPE + " TEXT NOT NULL,"
             + ContactMethod.VALUE + " TEXT,"
-            + "UNIQUE (" + ContactMethod.ROCKY_REQUEST_ID + " , " + ContactMethod.TYPE + ")"
+            + "UNIQUE (" + ContactMethod.ROCKY_REQUEST_ID + " , " + ContactMethod.TYPE + "),"
+            + "FOREIGN KEY (" + ContactMethod.ROCKY_REQUEST_ID + ") REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + ") ON DELETE CASCADE "
             + ")";
 
     private static final String CREATE_ADDITIONAL_INFO = ""
             + "CREATE TABLE " + AdditionalInfo.TABLE + "("
             + AdditionalInfo._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + AdditionalInfo.ROCKY_REQUEST_ID + " INTEGER NOT NULL REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + "),"
+            + AdditionalInfo.ROCKY_REQUEST_ID + " INTEGER NOT NULL,"
             + AdditionalInfo.TYPE + " TEXT NOT NULL,"
-            + AdditionalInfo.STRING_VALUE + " TEXT "
+            + AdditionalInfo.STRING_VALUE + " TEXT,"
+            + "FOREIGN KEY (" + AdditionalInfo.ROCKY_REQUEST_ID + ") REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + ") ON DELETE CASCADE "
             + ")";
 
     public DbOpenHelper(Context context) {
@@ -120,6 +127,12 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_VOTER_ID);
         db.execSQL(CREATE_CONTACT_METHOD);
         db.execSQL(CREATE_ADDITIONAL_INFO);
+    }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        db.setForeignKeyConstraintsEnabled(true);
+        super.onConfigure(db);
     }
 
     @Override

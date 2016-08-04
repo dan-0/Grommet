@@ -1,19 +1,25 @@
 package com.rockthevote.grommet.ui;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v13.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.data.api.model.ApiAdditionalInfo;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.prefs.AppRegTotal;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
+import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
@@ -26,43 +32,40 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.rockthevote.grommet.data.db.model.RockyRequest.SELECT_BY_STATUS;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
 
 public final class MainActivity extends BaseActivity {
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.total_registered) TextView totalRegistered;
-    @BindView(R.id.registered_today) TextView registeredToday;
+    @BindView(R.id.registered_for_event) TextView registeredEvent;
 
-    @Inject
-    @PartnerId
-    Preference<String> partnerIdPref;
+    @Inject @PartnerId Preference<String> partnerIdPref;
 
-    @Inject
-    @CanvasserName
-    Preference<String> canvasserNamePref;
+    @Inject @CanvasserName Preference<String> canvasserNamePref;
 
-    @Inject
-    @EventName
-    Preference<String> eventNamePref;
+    @Inject @EventName Preference<String> eventNamePref;
 
-    @Inject
-    @EventZip
-    Preference<String> eventZipPref;
+    @Inject @EventZip Preference<String> eventZipPref;
 
-    @Inject
-    @CurrentRockyRequestId
-    Preference<Long> currentRockyRequestId;
+    @Inject @CurrentRockyRequestId Preference<Long> currentRockyRequestId;
+
+    @Inject @EventRegTotal Preference<Integer> eventRegTotal;
+
+    @Inject @AppRegTotal Preference<Integer> appRegtotal;
 
     @Inject ViewContainer viewContainer;
 
     @Inject BriteDatabase db;
+
+    @Inject ReactiveLocationProvider locationProvider;
 
     private CompositeSubscription subscriptions;
 
@@ -73,6 +76,30 @@ public final class MainActivity extends BaseActivity {
         ButterKnife.bind(this, v);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+        requestGPSPermission();
+    }
+
+    private void requestGPSPermission() {
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                }
+        }
     }
 
     @Override
@@ -80,14 +107,11 @@ public final class MainActivity extends BaseActivity {
         super.onResume();
         subscriptions = new CompositeSubscription();
 
-        //TODO update this once we have the networking portion complete
-        subscriptions.add(db.createQuery(RockyRequest.TABLE, SELECT_BY_STATUS, FORM_COMPLETE.toString())
-                .mapToList(RockyRequest.MAPPER)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rockyRequests -> {
-                    totalRegistered.setText(String.valueOf(rockyRequests.size()));
-                    registeredToday.setText(String.valueOf(rockyRequests.size()));
-                }));
+        subscriptions.add(eventRegTotal.asObservable()
+                .subscribe(eventTotal -> registeredEvent.setText(String.valueOf(eventTotal))));
+
+        subscriptions.add(appRegtotal.asObservable()
+                .subscribe(appTotal -> totalRegistered.setText(String.valueOf(appTotal))));
     }
 
     @Override
@@ -99,8 +123,6 @@ public final class MainActivity extends BaseActivity {
     @OnClick(R.id.button_new_voter)
     public void onClick(View v) {
 
-
-
         Observable.just(partnerIdPref.get(),
                 canvasserNamePref.get(),
                 eventNamePref.get(),
@@ -109,7 +131,6 @@ public final class MainActivity extends BaseActivity {
                 .subscribe(noneAreEmpty -> {
                     if (noneAreEmpty) {
                         createNewVoterRecord();
-                        startActivity(new Intent(this, RegistrationActivity.class));
                     } else {
                         new AlertDialog.Builder(this)
                                 .setMessage(R.string.incomplete_profile_alert)
@@ -122,16 +143,27 @@ public final class MainActivity extends BaseActivity {
     }
 
     private void createNewVoterRecord() {
-        long rockyRequestRowId = db.insert(RockyRequest.TABLE, new RockyRequest.Builder()
-                .status(IN_PROGRESS)
-                .partnerId(partnerIdPref.get())
-                .partnerTrackingId(eventZipPref.get())
-                .sourceTrackingId(canvasserNamePref.get())
-                .openTrackingId(eventNamePref.get())
-                .generateDate()
-                .build());
+        locationProvider.getLastKnownLocation()
+                .singleOrDefault(null)
+                .subscribe(location -> {
+                    RockyRequest.Builder builder = new RockyRequest.Builder()
+                            .status(IN_PROGRESS)
+                            .partnerId(partnerIdPref.get())
+                            .partnerTrackingId(eventZipPref.get())
+                            .sourceTrackingId(canvasserNamePref.get())
+                            .openTrackingId(eventNamePref.get())
+                            .generateDate();
 
-        currentRockyRequestId.set(rockyRequestRowId);
+                    if (null != location) {
+                        builder
+                                .latitude((long) location.getLatitude())
+                                .longitude((long) location.getLongitude());
+                    }
+
+                    long rockyRequestRowId = db.insert(RockyRequest.TABLE, builder.build());
+                    currentRockyRequestId.set(rockyRequestRowId);
+                    startActivity(new Intent(this, RegistrationActivity.class));
+                });
     }
 
     @Override

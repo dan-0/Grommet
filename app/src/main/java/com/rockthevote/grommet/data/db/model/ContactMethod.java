@@ -30,6 +30,12 @@ public abstract class ContactMethod implements Parcelable, BaseColumns {
             + TYPE + "=? "
             + " LIMIT 1";
 
+    public static final String SELECT_BY_ROCKY_REQUEST_ID = ""
+            + "SELECT * FROM "
+            + TABLE
+            + " WHERE "
+            + ROCKY_REQUEST_ID + "=?";
+
     public abstract long id();
 
     public abstract long rockyRequestId();
@@ -88,11 +94,11 @@ public abstract class ContactMethod implements Parcelable, BaseColumns {
                 String.valueOf(rockyRequestId),
                 type.toString());
 
-        if(cursor.moveToNext()){
+        if (cursor.moveToNext()) {
             long rowId = Db.getLong(cursor, _ID);
             db.update(TABLE, values, _ID + " = ? ", String.valueOf(rowId));
         } else {
-            db.insert(TABLE,values);
+            db.insert(TABLE, values);
         }
         cursor.close();
 

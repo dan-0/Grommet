@@ -1,11 +1,13 @@
 package com.rockthevote.grommet;
 
 import android.app.Application;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.LumberYard;
+import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.ui.ActivityHierarchyServer;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -44,6 +46,10 @@ public final class GrommetApp extends Application {
         Timber.plant(lumberYard.tree());
 
         registerActivityLifecycleCallbacks(activityHierarchyServer);
+
+        // check the db for rows that need to be uploaded
+        Intent regService = new Intent(this, RegistrationService.class);
+        startService(regService);
     }
 
     @Override

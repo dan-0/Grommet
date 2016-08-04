@@ -13,7 +13,6 @@ import com.rockthevote.grommet.data.prefs.PartnerId;
 
 import javax.inject.Inject;
 
-import rx.internal.util.SubscriptionList;
 import rx.subscriptions.CompositeSubscription;
 
 import static android.content.Context.MODE_PRIVATE;

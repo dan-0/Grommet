@@ -3,13 +3,15 @@
           package="com.rockthevote.grommet">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <!--<supports-screens-->
-        <!--android:largeScreens="true"-->
-        <!--android:normalScreens="false"-->
-        <!--android:requiresSmallestWidthDp="600"-->
-        <!--android:smallScreens="false"-->
-        <!--android:xlargeScreens="true"/>-->
+    <!--android:largeScreens="true"-->
+    <!--android:normalScreens="false"-->
+    <!--android:requiresSmallestWidthDp="600"-->
+    <!--android:smallScreens="false"-->
+    <!--android:xlargeScreens="true"/>-->
 
     <application
         android:name=".GrommetApp"
@@ -29,8 +31,8 @@
         </activity>
         <activity
             android:name=".ui.registration.RegistrationActivity"
-            android:theme="@style/RegistrationTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/RegistrationTheme"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity
@@ -38,6 +40,20 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
         </activity>
+
+        <service
+            android:name=".data.api.RegistrationService"
+            android:enabled="true"
+            android:exported="false"/>
+        <receiver
+            android:name=".data.NetworkChangeReceiver"
+            android:enabled="false"
+            android:exported="false"
+            android:label="NetworkChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

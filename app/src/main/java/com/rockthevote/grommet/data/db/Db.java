@@ -18,10 +18,6 @@ package com.rockthevote.grommet.data.db;
 
 import android.database.Cursor;
 
-import com.rockthevote.grommet.util.Dates;
-
-import java.util.Date;
-
 public final class Db {
     /**
      * Debounce for observable actions in Milliseconds

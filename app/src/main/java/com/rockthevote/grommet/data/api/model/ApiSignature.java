@@ -2,6 +2,7 @@ package com.rockthevote.grommet.data.api.model;
 
 
 import com.google.auto.value.AutoValue;
+import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -30,5 +31,11 @@ public abstract class ApiSignature {
         abstract Builder image(byte[] image);
 
         abstract ApiSignature build();
+    }
+
+    public static ApiSignature fromDb(RockyRequest rockyRequest) {
+        return builder()
+                .image(rockyRequest.signature())
+                .build();
     }
 }
