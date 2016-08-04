@@ -13,21 +13,17 @@ import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.ui.settings.SettingsActivity;
 
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
-import rx.subscriptions.CompositeSubscription;
 
 
 public class BaseActivity extends AppCompatActivity {
@@ -54,8 +50,6 @@ public class BaseActivity extends AppCompatActivity {
     @Inject
     @EventName
     Preference<String> eventNamePref;
-
-    private CompositeSubscription subscriptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +83,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if (getSelfNavDrawerItem() != NAVDRAWER_INVALID) {
-            subscriptions.unsubscribe();
+//            unsubscribe from subscriptions here
         }
     }
 
     private void setUpNavDrawer() {
-        subscriptions = new CompositeSubscription();
 
         drawer.setNavigationItemSelectedListener(item -> {
             if (item.getItemId() == getSelfNavDrawerItem()) {
@@ -115,16 +108,6 @@ public class BaseActivity extends AppCompatActivity {
 
         drawer.setCheckedItem(getSelfNavDrawerItem());
 
-        View header = drawer.getHeaderView(0);
-        TextView canvasserName = (TextView) header.findViewById(R.id.drawer_canvasser_name);
-        TextView eventName = (TextView) header.findViewById(R.id.drawer_event_name);
-
-        subscriptions.add(canvasserNamePref.asObservable()
-                .subscribe(canvasserName::setText));
-
-        subscriptions.add(eventNamePref.asObservable()
-                .subscribe(eventName::setText));
-
     }
 
     private void goToNavDrawerItem(MenuItem item) {
@@ -132,9 +115,6 @@ public class BaseActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.nav_home:
                 intent = new Intent(this, MainActivity.class);
-                break;
-            case R.id.nav_settings:
-                intent = new Intent(this, SettingsActivity.class);
                 break;
             default:
                 throw new IllegalStateException("Unknown navigation item: " + item.getTitle());

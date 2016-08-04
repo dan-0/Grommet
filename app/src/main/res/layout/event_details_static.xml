@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2"
+    android:useDefaultMargins="false">
+
+    <TextView
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/content_margin"
+        android:layout_marginTop="@dimen/content_area_padding"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:text="@string/pref_title_canvaser_name"
+        android:textColor="@color/colorSecondaryText"
+        />
+
+    <TextView
+        android:id="@+id/ed_canvasser_name"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+
+        android:layout_marginTop="@dimen/content_area_padding"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="Aaron Huttner"/>
+
+    <TextView
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/content_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:text="@string/pref_title_event_name"
+        android:textColor="@color/colorSecondaryText"/>
+
+    <TextView
+        android:id="@+id/ed_event_name"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="Orange Line Canvassing"/>
+
+    <TextView
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/content_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:text="@string/pref_title_event_zip_code"
+        android:textColor="@color/colorSecondaryText"/>
+
+    <TextView
+        android:id="@+id/ed_event_zip"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="22201"/>
+
+    <TextView
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/content_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:text="@string/pref_title_partner_id"
+        android:textColor="@color/colorSecondaryText"/>
+
+    <TextView
+        android:id="@+id/ed_partner_id"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="12345"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/content_margin"
+        android:background="@color/divider"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/content_margin"
+        android:fontFamily="sans-serif-light"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:text="@string/label_registered_event"
+        android:textAppearance="@android:style/TextAppearance.Material.Title"
+        android:textColor="@color/colorSecondaryText"/>
+
+    <TextView
+        android:id="@+id/registered_for_event"
+        android:layout_width="0dp"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill_horizontal"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:textAppearance="@android:style/TextAppearance.Material.Title"
+        android:textColor="@color/colorPrimaryDark"
+        tools:text="25"/>
+
+</GridLayout>
