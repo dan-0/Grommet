@@ -10,97 +10,121 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:title="@string/app_name"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/content_margin"
+            android:layout_marginStart="@dimen/content_margin"
+            android:background="@drawable/rounded_top"
+            android:elevation="2dp"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/event_details_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:contentInsetStart="@dimen/content_margin"
+                app:paddingStart="0dp"
+                app:title="@string/event_details"
+                app:titleTextColor="@color/colorSecondaryText"
+                >
+
+                <com.rockthevote.grommet.ui.views.EditableActionView
+                    android:id="@+id/editable_action_view"
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </android.support.v7.widget.Toolbar>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.12"
+                android:background="@android:color/black"/>
+        </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="4dp"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <GridLayout
+        <com.rockthevote.grommet.ui.views.EventDetails
+            android:id="@+id/event_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/content_margin"
-            android:paddingTop="@dimen/content_area_padding"
-            android:columnCount="2"
-            android:useDefaultMargins="true"
+            android:layout_marginEnd="@dimen/content_margin"
+            android:layout_marginStart="@dimen/content_margin"
+            android:background="@drawable/rounded_bottom"
+            android:elevation="2dp"/>
+
+        <LinearLayout
+            android:id="@+id/total_registered_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:orientation="horizontal"
             >
 
             <TextView
-                android:id="@+id/total_registered"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".65"
+                android:layout_gravity="fill_horizontal"
+                android:layout_marginBottom="@dimen/content_area_padding"
                 android:layout_marginStart="@dimen/content_margin"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="center_horizontal"
-                tools:text="100"
-                android:textAppearance="@android:style/TextAppearance.Material.Title"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"/>
-
-            <TextView
-                android:id="@+id/registered_for_event"
-                android:layout_width="0dp"
-                android:layout_marginEnd="@dimen/content_margin"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="center_horizontal"
-                tools:text="25"
-                android:textAppearance="@android:style/TextAppearance.Material.Title"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_marginStart="@dimen/content_margin"
+                android:layout_marginTop="@dimen/content_area_padding"
                 android:fontFamily="sans-serif-light"
-                android:gravity="center_horizontal"
                 android:paddingBottom="@dimen/content_area_padding"
+                android:paddingStart="@dimen/content_area_padding"
                 android:text="@string/label_total_registered"
-                android:textAppearance="@android:style/TextAppearance.Material.Title"
-                android:textColor="@color/colorSecondaryText"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"/>
-
+                android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                android:textColor="@color/colorSecondaryText"/>
 
             <TextView
+                android:id="@+id/total_registered"
+                android:layout_height="wrap_content"
                 android:layout_width="0dp"
+                android:layout_weight=".35"
+                android:layout_gravity="fill_horizontal"
+                android:layout_marginBottom="@dimen/content_area_padding"
                 android:layout_marginEnd="@dimen/content_margin"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center_horizontal"
-                android:paddingBottom="@dimen/content_area_padding"
-                android:text="@string/label_registered_event"
-                android:textAppearance="@android:style/TextAppearance.Material.Title"
-                android:textColor="@color/colorSecondaryText"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill_horizontal"/>
+                android:layout_marginTop="@dimen/content_area_padding"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="end"
+                android:paddingEnd="@dimen/content_area_padding"
+                android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                android:textColor="@color/colorPrimaryDark"
+                tools:text="100"/>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginEnd="@dimen/content_margin"
-                android:layout_marginStart="@dimen/content_margin"
-                android:background="@color/divider"
-                android:layout_columnSpan="2"
-                android:layout_gravity="fill_horizontal"/>
+        </LinearLayout>
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/button_new_voter"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:paddingTop="@dimen/content_area_padding"
-                android:text="@string/button_label_new_voter"
-                android:layout_columnSpan="2"
-                android:layout_gravity="center_horizontal"
-                />
-        </GridLayout>
-    </FrameLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/content_margin"
+        android:layout_marginEnd="@dimen/content_margin"
+        android:src="@drawable/ic_add_black_24dp"
+        android:tint="@android:color/white"
+        app:elevation="6dp"
+        app:fabSize="auto"
+        />
+
 </android.support.design.widget.CoordinatorLayout>

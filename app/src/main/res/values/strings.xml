@@ -17,11 +17,11 @@
 
     <!--Main Activity Strings-->
     <string name="label_total_registered">Total Registered</string>
-    <string name="label_registered_event">Registered This Event</string>
+    <string name="label_registered_event">Registered</string>
     <string name="button_label_new_voter">New Voter</string>
+    <string name="event_details">Event Details</string>
 
     <!--Registration Activity Strings-->
-    <string name="action_cancel">Cancel</string>
     <string name="cancel_dialog_message">Cancel current registration?</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
@@ -116,6 +116,9 @@
     <string name="pref_title_event_name">Event Name</string>
 
 
-
+    <!--Multi use strings-->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
 
 </resources>

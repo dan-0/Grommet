@@ -11,7 +11,6 @@ import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.NetworkChangeReceiver;
 import com.rockthevote.grommet.data.api.model.ApiAdditionalInfo;
@@ -32,7 +31,6 @@ import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.db.model.VoterId;
-import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.ArrayList;
@@ -53,11 +51,11 @@ import static com.rockthevote.grommet.data.db.model.Name.Type.CURRENT_NAME;
 import static com.rockthevote.grommet.data.db.model.Name.Type.PREVIOUS_NAME;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.GENERATED_DATE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.STATUS;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_FAILURE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_SUCCESS;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
 
 public class RegistrationService extends Service {
 

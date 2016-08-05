@@ -23,7 +23,8 @@ import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
-import com.rockthevote.grommet.ui.settings.SettingsActivity;
+import com.rockthevote.grommet.ui.views.EditableActionView;
+import com.rockthevote.grommet.ui.views.EventDetails;
 import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -44,8 +45,11 @@ public final class MainActivity extends BaseActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.event_details_toolbar) Toolbar eventToolbar;
     @BindView(R.id.total_registered) TextView totalRegistered;
     @BindView(R.id.registered_for_event) TextView registeredEvent;
+    @BindView(R.id.event_details) EventDetails eventDetails;
+    @BindView(R.id.editable_action_view) EditableActionView editableActionView;
 
     @Inject @PartnerId Preference<String> partnerIdPref;
 
@@ -69,15 +73,16 @@ public final class MainActivity extends BaseActivity {
 
     private CompositeSubscription subscriptions;
 
+    EditableActionView.EditableActionViewListener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View v = getLayoutInflater().inflate(R.layout.activity_main, getContentView());
         ButterKnife.bind(this, v);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-
+        setSupportActionBar(eventToolbar);
         requestGPSPermission();
+        eventDetails.setEditableActionView(editableActionView);
     }
 
     private void requestGPSPermission() {
@@ -89,7 +94,6 @@ public final class MainActivity extends BaseActivity {
                     new String[]{ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
 
         }
-
     }
 
     @Override
@@ -118,9 +122,26 @@ public final class MainActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         subscriptions.unsubscribe();
+        editableActionView.setListener(null);
     }
 
-    @OnClick(R.id.button_new_voter)
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.event_details_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_update:
+//                return false;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
+
+    @OnClick(R.id.fab)
     public void onClick(View v) {
 
         Observable.just(partnerIdPref.get(),
@@ -136,7 +157,7 @@ public final class MainActivity extends BaseActivity {
                                 .setMessage(R.string.incomplete_profile_alert)
                                 .setNegativeButton(R.string.dialog_no_thanks, (dialogInterface, i) -> dialogInterface.dismiss())
                                 .setPositiveButton(R.string.dialog_enter_info, (dialogInterface, i) -> {
-                                    startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                                    eventDetails.enableEditMode(true);
                                 }).create().show();
                     }
                 });
