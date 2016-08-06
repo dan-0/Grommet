@@ -17,7 +17,10 @@ import dagger.Provides;
 
 @Module(
         injects = {
+                InfoActivity.class,
                 BaseActivity.class,
+                DataUsageActivity.class,
+                HelpActivity.class,
                 MainActivity.class,
                 RegistrationActivity.class,
                 NewRegistrantFragment.class,

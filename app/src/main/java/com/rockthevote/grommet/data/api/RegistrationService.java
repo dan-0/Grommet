@@ -97,7 +97,8 @@ public class RegistrationService extends Service {
                 activeNetwork.isConnected();
 
         if (isConnected) {
-            Observable<RockyRequest> rockyRequestObs = db.createQuery(RockyRequest.TABLE,
+            Observable<RockyRequest> rockyRequestObs =
+                    db.createQuery(RockyRequest.TABLE,
                     RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
                     .mapToList(RockyRequest.MAPPER)
                     .flatMap(Observable::from)
@@ -113,9 +114,12 @@ public class RegistrationService extends Service {
                     .count()
                     .last();
 
+            // TODO I think not calling .subscribe on totalRefObs is causing this code to not execute
             Observable.combineLatest(totalRefObs, publishSubject, Integer::equals)
                     .subscribe(complete -> {
                         if (complete) {
+                            Timber.d("RegistrationService stopping");
+//                            UploadNotification.cancel(getApplicationContext());
                             stopSelf();
                         }
                     });
@@ -147,7 +151,6 @@ public class RegistrationService extends Service {
                 .subscribe(regResponse -> {
                             RockyRequest.Status status = regResponse.isError() ?
                                     REGISTER_FAILURE : REGISTER_SUCCESS;
-
                             db.update(RockyRequest.TABLE,
                                     new RockyRequest.Builder()
                                             .status(status)

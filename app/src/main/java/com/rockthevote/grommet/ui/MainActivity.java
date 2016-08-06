@@ -73,8 +73,6 @@ public final class MainActivity extends BaseActivity {
 
     private CompositeSubscription subscriptions;
 
-    EditableActionView.EditableActionViewListener listener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,24 +120,7 @@ public final class MainActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         subscriptions.unsubscribe();
-        editableActionView.setListener(null);
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.event_details_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_update:
-//                return false;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
 
     @OnClick(R.id.fab)
     public void onClick(View v) {

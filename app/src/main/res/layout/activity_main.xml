@@ -15,7 +15,7 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/toolbar_height"
             android:background="?attr/colorPrimary"
             app:title="@string/app_name"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -33,7 +33,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/event_details_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="@dimen/toolbar_height"
                 app:contentInsetStart="@dimen/content_margin"
                 app:paddingStart="0dp"
                 app:title="@string/event_details"
@@ -123,7 +123,7 @@
         android:layout_marginEnd="@dimen/content_margin"
         android:src="@drawable/ic_add_black_24dp"
         android:tint="@android:color/white"
-        app:elevation="6dp"
+        app:elevation="4dp"
         app:fabSize="auto"
         />
 

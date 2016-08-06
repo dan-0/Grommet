@@ -5,11 +5,9 @@ import android.content.SharedPreferences;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.f2prateek.rx.preferences.RxSharedPreferences;
-import com.jakewharton.picasso.OkHttp3Downloader;
 import com.rockthevote.grommet.IsInstrumentationTest;
 import com.rockthevote.grommet.data.api.DebugApiModule;
 import com.rockthevote.grommet.data.prefs.InetSocketAddressPreferenceAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.net.InetSocketAddress;
 import java.security.cert.CertificateException;
@@ -24,8 +22,6 @@ import javax.net.ssl.X509TrustManager;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-import retrofit2.mock.NetworkBehavior;
-import timber.log.Timber;
 
 @Module(
         includes = DebugApiModule.class,
@@ -50,11 +46,6 @@ public final class DebugDataModule {
         return RxSharedPreferences.create(prefs);
     }
 
-//    @Provides @Singleton IntentFactory provideIntentFactory(@IsMockMode boolean isMockMode,
-//                                                            @CaptureIntents Preference<Boolean> captureIntents) {
-//        return new DebugIntentFactory(IntentFactory.REAL, isMockMode, captureIntents);
-//    }
-
     @Provides
     @Singleton
     OkHttpClient provideOkHttpClient(Application app,
@@ -64,12 +55,6 @@ public final class DebugDataModule {
                 .proxy(InetSocketAddressPreferenceAdapter.createProxy(networkProxyAddress.get()))
                 .build();
     }
-
-//    @Provides @Singleton @AccessToken Preference<String> provideAccessToken(RxSharedPreferences prefs,
-//                                                                            @ApiEndpoint Preference<String> endpoint) {
-//        // Return an endpoint-specific preference.
-//        return prefs.getString("access-token-" + endpoint.get());
-//    }
 
     @Provides
     @Singleton
@@ -131,13 +116,6 @@ public final class DebugDataModule {
 
     @Provides
     @Singleton
-    @PicassoDebugging
-    Preference<Boolean> providePicassoDebugging(RxSharedPreferences preferences) {
-        return preferences.getBoolean("debug_picasso_debugging", DEFAULT_PICASSO_DEBUGGING);
-    }
-
-    @Provides
-    @Singleton
     @PixelGridEnabled
     Preference<Boolean> providePixelGridEnabled(RxSharedPreferences preferences) {
         return preferences.getBoolean("debug_pixel_grid_enabled", DEFAULT_PIXEL_GRID_ENABLED);
@@ -170,20 +148,6 @@ public final class DebugDataModule {
     Preference<Boolean> provideScalpelWireframeEnabled(RxSharedPreferences preferences) {
         return preferences.getBoolean("debug_scalpel_wireframe_drawer",
                 DEFAULT_SCALPEL_WIREFRAME_ENABLED);
-    }
-
-    @Provides
-    @Singleton
-    Picasso providePicasso(OkHttpClient client, NetworkBehavior behavior,
-                           @IsMockMode boolean isMockMode, Application app) {
-        Picasso.Builder builder = new Picasso.Builder(app).downloader(new OkHttp3Downloader(client));
-        if (isMockMode) {
-            builder.addRequestHandler(new MockRequestHandler(behavior, app.getAssets()));
-        }
-        builder.listener((picasso, uri, exception) -> {
-            Timber.e(exception, "Error while loading image %s", uri);
-        });
-        return builder.build();
     }
 
     private static SSLSocketFactory createBadSslSocketFactory() {

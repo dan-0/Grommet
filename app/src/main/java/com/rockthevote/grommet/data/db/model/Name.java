@@ -154,6 +154,7 @@ public abstract class Name implements Parcelable, BaseColumns {
         }
 
         @Override
+        @NonNull
         public String toString() {
             return type;
         }
@@ -178,6 +179,7 @@ public abstract class Name implements Parcelable, BaseColumns {
         }
 
         @Override
+        @NonNull
         public String toString() {
             return suffix;
         }
@@ -204,6 +206,7 @@ public abstract class Name implements Parcelable, BaseColumns {
         }
 
         @Override
+        @NonNull
         public String toString() {
             return title;
         }
@@ -230,6 +233,7 @@ public abstract class Name implements Parcelable, BaseColumns {
         }
 
         @Override
+        @NonNull
         public String toString() {
             return gender;
         }

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_open_source_licenses">Open Source Licenses</string>
+
+    <string name="square_license">
+\t\t        Copyright 2013 Square, Inc.\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t   http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="butter_knife_license">
+\t\t        Copyright 2013 Jake Wharton\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t   http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="auto_value_license">
+\t\tCopyright 2013 Google, Inc.\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t   http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="sqlbrite_license">
+\t\tCopyright 2015 Square, Inc.\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t   http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="rxbinding_license">
+\t\t        Copyright © 2015 Jake Wharton\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t   http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="signature_pad_license">
+\t\t    Copyright 2014-2016 Gianluca Cacace\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t   http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="rx_java_license">
+\t\t    Copyright 2013 Netflix, Inc.\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\thttp://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing,\n
+software distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="reactive_location_license">
+\t\t        Copyright © 2015 Michał Charmas (http://blog.charmas.pl)\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t     http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="rx_preferences_license">
+\t\t        Copyright 2014 Prateek Srivastava\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t   http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+    <string name="saripaar_license">
+\t\t        Copyright 2012 - 2015 Mobs &amp; Geeks\n
+\n
+\tLicensed under the Apache License, Version 2.0 (the "License");\n
+you may not use this file except in compliance with the License.\n
+You may obtain a copy of the License at\n
+\n
+\t\t   http://www.apache.org/licenses/LICENSE-2.0\n
+\n
+\tUnless required by applicable law or agreed to in writing, software\n
+distributed under the License is distributed on an "AS IS" BASIS,\n
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+See the License for the specific language governing permissions and\n
+limitations under the License.\n
+    </string>
+
+</resources>

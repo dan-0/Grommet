@@ -25,14 +25,15 @@
             android:layout_height="@dimen/list_item_height"
             android:layout_marginBottom="@dimen/content_area_padding"
             android:hint="@string/label_email"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress"
+            android:maxLines="1"/>
 
     </android.support.design.widget.TextInputLayout>
 
     <CheckBox
         android:id="@+id/email_opt_in"
         style="@style/GrommetContentArea"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
@@ -76,7 +77,7 @@
     <CheckBox
         android:id="@+id/checkbox_is_us_citizen"
         style="@style/GrommetContentArea"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/list_item_height"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
@@ -85,7 +86,7 @@
     <CheckBox
         android:id="@+id/checkbox_is_eighteen"
         style="@style/GrommetContentArea"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/list_item_height"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"

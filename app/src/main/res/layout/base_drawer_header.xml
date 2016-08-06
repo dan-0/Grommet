@@ -2,44 +2,15 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="192dp">
+    android:layout_height="192dp"
+    android:background="@color/colorPrimary">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/drawer_header_img"
-        android:tint="#60000000"/>
-
-    <LinearLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@android:color/transparent"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark">
-
-        <TextView
-            android:id="@+id/drawer_canvasser_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/content_area_padding"
-            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-            tools:text="Aaron Huttner"/>
-
-        <TextView
-            android:id="@+id/drawer_event_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/content_area_padding"
-            android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-            tools:text="Test Event"/>
-
-    </LinearLayout>
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:src="@drawable/drawer_header_img"-->
+        <!--android:tint="#60000000"/>-->
 
 </FrameLayout>

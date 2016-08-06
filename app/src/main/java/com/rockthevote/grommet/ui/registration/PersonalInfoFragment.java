@@ -3,16 +3,15 @@ package com.rockthevote.grommet.ui.registration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.ListPopupWindow;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.f2prateek.rx.preferences.Preference;
-import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
@@ -32,12 +31,14 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
 import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.PhoneType;
 
 
 public class PersonalInfoFragment extends BaseRegistrationFragment {
@@ -62,7 +63,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
 
     @Pattern(regex = PHONE_REGEX, messageResId = R.string.phone_format_error)
     @BindView(R.id.til_phone_number) TextInputLayout phoneNumber;
-    @BindView(R.id.spinner_phone_type) Spinner spinnerPhoneType;
+    @BindView(R.id.phone_type_edit_text) EditText phoneTypeEditText;
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
 
@@ -73,6 +74,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     private CompositeSubscription subscriptions;
     private PhoneNumberFormattingTextWatcher phoneFormatter;
     private ObservableValidator validator;
+    private ListPopupWindow phoneTypePopup;
 
     @Nullable
     @Override
@@ -87,7 +89,14 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
         ButterKnife.bind(this, view);
 
         phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), RockyRequest.PhoneType.class);
-        spinnerPhoneType.setAdapter(phoneTypeEnumAdapter);
+        phoneTypePopup = new ListPopupWindow(getContext());
+        phoneTypePopup.setAdapter(phoneTypeEnumAdapter);
+        phoneTypePopup.setAnchorView(phoneTypeEditText);
+        phoneTypePopup.setOnItemClickListener((adapterView, view1, i, l) -> {
+            phoneTypeEditText.setText(phoneTypeEnumAdapter.getItem(i).toString());
+            phoneTypePopup.dismiss();
+        });
+        phoneTypeEditText.setText(phoneTypeEnumAdapter.getItem(0).toString());
     }
 
     @Override
@@ -110,19 +119,17 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
                     );
                 }));
 
-        //TODO make sure and set a default phone type or have it be required that they select an option
-        subscriptions.add(RxAdapterView.itemSelections(spinnerPhoneType)
+        subscriptions.add(RxTextView.afterTextChangeEvents(phoneTypeEditText)
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .subscribe(pos -> {
+                .subscribe(phoneType -> {
                     db.update(RockyRequest.TABLE,
                             new RockyRequest.Builder()
-                                    .phoneType(phoneTypeEnumAdapter.getItem(pos))
+                                    .phoneType(PhoneType.fromString(phoneType.editable().toString()))
                                     .build(),
                             RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
 
                 }));
-
     }
 
     @Override
@@ -151,6 +158,11 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onNameChangedChecked(boolean checked) {
         previousName.setVisibility(checked ? View.VISIBLE : View.GONE);
         previousNameDivider.setVisibility(checked ? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick(R.id.phone_type_edit_text)
+    public void onPhoneTypeClick(View v) {
+        phoneTypePopup.show();
     }
 
     @Override

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stateListAnimator="@animator/app_bar_always_elevated"
+        >
+
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:padding="@dimen/content_area_padding"
+            android:background="@android:color/white">
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dagger and Retrofit"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/square_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Butterknife"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/butter_knife_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AutoValue"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/auto_value_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SqlBrite"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sqlbrite_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RxBinding"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rxbinding_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SignaturePad"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/signature_pad_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RxJava"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rx_java_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rective Location"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/reactive_location_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="RxPreferences"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/rx_preferences_license"/>
+
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Saripaar"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/saripaar_license"/>
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

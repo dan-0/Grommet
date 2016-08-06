@@ -1,9 +1,11 @@
 package com.rockthevote.grommet.ui.views;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -162,7 +164,13 @@ public class EventDetails extends FrameLayout {
             edeEventName.setText(eventNamePref.get());
             edeEventZip.setText(eventZipPref.get());
             edePartnerId.setText(partnerIdPref.get());
+        } else {
+            // close keyboard if it's showing
+            InputMethodManager inputMethodManager = (InputMethodManager) getContext()
+                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         }
+
     }
 
     public boolean isEditable() {
