@@ -5,17 +5,17 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.ListPopupWindow;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
-import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
@@ -32,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -39,19 +40,23 @@ import rx.subscriptions.CompositeSubscription;
 import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
 
 public class AddressView extends FrameLayout {
+    private static final String PA_ABREV = "PA";
 
     @NotEmpty
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
     @BindView(R.id.street) EditText streetEditText;
 
     @BindView(R.id.unit) EditText unitEditText;
-    @BindView(R.id.spinner_county) Spinner counties;
+
+    @NotEmpty
+    @BindView(R.id.til_county) TextInputLayout countyTIL;
+    @BindView(R.id.county_edit_text) EditText countyEditText;
 
     @NotEmpty
     @BindView(R.id.til_city) TextInputLayout cityTIL;
     @BindView(R.id.city) EditText cityEditText;
 
-    @BindView(R.id.spinner_state) Spinner states;
+    @BindView(R.id.state_edit_text) EditText stateEditText;
 
     @NotEmpty
     @BindView(R.id.til_zip_code) TextInputLayout zipTIL;
@@ -74,6 +79,10 @@ public class AddressView extends FrameLayout {
     private Address.Type type;
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
+
+    private ListPopupWindow statePopup;
+
+    private ListPopupWindow countyPopup;
 
     public AddressView(Context context) {
         this(context, null);
@@ -133,15 +142,42 @@ public class AddressView extends FrameLayout {
         }
 
         countyAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.pa_counties, android.R.layout.simple_spinner_item);
-        countyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        counties.setAdapter(countyAdapter);
+                R.array.pa_counties, android.R.layout.simple_list_item_1);
+        countyAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+        countyPopup = new ListPopupWindow(getContext());
+        countyPopup.setAdapter(countyAdapter);
+        countyPopup.setAnchorView(countyEditText);
+        countyPopup.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
+        countyPopup.setOnItemClickListener((adapterView, view, i, l) -> {
+            countyEditText.setText(countyAdapter.getItem(i));
+            countyPopup.dismiss();
+        });
 
         stateAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.states, android.R.layout.simple_spinner_item);
-        stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        states.setAdapter(stateAdapter);
-        states.setSelection(stateAdapter.getPosition("PA"));
+                R.array.states, android.R.layout.simple_list_item_1);
+        stateAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+        statePopup = new ListPopupWindow(getContext());
+        statePopup.setAdapter(stateAdapter);
+        statePopup.setAnchorView(stateEditText);
+        statePopup.setHeight((int)getResources().getDimension(R.dimen.list_pop_up_max_height));
+        statePopup.setOnItemClickListener((adapterView, view, i, l) -> {
+            stateEditText.setText(stateAdapter.getItem(i));
+
+            if(!PA_ABREV.equals(stateAdapter.getItem(i))){
+                countyTIL.setErrorEnabled(false);
+                countyTIL.setEnabled(false);
+                countyEditText.setText("");
+                countyEditText.setEnabled(false);
+            } else {
+                countyEditText.setEnabled(true);
+                countyTIL.setEnabled(true);
+            }
+
+            statePopup.dismiss();
+        });
+        stateEditText.setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
 
     }
 
@@ -152,16 +188,16 @@ public class AddressView extends FrameLayout {
         subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(streetEditText),
                 RxTextView.afterTextChangeEvents(unitEditText),
                 RxTextView.afterTextChangeEvents(cityEditText),
-                RxAdapterView.itemSelections(states),
+                RxTextView.afterTextChangeEvents(stateEditText),
                 RxTextView.afterTextChangeEvents(zipEditText),
-                RxAdapterView.itemSelections(counties),
-                (street, unit, city, statePos, zip, countyPos) -> new Address.Builder()
+                RxTextView.afterTextChangeEvents(countyEditText),
+                (street, unit, city, state, zip, county) -> new Address.Builder()
                         .streetName(street.editable().toString())
                         .subAddress(unit.editable().toString())
                         .municipalJurisdiction(city.editable().toString())
-                        .state(stateAdapter.getItem(statePos).toString())
+                        .state(state.editable().toString())
                         .zip(zip.editable().toString())
-                        .county(countyAdapter.getItem(countyPos).toString())
+                        .county(county.editable().toString())
                         .build())
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
@@ -169,6 +205,16 @@ public class AddressView extends FrameLayout {
                     Address.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
                 }));
 
+    }
+
+    @OnClick(R.id.state_edit_text)
+    public void onStateClick(View v){
+        statePopup.show();
+    }
+
+    @OnClick(R.id.county_edit_text)
+    public void onCountyClick(View v) {
+        countyPopup.show();
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.TimerTask;
 
 public class RegistrationCompleteDialogFragment extends DialogFragment {
 
-    private long delay = 1500;
+    private long delay = 3500;
 
     private Timer timer;
     private TimerTask task;

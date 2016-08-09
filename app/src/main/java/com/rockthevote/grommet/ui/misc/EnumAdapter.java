@@ -41,7 +41,7 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
   }
 
   @Override public View newView(LayoutInflater inflater, int position, ViewGroup container) {
-    return inflater.inflate(android.R.layout.simple_spinner_item, container, false);
+    return inflater.inflate(android.R.layout.simple_list_item_1, container, false);
   }
 
   @Override public final void bindView(T item, int position, View view) {
@@ -51,7 +51,8 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
 
   @Override
   public final View newDropDownView(LayoutInflater inflater, int position, ViewGroup container) {
-    return inflater.inflate(android.R.layout.simple_spinner_dropdown_item, container, false);
+//    return inflater.inflate(android.R.layout.simple_spinner_dropdown_item, container, false);
+    return inflater.inflate(android.R.layout.simple_list_item_1, container, false);
   }
 
   protected String getName(T item) {

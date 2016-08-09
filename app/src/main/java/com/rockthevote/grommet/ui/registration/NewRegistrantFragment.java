@@ -15,8 +15,8 @@ import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.annotation.Checked;
-import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
@@ -46,8 +46,17 @@ import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.EIG
 public class NewRegistrantFragment extends BaseRegistrationFragment implements
         DatePickerDialog.OnDateSetListener {
 
+    private static final String EMAIL_OR_EMPTY_REGEX = "^$|(?:[a-z0-9!#$%&'*+\\/=?^_`{|}~-]+"
+            + "(?:\\.[a-z0-9!#$%&'*+\\/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\"
+            + "x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:"
+            + "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\"
+            + "[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?"
+            + "[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\"
+            + "x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
-    @Email
+    @Pattern(regex = EMAIL_OR_EMPTY_REGEX,
+             messageResId = R.string.email_error,
+             caseSensitive = false)
     @BindView(R.id.text_input_layout_email)
     TextInputLayout textInputEmail;
     @BindView(R.id.edittext_email) TextInputEditText email;

@@ -6,5 +6,20 @@
             android:title="@string/nav_title_home"
             android:icon="@drawable/ic_dashboard_black_24dp"
             />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/nav_title_about"
+            />
+        <item
+            android:id="@+id/nav_data_usage"
+            android:icon="@drawable/ic_data_usage_black_24dp"
+            android:title="@string/nav_title_data_usage"
+            />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_help_outline_black_24dp"
+            android:title="@string/nav_title_help"
+            />
     </group>
 </menu>

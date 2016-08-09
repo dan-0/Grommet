@@ -10,7 +10,9 @@
 
     <!--Nav Drawer Strings-->
     <string name="nav_title_home">Home</string>
-    <string name="nav_title_settings">Settings</string>
+    <string name="nav_title_about">About</string>
+    <string name="nav_title_data_usage">Data Usage</string>
+    <string name="nav_title_help">Help</string>
     <string name="incomplete_profile_alert">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip before registering voters.</string>
     <string name="dialog_no_thanks">No Thanks</string>
     <string name="dialog_enter_info">Enter Info</string>
@@ -32,9 +34,11 @@
     <string name="label_eighteen_or_older">I will be 18 or older by the next election</string>
     <string name="label_has_id">I have a driver\'s license or state ID card.</string>
     <string name="label_first_time_voter">I am registering to vote for the first time</string>
+    <string name="label_name_prefix">Title</string>
     <string name="label_first_name">First Name</string>
     <string name="label_middle_name">Middle Name</string>
     <string name="label_last_name">Last Name</string>
+    <string name="label_name_suffix">Suffix</string>
     <string name="label_suffix">Suffix</string>
 
     <string name="label_email">Email Address</string>
@@ -47,6 +51,7 @@
     <string name="section_label_new_registrant">New Registrant</string>
     <string name="eighteen_or_older_err">You must be 18 or older to vote</string>
     <string name="us_citizen_err">You must be a U.S. citizen</string>
+    <string name="email_error">Invalid email</string>
 
 
     <!--Personal Information Strings-->
@@ -90,6 +95,7 @@
     <!--Additional Info Strings-->
     <string name="label_preferred_language">Preferred Language</string>
     <string name="label_has_drivers_license">I have my driver\'s license number</string>
+    <string name="preferred_language_label">Preferred Language to Receive Election Materials</string>
 
     <!--Review and Confirm Fragment Strings-->
     <string name="fragment_title_review">Review</string>
@@ -101,6 +107,7 @@
     <string name="section_label_signature">Signature</string>
     <string name="signature_instructions">Please use stylus for signature capture</string>
     <string name="signature_pad_error">Signature is required</string>
+    <string name="action_cancel_reg">Cancel Registration</string>
 
     <!-- Preference Strings -->
     <string name="pref_key_partner_id">partner_id</string>
@@ -115,10 +122,101 @@
     <string name="pref_title_event_zip_code">Event Zip Code</string>
     <string name="pref_title_event_name">Event Name</string>
 
-
     <!--Multi use strings-->
     <string name="action_cancel">Cancel</string>
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
+
+    <string name="upload_notification_title_template">Processing PA OVRRegistrations</string>
+
+    <string name="about_activity_text">
+<![CDATA[
+
+<p>
+&nbsp&nbsp&nbsp&nbsp This mobile application “app” was built by Rock the Vote and OSET’s TrustTheVote Project
+to facilitate the submission of electronic voter registration applications in the Commonwealth of
+Pennsylvania. It is an extension of Rock the Vote’s national, open source, online voter registration
+platform. All Rock the Vote partners using the app are bound by its
+<a href="https://www.rockthevote.com/get-involved/register-voters/">Terms of Use</a>
+and the
+<a href="http://www.dos.pa.gov/VotingElections/OtherServicesEvents/Pages/PA-Online-Voter-Registration-Web-API---RFC.aspx">Terms of Services </a>
+outlined by the Pennsylvania Secretary of State’s office
+</p>
+<p>
+&nbsp&nbsp&nbsp&nbsp Rock the Vote is the largest nonpartisan, nonprofit organization in the country driving the
+youth vote to the polls. Since 1990, Rock the Vote has fused pop culture, music, art and technology
+to fulfill its mission of building long-term youth political power. During the past six Presidential
+elections, Rock the Vote ran the largest voter registration drives for young people and has
+partnered with more than 25,000 partners through its online, multilingual voter registration
+platform.
+</p>
+<p>
+&nbsp&nbsp&nbsp&nbsp The TrustTheVote Project is an initiative of the OSET Foundation, Inc., a tax-exempt 501©(3)
+nonprofit California public benefit corporation. It is focused on advancing electoral technology
+innovation to improve the voting experience and increase the integrity of elections and their
+outcomes.
+</p>
+<h5>
+<a href="grommet://com.rockthevote.grommet/licenses">Open Source Licenses</a>
+</h5>
+]]>
+    </string>
+
+     <string name="data_usage_activity_text">
+<![CDATA[
+
+<p>
+&nbsp&nbsp&nbsp&nbsp Rock the Vote is committed to preserving your privacy and safeguarding your
+sensitive information. The following statement describes the general information-gathering and
+usage practices of the online voter registration platform powered by Rock the Vote.
+</p>
+<ol >
+<li>All personal information and other unique identifiers submitted in the process of registering
+to vote are used to produce the voter registration form for you to send to your local or state
+election officials. If you provide a state-issued identification number or Social Security number,
+it will be used solely for the production of your voter registration form.
+</li>
+<li>Once you mail in or electronically submit your voter registration application form to your
+local or state election officials, it becomes a matter of public record and is available for
+inspection and use by those who satisfy the requirements of the State law governing its use.
+</li>
+<li>By using the online voter registration platform, you grant Rock the Vote and its online voter
+registration partners permission to use your personal contact information to send you
+communications. Rock the Vote is bound by its
+<a href="https://www.rockthevote.com/about-us/privacy-policy.html">privacy policy</a>.
+All entities using the Rock the Vote online voter registration tool are bound to act in accordance
+with their privacy policies. You can unsubscribe at any time by following the unsubscribe
+instructions on the communication itself.
+</li>
+<li>Rock the Vote may track information on where its online voter registration platform is being
+visited and used so we can make decisions about the design and usage of the online voter
+registration tool.
+</li>
+<li>Whenever Rock the Vote handles information that you enter on the online voter registration
+platform, regardless of where this occurs, we take steps to ensure that your information is treated
+securely and in accordance with this Privacy Policy. Unfortunately, no data transmission over the
+Internet can be guaranteed to be 100% secure. As a result, while we strive to protect your personal
+information, Rock the Vote cannot ensure or warrant the security of any information you transmit to
+us and you do so at your own risk. Once we receive your transmission, we make our best effort to
+ensure its security on our systems.
+</li>
+</ol>
+
+]]>
+    </string>
+
+    <string name="help_activity_text">
+<![CDATA[
+<p>
+&nbsp&nbsp&nbsp&nbsp If you have any questions about this app or its data usage policy please contact
+<a href="mailto:info@rockthevote.com">info@rockthevote.com<a/>.
+</p>
+<p>
+&nbsp&nbsp&nbsp&nbsp To get started using this app as a partner, you must first sign-up to be a
+<a href="https://vr.rockthevote.com/partner/register">Rock the Vote partner</a>.
+Any interested partners must be approved to use the canvasser app.
+</p>
+]]>
+    </string>
 
 </resources>

@@ -116,6 +116,18 @@ public class BaseActivity extends AppCompatActivity {
             case R.id.nav_home:
                 intent = new Intent(this, MainActivity.class);
                 break;
+            case R.id.nav_about:
+                intent = new Intent(this, InfoActivity.class);
+                intent.putExtra(InfoActivity.STRING_RES_PARAM, R.string.about_activity_text);
+                break;
+            case R.id.nav_data_usage:
+                intent = new Intent(this, InfoActivity.class);
+                intent.putExtra(InfoActivity.STRING_RES_PARAM, R.string.data_usage_activity_text);
+                break;
+            case R.id.nav_help:
+                intent = new Intent(this, InfoActivity.class);
+                intent.putExtra(InfoActivity.STRING_RES_PARAM, R.string.help_activity_text);
+                break;
             default:
                 throw new IllegalStateException("Unknown navigation item: " + item.getTitle());
         }

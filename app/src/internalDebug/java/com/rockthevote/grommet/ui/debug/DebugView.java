@@ -33,7 +33,6 @@ import com.rockthevote.grommet.data.LumberYard;
 import com.rockthevote.grommet.data.NetworkDelay;
 import com.rockthevote.grommet.data.NetworkFailurePercent;
 import com.rockthevote.grommet.data.NetworkVariancePercent;
-import com.rockthevote.grommet.data.PicassoDebugging;
 import com.rockthevote.grommet.data.PixelGridEnabled;
 import com.rockthevote.grommet.data.PixelRatioEnabled;
 import com.rockthevote.grommet.data.ScalpelEnabled;
@@ -46,8 +45,6 @@ import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.util.Keyboards;
 import com.rockthevote.grommet.util.Strings;
 import com.squareup.leakcanary.internal.DisplayLeakActivity;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.StatsSnapshot;
 
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZoneId;
@@ -108,17 +105,6 @@ public final class DebugView extends FrameLayout {
     @BindView(R.id.debug_device_release) TextView deviceReleaseView;
     @BindView(R.id.debug_device_api) TextView deviceApiView;
 
-    @BindView(R.id.debug_picasso_indicators) Switch picassoIndicatorView;
-    @BindView(R.id.debug_picasso_cache_size) TextView picassoCacheSizeView;
-    @BindView(R.id.debug_picasso_cache_hit) TextView picassoCacheHitView;
-    @BindView(R.id.debug_picasso_cache_miss) TextView picassoCacheMissView;
-    @BindView(R.id.debug_picasso_decoded) TextView picassoDecodedView;
-    @BindView(R.id.debug_picasso_decoded_total) TextView picassoDecodedTotalView;
-    @BindView(R.id.debug_picasso_decoded_avg) TextView picassoDecodedAvgView;
-    @BindView(R.id.debug_picasso_transformed) TextView picassoTransformedView;
-    @BindView(R.id.debug_picasso_transformed_total) TextView picassoTransformedTotalView;
-    @BindView(R.id.debug_picasso_transformed_avg) TextView picassoTransformedAvgView;
-
     @BindView(R.id.debug_okhttp_cache_max_size) TextView okHttpCacheMaxSizeView;
     @BindView(R.id.debug_okhttp_cache_write_error) TextView okHttpCacheWriteErrorView;
     @BindView(R.id.debug_okhttp_cache_request_count) TextView okHttpCacheRequestCountView;
@@ -127,7 +113,6 @@ public final class DebugView extends FrameLayout {
 
     @Inject OkHttpClient client;
     @Inject @Named("Api") OkHttpClient apiClient;
-    @Inject Picasso picasso;
     @Inject LumberYard lumberYard;
     @Inject @IsMockMode boolean isMockMode;
     @Inject @ApiEndpoint
@@ -138,8 +123,6 @@ public final class DebugView extends FrameLayout {
     Preference<Boolean> captureIntents;
     @Inject @AnimationSpeed
     Preference<Integer> animationSpeed;
-    @Inject @PicassoDebugging
-    Preference<Boolean> picassoDebugging;
     @Inject @PixelGridEnabled
     Preference<Boolean> pixelGridEnabled;
     @Inject @PixelRatioEnabled
@@ -180,7 +163,6 @@ public final class DebugView extends FrameLayout {
         setupUserInterfaceSection();
         setupBuildSection();
         setupDeviceSection();
-        setupPicassoSection();
         setupOkHttpCacheSection();
     }
 
@@ -189,7 +171,6 @@ public final class DebugView extends FrameLayout {
     }
 
     public void onDrawerOpened() {
-        refreshPicassoStats();
         refreshOkHttpCacheStats();
     }
 
@@ -417,35 +398,6 @@ public final class DebugView extends FrameLayout {
         deviceDensityView.setText(displayMetrics.densityDpi + "dpi (" + densityBucket + ")");
         deviceReleaseView.setText(Build.VERSION.RELEASE);
         deviceApiView.setText(String.valueOf(Build.VERSION.SDK_INT));
-    }
-
-    private void setupPicassoSection() {
-        boolean picassoDebuggingValue = picassoDebugging.get();
-        picasso.setIndicatorsEnabled(picassoDebuggingValue);
-        picassoIndicatorView.setChecked(picassoDebuggingValue);
-        picassoIndicatorView.setOnCheckedChangeListener((button, isChecked) -> {
-            Timber.d("Setting Picasso debugging to " + isChecked);
-            picasso.setIndicatorsEnabled(isChecked);
-            picassoDebugging.set(isChecked);
-        });
-
-        refreshPicassoStats();
-    }
-
-    private void refreshPicassoStats() {
-        StatsSnapshot snapshot = picasso.getSnapshot();
-        String size = getSizeString(snapshot.size);
-        String total = getSizeString(snapshot.maxSize);
-        int percentage = (int) ((1f * snapshot.size / snapshot.maxSize) * 100);
-        picassoCacheSizeView.setText(size + " / " + total + " (" + percentage + "%)");
-        picassoCacheHitView.setText(String.valueOf(snapshot.cacheHits));
-        picassoCacheMissView.setText(String.valueOf(snapshot.cacheMisses));
-        picassoDecodedView.setText(String.valueOf(snapshot.originalBitmapCount));
-        picassoDecodedTotalView.setText(getSizeString(snapshot.totalOriginalBitmapSize));
-        picassoDecodedAvgView.setText(getSizeString(snapshot.averageOriginalBitmapSize));
-        picassoTransformedView.setText(String.valueOf(snapshot.transformedBitmapCount));
-        picassoTransformedTotalView.setText(getSizeString(snapshot.totalTransformedBitmapSize));
-        picassoTransformedAvgView.setText(getSizeString(snapshot.averageTransformedBitmapSize));
     }
 
     private void setupOkHttpCacheSection() {

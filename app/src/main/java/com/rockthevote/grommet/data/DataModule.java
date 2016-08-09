@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.f2prateek.rx.preferences.RxSharedPreferences;
-import com.jakewharton.picasso.OkHttp3Downloader;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
 import com.rockthevote.grommet.data.api.RegistrationService;
@@ -19,7 +18,6 @@ import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.squareup.moshi.Moshi;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -30,7 +28,6 @@ import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
-import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.jakewharton.byteunits.DecimalByteUnit.MEGABYTES;
@@ -129,15 +126,6 @@ public final class DataModule {
     @Singleton
     OkHttpClient provideOkHttpClient(Application app) {
         return createOkHttpClient(app).build();
-    }
-
-    @Provides
-    @Singleton
-    Picasso providePicasso(Application app, OkHttpClient client) {
-        return new Picasso.Builder(app)
-                .downloader(new OkHttp3Downloader(client))
-                .listener((picasso, uri, e) -> Timber.e(e, "Failed to load image: %s", uri))
-                .build();
     }
 
     static OkHttpClient.Builder createOkHttpClient(Application app) {

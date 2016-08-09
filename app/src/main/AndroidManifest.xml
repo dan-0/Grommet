@@ -6,12 +6,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
-    <!--<supports-screens-->
-    <!--android:largeScreens="true"-->
-    <!--android:normalScreens="false"-->
-    <!--android:requiresSmallestWidthDp="600"-->
-    <!--android:smallScreens="false"-->
-    <!--android:xlargeScreens="true"/>-->
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:requiresSmallestWidthDp="600"
+        android:smallScreens="false"
+        android:xlargeScreens="true"/>
 
     <application
         android:name=".GrommetApp"
@@ -26,6 +26,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -36,15 +37,29 @@
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".ui.InfoActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ui.LicensesActivity"
+            android:label="@string/label_open_source_licenses"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="grommet"/>
+                <data android:host="com.rockthevote.grommet"/>
+                <data android:path="/licenses"/>
+            </intent-filter>
         </activity>
 
         <service
             android:name=".data.api.RegistrationService"
             android:enabled="true"
             android:exported="false"/>
+
         <receiver
             android:name=".data.NetworkChangeReceiver"
             android:enabled="false"

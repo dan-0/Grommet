@@ -5,16 +5,16 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.ListPopupWindow;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
-import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
@@ -32,17 +32,23 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
+import static com.rockthevote.grommet.data.db.model.Name.Prefix;
+import static com.rockthevote.grommet.data.db.model.Name.Suffix;
 
 public class NameView extends FrameLayout {
 
     @BindView(R.id.name_section_title) TextView sectionTitle;
-    @BindView(R.id.spinner_title) Spinner spinnerTitle;
-    @BindView(R.id.spinner_suffix) Spinner spinnerSuffix;
+
+    @NotEmpty
+    @BindView(R.id.til_title) TextInputLayout titleTIL;
+    @BindView(R.id.title_edittext) EditText titleEditText;
+    @BindView(R.id.suffix_edittext) EditText suffixEditText;
 
     @NotEmpty
     @BindView(R.id.til_first_name) TextInputLayout firstNameTIL;
@@ -67,6 +73,10 @@ public class NameView extends FrameLayout {
     private Name.Type type;
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
+
+    private ListPopupWindow titlePopup;
+
+    private ListPopupWindow suffixPopup;
 
     public NameView(Context context) {
         this(context, null);
@@ -122,11 +132,22 @@ public class NameView extends FrameLayout {
         }
 
         titleEnumAdapter = new EnumAdapter<>(getContext(), Name.Prefix.class);
-        spinnerTitle.setAdapter(titleEnumAdapter);
+        titlePopup = new ListPopupWindow(getContext());
+        titlePopup.setAdapter(titleEnumAdapter);
+        titlePopup.setAnchorView(titleEditText);
+        titlePopup.setOnItemClickListener((adapterView, view, i, l) -> {
+            titleEditText.setText(titleEnumAdapter.getItem(i).toString());
+            titlePopup.dismiss();
+        });
 
         suffixEnumAdapter = new EnumAdapter<>(getContext(), Name.Suffix.class);
-        spinnerSuffix.setAdapter(suffixEnumAdapter);
-
+        suffixPopup = new ListPopupWindow(getContext());
+        suffixPopup.setAdapter(suffixEnumAdapter);
+        suffixPopup.setAnchorView(suffixEditText);
+        suffixPopup.setOnItemClickListener((adapterView, view, i, l) -> {
+            suffixEditText.setText(suffixEnumAdapter.getItem(i).toString());
+            suffixPopup.dismiss();
+        });
     }
 
     @Override
@@ -136,20 +157,30 @@ public class NameView extends FrameLayout {
         subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(firstNameEditText),
                 RxTextView.afterTextChangeEvents(middleNameEditText),
                 RxTextView.afterTextChangeEvents(lastNameEditText),
-                RxAdapterView.itemSelections(spinnerTitle),
-                RxAdapterView.itemSelections(spinnerSuffix),
-                (firstName, middleName, lastName, titlePos, suffixPos) -> new Name.Builder()
+                RxTextView.afterTextChangeEvents(titleEditText),
+                RxTextView.afterTextChangeEvents(suffixEditText),
+                (firstName, middleName, lastName, title, suffix) -> new Name.Builder()
                         .firstName(firstName.editable().toString())
                         .middleName(middleName.editable().toString())
                         .lastName(lastName.editable().toString())
-                        .prefix(titleEnumAdapter.getItem(titlePos))
-                        .suffix(suffixEnumAdapter.getItem(suffixPos))
+                        .prefix(Prefix.fromString(title.editable().toString()))
+                        .suffix(Suffix.fromString(suffix.editable().toString()))
                         .build())
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
                 .subscribe(contentValues -> {
                     Name.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
                 }));
+    }
+
+    @OnClick(R.id.title_edittext)
+    public void onClickTitle(View v) {
+        titlePopup.show();
+    }
+
+    @OnClick(R.id.suffix_edittext)
+    public void onClickSuffix(View v){
+        suffixPopup.show();
     }
 
     @Override
