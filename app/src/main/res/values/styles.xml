@@ -25,6 +25,8 @@
 
     <style name="GrommetDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:datePickerStyle">@style/GrommetDatePicker</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="GrommetDatePicker" parent="android:Widget.Material.Light.DatePicker">
