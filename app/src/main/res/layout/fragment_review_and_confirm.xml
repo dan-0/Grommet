@@ -39,7 +39,7 @@
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/section_label_personal_info"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         />
 
@@ -120,7 +120,7 @@
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/section_label_registration_address"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         />
 
@@ -152,7 +152,7 @@
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/section_label_mailing_address"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible"
@@ -183,7 +183,7 @@
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/fragment_title_additional_info"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible"
@@ -232,7 +232,7 @@
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/section_label_signature"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible"

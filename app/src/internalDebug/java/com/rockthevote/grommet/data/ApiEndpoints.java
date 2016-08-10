@@ -4,7 +4,7 @@ import com.rockthevote.grommet.data.api.ApiModule;
 
 public enum ApiEndpoints {
     PRODUCTION("Production", ApiModule.PRODUCTION_API_URL.toString()),
-    STAGING("Staging","https://staging.rocky.rockthevote.com"),
+    STAGING("Staging","https://staging.rocky.rockthevote.com/v3"),
     MOCK_MODE("Mock Mode", "http://localhost/mock/");
     public final String name;
     public final String url;
