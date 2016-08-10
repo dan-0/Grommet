@@ -108,6 +108,20 @@
     <string name="signature_instructions">Please use stylus for signature capture</string>
     <string name="signature_pad_error">Signature is required</string>
     <string name="action_cancel_reg">Cancel Registration</string>
+    <string name="registration_complete">Registration Complete</string>
+    <string name="registration_complete_dialog_text">
+\n
+\u2022 Your application has been sent to your county voter registration office.
+\n
+\n
+\u2022 Registration is not complete until processed and accepted.
+\n
+\n
+\u2022 If accepted, you will receive a Voter Registration Card by mail.
+\n
+\n
+\u2022 If you do not receive your Voter Registration Card within 14 days, contact your county voter registration office.
+    </string>
 
     <!-- Preference Strings -->
     <string name="pref_key_partner_id">partner_id</string>
@@ -126,6 +140,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
+    <string name="action_ok">OK</string>
 
     <string name="upload_notification_title_template">Processing PA OVRRegistrations</string>
 

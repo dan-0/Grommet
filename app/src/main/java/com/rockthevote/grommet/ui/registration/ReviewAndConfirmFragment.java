@@ -175,7 +175,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @Override
     public void onSigned() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        signaturePad.getSignatureBitmap().compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        signaturePad.getSignatureBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
         db.update(RockyRequest.TABLE,
                 new RockyRequest.Builder()
                         .signature(baos.toByteArray())
@@ -213,7 +213,9 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
             int totalApp = appRegTotal.get();
             appRegTotal.set(++totalApp);
 
-            new RegistrationCompleteDialogFragment().show(getFragmentManager(), "complete_dialog");
+            RegistrationCompleteDialogFragment dialog = new RegistrationCompleteDialogFragment();
+            dialog.setCancelable(false);
+            dialog.show(getFragmentManager(), "complete_dialog");
         } else {
             signaturePadError.setVisibility(View.VISIBLE);
         }
