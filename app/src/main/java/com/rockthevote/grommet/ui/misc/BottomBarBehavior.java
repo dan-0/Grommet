@@ -53,7 +53,9 @@ public class BottomBarBehavior<V extends View> extends CoordinatorLayout.Behavio
                                final View target, final int dxConsumed, final int dyConsumed,
                                final int dxUnconsumed, final int dyUnconsumed) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
-        if (dyConsumed > 10 && child.getVisibility() != View.VISIBLE) {
+        if (dyConsumed > 0 && child.getVisibility() != View.VISIBLE) {
+            animateIn(child);
+        } else if (dyConsumed == 0 && dyUnconsumed > 0 && child.getVisibility() != View.VISIBLE) {
             animateIn(child);
         } else if (dyConsumed < 0 && !this.mIsAnimatingOut && child.getVisibility() == View.VISIBLE) {
             animateOut(child);

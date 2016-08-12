@@ -2,6 +2,7 @@ package com.rockthevote.grommet.ui.registration;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.BaseActivity;
 import com.rockthevote.grommet.ui.ViewContainer;
 import com.rockthevote.grommet.ui.misc.StepperTabLayout;
+import com.rockthevote.grommet.util.KeyboardUtil;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import javax.inject.Inject;
@@ -37,7 +39,7 @@ public class RegistrationActivity extends BaseActivity {
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
     @Inject BriteDatabase db;
 
-
+    @BindView(R.id.appbar) AppBarLayout appbar;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.viewPager) ViewPager viewPager;
     @BindView(R.id.tabLayout) StepperTabLayout tabLayout;
@@ -47,6 +49,8 @@ public class RegistrationActivity extends BaseActivity {
     private RegistrationPagerAdapter adapter;
 
     private OnPageChangeListener listener;
+
+    private KeyboardUtil keyboardUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,7 @@ public class RegistrationActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         setupViewPager();
+        keyboardUtil = new KeyboardUtil(this, appbar);
     }
 
     private void setupViewPager() {
@@ -82,12 +87,14 @@ public class RegistrationActivity extends BaseActivity {
         listener = new RegistrationPageListener();
         viewPager.addOnPageChangeListener(listener);
         updateNavigation(viewPager.getCurrentItem());
+        keyboardUtil.enable();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         viewPager.removeOnPageChangeListener(listener);
+        keyboardUtil.disable();
     }
 
     private void updateNavigation(int pagePosition) {
@@ -196,5 +203,4 @@ public class RegistrationActivity extends BaseActivity {
         public void onPageScrollStateChanged(int state) {
         }
     }
-
 }

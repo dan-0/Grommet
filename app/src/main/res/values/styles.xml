@@ -11,16 +11,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
         <item name="android:spinnerStyle">@android:style/Widget.Material.Spinner.Underlined</item>
     </style>
 
     <style name="RegistrationTheme" parent="GrommetTheme">
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
-    </style>
-
-    <style name="Grommet.TextAppearance.Title" parent="@android:style/TextAppearance.Material.Title">
-        <item name="android:textColor">@color/colorPrimaryText</item>
     </style>
 
     <style name="GrommetDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">

@@ -5,11 +5,9 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.ListPopupWindow;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -21,6 +19,7 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
@@ -32,7 +31,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -46,9 +44,9 @@ public class NameView extends FrameLayout {
     @BindView(R.id.name_section_title) TextView sectionTitle;
 
     @NotEmpty
-    @BindView(R.id.til_title) TextInputLayout titleTIL;
-    @BindView(R.id.title_edittext) EditText titleEditText;
-    @BindView(R.id.suffix_edittext) EditText suffixEditText;
+    @BindView(R.id.spinner_title) BetterSpinner titleSpinner;
+
+    @BindView(R.id.spinner_suffix) BetterSpinner suffixSpinner;
 
     @NotEmpty
     @BindView(R.id.til_first_name) TextInputLayout firstNameTIL;
@@ -73,10 +71,6 @@ public class NameView extends FrameLayout {
     private Name.Type type;
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
-
-    private ListPopupWindow titlePopup;
-
-    private ListPopupWindow suffixPopup;
 
     public NameView(Context context) {
         this(context, null);
@@ -132,21 +126,17 @@ public class NameView extends FrameLayout {
         }
 
         titleEnumAdapter = new EnumAdapter<>(getContext(), Name.Prefix.class);
-        titlePopup = new ListPopupWindow(getContext());
-        titlePopup.setAdapter(titleEnumAdapter);
-        titlePopup.setAnchorView(titleEditText);
-        titlePopup.setOnItemClickListener((adapterView, view, i, l) -> {
-            titleEditText.setText(titleEnumAdapter.getItem(i).toString());
-            titlePopup.dismiss();
+        titleSpinner.setAdapter(titleEnumAdapter);
+        titleSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+            titleSpinner.getEditText().setText(titleEnumAdapter.getItem(i).toString());
+            titleSpinner.dismiss();
         });
 
         suffixEnumAdapter = new EnumAdapter<>(getContext(), Name.Suffix.class);
-        suffixPopup = new ListPopupWindow(getContext());
-        suffixPopup.setAdapter(suffixEnumAdapter);
-        suffixPopup.setAnchorView(suffixEditText);
-        suffixPopup.setOnItemClickListener((adapterView, view, i, l) -> {
-            suffixEditText.setText(suffixEnumAdapter.getItem(i).toString());
-            suffixPopup.dismiss();
+        suffixSpinner.setAdapter(suffixEnumAdapter);
+        suffixSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+            suffixSpinner.getEditText().setText(suffixEnumAdapter.getItem(i).toString());
+            suffixSpinner.dismiss();
         });
     }
 
@@ -157,8 +147,8 @@ public class NameView extends FrameLayout {
         subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(firstNameEditText),
                 RxTextView.afterTextChangeEvents(middleNameEditText),
                 RxTextView.afterTextChangeEvents(lastNameEditText),
-                RxTextView.afterTextChangeEvents(titleEditText),
-                RxTextView.afterTextChangeEvents(suffixEditText),
+                RxTextView.afterTextChangeEvents(titleSpinner.getEditText()),
+                RxTextView.afterTextChangeEvents(suffixSpinner.getEditText()),
                 (firstName, middleName, lastName, title, suffix) -> new Name.Builder()
                         .firstName(firstName.editable().toString())
                         .middleName(middleName.editable().toString())
@@ -171,16 +161,6 @@ public class NameView extends FrameLayout {
                 .subscribe(contentValues -> {
                     Name.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
                 }));
-    }
-
-    @OnClick(R.id.title_edittext)
-    public void onClickTitle(View v) {
-        titlePopup.show();
-    }
-
-    @OnClick(R.id.suffix_edittext)
-    public void onClickSuffix(View v){
-        suffixPopup.show();
     }
 
     @Override

@@ -1,0 +1,72 @@
+package com.rockthevote.grommet.ui.misc;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.ListPopupWindow;
+import android.util.AttributeSet;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+
+import com.rockthevote.grommet.R;
+
+
+public class BetterSpinner extends TextInputLayout {
+
+    ListPopupWindow listPopupWindow;
+    ListAdapter listAdapter;
+    TextInputEditText editText;
+
+    public BetterSpinner(Context context) {
+        this(context, null);
+    }
+
+    public BetterSpinner(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public BetterSpinner(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+
+        editText = new TextInputEditText(context);
+        editText.setId(R.id.titleId);
+        editText.setHeight((int) getResources().getDimension(R.dimen.list_item_height));
+        editText.setFocusable(false);
+        editText.setMaxLines(1);
+        editText.setCursorVisible(false);
+        editText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0,
+                R.drawable.drop_down_arrow, 0);
+
+        addView(editText, 0);
+        listPopupWindow = new ListPopupWindow(context);
+        listPopupWindow.setAnchorView(editText);
+    }
+
+    public void setAdapter(ListAdapter listAdapter) {
+        this.listAdapter = listAdapter;
+        listPopupWindow.setAdapter(listAdapter);
+        getEditText().setOnClickListener(view -> listPopupWindow.show());
+    }
+
+    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
+        listPopupWindow.setOnItemClickListener(listener);
+    }
+
+    public void dismiss() {
+        listPopupWindow.dismiss();
+    }
+
+    /**
+     * set the height of the popup window in pixes
+     */
+    public void setHeight(int height) {
+        listPopupWindow.setHeight(height);
+    }
+
+    @NonNull
+    @Override
+    public TextInputEditText getEditText() {
+        return editText;
+    }
+}
