@@ -88,11 +88,11 @@
         />
 
     <TextView
+        android:id="@+id/review_phone_label"
         android:layout_marginStart="@dimen/content_margin"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
-        android:text="@string/section_label_phone"
-
+        tools:text="@string/section_label_phone"
         />
 
     <TextView
