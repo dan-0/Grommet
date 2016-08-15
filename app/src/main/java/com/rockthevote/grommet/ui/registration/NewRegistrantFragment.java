@@ -13,16 +13,14 @@ import android.widget.DatePicker;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
-import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -33,40 +31,28 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
-import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.EMAIL;
 import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.CITIZEN;
 import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.EIGHTEEN;
 
 public class NewRegistrantFragment extends BaseRegistrationFragment implements
         DatePickerDialog.OnDateSetListener {
 
-    private static final String EMAIL_OR_EMPTY_REGEX = "^$|(?:[a-z0-9!#$%&'*+\\/=?^_`{|}~-]+"
-            + "(?:\\.[a-z0-9!#$%&'*+\\/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\"
-            + "x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:"
-            + "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\"
-            + "[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?"
-            + "[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\"
-            + "x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
-
-    @Pattern(regex = EMAIL_OR_EMPTY_REGEX,
-             messageResId = R.string.email_error,
-             caseSensitive = false)
-    @BindView(R.id.text_input_layout_email)
-    TextInputLayout textInputEmail;
-    @BindView(R.id.edittext_email) TextInputEditText email;
+    @BindView(R.id.name) NameView name;
+    @BindView(R.id.name_changed) CheckBox nameChanged;
+    @BindView(R.id.previous_name_divider) View previousNameDivider;
+    @BindView(R.id.previous_name) NameView previousName;
 
     @NotEmpty
     @BindView(R.id.til_birthday)
     TextInputLayout tilBirthday;
     @BindView(R.id.edittext_birthday) TextInputEditText birthday;
-
-    @BindView(R.id.email_opt_in) CheckBox emailOptIn;
 
     @Checked(messageResId = R.string.eighteen_or_older_err)
     @BindView(R.id.checkbox_is_eighteen)
@@ -82,7 +68,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     private ObservableValidator validator;
 
     private CompositeSubscription subscriptions;
-
 
     @Nullable
     @Override
@@ -102,32 +87,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     public void onResume() {
         super.onResume();
         subscriptions = new CompositeSubscription();
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(email)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event ->
-                {
-                    ContactMethod.insertOrUpdate(db, rockyRequestRowId.get(), EMAIL,
-                            new ContactMethod.Builder()
-                                    .value(event.editable().toString())
-                                    .build());
-                }));
-
-
-        subscriptions.add(RxCompoundButton.checkedChanges(emailOptIn)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(checked -> {
-                    db.update(
-                            RockyRequest.TABLE,
-                            new RockyRequest.Builder()
-                                    .optInEmail(checked)
-                                    .build(),
-                            RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
-                }));
 
         subscriptions.add(RxCompoundButton.checkedChanges(checkBoxIsUSCitizen)
                 .observeOn(Schedulers.io())
@@ -163,6 +122,12 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
         DatePickerDialogFragment.newInstance(this).show(getFragmentManager(), "datepicker");
     }
 
+    @OnCheckedChanged(R.id.name_changed)
+    public void onNameChangedChecked(boolean checked) {
+        previousName.setVisibility(checked ? View.VISIBLE : View.GONE);
+        previousNameDivider.setVisibility(checked ? View.VISIBLE : View.GONE);
+    }
+
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
@@ -178,7 +143,21 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
 
     @Override
     public Observable<Boolean> verify() {
-        return validator.validate();
-    }
 
+        Observable<Boolean> previousNameObs = previousName.verify()
+                .flatMap(val -> Observable.just(nameChanged.isChecked() ? val : true));
+
+        return validator.validate()
+                .concatWith(name.verify())
+                .concatWith(previousNameObs)
+                .toList()
+                .flatMap(list -> {
+                    Boolean ret = true;
+                    for (Boolean val : list) {
+                        ret = ret && val;
+                    }
+
+                    return Observable.just(ret);
+                });
+    }
 }

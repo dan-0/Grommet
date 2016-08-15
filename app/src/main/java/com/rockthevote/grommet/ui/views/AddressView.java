@@ -5,11 +5,9 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.ListPopupWindow;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -22,6 +20,7 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -32,7 +31,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -49,14 +47,13 @@ public class AddressView extends FrameLayout {
     @BindView(R.id.unit) EditText unitEditText;
 
     @NotEmpty
-    @BindView(R.id.til_county) TextInputLayout countyTIL;
-    @BindView(R.id.county_edit_text) EditText countyEditText;
+    @BindView(R.id.spinner_county) BetterSpinner countySpinner;
 
     @NotEmpty
     @BindView(R.id.til_city) TextInputLayout cityTIL;
     @BindView(R.id.city) EditText cityEditText;
 
-    @BindView(R.id.state_edit_text) EditText stateEditText;
+    @BindView(R.id.spinner_state) BetterSpinner stateSpinner;
 
     @NotEmpty
     @BindView(R.id.til_zip_code) TextInputLayout zipTIL;
@@ -79,10 +76,6 @@ public class AddressView extends FrameLayout {
     private Address.Type type;
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
-
-    private ListPopupWindow statePopup;
-
-    private ListPopupWindow countyPopup;
 
     public AddressView(Context context) {
         this(context, null);
@@ -145,39 +138,35 @@ public class AddressView extends FrameLayout {
                 R.array.pa_counties, android.R.layout.simple_list_item_1);
         countyAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 
-        countyPopup = new ListPopupWindow(getContext());
-        countyPopup.setAdapter(countyAdapter);
-        countyPopup.setAnchorView(countyEditText);
-        countyPopup.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
-        countyPopup.setOnItemClickListener((adapterView, view, i, l) -> {
-            countyEditText.setText(countyAdapter.getItem(i));
-            countyPopup.dismiss();
+        countySpinner.setAdapter(countyAdapter);
+        countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
+        countySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+            countySpinner.getEditText().setText(countyAdapter.getItem(i));
+            countySpinner.dismiss();
         });
 
         stateAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.states, android.R.layout.simple_list_item_1);
         stateAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 
-        statePopup = new ListPopupWindow(getContext());
-        statePopup.setAdapter(stateAdapter);
-        statePopup.setAnchorView(stateEditText);
-        statePopup.setHeight((int)getResources().getDimension(R.dimen.list_pop_up_max_height));
-        statePopup.setOnItemClickListener((adapterView, view, i, l) -> {
-            stateEditText.setText(stateAdapter.getItem(i));
+        stateSpinner.setAdapter(stateAdapter);
+        stateSpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
+        stateSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+            stateSpinner.getEditText().setText(stateAdapter.getItem(i));
 
             if(!PA_ABREV.equals(stateAdapter.getItem(i))){
-                countyTIL.setErrorEnabled(false);
-                countyTIL.setEnabled(false);
-                countyEditText.setText("");
-                countyEditText.setEnabled(false);
+                stateSpinner.setErrorEnabled(false);
+                stateSpinner.setEnabled(false);
+                stateSpinner.getEditText().setText("");
+                stateSpinner.getEditText().setEnabled(false);
             } else {
-                countyEditText.setEnabled(true);
-                countyTIL.setEnabled(true);
+                stateSpinner.getEditText().setEnabled(true);
+                stateSpinner.setEnabled(true);
             }
 
-            statePopup.dismiss();
+            stateSpinner.dismiss();
         });
-        stateEditText.setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
+        stateSpinner.getEditText().setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
 
     }
 
@@ -188,9 +177,9 @@ public class AddressView extends FrameLayout {
         subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(streetEditText),
                 RxTextView.afterTextChangeEvents(unitEditText),
                 RxTextView.afterTextChangeEvents(cityEditText),
-                RxTextView.afterTextChangeEvents(stateEditText),
+                RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
                 RxTextView.afterTextChangeEvents(zipEditText),
-                RxTextView.afterTextChangeEvents(countyEditText),
+                RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
                 (street, unit, city, state, zip, county) -> new Address.Builder()
                         .streetName(street.editable().toString())
                         .subAddress(unit.editable().toString())
@@ -205,16 +194,6 @@ public class AddressView extends FrameLayout {
                     Address.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
                 }));
 
-    }
-
-    @OnClick(R.id.state_edit_text)
-    public void onStateClick(View v){
-        statePopup.show();
-    }
-
-    @OnClick(R.id.county_edit_text)
-    public void onCountyClick(View v) {
-        countyPopup.show();
     }
 
     @Override

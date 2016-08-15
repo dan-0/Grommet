@@ -96,13 +96,14 @@
     <string name="label_preferred_language">Preferred Language</string>
     <string name="label_has_drivers_license">I have my driver\'s license number</string>
     <string name="preferred_language_label">Preferred Language to Receive Election Materials</string>
+    <string name="section_label_election_info">Election Info</string>
 
     <!--Review and Confirm Fragment Strings-->
     <string name="fragment_title_review">Review</string>
     <string name="voter_agreement_text">I have reviewed the above information, and it is true and accurate to the best of my knowledge.</string>
     <string name="title_activity_settings">Settings</string>
     <string name="name_phrase_formatter">{title} {first_name} {middle_name} {last_name} {suffix}</string>
-    <string name="section_label_contact_info">Contact</string>
+    <string name="section_label_contact_info">Contact Info</string>
     <string name="review_confirm_instructions">Please review the following information and confirm its accuracy.</string>
     <string name="section_label_signature">Signature</string>
     <string name="signature_instructions">Please use stylus for signature capture</string>

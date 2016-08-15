@@ -19,6 +19,7 @@ public class ObservableValidator {
     public ObservableValidator(Object controller, Context context) {
         Validator validator = new Validator(controller);
         validator.registerAdapter(TextInputLayout.class, new TilStringValidator());
+        validator.registerAdapter(BetterSpinner.class, new BetterSpinnerValidator());
         validator.setViewValidatedAction(new Validator.ViewValidatedAction() {
             @Override
             public void onAllRulesPassed(View view) {

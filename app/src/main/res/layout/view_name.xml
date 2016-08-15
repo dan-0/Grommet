@@ -39,26 +39,14 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_title"
+    <com.rockthevote.grommet.ui.misc.BetterSpinner
+        android:id="@+id/spinner_title"
         android:layout_width="0dp"
         android:layout_columnWeight=".3"
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
         android:hint="@string/label_name_prefix"
-        app:errorEnabled="true">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/title_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/list_item_height"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:maxLines="1"
-            />
-
-    </android.support.design.widget.TextInputLayout>
-
+        app:errorEnabled="true"/>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
@@ -95,22 +83,13 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.rockthevote.grommet.ui.misc.BetterSpinner
+        android:id="@+id/spinner_suffix"
         android:layout_width="0dp"
+        android:layout_columnWeight=".3"
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
         android:hint="@string/label_name_suffix"
-        app:errorEnabled="true">
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/suffix_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/list_item_height"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:maxLines="1"
-            />
-
-    </android.support.design.widget.TextInputLayout>
+        app:errorEnabled="true"/>
 
 </GridLayout>
