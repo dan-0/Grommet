@@ -3,6 +3,7 @@ package com.rockthevote.grommet.data.api;
 import android.content.SharedPreferences;
 
 import com.rockthevote.grommet.data.api.model.ApiRockyRequest;
+import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
 import com.rockthevote.grommet.data.api.model.RegistrationResponse;
 import com.rockthevote.grommet.util.EnumPreferences;
 
@@ -14,6 +15,7 @@ import javax.inject.Singleton;
 
 import retrofit2.adapter.rxjava.Result;
 import retrofit2.http.Body;
+import retrofit2.http.Query;
 import retrofit2.mock.BehaviorDelegate;
 import retrofit2.mock.Calls;
 import retrofit2.mock.MockRetrofit;
@@ -33,6 +35,7 @@ public final class MockRockyService implements RockyService {
 
         //TODO create mock responses
         loadResponse(MockRegistrationResponse.class, MockRegistrationResponse.SUCCESS);
+        loadResponse(MockPartnerNameResponse.class, MockPartnerNameResponse.SUCCESS);
 
     }
 
@@ -59,5 +62,11 @@ public final class MockRockyService implements RockyService {
         RegistrationResponse response = getResponse(MockRegistrationResponse.class).response;
 
         return delegate.returning(Calls.response(response)).register(rockyRequest);
+    }
+
+    @Override
+    public Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId) {
+        PartnerNameResponse response = getResponse(MockPartnerNameResponse.class).response;
+        return delegate.returning(Calls.response(response)).getPartnerName(partnerId);
     }
 }
