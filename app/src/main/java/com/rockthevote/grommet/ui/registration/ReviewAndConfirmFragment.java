@@ -53,6 +53,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @BindView(R.id.review_birthday) TextView birthday;
     @BindView(R.id.review_email) TextView email;
     @BindView(R.id.review_phone) TextView phone;
+    @BindView(R.id.review_phone_label) TextView phoneLabel;
 
     @BindView(R.id.review_reg_address) TextView registrationAddress;
     @BindView(R.id.review_mail_address) TextView mailingAddress;
@@ -117,7 +118,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                     birthday.setText(Dates.formatAsISO8601_ShortDate(rockyRequest.dateOfBirth()));
                     race.setText(rockyRequest.race().toString());
                     party.setText(rockyRequest.party().toString());
-
+                    phoneLabel.setText(rockyRequest.phoneType().toString());
                     // show/hide registration address views
                     for (View v : mailingAddressViews) {
                         v.setVisibility(rockyRequest.regIsMail() ? View.GONE : View.VISIBLE);
@@ -147,7 +148,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 .subscribe(contactMethod -> {
                     phone.setText(contactMethod.value());
                 }));
-
     }
 
     @Override
