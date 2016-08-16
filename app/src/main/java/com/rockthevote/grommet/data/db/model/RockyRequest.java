@@ -225,12 +225,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         }
 
         /**
-         * helpful hint:
-         * ByteArrayOutputStream baos = new ByteArrayOutputStream();
-         * signature.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-         * BitmapFactory.decodeByteArray(blob, 0, blob.length);
          *
-         * @param signature
+         * @param signature a Base64 encoded png string (NO_WRAP flag)
          * @return
          */
         public Builder signature(byte[] signature) {
