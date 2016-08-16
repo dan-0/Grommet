@@ -60,20 +60,22 @@ import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER
 public class RegistrationService extends Service {
 
     //TODO add broadcast reciever so we can update a status icon that the application is uploading
-
+    
     @SuppressWarnings("WeakerAccess")
     @Inject BriteDatabase db;
 
     @SuppressWarnings("WeakerAccess")
     @Inject RockyService rockyService;
 
-    private PublishSubject<Integer> publishSubject;
+    private PublishSubject<Integer> refCountSubject;
+    private PublishSubject<Integer> totalCountSubject;
     private AtomicInteger refCount;
 
     @Override
     public void onCreate() {
         Injector.obtain(getApplicationContext()).inject(this);
-        publishSubject = PublishSubject.create();
+        refCountSubject = PublishSubject.create();
+        totalCountSubject = PublishSubject.create();
         refCount = new AtomicInteger(0);
 
         super.onCreate();
@@ -97,25 +99,29 @@ public class RegistrationService extends Service {
                 activeNetwork.isConnected();
 
         if (isConnected) {
+
             Observable<RockyRequest> rockyRequestObs =
                     db.createQuery(RockyRequest.TABLE,
-                    RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
-                    .mapToList(RockyRequest.MAPPER)
-                    .flatMap(Observable::from)
-                    .publish()
-                    .autoConnect(2);
+                            RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
+                            .mapToList(RockyRequest.MAPPER)
+                            .flatMap(Observable::from)
+                            .publish()
+                            .autoConnect(2);
 
             rockyRequestObs
                     .observeOn(Schedulers.io())
                     .subscribe(this::doWork);
 
-            Observable<Integer> totalRefObs = rockyRequestObs
+            rockyRequestObs
                     .observeOn(Schedulers.io())
                     .count()
-                    .last();
+                    .last()
+                    .subscribe(integer -> totalCountSubject.onNext(integer));
 
-            // TODO I think not calling .subscribe on totalRefObs is causing this code to not execute
-            Observable.combineLatest(totalRefObs, publishSubject, Integer::equals)
+            // make sure we get the initial 0 refCount to account for the no db rows case
+            refCountSubject.onNext(refCount.get());
+
+            Observable.combineLatest(totalCountSubject, refCountSubject, Integer::equals)
                     .subscribe(complete -> {
                         if (complete) {
                             Timber.d("RegistrationService stopping");
@@ -124,9 +130,8 @@ public class RegistrationService extends Service {
                         }
                     });
 
-            // make sure we get the initial 0 refCount to account for the no db rows case
-            publishSubject.onNext(refCount.get());
         } else {
+            Timber.d("RegistrationService stopping: no wifi");
 
             // if we don't have connectivity start a receiver to listen for connectivity change
             // and restart this service
@@ -147,7 +152,7 @@ public class RegistrationService extends Service {
         getApiRockyRequest(rockyRequest) // returns Observable<ApiRockyRequest>
                 .flatMap(apiRockyRequest -> rockyService.register(apiRockyRequest))
                 .observeOn(Schedulers.io())
-                .doOnCompleted(() -> publishSubject.onNext(refCount.incrementAndGet()))
+                .doOnCompleted(() -> refCountSubject.onNext(refCount.incrementAndGet()))
                 .subscribe(regResponse -> {
                             RockyRequest.Status status = regResponse.isError() ?
                                     REGISTER_FAILURE : REGISTER_SUCCESS;
