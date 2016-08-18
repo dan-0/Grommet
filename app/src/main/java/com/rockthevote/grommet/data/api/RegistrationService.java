@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
@@ -19,6 +20,7 @@ import com.rockthevote.grommet.data.api.model.ApiContactMethod;
 import com.rockthevote.grommet.data.api.model.ApiGeoLocation;
 import com.rockthevote.grommet.data.api.model.ApiName;
 import com.rockthevote.grommet.data.api.model.ApiRockyRequest;
+import com.rockthevote.grommet.data.api.model.ApiRockyRequestWrapper;
 import com.rockthevote.grommet.data.api.model.ApiSignature;
 import com.rockthevote.grommet.data.api.model.ApiVoterClassification;
 import com.rockthevote.grommet.data.api.model.ApiVoterId;
@@ -31,6 +33,7 @@ import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.db.model.VoterId;
+import com.rockthevote.grommet.ui.UploadNotification;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.ArrayList;
@@ -41,7 +44,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.rockthevote.grommet.data.db.model.Address.Type.MAILING;
@@ -59,31 +61,24 @@ import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER
 
 public class RegistrationService extends Service {
 
-    //TODO add broadcast reciever so we can update a status icon that the application is uploading
-    
     @SuppressWarnings("WeakerAccess")
     @Inject BriteDatabase db;
 
     @SuppressWarnings("WeakerAccess")
     @Inject RockyService rockyService;
 
-    private PublishSubject<Integer> refCountSubject;
-    private PublishSubject<Integer> totalCountSubject;
-    private AtomicInteger refCount;
+    private final AtomicInteger refCount = new AtomicInteger(0);
+    private final AtomicInteger totalCount = new AtomicInteger(0);
 
     @Override
     public void onCreate() {
         Injector.obtain(getApplicationContext()).inject(this);
-        refCountSubject = PublishSubject.create();
-        totalCountSubject = PublishSubject.create();
-        refCount = new AtomicInteger(0);
-
         super.onCreate();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.d("Starting RegistrationService");
+        Timber.d("RegistrationService starting");
         cleanup();
         doWorkIfNeeded();
         return START_STICKY;
@@ -95,40 +90,30 @@ public class RegistrationService extends Service {
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnected();
+
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
 
         if (isConnected) {
 
-            Observable<RockyRequest> rockyRequestObs =
-                    db.createQuery(RockyRequest.TABLE,
-                            RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
-                            .mapToList(RockyRequest.MAPPER)
-                            .flatMap(Observable::from)
-                            .publish()
-                            .autoConnect(2);
+            Cursor cursor = db.query(RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString());
+            int rows = cursor.getCount();
+            cursor.close();
+            totalCount.set(rows);
 
-            rockyRequestObs
-                    .observeOn(Schedulers.io())
+            if (0 == rows) {
+                Timber.d("RegistrationService stopping: no rows to upload");
+                stopSelf();
+                return;
+            }
+
+            UploadNotification.notify(getApplicationContext(), 0);
+
+            db.createQuery(RockyRequest.TABLE,
+                    RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
+                    .mapToList(RockyRequest.MAPPER)
+                    .flatMap(Observable::from)
+                    .take(rows)
                     .subscribe(this::doWork);
-
-            rockyRequestObs
-                    .observeOn(Schedulers.io())
-                    .count()
-                    .last()
-                    .subscribe(integer -> totalCountSubject.onNext(integer));
-
-            // make sure we get the initial 0 refCount to account for the no db rows case
-            refCountSubject.onNext(refCount.get());
-
-            Observable.combineLatest(totalCountSubject, refCountSubject, Integer::equals)
-                    .subscribe(complete -> {
-                        if (complete) {
-                            Timber.d("RegistrationService stopping");
-//                            UploadNotification.cancel(getApplicationContext());
-                            stopSelf();
-                        }
-                    });
 
         } else {
             Timber.d("RegistrationService stopping: no wifi");
@@ -140,19 +125,27 @@ public class RegistrationService extends Service {
             PackageManager pm = context.getPackageManager();
 
             pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP);
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
 
             stopSelf();
         }
     }
 
     private void doWork(final RockyRequest rockyRequest) {
+        if (null == rockyRequest) {
+            return;
+        }
 
         getApiRockyRequest(rockyRequest) // returns Observable<ApiRockyRequest>
                 .flatMap(apiRockyRequest -> rockyService.register(apiRockyRequest))
-                .observeOn(Schedulers.io())
-                .doOnCompleted(() -> refCountSubject.onNext(refCount.incrementAndGet()))
+                .subscribeOn(Schedulers.io())
+                .doOnCompleted(() -> {
+                    if (refCount.incrementAndGet() == totalCount.get()) {
+                        Timber.d("RegistrationService stopping: work complete");
+                        UploadNotification.cancel(getApplicationContext());
+                        stopSelf();
+                    }
+                })
                 .subscribe(regResponse -> {
                             RockyRequest.Status status = regResponse.isError() ?
                                     REGISTER_FAILURE : REGISTER_SUCCESS;
@@ -200,7 +193,7 @@ public class RegistrationService extends Service {
      * @param rockyRequest
      * @return
      */
-    private Observable<ApiRockyRequest> getApiRockyRequest(RockyRequest rockyRequest) {
+    private Observable<ApiRockyRequestWrapper> getApiRockyRequest(RockyRequest rockyRequest) {
         final long rowId = rockyRequest.id();
         return Observable.zip(
                 Observable.just(rockyRequest), // no sense in re-querying this
@@ -241,16 +234,16 @@ public class RegistrationService extends Service {
      * @param classifications
      * @param voterIds
      * @param additionalInfo
-     * @return {@link ApiRockyRequest} object
+     * @return {@link ApiRockyRequestWrapper} object
      */
-    private ApiRockyRequest zipRockyRequest(RockyRequest rockyRequest,
-                                            List<Address> addresses,
-                                            List<ContactMethod> contactMethods,
-                                            Name name,
-                                            Name prevName,
-                                            List<VoterClassification> classifications,
-                                            List<VoterId> voterIds,
-                                            List<AdditionalInfo> additionalInfo) {
+    private ApiRockyRequestWrapper zipRockyRequest(RockyRequest rockyRequest,
+                                                   List<Address> addresses,
+                                                   List<ContactMethod> contactMethods,
+                                                   Name name,
+                                                   Name prevName,
+                                                   List<VoterClassification> classifications,
+                                                   List<VoterId> voterIds,
+                                                   List<AdditionalInfo> additionalInfo) {
 
         if (addresses.size() > 3) {
             throw new UnsupportedOperationException("registrant cannot have more than 3 addresses");
@@ -296,8 +289,10 @@ public class RegistrationService extends Service {
         ApiVoterRecordsRequest apiVoterRecordsRequest = ApiVoterRecordsRequest.fromDb(rockyRequest,
                 apiVoterRegistration);
 
-        return ApiRockyRequest.fromDb(rockyRequest,
+        ApiRockyRequest apiRockyRequest = ApiRockyRequest.fromDb(rockyRequest,
                 apiVoterRecordsRequest, apiGeoLocation);
+
+        return ApiRockyRequestWrapper.builder().apiRockyRequest(apiRockyRequest).build();
     }
 
 

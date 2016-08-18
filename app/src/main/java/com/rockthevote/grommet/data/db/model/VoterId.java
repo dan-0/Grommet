@@ -114,7 +114,8 @@ public abstract class VoterId implements Parcelable, BaseColumns {
     }
 
     public enum Type {
-        DRIVERS_LICENSE("drivers_license");
+        DRIVERS_LICENSE("drivers_license"),
+        SSN_LAST_FOUR("ssn_last_four");
 
         private final String type;
 

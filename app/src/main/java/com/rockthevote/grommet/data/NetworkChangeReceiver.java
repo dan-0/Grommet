@@ -10,10 +10,14 @@ import android.net.NetworkInfo;
 
 import com.rockthevote.grommet.data.api.RegistrationService;
 
+import timber.log.Timber;
+
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        Timber.d(" RegistrationService receive broadcast");
+
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
