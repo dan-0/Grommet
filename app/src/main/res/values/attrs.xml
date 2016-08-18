@@ -5,6 +5,7 @@
             <enum name="MAILING" value="1"/>
             <enum name="PREVIOUS" value="2"/>
             <enum name="REGISTRATION" value="3"/>
+            <enum name="ASSISTANT" value="4"/>
         </attr>
     </declare-styleable>
 
@@ -12,6 +13,7 @@
         <attr name="name_type" format="enum">
             <enum name="CURRENT" value="1"/>
             <enum name="PREVIOUS" value="2"/>
+            <enum name="ASSISTANT" value="3"/>
         </attr>
     </declare-styleable>
 

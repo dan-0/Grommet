@@ -2,6 +2,7 @@ package com.rockthevote.grommet.ui;
 
 
 import com.rockthevote.grommet.ui.registration.AdditionalInfoFragment;
+import com.rockthevote.grommet.ui.registration.AssistantInfoFragment;
 import com.rockthevote.grommet.ui.registration.NewRegistrantFragment;
 import com.rockthevote.grommet.ui.registration.PersonalInfoFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
@@ -26,6 +27,7 @@ import dagger.Provides;
                 NewRegistrantFragment.class,
                 PersonalInfoFragment.class,
                 AdditionalInfoFragment.class,
+                AssistantInfoFragment.class,
                 ReviewAndConfirmFragment.class,
                 AddressView.class,
                 NameView.class,

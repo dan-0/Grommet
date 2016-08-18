@@ -49,9 +49,9 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-import static com.rockthevote.grommet.data.db.model.Address.Type.MAILING;
-import static com.rockthevote.grommet.data.db.model.Address.Type.PREVIOUS;
-import static com.rockthevote.grommet.data.db.model.Address.Type.REGISTRATION;
+import static com.rockthevote.grommet.data.db.model.Address.Type.MAILING_ADDRESS;
+import static com.rockthevote.grommet.data.db.model.Address.Type.PREVIOUS_ADDRESS;
+import static com.rockthevote.grommet.data.db.model.Address.Type.REGISTRATION_ADDRESS;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.GENERATED_DATE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.STATUS;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
@@ -265,11 +265,11 @@ public class RegistrationService extends Service {
                                                    EnumMap<AdditionalInfo.Type, AdditionalInfo> additionalInfo) {
 
 
-        ApiAddress apiRegAddress = ApiAddress.fromDb(addresses.get(REGISTRATION));
+        ApiAddress apiRegAddress = ApiAddress.fromDb(addresses.get(REGISTRATION_ADDRESS));
         ApiAddress apiMailAddress = rockyRequest.hasMailingAddress() ?
-                ApiAddress.fromDb(addresses.get(MAILING)) : null;
+                ApiAddress.fromDb(addresses.get(MAILING_ADDRESS)) : null;
         ApiAddress apiPrevAddress = rockyRequest.hasPreviousAddress() ?
-                ApiAddress.fromDb(addresses.get(PREVIOUS)) : null;
+                ApiAddress.fromDb(addresses.get(PREVIOUS_ADDRESS)) : null;
 
         ApiName apiName = ApiName.fromDb(names.get(Name.Type.CURRENT_NAME));
         ApiName apiPrevName = rockyRequest.hasPreviousName() ?

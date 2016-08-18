@@ -102,8 +102,8 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private PhoneNumberFormattingTextWatcher phoneFormatter;
 
     // must be initialized to true to trigger the observable default, unchecked, state (it's reversed)
-    private final BehaviorSubject<Boolean> doesNotHavePennDOT = BehaviorSubject.create(true);
-    private final BehaviorSubject<Boolean> doesNotHaveSSN = BehaviorSubject.create(true);
+    private final BehaviorSubject<Boolean> doesNotHavePennDOT = BehaviorSubject.create(false);
+    private final BehaviorSubject<Boolean> doesNotHaveSSN = BehaviorSubject.create(false);
 
     @Nullable
     @Override
@@ -298,7 +298,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         // disabling it prevents Saripaar from trying to validate it
         pennDOTTIL.setEnabled(!checked);
         pennDOTTIL.setErrorEnabled(!checked);
-        doesNotHavePennDOT.onNext(!checked);
+        doesNotHavePennDOT.onNext(checked);
     }
 
     @OnCheckedChanged(R.id.ssn_last_four_checkbox)
@@ -308,7 +308,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         // disabling it prevents Saripaar from trying to validate it
         ssnTIL.setEnabled(!checked);
         ssnTIL.setErrorEnabled(!checked);
-        doesNotHaveSSN.onNext(!checked);
+        doesNotHaveSSN.onNext(checked);
     }
 
     @Override

@@ -102,14 +102,16 @@ public class AddressView extends FrameLayout {
                 int val = typedArray.getInt(R.styleable.AddressView_address_type, 0);
                 switch (val) {
                     case 1:
-                        type = Address.Type.MAILING;
+                        type = Address.Type.MAILING_ADDRESS;
                         break;
                     case 2:
-                        type = Address.Type.PREVIOUS;
+                        type = Address.Type.PREVIOUS_ADDRESS;
                         break;
                     case 3:
-                        type = Address.Type.REGISTRATION;
+                        type = Address.Type.REGISTRATION_ADDRESS;
                         break;
+                    case 4:
+                        type = Address.Type.ASSISTANT_ADDRESS;
                 }
             } finally {
                 typedArray.recycle();
@@ -124,15 +126,17 @@ public class AddressView extends FrameLayout {
         validator = new ObservableValidator(this, getContext());
 
         switch (type) {
-            case REGISTRATION:
+            case REGISTRATION_ADDRESS:
                 sectionTitle.setText(R.string.section_label_registration_address);
                 break;
-            case MAILING:
+            case MAILING_ADDRESS:
                 sectionTitle.setText(R.string.section_label_mailing_address);
                 break;
-            case PREVIOUS:
+            case PREVIOUS_ADDRESS:
                 sectionTitle.setText(R.string.section_label_previous_address);
                 break;
+            case ASSISTANT_ADDRESS:
+                sectionTitle.setText(R.string.section_label_registration_address);
         }
 
         countyAdapter = ArrayAdapter.createFromResource(getContext(),

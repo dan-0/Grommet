@@ -37,7 +37,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + RockyRequest.OPEN_TRACKING_ID + " TEXT,"
             + RockyRequest.GENERATED_DATE + " TEXT NOT NULL,"
             + RockyRequest.DATE_OF_BIRTH + " TEXT,"
-            + RockyRequest.HAS_MAILING_ADDRESS + " INTEGER DEFAULT " + Db.BOOLEAN_TRUE + ","
+            + RockyRequest.HAS_MAILING_ADDRESS + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
             + RockyRequest.RACE + " TEXT,"
             + RockyRequest.PARTY + " TEXT,"
             + RockyRequest.SIGNATURE + " BLOB,"

@@ -209,4 +209,5 @@
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/label_receive_text"/>
+
 </GridLayout>

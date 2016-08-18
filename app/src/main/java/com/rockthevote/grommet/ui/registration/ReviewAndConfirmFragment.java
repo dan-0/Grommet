@@ -37,8 +37,8 @@ import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.rockthevote.grommet.data.db.model.Address.Type.MAILING;
-import static com.rockthevote.grommet.data.db.model.Address.Type.REGISTRATION;
+import static com.rockthevote.grommet.data.db.model.Address.Type.MAILING_ADDRESS;
+import static com.rockthevote.grommet.data.db.model.Address.Type.REGISTRATION_ADDRESS;
 import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.EMAIL;
 import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
 import static com.rockthevote.grommet.data.db.model.Name.Type.CURRENT_NAME;
@@ -103,7 +103,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(Address.TABLE, Address.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), REGISTRATION.toString()})
+                new String[]{String.valueOf(rockyRequestRowId.get()), REGISTRATION_ADDRESS.toString()})
                 .mapToOne(Address.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(address -> {
@@ -126,7 +126,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(Address.TABLE, Address.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), MAILING.toString()})
+                new String[]{String.valueOf(rockyRequestRowId.get()), MAILING_ADDRESS.toString()})
                 .mapToOne(Address.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(address -> {
