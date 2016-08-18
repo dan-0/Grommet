@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.data.api;
 
 
+import com.rockthevote.grommet.data.api.model.ApiRockyRequestWrapper;
 import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
 import com.rockthevote.grommet.data.api.model.ApiRockyRequest;
 import com.rockthevote.grommet.data.api.model.RegistrationResponse;
@@ -14,8 +15,8 @@ import rx.Observable;
 
 public interface RockyService {
 
-    @POST("register")
-    Observable<Result<RegistrationResponse>> register(@Body ApiRockyRequest rockyRequest);
+    @POST("voterregistrationrequest")
+    Observable<Result<RegistrationResponse>> register(@Body ApiRockyRequestWrapper rockyRequestWrapper);
 
     @GET("partnerIdValidation")
     Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);

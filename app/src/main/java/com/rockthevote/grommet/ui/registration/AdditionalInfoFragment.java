@@ -47,6 +47,7 @@ import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Party;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Race;
 import static com.rockthevote.grommet.data.db.model.VoterId.Type.DRIVERS_LICENSE;
+import static com.rockthevote.grommet.data.db.model.VoterId.Type.SSN_LAST_FOUR;
 
 public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
@@ -62,6 +63,13 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @NotEmpty
     @BindView(R.id.drivers_license) EditText driversLicenseEditText;
+
+    @BindView(R.id.til_ssn_last_four) TextInputLayout ssnTIL;
+
+    @BindView(R.id.ssn_last_four_checkbox) CheckBox hasSSNCheckBox;
+
+    @NotEmpty
+    @BindView(R.id.ssn_last_four_edit_text) EditText ssnEditText;
 
     @EmailOrEmpty(messageResId = R.string.email_error)
     @BindView(R.id.til_email) TextInputLayout textInputEmail;
@@ -92,6 +100,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private PhoneNumberFormattingTextWatcher phoneFormatter;
 
     private final PublishSubject<Boolean> hasDriversLicenseChecked = PublishSubject.create();
+    private final PublishSubject<Boolean> hasSSNChecked = PublishSubject.create();
 
     @Nullable
     @Override
@@ -181,13 +190,26 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                 hasDriversLicenseChecked,
                 (driversLicense, checkChange) -> new VoterId.Builder()
                         .type(DRIVERS_LICENSE)
-                        .value(driversLicense.editable().toString())
+                        .value(checkChange ? driversLicense.editable().toString() : "")
                         .attestNoSuchId(checkChange)
-                        .build()).observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                        .build())
                 .observeOn(Schedulers.io())
+                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
                 .subscribe(contentValues -> {
                     VoterId.insertOrUpdate(db, rockyRequestRowId.get(), DRIVERS_LICENSE, contentValues);
+                }));
+
+        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(ssnEditText),
+                hasSSNChecked,
+                (ssn, hasSSN) -> new VoterId.Builder()
+                        .type(SSN_LAST_FOUR)
+                        .value(hasSSN ? ssn.editable().toString() : "")
+                        .attestNoSuchId(hasSSN)
+                        .build())
+                .observeOn(Schedulers.io())
+                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                .subscribe(contentValues -> {
+                    VoterId.insertOrUpdate(db, rockyRequestRowId.get(), SSN_LAST_FOUR, contentValues);
                 }));
 
         subscriptions.add(RxTextView.afterTextChangeEvents(email)
@@ -266,13 +288,23 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
      * @param checked
      */
     @OnCheckedChanged(R.id.drivers_license_checkbox)
-    public void onCheckChanged(boolean checked) {
+    public void onDriversLicenseChecked(boolean checked) {
         driversLicenseTIL.setVisibility(checked ? View.VISIBLE : View.GONE);
 
         // disabling it prevents Saripaar from trying to validate it
         driversLicenseTIL.setEnabled(checked);
         driversLicenseTIL.setErrorEnabled(checked);
         hasDriversLicenseChecked.onNext(checked);
+    }
+
+    @OnCheckedChanged(R.id.ssn_last_four_checkbox)
+    public void onSSNChecked(boolean checked) {
+        ssnTIL.setVisibility(checked ? View.VISIBLE : View.GONE);
+
+        // disabling it prevents Saripaar from trying to validate it
+        ssnTIL.setEnabled(checked);
+        ssnTIL.setErrorEnabled(checked);
+        hasSSNChecked.onNext(checked);
     }
 
     @Override

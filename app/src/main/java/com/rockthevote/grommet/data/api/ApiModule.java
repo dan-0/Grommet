@@ -18,14 +18,21 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
         library = true
 )
 public final class ApiModule {
-    public static final HttpUrl PRODUCTION_API_URL = HttpUrl.parse("http://register.rockthevote.org/v3/");
+    public static final HttpUrl PRODUCTION_API_URL = HttpUrl.parse("https://rocky.rockthevote.com/api/v3/");
 
     @Provides @Singleton HttpUrl provideBaseUrl() {
         return PRODUCTION_API_URL;
     }
 
-    @Provides @Singleton @Named("Api") OkHttpClient provideApiClient(OkHttpClient client) {
-        return createApiClient(client).build();
+    @Provides @Singleton HeaderInterceptor provideHeaderInterceptor(){
+        return new HeaderInterceptor();
+    }
+
+    @Provides @Singleton @Named("Api") OkHttpClient provideApiClient(OkHttpClient client,
+                                                                     HeaderInterceptor interceptor) {
+        return createApiClient(client)
+                .addInterceptor(interceptor)
+                .build();
     }
 
     @Provides @Singleton Retrofit provideRetroFit(HttpUrl baseUrl, @Named("Api")OkHttpClient client,

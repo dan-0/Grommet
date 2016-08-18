@@ -24,7 +24,7 @@ public class UploadNotification {
     /**
      * The unique identifier for this type of notification.
      */
-    private static final String NOTIFICATION_TAG = "Upload";
+    private static final String NOTIFICATION_TAG = "upload_registration";
 
     /**
      * Shows the notification, or updates a previously shown notification of
@@ -51,7 +51,7 @@ public class UploadNotification {
 
                 // Set appropriate defaults for the notification light, sound,
                 // and vibration.
-                .setDefaults(Notification.DEFAULT_ALL)
+                .setDefaults(0)
 
                 // Set required fields, including the small icon, the
                 // notification title, and text.
@@ -63,10 +63,6 @@ public class UploadNotification {
                 // Use a default priority (recognized on devices running Android
                 // 4.1 or later)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-                // Show a number. This is useful when stacking notifications of
-                // a single type.
-                .setNumber(number)
 
                 // If this notification relates to a past or upcoming event, you
                 // should set the relevant time information using the setWhen
