@@ -155,13 +155,13 @@ public class AddressView extends FrameLayout {
             stateSpinner.getEditText().setText(stateAdapter.getItem(i));
 
             if(!PA_ABREV.equals(stateAdapter.getItem(i))){
-                stateSpinner.setErrorEnabled(false);
-                stateSpinner.setEnabled(false);
-                stateSpinner.getEditText().setText("");
-                stateSpinner.getEditText().setEnabled(false);
+                countySpinner.setErrorEnabled(false);
+                countySpinner.setEnabled(false);
+                countySpinner.getEditText().setText("");
+                countySpinner.getEditText().setEnabled(false);
             } else {
-                stateSpinner.getEditText().setEnabled(true);
-                stateSpinner.setEnabled(true);
+                countySpinner.getEditText().setEnabled(true);
+                countySpinner.setEnabled(true);
             }
 
             stateSpinner.dismiss();
