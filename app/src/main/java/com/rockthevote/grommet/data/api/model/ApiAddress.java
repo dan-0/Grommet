@@ -1,6 +1,8 @@
 package com.rockthevote.grommet.data.api.model;
 
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.squareup.moshi.JsonAdapter;
@@ -165,7 +167,12 @@ public abstract class ApiAddress {
         }
     }
 
+    @Nullable
     public static ApiAddress fromDb(Address address) {
+        if(null == address){
+            return null;
+        }
+
         return builder()
                 .state(address.state())
                 .municipalJurisdiction(address.municipalJurisdiction())

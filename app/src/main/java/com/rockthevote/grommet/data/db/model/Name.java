@@ -35,6 +35,10 @@ public abstract class Name implements Parcelable, BaseColumns {
             + TYPE + "=?"
             + " LIMIT 1";
 
+    public static final String DELETE_BY_TYPE = ""
+            + TYPE + "=? "
+            + " AND " + ROCKY_REQUEST_ID + "=?";
+
     public abstract long id();
 
     public abstract long rockyRequestId();

@@ -1,6 +1,8 @@
 package com.rockthevote.grommet.data.api.model;
 
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.util.Dates;
@@ -20,9 +22,11 @@ public abstract class ApiVoterRegistration {
     abstract String dateOfBirth();
 
     @Json(name = "mailing_address")
+    @Nullable
     abstract ApiAddress mailingAddress();
 
     @Json(name = "previous_registration_address")
+    @Nullable
     abstract ApiAddress previousRegistrationAddress();
 
     @Json(name = "registration_address")
@@ -34,6 +38,7 @@ public abstract class ApiVoterRegistration {
     abstract ApiName name();
 
     @Json(name = "previous_name")
+    @Nullable
     abstract ApiName previousName();
 
     abstract String gender();
@@ -115,7 +120,7 @@ public abstract class ApiVoterRegistration {
                 .mailingAddress(mailingAddress)
                 .previousRegistrationAddress(previousRegistrationAddress)
                 .registrationAddress(registrationAddress)
-                .regIsMail(rockyRequest.regIsMail())
+                .regIsMail(!rockyRequest.hasMailingAddress())
                 .name(name)
                 .previousName(previousName)
                 .gender(Gender.fromPrefix(Prefix.fromString(name.titlePrefix())).toString())

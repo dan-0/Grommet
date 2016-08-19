@@ -36,21 +36,22 @@ import com.rockthevote.grommet.data.db.model.VoterId;
 import com.rockthevote.grommet.ui.UploadNotification;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.rockthevote.grommet.data.db.model.Address.Type.MAILING;
 import static com.rockthevote.grommet.data.db.model.Address.Type.PREVIOUS;
 import static com.rockthevote.grommet.data.db.model.Address.Type.REGISTRATION;
-import static com.rockthevote.grommet.data.db.model.Name.Type.CURRENT_NAME;
-import static com.rockthevote.grommet.data.db.model.Name.Type.PREVIOUS_NAME;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.GENERATED_DATE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.STATUS;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
@@ -58,6 +59,7 @@ import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COM
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_FAILURE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_SUCCESS;
+import static java.util.Map.Entry;
 
 public class RegistrationService extends Service {
 
@@ -106,8 +108,6 @@ public class RegistrationService extends Service {
                 return;
             }
 
-            UploadNotification.notify(getApplicationContext(), 0);
-
             db.createQuery(RockyRequest.TABLE,
                     RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
                     .mapToList(RockyRequest.MAPPER)
@@ -137,18 +137,21 @@ public class RegistrationService extends Service {
         }
 
         getApiRockyRequest(rockyRequest) // returns Observable<ApiRockyRequest>
-                .flatMap(apiRockyRequest -> rockyService.register(apiRockyRequest))
+                .flatMap(apiRockyRequestWrapper -> rockyService.register(apiRockyRequestWrapper))
                 .subscribeOn(Schedulers.io())
                 .doOnCompleted(() -> {
                     if (refCount.incrementAndGet() == totalCount.get()) {
                         Timber.d("RegistrationService stopping: work complete");
-                        UploadNotification.cancel(getApplicationContext());
                         stopSelf();
                     }
                 })
                 .subscribe(regResponse -> {
-                            RockyRequest.Status status = regResponse.isError() ?
-                                    REGISTER_FAILURE : REGISTER_SUCCESS;
+                    RockyRequest.Status status =
+                            !regResponse.isError() && regResponse.response().isSuccessful()
+                                    ? REGISTER_SUCCESS : REGISTER_FAILURE;
+
+                    UploadNotification.notify(getApplicationContext(), status);
+
                             db.update(RockyRequest.TABLE,
                                     new RockyRequest.Builder()
                                             .status(status)
@@ -195,30 +198,47 @@ public class RegistrationService extends Service {
      */
     private Observable<ApiRockyRequestWrapper> getApiRockyRequest(RockyRequest rockyRequest) {
         final long rowId = rockyRequest.id();
+
+
         return Observable.zip(
                 Observable.just(rockyRequest), // no sense in re-querying this
-                db.createQuery(Address.TABLE, Address.SELECT_BY_ROCKY_REQUEST_ID,
-                        String.valueOf(rowId))
-                        .mapToList(Address.MAPPER),
-                db.createQuery(ContactMethod.TABLE, ContactMethod.SELECT_BY_ROCKY_REQUEST_ID,
-                        String.valueOf(rowId))
-                        .mapToList(ContactMethod.MAPPER),
-                db.createQuery(Name.TABLE, Name.SELECT_BY_TYPE,
-                        new String[]{String.valueOf(rowId), CURRENT_NAME.toString()})
-                        .mapToOne(Name.MAPPER),
-                db.createQuery(Name.TABLE, Name.SELECT_BY_TYPE,
-                        new String[]{String.valueOf(rowId), PREVIOUS_NAME.toString()})
-                        .mapToOne(Name.MAPPER),
-                db.createQuery(VoterClassification.TABLE, VoterClassification.SELECT_BY_ROCKY_REQUEST_ID,
-                        String.valueOf(rowId))
-                        .mapToList(VoterClassification.MAPPER),
-                db.createQuery(VoterId.TABLE, VoterId.SELECT_BY_ROCKY_REQUEST_ID,
-                        String.valueOf(rowId))
-                        .mapToList(VoterId.MAPPER),
-                db.createQuery(AdditionalInfo.TABLE, AdditionalInfo.SELECT_BY_ROCKY_REQUEST_ID,
-                        String.valueOf(rowId))
-                        .mapToList(AdditionalInfo.MAPPER),
+                toEnumMap(Address.Type.class, Address.TABLE,
+                        Address.SELECT_BY_TYPE, rowId, Address.MAPPER),
+                toEnumMap(ContactMethod.Type.class, ContactMethod.TABLE,
+                        ContactMethod.SELECT_BY_TYPE, rowId, ContactMethod.MAPPER),
+                toEnumMap(Name.Type.class, Name.TABLE,
+                        Name.SELECT_BY_TYPE, rowId, Name.MAPPER),
+                toEnumMap(VoterClassification.Type.class, VoterClassification.TABLE,
+                        VoterClassification.SELECT_BY_TYPE, rowId, VoterClassification.MAPPER),
+                toEnumMap(VoterId.Type.class, VoterId.TABLE,
+                        VoterId.SELECT_BY_TYPE, rowId, VoterId.MAPPER),
+                toEnumMap(AdditionalInfo.Type.class, AdditionalInfo.TABLE,
+                        AdditionalInfo.SELECT_BY_TYPE, rowId, AdditionalInfo.MAPPER),
                 this::zipRockyRequest);
+    }
+
+    /**
+     * @param clazz enum class
+     * @param rowId rockyrequest row id
+     */
+    public <K extends Enum<K>, Object> Observable<EnumMap<K, Object>> toEnumMap(
+            Class<K> clazz, String table, String query, long rowId, Func1<Cursor, Object> mapper) {
+
+        //TODO think about filtering null values
+        return Observable.from(clazz.getEnumConstants())
+                .flatMap(k -> db.createQuery(table, query, new String[]{String.valueOf(rowId), k.toString()})
+                        .mapToOneOrDefault(mapper, null)
+                        .flatMap(v -> Observable.just(new AbstractMap.SimpleEntry<>(k, v)))
+                        .limit(1))
+                .filter(entry -> null != entry.getValue())
+                .toList()
+                .flatMap(simpleEntries -> {
+                    EnumMap<K, Object> map = new EnumMap<>(clazz);
+                    for (AbstractMap.SimpleEntry<K, Object> entry : simpleEntries) {
+                        map.put(entry.getKey(), entry.getValue());
+                    }
+                    return Observable.just(map);
+                });
     }
 
     /**
@@ -229,54 +249,51 @@ public class RegistrationService extends Service {
      * @param rockyRequest
      * @param addresses
      * @param contactMethods
-     * @param name
-     * @param prevName
+     * @param names
      * @param classifications
      * @param voterIds
      * @param additionalInfo
      * @return {@link ApiRockyRequestWrapper} object
      */
+    @SuppressWarnings("Convert2streamapi")
     private ApiRockyRequestWrapper zipRockyRequest(RockyRequest rockyRequest,
-                                                   List<Address> addresses,
-                                                   List<ContactMethod> contactMethods,
-                                                   Name name,
-                                                   Name prevName,
-                                                   List<VoterClassification> classifications,
-                                                   List<VoterId> voterIds,
-                                                   List<AdditionalInfo> additionalInfo) {
+                                                   EnumMap<Address.Type, Address> addresses,
+                                                   EnumMap<ContactMethod.Type, ContactMethod> contactMethods,
+                                                   EnumMap<Name.Type, Name> names,
+                                                   EnumMap<VoterClassification.Type, VoterClassification> classifications,
+                                                   EnumMap<VoterId.Type, VoterId> voterIds,
+                                                   EnumMap<AdditionalInfo.Type, AdditionalInfo> additionalInfo) {
 
-        if (addresses.size() > 3) {
-            throw new UnsupportedOperationException("registrant cannot have more than 3 addresses");
-        }
 
-        ApiAddress apiRegAddress = ApiAddress.fromDb(Observable.from(addresses)
-                .filter(address -> address.type() == REGISTRATION).toBlocking().single());
-        ApiAddress apiMailAddress = ApiAddress.fromDb(Observable.from(addresses)
-                .filter(address -> address.type() == MAILING).toBlocking().single());
-        ApiAddress apiPrevAddress = ApiAddress.fromDb(Observable.from(addresses)
-                .filter(address -> address.type() == PREVIOUS).toBlocking().single());
+        ApiAddress apiRegAddress = ApiAddress.fromDb(addresses.get(REGISTRATION));
+        ApiAddress apiMailAddress = rockyRequest.hasMailingAddress() ?
+                ApiAddress.fromDb(addresses.get(MAILING)) : null;
+        ApiAddress apiPrevAddress = rockyRequest.hasPreviousAddress() ?
+                ApiAddress.fromDb(addresses.get(PREVIOUS)) : null;
 
-        ApiName apiName = ApiName.fromDb(name);
-        ApiName apiPrevName = ApiName.fromDb(prevName);
+        ApiName apiName = ApiName.fromDb(names.get(Name.Type.CURRENT_NAME));
+        ApiName apiPrevName = rockyRequest.hasPreviousName() ?
+                ApiName.fromDb(names.get(Name.Type.PREVIOUS_NAME)) : null;
 
         List<ApiContactMethod> apiContactMethods = new ArrayList<>(contactMethods.size());
-        for (ContactMethod contactMethod : contactMethods) {
-            apiContactMethods.add(ApiContactMethod.fromDb(contactMethod, rockyRequest.phoneType()));
+
+        for (Entry<ContactMethod.Type, ContactMethod> entry : contactMethods.entrySet()) {
+            apiContactMethods.add(ApiContactMethod.fromDb(entry.getValue(), rockyRequest.phoneType()));
         }
 
-        List<ApiVoterClassification> apiClassifications = new ArrayList<>(classifications.size());
-        for (VoterClassification classification : classifications) {
-            apiClassifications.add(ApiVoterClassification.fromDb(classification));
+        List<ApiVoterClassification> apiClassifications = new ArrayList<>();
+        for (Entry<VoterClassification.Type, VoterClassification> entry : classifications.entrySet()) {
+            apiClassifications.add(ApiVoterClassification.fromDb(entry.getValue()));
         }
 
-        List<ApiVoterId> apiVoterIds = new ArrayList<>(voterIds.size());
-        for (VoterId voterId : voterIds) {
-            apiVoterIds.add(ApiVoterId.fromDb(voterId));
+        List<ApiVoterId> apiVoterIds = new ArrayList<>();
+        for (Entry<VoterId.Type, VoterId> entry : voterIds.entrySet()) {
+            apiVoterIds.add(ApiVoterId.fromDb(entry.getValue()));
         }
 
-        List<ApiAdditionalInfo> apiAdditionalInfo = new ArrayList<>(additionalInfo.size());
-        for (AdditionalInfo addInfo : additionalInfo) {
-            apiAdditionalInfo.add(ApiAdditionalInfo.fromDb(addInfo));
+        List<ApiAdditionalInfo> apiAdditionalInfo = new ArrayList<>();
+        for (Entry<AdditionalInfo.Type, AdditionalInfo> entry : additionalInfo.entrySet()) {
+            apiAdditionalInfo.add(ApiAdditionalInfo.fromDb(entry.getValue()));
         }
 
         ApiSignature apiSignature = ApiSignature.fromDb(rockyRequest);

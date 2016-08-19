@@ -20,7 +20,7 @@ public abstract class VoterClassification implements Parcelable, BaseColumns {
     public static String TYPE = "type";
     public static String ASSERTION = "assertion";
 
-    private static final String SELECT_BY_TYPE = ""
+    public static final String SELECT_BY_TYPE = ""
             + "SELECT * FROM "
             + TABLE
             + " WHERE "
@@ -107,7 +107,7 @@ public abstract class VoterClassification implements Parcelable, BaseColumns {
     public enum Type {
         EIGHTEEN("eighteen_on_election_day"),
         CITIZEN("united_states_citizen"),
-        MAIL_COPY("send_copy_in_mail"),
+        SEND_COPY_IN_MAIL("send_copy_in_mail"),
         DECLARATION_AGREE("agree_to_declaration");
 
         private final String type;

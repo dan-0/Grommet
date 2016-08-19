@@ -1,5 +1,7 @@
 package com.rockthevote.grommet.data.api.model;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.squareup.moshi.Json;
@@ -46,7 +48,11 @@ public abstract class ApiName {
         abstract ApiName build();
     }
 
+    @Nullable
     public static ApiName fromDb(Name name) {
+        if (null == name) {
+            return null;
+        }
         return builder()
                 .firstName(name.firstName())
                 .lastName(name.lastName())

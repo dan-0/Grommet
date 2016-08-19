@@ -37,12 +37,14 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + RockyRequest.OPEN_TRACKING_ID + " TEXT,"
             + RockyRequest.GENERATED_DATE + " TEXT NOT NULL,"
             + RockyRequest.DATE_OF_BIRTH + " TEXT,"
-            + RockyRequest.REG_IS_MAIL + " INTEGER DEFAULT " + Db.BOOLEAN_TRUE + ","
+            + RockyRequest.HAS_MAILING_ADDRESS + " INTEGER DEFAULT " + Db.BOOLEAN_TRUE + ","
             + RockyRequest.RACE + " TEXT,"
             + RockyRequest.PARTY + " TEXT,"
             + RockyRequest.SIGNATURE + " BLOB,"
             + RockyRequest.LATITUDE + " REAL,"
-            + RockyRequest.LONGITUDE + " REAL"
+            + RockyRequest.LONGITUDE + " REAL,"
+            + RockyRequest.HAS_PREVIOUS_NAME + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
+            + RockyRequest.HAS_PREVIOUS_ADDRESS + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE
             + ")";
 
     private static final String CREATE_ADDRESS = ""

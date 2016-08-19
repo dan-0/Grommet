@@ -67,7 +67,7 @@ public abstract class ApiRockyRequest {
 
     static Builder builder() {
         return new AutoValue_ApiRockyRequest.Builder()
-                .lang("english")
+                .lang("en")
                 .optInEmail(false)
                 .optInSms(false)
                 .optInVolunteer(false)

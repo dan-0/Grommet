@@ -1,6 +1,8 @@
 package com.rockthevote.grommet.data.api.model;
 
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.squareup.moshi.JsonAdapter;
@@ -34,7 +36,12 @@ public abstract class ApiContactMethod {
         abstract ApiContactMethod build();
     }
 
+    @Nullable
     public static ApiContactMethod fromDb(ContactMethod contactMethod, PhoneType phoneType){
+        if (null == contactMethod) {
+            return null;
+        }
+
         List<String> capabilities = new ArrayList<>();
         // right now we only support phone (no fax)
         if(contactMethod.type() == ContactMethod.Type.PHONE){

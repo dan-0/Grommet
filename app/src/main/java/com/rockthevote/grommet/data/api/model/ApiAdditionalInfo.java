@@ -1,5 +1,7 @@
 package com.rockthevote.grommet.data.api.model;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.squareup.moshi.Json;
@@ -31,7 +33,11 @@ public abstract class ApiAdditionalInfo {
         abstract ApiAdditionalInfo build();
     }
 
+    @Nullable
     public static ApiAdditionalInfo fromDb(AdditionalInfo additionalInfo) {
+        if (null == additionalInfo) {
+            return null;
+        }
         return builder()
                 .name(additionalInfo.type().toString())
                 .stringValue(additionalInfo.stringValue())

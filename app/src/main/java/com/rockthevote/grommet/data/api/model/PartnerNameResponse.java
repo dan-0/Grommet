@@ -13,8 +13,8 @@ public abstract class PartnerNameResponse {
     @Json(name = "partner_name")
     abstract String partnerName();
 
-    public static JsonAdapter<ApiRockyRequest> jsonAdapter(Moshi moshi) {
-        return new AutoValue_ApiRockyRequest.MoshiJsonAdapter(moshi);
+    public static JsonAdapter<PartnerNameResponse> jsonAdapter(Moshi moshi) {
+        return new AutoValue_PartnerNameResponse.MoshiJsonAdapter(moshi);
     }
 
     public static Builder builder() {
