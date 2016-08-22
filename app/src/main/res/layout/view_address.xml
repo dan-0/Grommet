@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:hint="@string/label_unit_num"
-            android:inputType="number"
+            android:inputType="textPostalAddress|textCapWords"
             android:maxLines="1"/>
 
     </android.support.design.widget.TextInputLayout>

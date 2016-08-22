@@ -3,33 +3,50 @@ package com.rockthevote.grommet.ui.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RockyService;
+import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
+import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
+import com.rockthevote.grommet.util.Strings;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class EventDetails extends FrameLayout {
-    private static final String SAVE = "save";
+
+    static final ButterKnife.Setter<View, Boolean> ENABLED =
+            (view, value, index) -> view.setEnabled(value);
+
+    @BindViews({R.id.ede_til_canvasser_name, R.id.ede_til_event_name,
+                       R.id.ede_til_event_zip, R.id.ede_til_partner_id})
+    List<TextInputLayout> editableViews;
+
+    @BindView(R.id.ed_animator) BetterViewAnimator viewAnimator;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
 
@@ -37,17 +54,17 @@ public class EventDetails extends FrameLayout {
 
     @BindView(R.id.ed_event_zip) TextView edEventZip;
 
-    @BindView(R.id.ed_partner_id) TextView edPartnerId;
+    @BindView(R.id.ed_partner_name) TextView edPartnerName;
 
-    @BindView(R.id.ede_canvasser_name) TextView edeCanvasserName;
+    @BindView(R.id.ede_canvasser_name) EditText edeCanvasserName;
 
-    @BindView(R.id.ede_event_name) TextView edeEventName;
+    @BindView(R.id.ede_event_name) EditText edeEventName;
 
-    @BindView(R.id.ede_event_zip) TextView edeEventZip;
+    @BindView(R.id.ede_event_zip) EditText edeEventZip;
 
-    @BindView(R.id.ede_partner_id) TextView edePartnerId;
+    @BindView(R.id.ede_til_partner_id) TextInputLayout edePartnerIdTIL;
 
-    @BindView(R.id.ed_animator) BetterViewAnimator viewAnimator;
+    @BindView(R.id.ede_partner_id) EditText edePartnerId;
 
     @Inject @EventRegTotal Preference<Integer> eventRegTotalPref;
 
@@ -59,7 +76,9 @@ public class EventDetails extends FrameLayout {
 
     @Inject @PartnerId Preference<String> partnerIdPref;
 
-    private PublishSubject<String> publishSubject = PublishSubject.create();
+    @Inject @PartnerName Preference<String> partnerNamePref;
+
+    @Inject RockyService rockyService;
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -104,18 +123,8 @@ public class EventDetails extends FrameLayout {
             subscriptions.add(eventZipPref.asObservable()
                     .subscribe(name -> edEventZip.setText(name)));
 
-            subscriptions.add(partnerIdPref.asObservable()
-                    .subscribe(name -> edPartnerId.setText(name)));
-
-
-            //reset event registration total when event name changes
-            subscriptions.add(Observable.combineLatest(
-                    RxTextView.textChanges(edeEventName), publishSubject,
-                    (eventName, ignore) -> "")
-                    .subscribe(s -> {
-                        eventRegTotalPref.set(0);
-                    })
-            );
+            subscriptions.add(partnerNamePref.asObservable()
+                    .subscribe(name -> edPartnerName.setText(name)));
         }
     }
 
@@ -134,17 +143,56 @@ public class EventDetails extends FrameLayout {
 
             @Override
             public void onSave() {
-                canvasserNamePref.set(edeCanvasserName.getText().toString());
-                eventNamePref.set(edeEventName.getText().toString());
-                eventZipPref.set(edeEventZip.getText().toString());
-                partnerIdPref.set(edePartnerId.getText().toString());
 
-                publishSubject.onNext(SAVE);
-                enableEditMode(false);
+                // allow the user to not set a partner ID
+                if (Strings.isBlank(edePartnerId.getText().toString())) {
+                    setPartnerName("");
+                } else if (edePartnerId.getText().toString().equals(partnerIdPref.get())) {
+                    setPartnerName(partnerNamePref.get());
+                } else {
+                    rockyService.getPartnerName(edePartnerId.getText().toString())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe(() -> {
+                                editableActionView.showSpinner();
+                                ButterKnife.apply(editableViews, ENABLED, false);
+                            })
+                            .doOnCompleted(() -> ButterKnife.apply(editableViews, ENABLED, true))
+                            .subscribe(result -> {
+                                if (!result.isError() && result.response().isSuccessful()) {
+                                    PartnerNameResponse partnerNameResponse = result.response().body();
+                                    if (partnerNameResponse.isValid()) {
+                                        setPartnerName(partnerNameResponse.partnerName());
+                                    } else {
+                                        edePartnerIdTIL.setError(
+                                                getContext().getString(R.string.error_partner_id));
+                                        editableActionView.showSaveCancel();
+                                    }
+                                } else {
+                                    edePartnerIdTIL.setError(
+                                            getContext().getString(R.string.error_partner_id));
+                                    editableActionView.showSaveCancel();
+                                }
+                            });
+                }
             }
         };
 
         editableActionView.setListener(listener);
+    }
+
+    private void setPartnerName(String name) {
+        canvasserNamePref.set(edeCanvasserName.getText().toString());
+        eventNamePref.set(edeEventName.getText().toString());
+        eventZipPref.set(edeEventZip.getText().toString());
+        partnerIdPref.set(edePartnerId.getText().toString());
+        partnerNamePref.set(name);
+
+        // reset event registration total when event name changes
+        if (!edeEventName.getText().toString().equals(eventNamePref.get())) {
+            eventRegTotalPref.set(0);
+        }
+        enableEditMode(false);
     }
 
     @Override
@@ -156,15 +204,17 @@ public class EventDetails extends FrameLayout {
     }
 
     public void enableEditMode(boolean enable) {
-        editableActionView.enableEditMode(enable);
+
         viewAnimator.setDisplayedChildId(enable ? R.id.editable_details : R.id.static_details);
 
         if (enable) {
+            editableActionView.showSaveCancel();
             edeCanvasserName.setText(canvasserNamePref.get());
             edeEventName.setText(eventNamePref.get());
             edeEventZip.setText(eventZipPref.get());
             edePartnerId.setText(partnerIdPref.get());
         } else {
+            editableActionView.showEditButton();
             // close keyboard if it's showing
             InputMethodManager inputMethodManager = (InputMethodManager) getContext()
                     .getSystemService(Activity.INPUT_METHOD_SERVICE);

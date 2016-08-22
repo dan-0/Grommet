@@ -17,6 +17,7 @@ import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
+import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.squareup.moshi.Moshi;
 
 import java.io.File;
@@ -84,6 +85,13 @@ public final class DataModule {
     @PartnerId
     Preference<String> providePartnerId(RxSharedPreferences prefs, Application app) {
         return prefs.getString(app.getResources().getString(R.string.pref_key_partner_id));
+    }
+
+    @Provides
+    @Singleton
+    @PartnerName
+    Preference<String> providePartnerName(RxSharedPreferences prefs, Application app) {
+        return prefs.getString(app.getResources().getString(R.string.pref_key_partner_name));
     }
 
     @Provides
