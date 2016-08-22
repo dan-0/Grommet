@@ -6,7 +6,7 @@
               android:layout_height="wrap_content"
               android:background="@android:color/transparent"
               android:gravity="center"
-              android:orientation="horizontal">
+              android:orientation="vertical">
 
     <TextView
         android:id="@+id/step_number"
@@ -24,9 +24,8 @@
         android:id="@+id/step_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/content_area_padding"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:textAllCaps="false"
         android:textAppearance="@android:style/TextAppearance.Material.Widget.TabWidget"
         android:textColor="@color/selector_enabled_text_color"

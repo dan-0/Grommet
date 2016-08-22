@@ -101,6 +101,9 @@ public class NameView extends FrameLayout {
                     case 2:
                         type = Name.Type.PREVIOUS_NAME;
                         break;
+                    case 3:
+                        type = Name.Type.ASSISTANT_NAME;
+                        break;
                 }
             } finally {
                 typedArray.recycle();
@@ -122,6 +125,9 @@ public class NameView extends FrameLayout {
                 break;
             case PREVIOUS_NAME:
                 sectionTitle.setText(R.string.section_label_previous_name);
+                break;
+            case ASSISTANT_NAME:
+                sectionTitle.setText(R.string.section_label_name);
                 break;
         }
 

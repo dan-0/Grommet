@@ -159,9 +159,10 @@ public abstract class Address implements Parcelable, BaseColumns {
     }
 
     public enum Type {
-        MAILING("mailing_address"),
-        PREVIOUS("previous_address"),
-        REGISTRATION("registration_address");
+        MAILING_ADDRESS("mailing_address"),
+        PREVIOUS_ADDRESS("previous_address"),
+        REGISTRATION_ADDRESS("registration_address"),
+        ASSISTANT_ADDRESS("assistant_address");
 
         private final String type;
 
@@ -180,7 +181,7 @@ public abstract class Address implements Parcelable, BaseColumns {
                     return val;
                 }
             }
-            return MAILING;
+            return MAILING_ADDRESS;
         }
     }
 

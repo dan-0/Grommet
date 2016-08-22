@@ -20,6 +20,7 @@ public class RegistrationPagerAdapter extends FragmentPagerAdapter {
         titles.put(0, context.getString(R.string.fragment_title_new_registrant));
         titles.put(1, context.getString(R.string.fragment_title_personal_info));
         titles.put(2, context.getString(R.string.fragment_title_additional_info));
+//        titles.put(3, context.getString(R.string.fragment_title_assistant_info));
         titles.put(3, context.getString(R.string.fragment_title_review));
     }
 
@@ -36,6 +37,8 @@ public class RegistrationPagerAdapter extends FragmentPagerAdapter {
                 return new PersonalInfoFragment();
             case 2:
                 return new AdditionalInfoFragment();
+//            case 3:
+//                return new AssistantInfoFragment();
             case 3:
                 return new ReviewAndConfirmFragment();
             default:

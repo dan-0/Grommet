@@ -105,7 +105,9 @@ public abstract class ContactMethod implements Parcelable, BaseColumns {
     }
 
     public enum Type {
-        PHONE("phone"), EMAIL("email");
+        PHONE("phone"),
+        ASSISTANT_PHONE("assistant_phone"),
+        EMAIL("email");
 
         private final String type;
 

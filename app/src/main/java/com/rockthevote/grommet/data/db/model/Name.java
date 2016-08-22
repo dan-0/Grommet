@@ -149,7 +149,8 @@ public abstract class Name implements Parcelable, BaseColumns {
 
     public enum Type {
         CURRENT_NAME("current_name"),
-        PREVIOUS_NAME("previous_name");
+        PREVIOUS_NAME("previous_name"),
+        ASSISTANT_NAME("assistant_name");
 
         private final String type;
 
