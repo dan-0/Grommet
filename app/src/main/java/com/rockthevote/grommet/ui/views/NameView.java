@@ -158,6 +158,7 @@ public class NameView extends FrameLayout {
                         .build())
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                .skip(1)
                 .subscribe(contentValues -> {
                     Name.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
                 }));

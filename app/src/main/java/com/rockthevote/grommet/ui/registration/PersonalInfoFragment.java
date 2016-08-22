@@ -8,11 +8,15 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.f2prateek.rx.preferences.Preference;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.squareup.sqlbrite.BriteDatabase;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -20,6 +24,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
+
+import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
+import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.SEND_COPY_IN_MAIL;
 
 
 public class PersonalInfoFragment extends BaseRegistrationFragment {
@@ -38,9 +47,13 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.previous_address_divider) View prevDivider;
 
+    @BindView(R.id.send_copy_in_mail) CheckBox sendCopyInMail;
+
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
 
     @Inject BriteDatabase db;
+
+    private CompositeSubscription subscriptions;
 
     @Nullable
     @Override
@@ -55,6 +68,30 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
         ButterKnife.bind(this, view);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        subscriptions = new CompositeSubscription();
+
+        // try to use debounce when possible to reduce DB churn
+        subscriptions.add(RxCompoundButton.checkedChanges(sendCopyInMail)
+                .observeOn(Schedulers.io())
+                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                .skip(1)
+                .subscribe(checked -> {
+                    VoterClassification.insertOrUpdate(db, rockyRequestRowId.get(), SEND_COPY_IN_MAIL,
+                            new VoterClassification.Builder()
+                                    .assertion(checked)
+                                    .build());
+                }));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        subscriptions.unsubscribe();
+    }
+
     @OnCheckedChanged(R.id.mailing_address_is_different)
     public void onMailingAddressDifferentChecked(boolean checked) {
         mailingAddress.setVisibility(checked ? View.VISIBLE : View.GONE);
@@ -62,7 +99,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
 
         db.update(RockyRequest.TABLE,
                 new RockyRequest.Builder()
-                        .regIsMail(!checked)
+                        .hasMailingAddress(checked)
                         .build(),
                 RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
     }
@@ -71,6 +108,12 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onAddressChangeChecked(boolean checked) {
         previousAddress.setVisibility(checked ? View.VISIBLE : View.GONE);
         prevDivider.setVisibility(checked ? View.VISIBLE : View.GONE);
+
+        db.update(RockyRequest.TABLE,
+                new RockyRequest.Builder()
+                        .hasPreviousAddress(checked)
+                        .build(),
+                RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
     }
 
     @Override

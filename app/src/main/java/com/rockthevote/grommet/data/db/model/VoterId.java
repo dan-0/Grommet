@@ -21,7 +21,7 @@ public abstract class VoterId implements Parcelable, BaseColumns {
     public static String VALUE = "value";
     public static String ATTEST_NO_SUCH_ID = "attest_no_such_id";
 
-    private static final String SELECT_BY_TYPE = ""
+    public static final String SELECT_BY_TYPE = ""
             + "SELECT * FROM "
             + TABLE
             + " WHERE "
@@ -70,13 +70,14 @@ public abstract class VoterId implements Parcelable, BaseColumns {
                 String.valueOf(rockyRequestRowId),
                 type.toString());
 
+
         if (cursor.moveToNext()) {
             long rowId = Db.getLong(cursor, _ID);
             db.update(TABLE, values, _ID + " = ? ", String.valueOf(rowId));
         } else {
             db.insert(TABLE, values);
         }
-        cursor.close();
+
     }
 
 
@@ -115,7 +116,7 @@ public abstract class VoterId implements Parcelable, BaseColumns {
 
     public enum Type {
         DRIVERS_LICENSE("drivers_license"),
-        SSN_LAST_FOUR("ssn_last_four");
+        SSN_LAST_FOUR("ssn4");
 
         private final String type;
 

@@ -19,7 +19,7 @@ public abstract class AdditionalInfo implements Parcelable, BaseColumns {
     public static final String STRING_VALUE = "string_value";
     public static final String ROCKY_REQUEST_ID = "rocky_request_id";
 
-    private static final String SELECT_BY_TYPE = ""
+    public static final String SELECT_BY_TYPE = ""
             + "SELECT * FROM "
             + TABLE
             + " WHERE "
@@ -104,7 +104,8 @@ public abstract class AdditionalInfo implements Parcelable, BaseColumns {
     }
 
     public enum Type {
-        LANGUAGE_PREF("preferred_language");
+        LANGUAGE_PREF("preferred_language"),
+        ASSISTANT_DECLARATION("assistant_declaration");
 
         private final String type;
 

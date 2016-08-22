@@ -71,6 +71,7 @@
     <string name="label_county">County</string>
     <string name="checkbox_mailing_address_is_different"> I get my mail from a different address from the one above</string>
     <string name="checkbox_address_changed">I have changed my address</string>
+    <string name="label_send_copy_in_mail">I would like to receive a copy of my voter registration in the mail</string>
     <string name="checkbox_name_changed">I have changed my name</string>
     <string name="label_receive_text">Send me txt messages from Rock the Vote</string>
     <string name="county_empty_error">County Required</string>
@@ -93,12 +94,14 @@
 
     <!--Additional Info Strings-->
     <string name="label_preferred_language">Preferred Language</string>
-    <string name="label_drivers_license_id">Driver\'s License ID</string>
-    <string name="label_has_drivers_license">I have my driver\'s license number</string>
+    <string name="label_drivers_license_id">PennDOT number</string>
+    <string name="label_does_not_have_penn_dot">I do not know my PennDOT number</string>
     <string name="label_ssn_last_four">SSN Last Four</string>
-    <string name="label_has_ssn_last_four">I know the last four of my SSN</string>
+    <string name="label_does_not_have_ssn">I do not know the last four of my SSN</string>
     <string name="preferred_language_label">Preferred Language to Receive Election Materials</string>
     <string name="section_label_election_info">Election Info</string>
+    <string name="error_penn_dot">Check "I do not know" if you don\'t know your PennDOT number</string>
+    <string name="error_ssn">Check "I do not know" if you don\'t know your SSN last four</string>
 
     <!--Review and Confirm Fragment Strings-->
     <string name="fragment_title_review">Review</string>
@@ -145,7 +148,8 @@
     <string name="action_edit">Edit</string>
     <string name="action_ok">OK</string>
 
-    <string name="upload_notification_title_template">Processing PA OVR Registrations</string>
+    <string name="upload_notification_title_success">PA Registration Success</string>
+    <string name="upload_notification_title_failure">PA Registration Failed</string>
 
     <string name="about_activity_text">
 <![CDATA[

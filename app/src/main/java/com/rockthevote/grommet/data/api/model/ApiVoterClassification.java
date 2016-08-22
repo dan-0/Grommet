@@ -8,6 +8,7 @@ import com.squareup.moshi.Moshi;
 @AutoValue
 public abstract class ApiVoterClassification {
 
+
     abstract String type();
 
     abstract boolean assertion();

@@ -50,8 +50,7 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     @BindView(R.id.previous_name) NameView previousName;
 
     @NotEmpty
-    @BindView(R.id.til_birthday)
-    TextInputLayout tilBirthday;
+    @BindView(R.id.til_birthday) TextInputLayout tilBirthday;
     @BindView(R.id.edittext_birthday) TextInputEditText birthday;
 
     @Checked(messageResId = R.string.eighteen_or_older_err)
@@ -126,6 +125,12 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     public void onNameChangedChecked(boolean checked) {
         previousName.setVisibility(checked ? View.VISIBLE : View.GONE);
         previousNameDivider.setVisibility(checked ? View.VISIBLE : View.GONE);
+
+        db.update(RockyRequest.TABLE,
+                new RockyRequest.Builder()
+                        .hasPreviousName(checked)
+                        .build(),
+                RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
     }
 
     @Override

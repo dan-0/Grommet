@@ -14,6 +14,7 @@ import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
@@ -37,6 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -57,18 +59,18 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.preferred_language) EditText preferredLanguage;
 
-    @BindView(R.id.til_drivers_license) TextInputLayout driversLicenseTIL;
+    @BindView(R.id.does_not_have_penn_dot_checkbox) CheckBox noPennDOTCheckbox;
 
-    @BindView(R.id.drivers_license_checkbox) CheckBox hasDriversLicense;
+    @NotEmpty(messageResId = R.string.error_penn_dot)
+    @BindView(R.id.til_penn_dot) TextInputLayout pennDOTTIL;
 
-    @NotEmpty
-    @BindView(R.id.drivers_license) EditText driversLicenseEditText;
+    @BindView(R.id.penn_dot_edit_text) EditText pennDOTEditText;
 
+    @BindView(R.id.ssn_last_four_checkbox) CheckBox noSSNCheckBox;
+    
+    @Length(min = 4, max = 4, messageResId = R.string.error_ssn)
     @BindView(R.id.til_ssn_last_four) TextInputLayout ssnTIL;
 
-    @BindView(R.id.ssn_last_four_checkbox) CheckBox hasSSNCheckBox;
-
-    @NotEmpty
     @BindView(R.id.ssn_last_four_edit_text) EditText ssnEditText;
 
     @EmailOrEmpty(messageResId = R.string.email_error)
@@ -99,8 +101,9 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private EnumAdapter<RockyRequest.PhoneType> phoneTypeEnumAdapter;
     private PhoneNumberFormattingTextWatcher phoneFormatter;
 
-    private final PublishSubject<Boolean> hasDriversLicenseChecked = PublishSubject.create();
-    private final PublishSubject<Boolean> hasSSNChecked = PublishSubject.create();
+    // must be initialized to true to trigger the observable default, unchecked, state (it's reversed)
+    private final BehaviorSubject<Boolean> doesNotHavePennDOT = BehaviorSubject.create(true);
+    private final BehaviorSubject<Boolean> doesNotHaveSSN = BehaviorSubject.create(true);
 
     @Nullable
     @Override
@@ -116,6 +119,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         Validator.registerAnnotation(PhoneOrEmpty.class);
         Validator.registerAnnotation(EmailOrEmpty.class);
+        Validator.registerAnnotation(NotEmpty.class);
 
         validator = new ObservableValidator(this, getActivity());
 
@@ -186,12 +190,12 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                                     .build());
                 }));
 
-        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(driversLicenseEditText),
-                hasDriversLicenseChecked,
-                (driversLicense, checkChange) -> new VoterId.Builder()
+        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(pennDOTEditText),
+                doesNotHavePennDOT,
+                (driversLicense, doesNotHave) -> new VoterId.Builder()
                         .type(DRIVERS_LICENSE)
-                        .value(checkChange ? driversLicense.editable().toString() : "")
-                        .attestNoSuchId(checkChange)
+                        .value(doesNotHave ? "" : driversLicense.editable().toString())
+                        .attestNoSuchId(doesNotHave)
                         .build())
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
@@ -200,11 +204,11 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                 }));
 
         subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(ssnEditText),
-                hasSSNChecked,
-                (ssn, hasSSN) -> new VoterId.Builder()
+                doesNotHaveSSN,
+                (ssn, doesNotHave) -> new VoterId.Builder()
                         .type(SSN_LAST_FOUR)
-                        .value(hasSSN ? ssn.editable().toString() : "")
-                        .attestNoSuchId(hasSSN)
+                        .value(doesNotHave ? "" : ssn.editable().toString())
+                        .attestNoSuchId(doesNotHave)
                         .build())
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
@@ -287,24 +291,24 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
      *
      * @param checked
      */
-    @OnCheckedChanged(R.id.drivers_license_checkbox)
+    @OnCheckedChanged(R.id.does_not_have_penn_dot_checkbox)
     public void onDriversLicenseChecked(boolean checked) {
-        driversLicenseTIL.setVisibility(checked ? View.VISIBLE : View.GONE);
+        pennDOTTIL.setVisibility(!checked ? View.VISIBLE : View.GONE);
 
         // disabling it prevents Saripaar from trying to validate it
-        driversLicenseTIL.setEnabled(checked);
-        driversLicenseTIL.setErrorEnabled(checked);
-        hasDriversLicenseChecked.onNext(checked);
+        pennDOTTIL.setEnabled(!checked);
+        pennDOTTIL.setErrorEnabled(!checked);
+        doesNotHavePennDOT.onNext(!checked);
     }
 
     @OnCheckedChanged(R.id.ssn_last_four_checkbox)
     public void onSSNChecked(boolean checked) {
-        ssnTIL.setVisibility(checked ? View.VISIBLE : View.GONE);
+        ssnTIL.setVisibility(!checked ? View.VISIBLE : View.GONE);
 
         // disabling it prevents Saripaar from trying to validate it
-        ssnTIL.setEnabled(checked);
-        ssnTIL.setErrorEnabled(checked);
-        hasSSNChecked.onNext(checked);
+        ssnTIL.setEnabled(!checked);
+        ssnTIL.setErrorEnabled(!checked);
+        doesNotHaveSSN.onNext(!checked);
     }
 
     @Override

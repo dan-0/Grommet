@@ -1,16 +1,14 @@
 package com.rockthevote.grommet.ui;
 
-import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.os.Build;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.db.model.RockyRequest;
 
 
 /**
@@ -21,10 +19,13 @@ import com.rockthevote.grommet.R;
  * class to create notifications in a backward-compatible way.
  */
 public class UploadNotification {
-    /**
-     * The unique identifier for this type of notification.
-     */
-    private static final String NOTIFICATION_TAG = "upload_registration";
+
+    private static final String NOTIFICATION_SUCCESS_TAG = "notification_success_tag";
+    private static final String NOTIFICATION_FAILURE_TAG = "notification_failure_tag";
+
+    private static final int NOTIFICATION_SUCCESS_ID = 200;
+    private static final int NOTIFICATION_FAILURE_ID = 400;
+
 
     /**
      * Shows the notification, or updates a previously shown notification of
@@ -39,78 +40,78 @@ public class UploadNotification {
      * <a href="https://developer.android.com/design/patterns/notifications.html">
      * Notification design guidelines</a> when doing so.
      *
-     * @see #cancel(Context)
+     * @see #cancelSuccess(Context) (Context)
+     * @see #cancelFailure(Context) (Context)
      */
-    public static void notify(final Context context, final int number) {
-        final Resources res = context.getResources();
-
-
-        final String title = res.getString(R.string.upload_notification_title_template);
+    public static void notify(final Context context, RockyRequest.Status status) {
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-
-                // Set appropriate defaults for the notification light, sound,
-                // and vibration.
                 .setDefaults(0)
-
-                // Set required fields, including the small icon, the
-                // notification title, and text.
-                .setSmallIcon(R.drawable.ic_stat_upload)
-                .setContentTitle(title)
-
-                // All fields below this line are optional.
-
-                // Use a default priority (recognized on devices running Android
-                // 4.1 or later)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-                // If this notification relates to a past or upcoming event, you
-                // should set the relevant time information using the setWhen
-                // method below. If this call is omitted, the notification's
-                // timestamp will by set to the time at which it was shown.
-                // TODO: Call setWhen if this notification relates to a past or
-                // upcoming event. The sole argument to this method should be
-                // the notification timestamp in milliseconds.
-                //.setWhen(...)
-
-                // Set the pending intent to be initiated when the user touches
-                // the notification.
                 .setContentIntent(
                         PendingIntent.getActivity(
                                 context,
                                 0,
                                 new Intent(context, MainActivity.class),
                                 PendingIntent.FLAG_UPDATE_CURRENT))
+                .setContentTitle(context.getString(getNotifTitle(status)))
+                .setSmallIcon(R.drawable.ic_stat_upload)
+                .setAutoCancel(false);
 
-                // Automatically dismiss the notification when it is touched.
-                .setAutoCancel(true);
-
-        notify(context, builder.build());
-    }
-
-    @TargetApi(Build.VERSION_CODES.ECLAIR)
-    private static void notify(final Context context, final Notification notification) {
         final NotificationManager nm = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-            nm.notify(NOTIFICATION_TAG, 0, notification);
-        } else {
-            nm.notify(NOTIFICATION_TAG.hashCode(), notification);
+
+        nm.notify(getNotificationTag(status), getNotificationId(status), builder.build());
+    }
+
+
+    private static
+    @StringRes
+    int getNotifTitle(RockyRequest.Status status) {
+        switch (status) {
+            case REGISTER_SUCCESS:
+                return R.string.upload_notification_title_success;
+            default:
+            case REGISTER_FAILURE:
+                return R.string.upload_notification_title_failure;
+        }
+    }
+
+    private static int getNotificationId(RockyRequest.Status status) {
+        switch (status) {
+            case REGISTER_SUCCESS:
+                return NOTIFICATION_SUCCESS_ID;
+            default:
+            case REGISTER_FAILURE:
+                return NOTIFICATION_FAILURE_ID;
+        }
+    }
+
+    private static String getNotificationTag(RockyRequest.Status status) {
+        switch (status) {
+            case REGISTER_SUCCESS:
+                return NOTIFICATION_SUCCESS_TAG;
+            default:
+            case REGISTER_FAILURE:
+                return NOTIFICATION_FAILURE_TAG;
         }
     }
 
     /**
      * Cancels any notifications of this type previously shown using
-     * {@link #notify(Context, String, int)}.
+     * {@link #notify(Context, boolean)}.
      */
-    @TargetApi(Build.VERSION_CODES.ECLAIR)
-    public static void cancel(final Context context) {
+    public static void cancelSuccess(final Context context) {
         final NotificationManager nm = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-            nm.cancel(NOTIFICATION_TAG, 0);
-        } else {
-            nm.cancel(NOTIFICATION_TAG.hashCode());
-        }
+        nm.cancel(NOTIFICATION_SUCCESS_TAG, NOTIFICATION_SUCCESS_ID);
+
+    }
+
+    public static void cancelFailure(final Context context) {
+        final NotificationManager nm = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancel(NOTIFICATION_FAILURE_TAG, NOTIFICATION_FAILURE_ID);
+
     }
 }

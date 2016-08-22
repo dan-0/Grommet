@@ -33,12 +33,14 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public static final String OPEN_TRACKING_ID = "open_tracking_id";
     public static final String GENERATED_DATE = "generated_date";
     public static final String DATE_OF_BIRTH = "date_of_birth";
-    public static final String REG_IS_MAIL = "reg_is_mail";
+    public static final String HAS_MAILING_ADDRESS = "has_mailing_address";
     public static final String RACE = "race";
     public static final String PARTY = "party";
     public static final String SIGNATURE = "signature";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
+    public static final String HAS_PREVIOUS_NAME = "has_previous_name";
+    public static final String HAS_PREVIOUS_ADDRESS = "has_previous_address";
 
     public static final String SELECT_BY_ID = ""
             + "SELECT * FROM "
@@ -86,7 +88,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     @Nullable
     public abstract Date dateOfBirth();
 
-    public abstract boolean regIsMail();
+    public abstract boolean hasMailingAddress();
 
     @Nullable
     public abstract Race race();
@@ -100,6 +102,10 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public abstract long latitude();
 
     public abstract long longitude();
+
+    public abstract boolean hasPreviousName();
+
+    public abstract boolean hasPreviousAddress();
 
     public static final Func1<Cursor, RockyRequest> MAPPER = cursor -> {
         long id = Db.getLong(cursor, _ID);
@@ -117,18 +123,20 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         String openTrackingId = Db.getString(cursor, OPEN_TRACKING_ID);
         Date generatedDate = Dates.parseISO8601_Date(Db.getString(cursor, GENERATED_DATE));
         Date dateOfBirth = Dates.parseISO8601_ShortDate(Db.getString(cursor, DATE_OF_BIRTH));
-        boolean regIsMail = Db.getBoolean(cursor, REG_IS_MAIL);
+        boolean hasMailingAddress = Db.getBoolean(cursor, HAS_MAILING_ADDRESS);
         Race race = Race.fromString(Db.getString(cursor, RACE));
         Party party = Party.fromString(Db.getString(cursor, PARTY));
         byte[] signature = Db.getBlob(cursor, SIGNATURE);
         long latitude = Db.getLong(cursor, LATITUDE);
         long longitude = Db.getLong(cursor, LONGITUDE);
+        boolean hasPreviousName = Db.getBoolean(cursor, HAS_PREVIOUS_NAME);
+        boolean hasPreviousAddress = Db.getBoolean(cursor, HAS_PREVIOUS_ADDRESS);
 
         return new AutoValue_RockyRequest(id, status, language, phoneType, partnerId, optInEmail, optInSMS,
                 optInVolunteer, partnerOptInSMS, partnerOptInEmail,
                 sourceTrackingId, partnerTrackingId, openTrackingId,
-                generatedDate, dateOfBirth, regIsMail, race, party, signature,
-                latitude, longitude);
+                generatedDate, dateOfBirth, hasMailingAddress, race, party, signature,
+                latitude, longitude, hasPreviousName, hasPreviousAddress);
     };
 
     public static final class Builder {
@@ -209,8 +217,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
             return this;
         }
 
-        public Builder regIsMail(boolean val) {
-            values.put(REG_IS_MAIL, val);
+        public Builder hasMailingAddress(boolean val) {
+            values.put(HAS_MAILING_ADDRESS, val);
             return this;
         }
 
@@ -241,6 +249,16 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
 
         public Builder longitude(long longitude) {
             values.put(LONGITUDE, longitude);
+            return this;
+        }
+
+        public Builder hasPreviousName(boolean hasPreviousName) {
+            values.put(HAS_PREVIOUS_NAME, hasPreviousName);
+            return this;
+        }
+
+        public Builder hasPreviousAddress(boolean hasPreviousAddress) {
+            values.put(HAS_PREVIOUS_ADDRESS, hasPreviousAddress);
             return this;
         }
 
@@ -338,7 +356,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         }
     }
 
-    public static enum PhoneType {
+    public enum PhoneType {
         MOBILE("Mobile"), HOME("Home"), WORK("Work");
 
         private final String phoneType;

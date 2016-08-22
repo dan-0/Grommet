@@ -121,7 +121,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                     phoneLabel.setText(rockyRequest.phoneType().toString());
                     // show/hide registration address views
                     for (View v : mailingAddressViews) {
-                        v.setVisibility(rockyRequest.regIsMail() ? View.GONE : View.VISIBLE);
+                        v.setVisibility(rockyRequest.hasMailingAddress() ? View.VISIBLE : View.GONE);
                     }
                 }));
 
@@ -197,7 +197,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @OnClick(R.id.button_register)
     public void onRegisterClick(View v) {
         if (!signaturePad.isEmpty()) {
-            signaturePadError.setVisibility(View.INVISIBLE);
+            signaturePadError.setVisibility(View.GONE);
             db.update(RockyRequest.TABLE,
                     new RockyRequest.Builder()
                             .status(RockyRequest.Status.FORM_COMPLETE)

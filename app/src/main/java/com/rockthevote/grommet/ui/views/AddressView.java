@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
@@ -55,7 +56,7 @@ public class AddressView extends FrameLayout {
 
     @BindView(R.id.spinner_state) BetterSpinner stateSpinner;
 
-    @NotEmpty
+    @Length(min = 5)
     @BindView(R.id.til_zip_code) TextInputLayout zipTIL;
     @BindView(R.id.zip) EditText zipEditText;
 
