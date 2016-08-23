@@ -8,10 +8,10 @@ import com.squareup.moshi.Moshi;
 @AutoValue
 public abstract class PartnerNameResponse {
     @Json(name = "is_valid")
-    abstract boolean isValid();
+    public abstract boolean isValid();
 
     @Json(name = "partner_name")
-    abstract String partnerName();
+    public abstract String partnerName();
 
     public static JsonAdapter<PartnerNameResponse> jsonAdapter(Moshi moshi) {
         return new AutoValue_PartnerNameResponse.MoshiJsonAdapter(moshi);

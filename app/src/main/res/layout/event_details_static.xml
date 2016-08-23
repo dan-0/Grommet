@@ -96,11 +96,11 @@
         android:layout_marginStart="@dimen/content_margin"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
-        android:text="@string/pref_title_partner_id"
+        android:text="@string/pref_title_partner_name"
         android:textColor="@color/colorSecondaryText"/>
 
     <TextView
-        android:id="@+id/ed_partner_id"
+        android:id="@+id/ed_partner_name"
         style="@android:style/TextAppearance.Material.Subhead"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

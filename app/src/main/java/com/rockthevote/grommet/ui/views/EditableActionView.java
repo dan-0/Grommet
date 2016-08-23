@@ -4,11 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -16,9 +15,7 @@ import butterknife.OnClick;
 
 
 public class EditableActionView extends FrameLayout {
-    @BindView(R.id.eav_edit_button) ImageButton editButton;
-    @BindView(R.id.eav_cancel_button) Button cancelButton;
-    @BindView(R.id.eav_save_button) Button saveButton;
+    @BindView(R.id.eav_better_view_animator) BetterViewAnimator viewAnimator;
 
     private EditableActionViewListener listener;
 
@@ -41,7 +38,7 @@ public class EditableActionView extends FrameLayout {
         super.onFinishInflate();
         if (!isInEditMode()) {
             ButterKnife.bind(this);
-            enableEditMode(false);
+            showEditButton();
         }
     }
 
@@ -70,12 +67,16 @@ public class EditableActionView extends FrameLayout {
         }
     }
 
-    public void enableEditMode(boolean enable) {
+    public void showSaveCancel() {
+        viewAnimator.setDisplayedChildId(R.id.eav_edit_mode_layout);
+    }
 
-        editButton.setVisibility(enable ? GONE : VISIBLE);
-        saveButton.setVisibility(enable ? VISIBLE : GONE);
-        cancelButton.setVisibility(enable ? VISIBLE : GONE);
+    public void showSpinner() {
+        viewAnimator.setDisplayedChildId(R.id.eav_progress_bar);
+    }
 
+    public void showEditButton() {
+        viewAnimator.setDisplayedChildId(R.id.eav_edit_button);
     }
 
     public interface EditableActionViewListener {

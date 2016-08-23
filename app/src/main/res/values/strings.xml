@@ -22,6 +22,8 @@
     <string name="label_registered_event">Registered</string>
     <string name="button_label_new_voter">New Voter</string>
     <string name="event_details">Event Details</string>
+    <string name="error_partner_id">Invalid Partner ID</string>
+    <string name="label_partner_name_spinner">Validating Partner ID</string>
 
     <!--Registration Activity Strings-->
     <string name="cancel_dialog_message">Cancel current registration?</string>
@@ -73,7 +75,7 @@
     <string name="checkbox_address_changed">I have changed my address</string>
     <string name="label_send_copy_in_mail">I would like to receive a copy of my voter registration in the mail</string>
     <string name="checkbox_name_changed">I have changed my name</string>
-    <string name="label_receive_text">Send me txt messages from Rock the Vote</string>
+    <string name="label_receive_text">I agree that %s/Pennsylvania Voice/State Voices may call and text me with important updates and reminders."</string>
     <string name="county_empty_error">County Required</string>
     <string name="phone_format_error">Invalid phone number</string>
 
@@ -134,12 +136,14 @@
 
     <!-- Preference Strings -->
     <string name="pref_key_partner_id">partner_id</string>
+    <string name="pref_key_partner_name">partner_name</string>
     <string name="pref_key_canvasser_name">canvasser_name</string>
     <string name="pref_key_event_zip_code">event_zip</string>
     <string name="pref_key_event_name">event_name</string>
     <string name="pref_key_event_reg_total">event_reg_total</string>
     <string name="pref_key_app_reg_total">app_reg_total</string>
 
+    <string name="pref_title_partner_name">Partner Name</string>
     <string name="pref_title_partner_id">Partner ID</string>
     <string name="pref_title_canvaser_name">Canvaser Name</string>
     <string name="pref_title_event_zip_code">Event Zip Code</string>

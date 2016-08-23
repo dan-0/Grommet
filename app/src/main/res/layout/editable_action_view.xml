@@ -1,38 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout
+<com.rockthevote.grommet.ui.misc.BetterViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/eav_edit_mode_layout"
+    android:id="@+id/eav_better_view_animator"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:gravity="end"
-    android:orientation="horizontal">
+    >
 
     <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/eav_edit_button"
         style="@android:style/Widget.Material.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:src="@drawable/ic_mode_edit_black_24dp"
         android:tint="@color/colorSecondaryText"/>
 
-    <Button
-        android:id="@+id/eav_cancel_button"
-        style="@android:style/Widget.Material.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/eav_edit_mode_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
-        android:text="@string/action_cancel"
-        android:textColor="@color/colorSecondaryText"/>
+        android:gravity="end"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/eav_save_button"
-        style="@android:style/Widget.Material.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/eav_cancel_button"
+            style="@android:style/Widget.Material.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:text="@string/action_cancel"
+            android:textColor="@color/colorSecondaryText"/>
+
+        <Button
+            android:id="@+id/eav_save_button"
+            style="@android:style/Widget.Material.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_save"
+            android:textColor="@color/colorSecondaryText"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/eav_progress_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_save"
-        android:textColor="@color/colorSecondaryText"/>
-</LinearLayout>
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/label_partner_name_spinner"/>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingEnd="28dp"/>
+    </LinearLayout>
+
+
+</com.rockthevote.grommet.ui.misc.BetterViewAnimator>
 

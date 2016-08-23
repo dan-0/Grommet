@@ -6,7 +6,7 @@
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="@string/pref_title_partner_id"/>
+        android:title="@string/pref_title_partner_name"/>
 
     <EditTextPreference
         android:capitalize="words"

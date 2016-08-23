@@ -1,5 +1,7 @@
 package com.rockthevote.grommet.ui.registration;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -22,6 +24,7 @@ import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterId;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
@@ -39,7 +42,6 @@ import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
@@ -90,6 +92,8 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @BindView(R.id.checkbox_can_receive_text) CheckBox phoneOptIn;
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
+
+    @Inject @PartnerName Preference<String> partnerNamePref;
 
     @Inject BriteDatabase db;
 
@@ -146,6 +150,12 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
             phoneTypeSpinner.dismiss();
         });
         phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(0).toString());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        phoneOptIn.setText(getString(R.string.label_receive_text, partnerNamePref.get()));
     }
 
     @Override
