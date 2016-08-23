@@ -115,59 +115,62 @@ public class NameView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        if (!isInEditMode()) {
+            ButterKnife.bind(this);
 
-        validator = new ObservableValidator(this, getContext());
+            validator = new ObservableValidator(this, getContext());
 
-        switch (type) {
-            case CURRENT_NAME:
-                sectionTitle.setText(R.string.section_label_name);
-                break;
-            case PREVIOUS_NAME:
-                sectionTitle.setText(R.string.section_label_previous_name);
-                break;
-            case ASSISTANT_NAME:
-                sectionTitle.setText(R.string.section_label_name);
-                break;
+            switch (type) {
+                case CURRENT_NAME:
+                    sectionTitle.setText(R.string.section_label_name);
+                    break;
+                case PREVIOUS_NAME:
+                    sectionTitle.setText(R.string.section_label_previous_name);
+                    break;
+                case ASSISTANT_NAME:
+                    sectionTitle.setText(R.string.section_label_name);
+                    break;
+            }
+
+            titleEnumAdapter = new EnumAdapter<>(getContext(), Name.Prefix.class);
+            titleSpinner.setAdapter(titleEnumAdapter);
+            titleSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+                titleSpinner.getEditText().setText(titleEnumAdapter.getItem(i).toString());
+                titleSpinner.dismiss();
+            });
+
+            suffixEnumAdapter = new EnumAdapter<>(getContext(), Name.Suffix.class);
+            suffixSpinner.setAdapter(suffixEnumAdapter);
+            suffixSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+                suffixSpinner.getEditText().setText(suffixEnumAdapter.getItem(i).toString());
+                suffixSpinner.dismiss();
+            });
         }
-
-        titleEnumAdapter = new EnumAdapter<>(getContext(), Name.Prefix.class);
-        titleSpinner.setAdapter(titleEnumAdapter);
-        titleSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
-            titleSpinner.getEditText().setText(titleEnumAdapter.getItem(i).toString());
-            titleSpinner.dismiss();
-        });
-
-        suffixEnumAdapter = new EnumAdapter<>(getContext(), Name.Suffix.class);
-        suffixSpinner.setAdapter(suffixEnumAdapter);
-        suffixSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
-            suffixSpinner.getEditText().setText(suffixEnumAdapter.getItem(i).toString());
-            suffixSpinner.dismiss();
-        });
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
-        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(firstNameEditText),
-                RxTextView.afterTextChangeEvents(middleNameEditText),
-                RxTextView.afterTextChangeEvents(lastNameEditText),
-                RxTextView.afterTextChangeEvents(titleSpinner.getEditText()),
-                RxTextView.afterTextChangeEvents(suffixSpinner.getEditText()),
-                (firstName, middleName, lastName, title, suffix) -> new Name.Builder()
-                        .firstName(firstName.editable().toString())
-                        .middleName(middleName.editable().toString())
-                        .lastName(lastName.editable().toString())
-                        .prefix(Prefix.fromString(title.editable().toString()))
-                        .suffix(Suffix.fromString(suffix.editable().toString()))
-                        .build())
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(contentValues -> {
-                    Name.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
-                }));
+        if (!isInEditMode()) {
+            subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(firstNameEditText),
+                    RxTextView.afterTextChangeEvents(middleNameEditText),
+                    RxTextView.afterTextChangeEvents(lastNameEditText),
+                    RxTextView.afterTextChangeEvents(titleSpinner.getEditText()),
+                    RxTextView.afterTextChangeEvents(suffixSpinner.getEditText()),
+                    (firstName, middleName, lastName, title, suffix) -> new Name.Builder()
+                            .firstName(firstName.editable().toString())
+                            .middleName(middleName.editable().toString())
+                            .lastName(lastName.editable().toString())
+                            .prefix(Prefix.fromString(title.editable().toString()))
+                            .suffix(Suffix.fromString(suffix.editable().toString()))
+                            .build())
+                    .observeOn(Schedulers.io())
+                    .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                    .skip(1)
+                    .subscribe(contentValues -> {
+                        Name.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
+                    }));
+        }
     }
 
     @Override

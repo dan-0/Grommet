@@ -49,7 +49,7 @@ public abstract class ApiName {
     }
 
     @Nullable
-    public static ApiName fromDb(Name name) {
+    public static ApiName fromName(Name name) {
         if (null == name) {
             return null;
         }

@@ -44,7 +44,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + RockyRequest.LATITUDE + " REAL,"
             + RockyRequest.LONGITUDE + " REAL,"
             + RockyRequest.HAS_PREVIOUS_NAME + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
-            + RockyRequest.HAS_PREVIOUS_ADDRESS + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE
+            + RockyRequest.HAS_PREVIOUS_ADDRESS + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
+            + RockyRequest.HAS_ASSISTANT + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE
             + ")";
 
     private static final String CREATE_ADDRESS = ""

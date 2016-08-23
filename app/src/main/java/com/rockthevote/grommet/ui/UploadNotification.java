@@ -72,7 +72,7 @@ public class UploadNotification {
             case REGISTER_SUCCESS:
                 return R.string.upload_notification_title_success;
             default:
-            case REGISTER_FAILURE:
+            case REGISTER_SERVER_FAILURE:
                 return R.string.upload_notification_title_failure;
         }
     }
@@ -82,7 +82,7 @@ public class UploadNotification {
             case REGISTER_SUCCESS:
                 return NOTIFICATION_SUCCESS_ID;
             default:
-            case REGISTER_FAILURE:
+            case REGISTER_SERVER_FAILURE:
                 return NOTIFICATION_FAILURE_ID;
         }
     }
@@ -92,7 +92,7 @@ public class UploadNotification {
             case REGISTER_SUCCESS:
                 return NOTIFICATION_SUCCESS_TAG;
             default:
-            case REGISTER_FAILURE:
+            case REGISTER_SERVER_FAILURE:
                 return NOTIFICATION_FAILURE_TAG;
         }
     }

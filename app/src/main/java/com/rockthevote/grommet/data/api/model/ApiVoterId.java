@@ -36,7 +36,7 @@ public abstract class ApiVoterId {
         abstract ApiVoterId build();
     }
 
-    public static ApiVoterId fromDb(VoterId voterId) {
+    public static ApiVoterId fromVoterId(VoterId voterId) {
         return builder()
                 .type(voterId.type().toString())
                 .stringValue(voterId.value())
