@@ -122,83 +122,84 @@ public class AddressView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
-        validator = new ObservableValidator(this, getContext());
+        if (!isInEditMode()) {
+            ButterKnife.bind(this);
+            validator = new ObservableValidator(this, getContext());
 
-        switch (type) {
-            case REGISTRATION_ADDRESS:
-                sectionTitle.setText(R.string.section_label_registration_address);
-                break;
-            case MAILING_ADDRESS:
-                sectionTitle.setText(R.string.section_label_mailing_address);
-                break;
-            case PREVIOUS_ADDRESS:
-                sectionTitle.setText(R.string.section_label_previous_address);
-                break;
-            case ASSISTANT_ADDRESS:
-                sectionTitle.setText(R.string.section_label_registration_address);
-        }
-
-        countyAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.pa_counties, android.R.layout.simple_list_item_1);
-        countyAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-
-        countySpinner.setAdapter(countyAdapter);
-        countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
-        countySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
-            countySpinner.getEditText().setText(countyAdapter.getItem(i));
-            countySpinner.dismiss();
-        });
-
-        stateAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.states, android.R.layout.simple_list_item_1);
-        stateAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-
-        stateSpinner.setAdapter(stateAdapter);
-        stateSpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
-        stateSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
-            stateSpinner.getEditText().setText(stateAdapter.getItem(i));
-
-            if(!PA_ABREV.equals(stateAdapter.getItem(i))){
-                countySpinner.setErrorEnabled(false);
-                countySpinner.setEnabled(false);
-                countySpinner.getEditText().setText("");
-                countySpinner.getEditText().setEnabled(false);
-            } else {
-                countySpinner.getEditText().setEnabled(true);
-                countySpinner.setEnabled(true);
+            switch (type) {
+                case REGISTRATION_ADDRESS:
+                    sectionTitle.setText(R.string.section_label_registration_address);
+                    break;
+                case MAILING_ADDRESS:
+                    sectionTitle.setText(R.string.section_label_mailing_address);
+                    break;
+                case PREVIOUS_ADDRESS:
+                    sectionTitle.setText(R.string.section_label_previous_address);
+                    break;
+                case ASSISTANT_ADDRESS:
+                    sectionTitle.setText(R.string.section_label_registration_address);
             }
 
-            stateSpinner.dismiss();
-        });
-        stateSpinner.getEditText().setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
+            countyAdapter = ArrayAdapter.createFromResource(getContext(),
+                    R.array.pa_counties, android.R.layout.simple_list_item_1);
+            countyAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 
+            countySpinner.setAdapter(countyAdapter);
+            countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
+            countySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+                countySpinner.getEditText().setText(countyAdapter.getItem(i));
+                countySpinner.dismiss();
+            });
+
+            stateAdapter = ArrayAdapter.createFromResource(getContext(),
+                    R.array.states, android.R.layout.simple_list_item_1);
+            stateAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+
+            stateSpinner.setAdapter(stateAdapter);
+            stateSpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
+            stateSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+                stateSpinner.getEditText().setText(stateAdapter.getItem(i));
+
+                if (!PA_ABREV.equals(stateAdapter.getItem(i))) {
+                    countySpinner.setErrorEnabled(false);
+                    countySpinner.setEnabled(false);
+                    countySpinner.getEditText().setText("");
+                    countySpinner.getEditText().setEnabled(false);
+                } else {
+                    countySpinner.getEditText().setEnabled(true);
+                    countySpinner.setEnabled(true);
+                }
+
+                stateSpinner.dismiss();
+            });
+            stateSpinner.getEditText().setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
+        }
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
-        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(streetEditText),
-                RxTextView.afterTextChangeEvents(unitEditText),
-                RxTextView.afterTextChangeEvents(cityEditText),
-                RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
-                RxTextView.afterTextChangeEvents(zipEditText),
-                RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
-                (street, unit, city, state, zip, county) -> new Address.Builder()
-                        .streetName(street.editable().toString())
-                        .subAddress(unit.editable().toString())
-                        .municipalJurisdiction(city.editable().toString())
-                        .state(state.editable().toString())
-                        .zip(zip.editable().toString())
-                        .county(county.editable().toString())
-                        .build())
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .subscribe(contentValues -> {
-                    Address.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
-                }));
-
+        if (!isInEditMode()) {
+            subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(streetEditText),
+                    RxTextView.afterTextChangeEvents(unitEditText),
+                    RxTextView.afterTextChangeEvents(cityEditText),
+                    RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
+                    RxTextView.afterTextChangeEvents(zipEditText),
+                    RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
+                    (street, unit, city, state, zip, county) -> new Address.Builder()
+                            .streetName(street.editable().toString())
+                            .subAddress(unit.editable().toString())
+                            .municipalJurisdiction(city.editable().toString())
+                            .state(state.editable().toString())
+                            .zip(zip.editable().toString())
+                            .county(county.editable().toString())
+                            .build())
+                    .observeOn(Schedulers.io())
+                    .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                    .subscribe(contentValues -> {
+                        Address.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
+                    }));
+        }
     }
 
     @Override

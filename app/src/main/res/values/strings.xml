@@ -106,7 +106,10 @@
     <string name="error_penn_dot">Check "I do not know" if you don\'t know your PennDOT number</string>
     <string name="error_ssn">Check "I do not know" if you don\'t know your SSN last four</string>
     <string name="label_has_assistant">Did someone helped you with this form?</string>
-    <string name="section_label_assistant">Helper Info</string>
+    <string name="section_label_assistant_name">Helper Name</string>
+    <string name="section_label_assistant_address">Helper Address</string>
+    <string name="section_label_assistant_contact_info">Helper Contact Info</string>
+    <string name="label_assistant_confirmation">I have reviewed the above information, and it is true and accurate to the best of my knowledge.</string>
 
     <!--Review and Confirm Fragment Strings-->
     <string name="fragment_title_review">Review</string>

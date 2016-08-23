@@ -19,6 +19,7 @@ import com.rockthevote.grommet.data.api.model.ApiAddress;
 import com.rockthevote.grommet.data.api.model.ApiContactMethod;
 import com.rockthevote.grommet.data.api.model.ApiGeoLocation;
 import com.rockthevote.grommet.data.api.model.ApiName;
+import com.rockthevote.grommet.data.api.model.ApiRegistrationHelper;
 import com.rockthevote.grommet.data.api.model.ApiRockyRequest;
 import com.rockthevote.grommet.data.api.model.ApiRockyRequestWrapper;
 import com.rockthevote.grommet.data.api.model.ApiSignature;
@@ -49,15 +50,20 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static com.rockthevote.grommet.data.db.model.Address.Type.ASSISTANT_ADDRESS;
 import static com.rockthevote.grommet.data.db.model.Address.Type.MAILING_ADDRESS;
 import static com.rockthevote.grommet.data.db.model.Address.Type.PREVIOUS_ADDRESS;
 import static com.rockthevote.grommet.data.db.model.Address.Type.REGISTRATION_ADDRESS;
+import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.ASSISTANT_PHONE;
+import static com.rockthevote.grommet.data.db.model.Name.Type.ASSISTANT_NAME;
+import static com.rockthevote.grommet.data.db.model.Name.Type.CURRENT_NAME;
+import static com.rockthevote.grommet.data.db.model.Name.Type.PREVIOUS_NAME;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.GENERATED_DATE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.STATUS;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_FAILURE;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_SERVER_FAILURE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_SUCCESS;
 import static java.util.Map.Entry;
 
@@ -148,7 +154,7 @@ public class RegistrationService extends Service {
                 .subscribe(regResponse -> {
                     RockyRequest.Status status =
                             !regResponse.isError() && regResponse.response().isSuccessful()
-                                    ? REGISTER_SUCCESS : REGISTER_FAILURE;
+                                    ? REGISTER_SUCCESS : REGISTER_SERVER_FAILURE;
 
                     UploadNotification.notify(getApplicationContext(), status);
 
@@ -164,7 +170,7 @@ public class RegistrationService extends Service {
     /**
      * check for <p>
      * {@link RockyRequest.Status#ABANDONED},<p>
-     * {@link RockyRequest.Status#REGISTER_FAILURE},<p>
+     * {@link RockyRequest.Status#REGISTER_SERVER_FAILURE},<p>
      * {@link RockyRequest.Status#REGISTER_SUCCESS} <p>
      * as well as {@link RockyRequest.Status#IN_PROGRESS} that are more than one hour old
      * rows and delete them
@@ -174,7 +180,7 @@ public class RegistrationService extends Service {
         String completedRows = ""
                 + STATUS + " IN ("
                 + "'" + ABANDONED + "', "
-                + "'" + REGISTER_FAILURE + "',"
+                + "'" + REGISTER_SERVER_FAILURE + "',"
                 + "'" + REGISTER_SUCCESS + "'"
                 + ")";
 
@@ -255,7 +261,7 @@ public class RegistrationService extends Service {
      * @param additionalInfo
      * @return {@link ApiRockyRequestWrapper} object
      */
-    @SuppressWarnings("Convert2streamapi")
+    @SuppressWarnings({"Convert2streamapi", "ArraysAsListWithZeroOrOneArgument"})
     private ApiRockyRequestWrapper zipRockyRequest(RockyRequest rockyRequest,
                                                    EnumMap<Address.Type, Address> addresses,
                                                    EnumMap<ContactMethod.Type, ContactMethod> contactMethods,
@@ -265,47 +271,74 @@ public class RegistrationService extends Service {
                                                    EnumMap<AdditionalInfo.Type, AdditionalInfo> additionalInfo) {
 
 
-        ApiAddress apiRegAddress = ApiAddress.fromDb(addresses.get(REGISTRATION_ADDRESS));
+        // Get address info objects
+        ApiAddress apiRegAddress = ApiAddress.fromAddress(addresses.get(REGISTRATION_ADDRESS));
         ApiAddress apiMailAddress = rockyRequest.hasMailingAddress() ?
-                ApiAddress.fromDb(addresses.get(MAILING_ADDRESS)) : null;
+                ApiAddress.fromAddress(addresses.get(MAILING_ADDRESS)) : null;
         ApiAddress apiPrevAddress = rockyRequest.hasPreviousAddress() ?
-                ApiAddress.fromDb(addresses.get(PREVIOUS_ADDRESS)) : null;
+                ApiAddress.fromAddress(addresses.get(PREVIOUS_ADDRESS)) : null;
 
-        ApiName apiName = ApiName.fromDb(names.get(Name.Type.CURRENT_NAME));
+        // Get name info objects
+        ApiName apiName = ApiName.fromName(names.get(CURRENT_NAME));
         ApiName apiPrevName = rockyRequest.hasPreviousName() ?
-                ApiName.fromDb(names.get(Name.Type.PREVIOUS_NAME)) : null;
+                ApiName.fromName(names.get(PREVIOUS_NAME)) : null;
 
-        List<ApiContactMethod> apiContactMethods = new ArrayList<>(contactMethods.size());
-
+        // Get registrant contact info objects
+        List<ApiContactMethod> apiContactMethods = new ArrayList<>();
         for (Entry<ContactMethod.Type, ContactMethod> entry : contactMethods.entrySet()) {
-            apiContactMethods.add(ApiContactMethod.fromDb(entry.getValue(), rockyRequest.phoneType()));
+            if (ASSISTANT_PHONE != entry.getKey()) {
+                apiContactMethods.add(ApiContactMethod.fromContactMethod(
+                        entry.getValue(), rockyRequest.phoneType()));
+            }
         }
 
+        // Get voter classification objects
         List<ApiVoterClassification> apiClassifications = new ArrayList<>();
         for (Entry<VoterClassification.Type, VoterClassification> entry : classifications.entrySet()) {
-            apiClassifications.add(ApiVoterClassification.fromDb(entry.getValue()));
+            apiClassifications.add(ApiVoterClassification.fromVoterClassification(entry.getValue()));
         }
 
+        // Get voter ID objects
         List<ApiVoterId> apiVoterIds = new ArrayList<>();
         for (Entry<VoterId.Type, VoterId> entry : voterIds.entrySet()) {
-            apiVoterIds.add(ApiVoterId.fromDb(entry.getValue()));
+            apiVoterIds.add(ApiVoterId.fromVoterId(entry.getValue()));
         }
 
+        // get additional info objects
         List<ApiAdditionalInfo> apiAdditionalInfo = new ArrayList<>();
         for (Entry<AdditionalInfo.Type, AdditionalInfo> entry : additionalInfo.entrySet()) {
-            apiAdditionalInfo.add(ApiAdditionalInfo.fromDb(entry.getValue()));
+            apiAdditionalInfo.add(ApiAdditionalInfo.fromAdditionalInfo(entry.getValue()));
         }
 
         ApiSignature apiSignature = ApiSignature.fromDb(rockyRequest);
         ApiGeoLocation apiGeoLocation = ApiGeoLocation.fromDb(rockyRequest);
 
+        // build voter registration helper object
+        List<ApiContactMethod> helperContactMethods = new ArrayList<>();
+        for (Entry<ContactMethod.Type, ContactMethod> entry : contactMethods.entrySet()) {
+            if (ASSISTANT_PHONE == entry.getKey()) {
+                helperContactMethods.add(ApiContactMethod.fromContactMethod(
+                        entry.getValue(), rockyRequest.phoneType()));
+            }
+        }
+
+        ApiRegistrationHelper helper = !rockyRequest.hasAssistant() ? null :
+                ApiRegistrationHelper.builder()
+                        .address(ApiAddress.fromAddress(addresses.get(ASSISTANT_ADDRESS)))
+                        .name(ApiName.fromName(names.get(ASSISTANT_NAME)))
+                        .contactMethods(helperContactMethods)
+                        .build();
+
+        // build voter registration api object
         ApiVoterRegistration apiVoterRegistration = ApiVoterRegistration.fromDb(rockyRequest,
                 apiMailAddress, apiPrevAddress, apiRegAddress, apiName, apiPrevName, apiClassifications,
-                apiSignature, apiVoterIds, apiContactMethods, apiAdditionalInfo);
+                apiSignature, apiVoterIds, apiContactMethods, apiAdditionalInfo, helper);
 
+        // build voter records request api object
         ApiVoterRecordsRequest apiVoterRecordsRequest = ApiVoterRecordsRequest.fromDb(rockyRequest,
                 apiVoterRegistration);
 
+        // build rocky request api object
         ApiRockyRequest apiRockyRequest = ApiRockyRequest.fromDb(rockyRequest,
                 apiVoterRecordsRequest, apiGeoLocation);
 

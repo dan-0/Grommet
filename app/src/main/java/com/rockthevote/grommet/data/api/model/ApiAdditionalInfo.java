@@ -34,7 +34,7 @@ public abstract class ApiAdditionalInfo {
     }
 
     @Nullable
-    public static ApiAdditionalInfo fromDb(AdditionalInfo additionalInfo) {
+    public static ApiAdditionalInfo fromAdditionalInfo(AdditionalInfo additionalInfo) {
         if (null == additionalInfo) {
             return null;
         }

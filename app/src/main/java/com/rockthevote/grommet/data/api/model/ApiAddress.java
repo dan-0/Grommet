@@ -168,7 +168,7 @@ public abstract class ApiAddress {
     }
 
     @Nullable
-    public static ApiAddress fromDb(Address address) {
+    public static ApiAddress fromAddress(Address address) {
         if(null == address){
             return null;
         }

@@ -41,6 +41,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public static final String LONGITUDE = "longitude";
     public static final String HAS_PREVIOUS_NAME = "has_previous_name";
     public static final String HAS_PREVIOUS_ADDRESS = "has_previous_address";
+    public static final String HAS_ASSISTANT = "has_assistant";
 
     public static final String SELECT_BY_ID = ""
             + "SELECT * FROM "
@@ -107,6 +108,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
 
     public abstract boolean hasPreviousAddress();
 
+    public abstract boolean hasAssistant();
+
     public static final Func1<Cursor, RockyRequest> MAPPER = cursor -> {
         long id = Db.getLong(cursor, _ID);
         Status status = Status.fromString(Db.getString(cursor, STATUS));
@@ -131,12 +134,13 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         long longitude = Db.getLong(cursor, LONGITUDE);
         boolean hasPreviousName = Db.getBoolean(cursor, HAS_PREVIOUS_NAME);
         boolean hasPreviousAddress = Db.getBoolean(cursor, HAS_PREVIOUS_ADDRESS);
+        boolean hasAssistant = Db.getBoolean(cursor, HAS_ASSISTANT);
 
         return new AutoValue_RockyRequest(id, status, language, phoneType, partnerId, optInEmail, optInSMS,
                 optInVolunteer, partnerOptInSMS, partnerOptInEmail,
                 sourceTrackingId, partnerTrackingId, openTrackingId,
                 generatedDate, dateOfBirth, hasMailingAddress, race, party, signature,
-                latitude, longitude, hasPreviousName, hasPreviousAddress);
+                latitude, longitude, hasPreviousName, hasPreviousAddress, hasAssistant);
     };
 
     public static final class Builder {
@@ -262,6 +266,11 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
             return this;
         }
 
+        public Builder hasAssistant(boolean hasAssistant) {
+            values.put(HAS_ASSISTANT, hasAssistant);
+            return this;
+        }
+
         public ContentValues build() {
             return values;
         }
@@ -333,7 +342,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         ABANDONED("abandoned"),
         FORM_COMPLETE("form_complete"),
         REGISTER_SUCCESS("register_success"),
-        REGISTER_FAILURE("register_failure");
+        REGISTER_SERVER_FAILURE("register_server_failure"),
+        REGISTER_CLIENT_FAILURE("register_client_failure");
 
         private final String status;
 

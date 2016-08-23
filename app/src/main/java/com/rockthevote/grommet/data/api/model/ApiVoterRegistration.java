@@ -18,6 +18,10 @@ import static com.rockthevote.grommet.data.db.model.Name.Prefix;
 @AutoValue
 public abstract class ApiVoterRegistration {
 
+    @Json(name = "registration_helper")
+    @Nullable
+    abstract ApiRegistrationHelper registrationHelper();
+
     @Json(name = "date_of_birth")
     abstract String dateOfBirth();
 
@@ -61,6 +65,7 @@ public abstract class ApiVoterRegistration {
     @Json(name = "additional_info")
     abstract List<ApiAdditionalInfo> additionalInfo();
 
+
     public static JsonAdapter<ApiVoterRegistration> jsonAdapter(Moshi moshi) {
         return new AutoValue_ApiVoterRegistration.MoshiJsonAdapter(moshi);
     }
@@ -71,6 +76,8 @@ public abstract class ApiVoterRegistration {
 
     @AutoValue.Builder
     abstract static class Builder {
+        abstract Builder registrationHelper(ApiRegistrationHelper registrationHelper);
+
         abstract Builder dateOfBirth(String value);
 
         abstract Builder mailingAddress(ApiAddress value);
@@ -114,7 +121,8 @@ public abstract class ApiVoterRegistration {
                                               ApiSignature signature,
                                               List<ApiVoterId> voterIds,
                                               List<ApiContactMethod> contactMethods,
-                                              List<ApiAdditionalInfo> additionalInfo) {
+                                              List<ApiAdditionalInfo> additionalInfo,
+                                              ApiRegistrationHelper registrationHelper) {
         return builder()
                 .dateOfBirth(Dates.formatAsISO8601_ShortDate(rockyRequest.dateOfBirth()))
                 .mailingAddress(mailingAddress)
@@ -131,6 +139,7 @@ public abstract class ApiVoterRegistration {
                 .voterIds(voterIds)
                 .contactMethods(contactMethods)
                 .additionalInfo(additionalInfo)
+                .registrationHelper(registrationHelper)
                 .build();
     }
 }

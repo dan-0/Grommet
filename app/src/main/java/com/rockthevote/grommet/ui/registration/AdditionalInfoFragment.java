@@ -1,7 +1,5 @@
 package com.rockthevote.grommet.ui.registration;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -98,7 +96,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Inject BriteDatabase db;
 
     private ObservableValidator validator;
-    private CompositeSubscription subscriptions;
+    private CompositeSubscription subscriptions = new CompositeSubscription();
     private EnumAdapter<Race> raceEnumAdapter;
     private EnumAdapter<Party> partyEnumAdapter;
 
@@ -161,7 +159,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        subscriptions = new CompositeSubscription();
 
         phoneFormatter = new PhoneNumberFormattingTextWatcher();
         phone.addTextChangedListener(phoneFormatter);

@@ -30,7 +30,7 @@ public abstract class ApiVoterClassification {
         abstract ApiVoterClassification build();
     }
 
-    public static ApiVoterClassification fromDb(VoterClassification classification) {
+    public static ApiVoterClassification fromVoterClassification(VoterClassification classification) {
         return builder()
                 .type(classification.type().toString())
                 .assertion(classification.assertion())

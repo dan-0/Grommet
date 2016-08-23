@@ -37,14 +37,15 @@ public abstract class ApiContactMethod {
     }
 
     @Nullable
-    public static ApiContactMethod fromDb(ContactMethod contactMethod, PhoneType phoneType){
+    public static ApiContactMethod fromContactMethod(ContactMethod contactMethod, PhoneType phoneType) {
         if (null == contactMethod) {
             return null;
         }
 
         List<String> capabilities = new ArrayList<>();
         // right now we only support phone (no fax)
-        if(contactMethod.type() == ContactMethod.Type.PHONE){
+        if (contactMethod.type() == ContactMethod.Type.PHONE ||
+                contactMethod.type() == ContactMethod.Type.ASSISTANT_PHONE) {
             capabilities.add(ContactMethod.Capability.VOICE.toString());
             if(phoneType == PhoneType.MOBILE){
                 capabilities.add(ContactMethod.Capability.SMS.toString());
