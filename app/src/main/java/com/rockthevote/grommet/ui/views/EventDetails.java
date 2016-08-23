@@ -27,6 +27,7 @@ import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
 import com.rockthevote.grommet.util.Strings;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -152,6 +153,7 @@ public class EventDetails extends FrameLayout {
                 } else {
                     rockyService.getPartnerName(edePartnerId.getText().toString())
                             .subscribeOn(Schedulers.io())
+                            .delay(500, TimeUnit.MILLISECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnSubscribe(() -> {
                                 editableActionView.showSpinner();
