@@ -63,6 +63,7 @@ import static com.rockthevote.grommet.data.db.model.RockyRequest.STATUS;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_CLIENT_FAILURE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_SERVER_FAILURE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.REGISTER_SUCCESS;
 import static java.util.Map.Entry;
@@ -163,6 +164,14 @@ public class RegistrationService extends Service {
                                             .status(status)
                                             .build(),
                                     RockyRequest._ID + " = ? ", String.valueOf(rockyRequest.id()));
+                        },
+                        throwable -> {
+                            // mark the row for removal if the data is corrupt
+                            db.update(RockyRequest.TABLE,
+                                    new RockyRequest.Builder()
+                                            .status(REGISTER_CLIENT_FAILURE)
+                                            .build(),
+                                    RockyRequest._ID + " = ? ", String.valueOf(rockyRequest.id()));
                         }
                 );
     }
@@ -181,6 +190,7 @@ public class RegistrationService extends Service {
                 + STATUS + " IN ("
                 + "'" + ABANDONED + "', "
                 + "'" + REGISTER_SERVER_FAILURE + "',"
+                + "'" + REGISTER_CLIENT_FAILURE + "',"
                 + "'" + REGISTER_SUCCESS + "'"
                 + ")";
 
@@ -270,8 +280,11 @@ public class RegistrationService extends Service {
                                                    EnumMap<VoterId.Type, VoterId> voterIds,
                                                    EnumMap<AdditionalInfo.Type, AdditionalInfo> additionalInfo) {
 
-
-        // Get address info objects
+        /*
+        * Get address info objects, this is a bit "mucky" because of the way I collect the data
+        * there will still be an address object even if the user didn't check the box for
+        * that type
+        */
         ApiAddress apiRegAddress = ApiAddress.fromAddress(addresses.get(REGISTRATION_ADDRESS));
         ApiAddress apiMailAddress = rockyRequest.hasMailingAddress() ?
                 ApiAddress.fromAddress(addresses.get(MAILING_ADDRESS)) : null;
@@ -344,7 +357,6 @@ public class RegistrationService extends Service {
 
         return ApiRockyRequestWrapper.builder().apiRockyRequest(apiRockyRequest).build();
     }
-
 
     @Nullable
     @Override

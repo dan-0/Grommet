@@ -78,6 +78,8 @@
     <string name="label_receive_text">I agree that %s/Pennsylvania Voice/State Voices may call and text me with important updates and reminders."</string>
     <string name="county_empty_error">County Required</string>
     <string name="phone_format_error">Invalid phone number</string>
+    <string name="label_no_address">I have no permanent or mailing address</string>
+    <string name="error_no_address">Complete registration using paper form</string>
 
     <!--Register Fragment Strings-->
     <string name="fragment_title_additional_info">Personal</string>
@@ -103,13 +105,28 @@
     <string name="label_does_not_have_ssn">I do not know the last four of my SSN</string>
     <string name="preferred_language_label">Preferred Language to Receive Election Materials</string>
     <string name="section_label_election_info">Election Info</string>
-    <string name="error_penn_dot">Check "I do not know" if you don\'t know your PennDOT number</string>
+    <string name="error_penn_dot">Check /"I do not know/" if you don\'t know your PennDOT number</string>
     <string name="error_ssn">Check "I do not know" if you don\'t know your SSN last four</string>
     <string name="label_has_assistant">Did someone helped you with this form?</string>
     <string name="section_label_assistant_name">Helper Name</string>
     <string name="section_label_assistant_address">Helper Address</string>
     <string name="section_label_assistant_contact_info">Helper Contact Info</string>
-    <string name="label_assistant_confirmation">I have reviewed the above information, and it is true and accurate to the best of my knowledge.</string>
+    <string name="label_assistant_declaration">
+\n
+\n
+If you helped a voter complete this voter registration application, you must also sign the application.
+By checking the box, you are signing the application electronically.
+\n
+\n
+In doing so:
+\n
+\n
+\u2022 You understand that your electronic signature on this application will constitute the legal equivalent of your signature
+\n
+\n
+\u2022 You agree to sign this application by electronic means and that all laws of the Commonwealth of Pennsylvania will apply.
+    </string>
+    <string name="label_assistant_confirmation">I CONFIRM THAT I HAVE READ AND AGREE TO THE TERMS ABOVE</string>
 
     <!--Review and Confirm Fragment Strings-->
     <string name="fragment_title_review">Review</string>
@@ -123,6 +140,7 @@
     <string name="signature_pad_error">Signature is required</string>
     <string name="action_cancel_reg">Cancel Registration</string>
     <string name="registration_complete">Registration Complete</string>
+    <string name="disclosure_agreement_title">Voter Declaration / Penalty</string>
     <string name="registration_complete_dialog_text">
 \n
 \u2022 Your application has been sent to your county voter registration office.
@@ -135,6 +153,56 @@
 \n
 \n
 \u2022 If you do not receive your Voter Registration Card within 14 days, contact your county voter registration office.
+    </string>
+    <string name="disclosure_agreement">
+<![CDATA[
+
+<p>
+I declare that
+</p>
+<ol >
+<li>
+I am a United States citizen and will have been a citizen for at least 1 month on the day of the next election.
+</li>
+<li>
+I will be at least 18 years old on the day of the next election.
+</li>
+<li>
+I will have lived at the address in section 5 for at least 30 days before the election.
+</li>
+<li>
+I am legally qualified to vote.
+</li>
+</ol >
+<p>
+I affirm that this information is true. I understand that this declaration is the same as an affidavit, and, if this information is not true, I can be convicted of perjury, and fined up to $15,000, jailed for up to 7 years, or both.
+
+By clicking \'accept\' below, you are signing the application electronically. In doing so:
+<p>
+<ol>
+<li>
+You agree you have read and accept the terms of the declaration above.
+</li>
+<li>
+You understand that your electronic signature on this application will constitute the legal equivalent of your signature for this voter registration application.
+</li>
+<li>
+You agree to conduct this voter registration transaction by electronic means and that all laws of the Commonwealth of Pennsylvania will apply to this transaction.
+</li>
+</ol>
+<p>
+If you provided your PA driver\'s license or PennDOT ID number, you understand that the signature from the PennDOT record will constitute your signature on your voter registration record. If you upload an image of your signature, you understand that the signature you upload will constitute your signature on your voter registration record. You understand that you do not have to register electronically, and may use a paper or other non-electronic form of this voter registration application.
+</p>
+<p>
+PENALTY FOR FALSIFYING DECLARATION
+</p>
+<p>
+WARNING: If a person signs an official registration application knowing a statement declared in the application to be false, makes a false registration, or furnishes false information, the person commits perjury. Perjury is punishable, upon conviction, by a term of imprisonment not exceeding seven years, or a fine not exceeding $15,000, or both, at the discretion of the court.
+</p>
+<p>
+Submitting an application containing false information may also subject a person to other penalties, including loss of the right of suffrage, under state or federal law.
+</p>
+]]>
     </string>
 
     <!-- Preference Strings -->
@@ -157,6 +225,8 @@
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
     <string name="action_ok">OK</string>
+    <string name="action_accept">Accept</string>
+    <string name="action_decline">Decline</string>
 
     <string name="upload_notification_title_success">PA Registration Success</string>
     <string name="upload_notification_title_failure">PA Registration Failed</string>

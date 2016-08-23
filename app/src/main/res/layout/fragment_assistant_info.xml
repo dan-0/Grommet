@@ -29,7 +29,7 @@
         android:columnCount="2"
         android:useDefaultMargins="true"
         android:visibility="gone"
-        tools:visibility="gone"
+        tools:visibility="visible"
         >
 
         <View
@@ -122,6 +122,16 @@
                 android:maxLines="1"/>
 
         </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_columnSpan="2"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:layout_marginStart="@dimen/content_margin"
+            android:layout_marginEnd="@dimen/content_margin"
+            android:textStyle="bold"
+            android:text="@string/label_assistant_declaration"/>
 
         <CheckBox
             android:id="@+id/checkbox_assistant_affirmation"
