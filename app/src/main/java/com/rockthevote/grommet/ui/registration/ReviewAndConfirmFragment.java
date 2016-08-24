@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
@@ -65,6 +66,8 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @BindView(R.id.signature_pad_error) TextView signaturePadError;
     @BindView(R.id.button_register) Button buttonRegister;
 
+    @BindView(R.id.checkbox_agreement) CheckBox confirmCheckbox;
+
     @Inject @EventRegTotal Preference<Integer> eventRegTotal;
     @Inject @AppRegTotal Preference<Integer> appRegTotal;
 
@@ -73,6 +76,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @Inject BriteDatabase db;
 
     private CompositeSubscription subscriptions;
+    private DisclosureAgreementDialogFragment dialog;
 
     @Nullable
     @Override
@@ -85,11 +89,28 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        dialog = new DisclosureAgreementDialogFragment();
+        dialog.setCancelable(false);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        dialog.setListener(new DisclosureAgreementDialogFragment.DisclosureListener() {
+            @Override
+            public void onDeclineClick() {
+                confirmCheckbox.setChecked(false);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onAcceptClick() {
+                buttonRegister.setEnabled(true);
+                dialog.dismiss();
+            }
+        });
+
         subscriptions = new CompositeSubscription();
 
         signaturePad.setOnSignedListener(this);
@@ -155,6 +176,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         super.onPause();
         subscriptions.unsubscribe();
         signaturePad.setOnSignedListener(null);
+        dialog.setListener(null);
     }
 
     @OnClick(R.id.clear_signature)
@@ -164,7 +186,9 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
 
     @OnCheckedChanged(R.id.checkbox_agreement)
     public void onCheckChanged(boolean checked) {
-        buttonRegister.setEnabled(checked);
+        if (checked) {
+            dialog.show(getFragmentManager(), "disclosure_dialog");
+        }
     }
 
     @Override
@@ -192,7 +216,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
     }
 
-    // the default value is set in the datamodule
+    // the default value is set in the data module
     @SuppressWarnings("ConstantConditions")
     @OnClick(R.id.button_register)
     public void onRegisterClick(View v) {

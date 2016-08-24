@@ -61,7 +61,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.does_not_have_penn_dot_checkbox) CheckBox noPennDOTCheckbox;
 
-    @NotEmpty(messageResId = R.string.error_penn_dot)
+    @Length(min = 8, max = 8, messageResId = R.string.error_penn_dot)
     @BindView(R.id.til_penn_dot) TextInputLayout pennDOTTIL;
 
     @BindView(R.id.penn_dot_edit_text) EditText pennDOTEditText;

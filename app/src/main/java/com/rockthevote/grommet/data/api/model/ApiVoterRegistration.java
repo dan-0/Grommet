@@ -123,6 +123,7 @@ public abstract class ApiVoterRegistration {
                                               List<ApiContactMethod> contactMethods,
                                               List<ApiAdditionalInfo> additionalInfo,
                                               ApiRegistrationHelper registrationHelper) {
+
         return builder()
                 .dateOfBirth(Dates.formatAsISO8601_ShortDate(rockyRequest.dateOfBirth()))
                 .mailingAddress(mailingAddress)

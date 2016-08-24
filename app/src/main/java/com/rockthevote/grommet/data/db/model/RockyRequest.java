@@ -16,6 +16,7 @@ import java.util.Date;
 import rx.functions.Func1;
 
 @AutoValue
+@SuppressWarnings("mutable")
 public abstract class RockyRequest implements Parcelable, BaseColumns {
     public static final String TABLE = "rocky_request";
 

@@ -9,10 +9,12 @@ import android.widget.CheckBox;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -32,6 +34,9 @@ import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.SEN
 
 
 public class PersonalInfoFragment extends BaseRegistrationFragment {
+
+    @Checked(value = false, messageResId = R.string.error_no_address)
+    @BindView(R.id.no_address_checkbox) CheckBox noAddress;
 
     @BindView(R.id.home_address) AddressView homeAddress;
 
@@ -55,6 +60,8 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
 
     private CompositeSubscription subscriptions;
 
+    private ObservableValidator validator;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,6 +73,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        validator = new ObservableValidator(this, getActivity());
     }
 
     @Override
@@ -125,17 +133,9 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
         Observable<Boolean> changedAddObs = previousAddress.verify()
                 .flatMap(val -> Observable.just(addressChanged.isChecked() ? val : true));
 
-        return homeAddress.verify()
-                .concatWith(mailingAddressObs)
-                .concatWith(changedAddObs)
-                .toList()
-                .flatMap(list -> {
-                    Boolean ret = true;
-                    for (Boolean val : list) {
-                        ret = ret && val;
-                    }
+        return Observable.zip(homeAddress.verify(), mailingAddressObs,
+                changedAddObs, validator.validate(),
+                (home, mail, change, other) -> home && mail && change && other);
 
-                    return Observable.just(ret);
-                });
     }
 }
