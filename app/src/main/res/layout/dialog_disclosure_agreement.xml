@@ -1,32 +1,41 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:paddingEnd="24dp"
-              android:paddingStart="24dp"
-              android:paddingTop="24dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="24dp"
+                android:paddingStart="24dp"
+                android:paddingTop="24dp">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/content_area_padding"
-        android:text="@string/disclosure_agreement_title"
-        android:textAppearance="@android:style/TextAppearance.Material.DialogWindowTitle"/>
+        android:layout_above="@+id/disclosure_button_bar"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true"
+        >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="24dp"
-        android:paddingTop="8dp"
-        tools:text="@string/disclosure_agreement"/>
+            <TextView
+                android:id="@+id/text_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingBottom="24dp"
+                android:paddingTop="8dp"
+                tools:text="@string/disclosure_agreement"/>
+        </LinearLayout>
+    </ScrollView>
+
 
     <LinearLayout
+        android:id="@+id/disclosure_button_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:gravity="end"
         android:orientation="horizontal"
         android:paddingBottom="8dp">
@@ -48,5 +57,4 @@
             />
     </LinearLayout>
 
-
-</LinearLayout>
+</RelativeLayout>

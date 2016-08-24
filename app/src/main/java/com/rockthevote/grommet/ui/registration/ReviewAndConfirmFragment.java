@@ -89,9 +89,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
         dialog = new DisclosureAgreementDialogFragment();
-        dialog.setCancelable(false);
     }
 
     @Override

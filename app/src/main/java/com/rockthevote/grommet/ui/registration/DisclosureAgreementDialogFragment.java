@@ -43,6 +43,9 @@ public class DisclosureAgreementDialogFragment extends DialogFragment {
 
         content.setText(result);
         content.setMovementMethod(LinkMovementMethod.getInstance());
+        getDialog().setTitle(getString(R.string.disclosure_agreement_title));
+        getDialog().setCancelable(false);
+
         return v;
     }
 

@@ -20,6 +20,7 @@ public class RegistrationCompleteDialogFragment extends DialogFragment {
         setCancelable(false);
         View v = inflater.inflate(R.layout.dialog_registration_complete, container);
         ButterKnife.bind(this, v);
+        getDialog().setTitle(getString(R.string.registration_complete));
         return v;
     }
 
