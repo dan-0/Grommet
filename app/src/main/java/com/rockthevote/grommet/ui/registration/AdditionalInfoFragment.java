@@ -154,6 +154,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         phoneOptIn.setText(getString(R.string.label_receive_text, partnerNamePref.get()));
+        emailOptIn.setText(getString(R.string.label_receive_email, partnerNamePref.get()));
     }
 
     @Override
@@ -243,7 +244,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                     db.update(
                             RockyRequest.TABLE,
                             new RockyRequest.Builder()
-                                    .optInEmail(checked)
+                                    .partnerOptInEmail(checked)
                                     .build(),
                             RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
                 }));
@@ -280,7 +281,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                     db.update(
                             RockyRequest.TABLE,
                             new RockyRequest.Builder()
-                                    .optInSMS(checked)
+                                    .partnerOptInSMS(checked)
                                     .build(),
                             RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
                 }));
@@ -304,7 +305,9 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         // disabling it prevents Saripaar from trying to validate it
         pennDOTTIL.setEnabled(!checked);
-        pennDOTTIL.setErrorEnabled(!checked);
+        if (checked) {
+            pennDOTTIL.setErrorEnabled(false);
+        }
         doesNotHavePennDOT.onNext(checked);
     }
 
@@ -314,7 +317,9 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         // disabling it prevents Saripaar from trying to validate it
         ssnTIL.setEnabled(!checked);
-        ssnTIL.setErrorEnabled(!checked);
+        if (checked) {
+            ssnTIL.setErrorEnabled(false);
+        }
         doesNotHaveSSN.onNext(checked);
     }
 

@@ -185,7 +185,7 @@ public class AddressView extends FrameLayout {
                     RxTextView.afterTextChangeEvents(cityEditText),
                     RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
                     RxTextView.afterTextChangeEvents(zipEditText),
-                    RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
+                    RxTextView.afterTextChangeEvents(countySpinner.getEditText()),
                     (street, unit, city, state, zip, county) -> new Address.Builder()
                             .streetName(street.editable().toString())
                             .subAddress(unit.editable().toString())
