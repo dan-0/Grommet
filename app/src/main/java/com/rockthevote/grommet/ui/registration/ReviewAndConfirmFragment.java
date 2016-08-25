@@ -23,6 +23,7 @@ import com.rockthevote.grommet.data.prefs.AppRegTotal;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.util.Dates;
+import com.rockthevote.grommet.util.Images;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.io.ByteArrayOutputStream;
@@ -197,7 +198,9 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @Override
     public void onSigned() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        signaturePad.getSignatureBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
+        Bitmap image = (Images.aspectSafeScale(Images.transformAspectRatio(signaturePad.getSignatureBitmap(), 3, 1), 180, 60));
+        image.compress(Bitmap.CompressFormat.PNG, 100, baos);
+
         db.update(RockyRequest.TABLE,
                 new RockyRequest.Builder()
                         .signature(baos.toByteArray())

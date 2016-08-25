@@ -47,6 +47,7 @@ import static com.rockthevote.grommet.data.db.model.AdditionalInfo.Type.LANGUAGE
 import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.EMAIL;
 import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Party;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Party.OTHER_PARTY;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Race;
 import static com.rockthevote.grommet.data.db.model.VoterId.Type.DRIVERS_LICENSE;
 import static com.rockthevote.grommet.data.db.model.VoterId.Type.SSN_LAST_FOUR;
@@ -55,7 +56,12 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.spinner_race) BetterSpinner raceSpinner;
 
+    @NotEmpty
     @BindView(R.id.spinner_party) BetterSpinner partySpinner;
+
+    @NotEmpty
+    @BindView(R.id.til_other_party) TextInputLayout otherPartyTIL;
+    @BindView(R.id.other_party_edit_text) EditText otherPartyEditText;
 
     @BindView(R.id.preferred_language) EditText preferredLanguage;
 
@@ -125,6 +131,8 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         validator = new ObservableValidator(this, getActivity());
 
+
+        // Setup Race Spinner
         raceEnumAdapter = new EnumAdapter<>(getActivity(), Race.class);
         raceSpinner.setAdapter(raceEnumAdapter);
         raceSpinner.setOnItemClickListener((adapterView, view1, i, l) -> {
@@ -133,14 +141,27 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         });
         raceSpinner.getEditText().setText(Race.OTHER.toString());
 
+
+        // Setup Party Spinner
         partyEnumAdapter = new EnumAdapter<>(getActivity(), Party.class);
         partySpinner.setAdapter(partyEnumAdapter);
         partySpinner.setOnItemClickListener((adapterView, view1, i, l) -> {
-            partySpinner.getEditText().setText(partyEnumAdapter.getItem(i).toString());
-            partySpinner.dismiss();
-        });
-        partySpinner.getEditText().setText(Party.OTHER.toString());
+            Party party = partyEnumAdapter.getItem(i);
 
+            partySpinner.getEditText().setText(party.toString());
+            partySpinner.dismiss();
+
+            otherPartyTIL.setEnabled(OTHER_PARTY == party);
+            otherPartyTIL.setVisibility(OTHER_PARTY == party ? View.VISIBLE : View.GONE);
+
+            // clear the error out for a new attempt
+            if (OTHER_PARTY == party) {
+                otherPartyTIL.setErrorEnabled(false);
+            }
+        });
+
+
+        // Setup Phone Type Spinner
         phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), RockyRequest.PhoneType.class);
         phoneTypeSpinner.setAdapter(phoneTypeEnumAdapter);
         phoneTypeSpinner.setOnItemClickListener((adapterView, view1, i, l) -> {
@@ -171,6 +192,18 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                     db.update(RockyRequest.TABLE,
                             new RockyRequest.Builder()
                                     .race(Race.fromString(race.editable().toString()))
+                                    .build(),
+                            RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
+                }));
+
+        subscriptions.add(RxTextView.afterTextChangeEvents(otherPartyEditText)
+                .observeOn(Schedulers.io())
+                .skip(1)
+                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                .subscribe(otherParty -> {
+                    db.update(RockyRequest.TABLE,
+                            new RockyRequest.Builder()
+                                    .otherParty(otherParty.editable().toString())
                                     .build(),
                             RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
                 }));

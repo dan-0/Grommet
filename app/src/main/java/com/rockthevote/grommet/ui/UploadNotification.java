@@ -55,6 +55,7 @@ public class UploadNotification {
                                 new Intent(context, MainActivity.class),
                                 PendingIntent.FLAG_UPDATE_CURRENT))
                 .setContentTitle(context.getString(getNotifTitle(status)))
+                .setContentText(context.getString(getContentText(status)))
                 .setSmallIcon(R.drawable.ic_stat_upload)
                 .setAutoCancel(false);
 
@@ -71,9 +72,23 @@ public class UploadNotification {
         switch (status) {
             case REGISTER_SUCCESS:
                 return R.string.upload_notification_title_success;
-            default:
             case REGISTER_SERVER_FAILURE:
+            default:
                 return R.string.upload_notification_title_failure;
+        }
+    }
+
+    private static
+    @StringRes
+    int getContentText(RockyRequest.Status status) {
+        switch (status) {
+            case REGISTER_SUCCESS:
+                return R.string.upload_notification_content_success;
+            case REGISTER_CLIENT_FAILURE:
+                return R.string.upload_notification_content_client_failure;
+            case REGISTER_SERVER_FAILURE:
+            default:
+                return R.string.upload_notification_content_connection_failure;
         }
     }
 
@@ -98,8 +113,7 @@ public class UploadNotification {
     }
 
     /**
-     * Cancels any notifications of this type previously shown using
-     * {@link #notify(Context, boolean)}.
+     * Cancels any notifications of this type previously shown
      */
     public static void cancelSuccess(final Context context) {
         final NotificationManager nm = (NotificationManager) context

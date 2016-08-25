@@ -43,6 +43,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public static final String HAS_PREVIOUS_NAME = "has_previous_name";
     public static final String HAS_PREVIOUS_ADDRESS = "has_previous_address";
     public static final String HAS_ASSISTANT = "has_assistant";
+    public static final String OTHER_PARTY = "other_party";
 
     public static final String SELECT_BY_ID = ""
             + "SELECT * FROM "
@@ -92,10 +93,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
 
     public abstract boolean hasMailingAddress();
 
-    @Nullable
     public abstract Race race();
 
-    @Nullable
     public abstract Party party();
 
     @Nullable
@@ -110,6 +109,9 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public abstract boolean hasPreviousAddress();
 
     public abstract boolean hasAssistant();
+
+    @Nullable
+    public abstract String otherParty();
 
     public static final Func1<Cursor, RockyRequest> MAPPER = cursor -> {
         long id = Db.getLong(cursor, _ID);
@@ -136,12 +138,13 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         boolean hasPreviousName = Db.getBoolean(cursor, HAS_PREVIOUS_NAME);
         boolean hasPreviousAddress = Db.getBoolean(cursor, HAS_PREVIOUS_ADDRESS);
         boolean hasAssistant = Db.getBoolean(cursor, HAS_ASSISTANT);
+        String otherParty = Db.getString(cursor, OTHER_PARTY);
 
         return new AutoValue_RockyRequest(id, status, language, phoneType, partnerId, optInEmail, optInSMS,
                 optInVolunteer, partnerOptInSMS, partnerOptInEmail,
                 sourceTrackingId, partnerTrackingId, openTrackingId,
                 generatedDate, dateOfBirth, hasMailingAddress, race, party, signature,
-                latitude, longitude, hasPreviousName, hasPreviousAddress, hasAssistant);
+                latitude, longitude, hasPreviousName, hasPreviousAddress, hasAssistant, otherParty);
     };
 
     public static final class Builder {
@@ -272,6 +275,11 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
             return this;
         }
 
+        public Builder otherParty(String otherParty) {
+            values.put(OTHER_PARTY, otherParty);
+            return this;
+        }
+
         public ContentValues build() {
             return values;
         }
@@ -311,7 +319,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public enum Party {
         DEMOCRATIC("Democratic"),
         REPUBLICAN("Republican"),
-        OTHER("Other");
+        NO_PARTY("none"),
+        OTHER_PARTY("Other");
 
         private final String party;
 
@@ -330,7 +339,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
                     return val;
                 }
             }
-            return OTHER;
+            return OTHER_PARTY;
         }
     }
 

@@ -56,7 +56,7 @@ public class AddressView extends FrameLayout {
 
     @BindView(R.id.spinner_state) BetterSpinner stateSpinner;
 
-    @Length(min = 5)
+    @Length(min = 5, max = 10)
     @BindView(R.id.til_zip_code) TextInputLayout zipTIL;
     @BindView(R.id.zip) EditText zipEditText;
 

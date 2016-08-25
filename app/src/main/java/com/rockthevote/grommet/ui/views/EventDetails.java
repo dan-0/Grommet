@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
+import com.mobsandgeeks.saripaar.annotation.Length;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
