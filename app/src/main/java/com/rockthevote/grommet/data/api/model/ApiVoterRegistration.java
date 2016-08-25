@@ -124,7 +124,19 @@ public abstract class ApiVoterRegistration {
                                               List<ApiAdditionalInfo> additionalInfo,
                                               ApiRegistrationHelper registrationHelper) {
 
-        return builder()
+        String party;
+        switch (rockyRequest.party()) {
+            case OTHER_PARTY:
+                party = rockyRequest.otherParty();
+                break;
+            default:
+                party = rockyRequest.party().toString();
+                break;
+        }
+
+        Builder builder = builder();
+
+        builder
                 .dateOfBirth(Dates.formatAsISO8601_ShortDate(rockyRequest.dateOfBirth()))
                 .mailingAddress(mailingAddress)
                 .previousRegistrationAddress(previousRegistrationAddress)
@@ -133,14 +145,18 @@ public abstract class ApiVoterRegistration {
                 .name(name)
                 .previousName(previousName)
                 .gender(Gender.fromPrefix(Prefix.fromString(name.titlePrefix())).toString())
-                .race(rockyRequest.race().toString())
-                .party(rockyRequest.party().toString())
+                .party(party)
                 .voterClassifications(voterClassifications)
                 .signature(signature)
                 .voterIds(voterIds)
                 .contactMethods(contactMethods)
                 .additionalInfo(additionalInfo)
                 .registrationHelper(registrationHelper)
-                .build();
+        ;
+
+        if (null != rockyRequest.race()) {
+            builder.race(rockyRequest.race().toString());
+        }
+        return builder.build();
     }
 }

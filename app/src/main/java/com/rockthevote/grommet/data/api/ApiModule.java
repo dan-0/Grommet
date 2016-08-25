@@ -2,6 +2,8 @@ package com.rockthevote.grommet.data.api;
 
 import com.squareup.moshi.Moshi;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -51,6 +53,7 @@ public final class ApiModule {
 
     // add the O-Auth interceptor here
     static OkHttpClient.Builder createApiClient(OkHttpClient client) {
-        return client.newBuilder();
+        return client.newBuilder()
+                .connectTimeout(10000, TimeUnit.MILLISECONDS);
     }
 }

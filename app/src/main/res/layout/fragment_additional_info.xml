@@ -48,6 +48,7 @@
     <com.rockthevote.grommet.ui.misc.BetterSpinner
         android:id="@+id/spinner_race"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
@@ -58,6 +59,7 @@
     <com.rockthevote.grommet.ui.misc.BetterSpinner
         android:id="@+id/spinner_party"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
@@ -65,6 +67,28 @@
         android:hint="@string/section_label_party"
         android:paddingBottom="@dimen/content_area_padding"
         app:errorEnabled="false"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_other_party"
+        android:layout_width="0dip"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginEnd="@dimen/content_margin"
+        android:layout_marginStart="@dimen/content_margin"
+        android:visibility="gone"
+        app:errorEnabled="false"
+        tools:visibility="visible"
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/other_party_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_other_party"
+            android:inputType="textCapWords"
+            android:maxLines="1"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <TextView
         android:layout_width="0dp"

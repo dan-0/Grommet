@@ -70,7 +70,7 @@ public class RegistrationActivity extends BaseActivity {
         adapter = new RegistrationPagerAdapter(getSupportFragmentManager(), this);
 
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
 
         tabLayout.setupWithViewPager(viewPager);
 

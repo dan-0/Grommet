@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <declare-styleable name="AddressView">
         <attr name="address_type" format="enum">
             <enum name="MAILING" value="1"/>

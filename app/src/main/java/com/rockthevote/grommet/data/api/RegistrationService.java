@@ -152,29 +152,43 @@ public class RegistrationService extends Service {
                         stopSelf();
                     }
                 })
-                .subscribe(regResponse -> {
-                    RockyRequest.Status status =
-                            !regResponse.isError() && regResponse.response().isSuccessful()
-                                    ? REGISTER_SUCCESS : REGISTER_SERVER_FAILURE;
-                    
+                .subscribe(regResponse ->
+                        {
+                            if (regResponse.isError()) {
+                                // there was an error contacting the server, don't delete the row
+                                UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
+                            } else {
 
-                    UploadNotification.notify(getApplicationContext(), status);
+                                RockyRequest.Status status;
 
-                            db.update(RockyRequest.TABLE,
-                                    new RockyRequest.Builder()
-                                            .status(status)
-                                            .build(),
-                                    RockyRequest._ID + " = ? ", String.valueOf(rockyRequest.id()));
+                                if (regResponse.response().isSuccessful()) {
+                                    status = REGISTER_SUCCESS;
+                                } else {
+                                    int code = regResponse.response().code();
+                                    if (code < 500) {
+                                        status = REGISTER_CLIENT_FAILURE;
+                                    } else {
+                                        status = REGISTER_SERVER_FAILURE;
+                                    }
+                                }
+                                updateRegistrationStatus(status, rockyRequest.id());
+                            }
                         },
                         throwable -> {
                             // mark the row for removal if the data is corrupt
-                            db.update(RockyRequest.TABLE,
-                                    new RockyRequest.Builder()
-                                            .status(REGISTER_CLIENT_FAILURE)
-                                            .build(),
-                                    RockyRequest._ID + " = ? ", String.valueOf(rockyRequest.id()));
+                            // this is a client error, meaning the network request was never made
+                            updateRegistrationStatus(REGISTER_CLIENT_FAILURE, rockyRequest.id());
                         }
                 );
+    }
+
+    private void updateRegistrationStatus(RockyRequest.Status status, long rowId) {
+        UploadNotification.notify(getApplicationContext(), status);
+        db.update(RockyRequest.TABLE,
+                new RockyRequest.Builder()
+                        .status(status)
+                        .build(),
+                RockyRequest._ID + " = ? ", String.valueOf(rowId));
     }
 
     /**
