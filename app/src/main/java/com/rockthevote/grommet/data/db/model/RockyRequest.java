@@ -309,13 +309,9 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     }
 
     public enum Party {
-        OTHER("Other"),
         DEMOCRATIC("Democratic"),
-        GREEN("Green"),
-        INDEPENDENT("Independent"),
-        LIBERTARIAN("Libertarian"),
         REPUBLICAN("Republican"),
-        NONE("None");
+        OTHER("Other");
 
         private final String party;
 

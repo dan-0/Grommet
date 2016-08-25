@@ -13,7 +13,7 @@
     <string name="nav_title_about">About</string>
     <string name="nav_title_data_usage">Data Usage</string>
     <string name="nav_title_help">Help</string>
-    <string name="incomplete_profile_alert">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip before registering voters.</string>
+    <string name="incomplete_profile_alert">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip before registering voters</string>
     <string name="dialog_no_thanks">No Thanks</string>
     <string name="dialog_enter_info">Enter Info</string>
 
@@ -43,11 +43,7 @@
     <string name="label_name_suffix">Suffix</string>
     <string name="label_suffix">Suffix</string>
 
-    <string name="label_email">Email Address</string>
     <string name="label_birthday">Birthday</string>
-    <string name="label_phone">Phone Number</string>
-    <string name="label_phone_type">Type</string>
-    <string name="label_receive_email">Receive email from Rock the Vote</string>
     <string name="section_label_eligibility">Eligibility</string>
     <string name="section_label_basic_info">Basic Info</string>
     <string name="section_label_new_registrant">New Registrant</string>
@@ -75,9 +71,8 @@
     <string name="checkbox_address_changed">I have changed my address</string>
     <string name="label_send_copy_in_mail">I would like to receive a copy of my voter registration in the mail</string>
     <string name="checkbox_name_changed">I have changed my name</string>
-    <string name="label_receive_text">I agree that %s/Pennsylvania Voice/State Voices may call and text me with important updates and reminders."</string>
+    <string name="label_receive_text">I agree that %s/Pennsylvania Voice/State Voices may call and text me with important updates and reminders</string>
     <string name="county_empty_error">County Required</string>
-    <string name="phone_format_error">Invalid phone number</string>
     <string name="label_no_address">I have no permanent or mailing address</string>
     <string name="error_no_address">Complete registration using paper form</string>
 
@@ -105,15 +100,27 @@
     <string name="label_does_not_have_ssn">I do not know the last four of my SSN</string>
     <string name="preferred_language_label">Preferred Language to Receive Election Materials</string>
     <string name="section_label_election_info">Election Info</string>
-    <string name="error_penn_dot">Check /"I do not know/" if you don\'t know your PennDOT number</string>
-    <string name="error_ssn">Check "I do not know" if you don\'t know your SSN last four</string>
-    <string name="label_has_assistant">Did someone helped you with this form?</string>
+    <string name="penn_dot_enforcer_text">If you have a PA driver\'s license or PennDOT ID card number, you must use it</string>
+    <string name="error_penn_dot">Check \"I do not know\" if you don\'t know your PennDOT number</string>
+    <string name="ssn_enforcer_text">If you do not have a PennDOT number please enter the last 4 digits of your Social Security number </string>
+    <string name="error_ssn">Check \"I do not know\" if you don\'t know your SSN last four</string>
+    <string name="label_has_assistant">Did someone help you with this form?</string>
     <string name="section_label_assistant_name">Helper Name</string>
     <string name="section_label_assistant_address">Helper Address</string>
     <string name="section_label_assistant_contact_info">Helper Contact Info</string>
+    <string name="phone_format_error">Invalid phone number</string>
+    <string name="label_email">Email Address</string>
+    <string name="label_phone">Phone Number</string>
+    <string name="label_phone_type">Type</string>
+    <string name="label_receive_email">"I give permission to %s to send me news and updates</string>
+    <string name="preferred_language_default">English</string>
+    <string name="label_email_confirmation">
+    Submit your e-mail address to allow the PA Department of State to send you a message confirming the receipt of your voter registration application:
+    \n
+    \n
+    \u2022 Please note that this email may take up to 24 hours to get to you."
+    </string>
     <string name="label_assistant_declaration">
-\n
-\n
 If you helped a voter complete this voter registration application, you must also sign the application.
 By checking the box, you are signing the application electronically.
 \n
@@ -153,6 +160,9 @@ In doing so:
 \n
 \n
 \u2022 If you do not receive your Voter Registration Card within 14 days, contact your county voter registration office.
+\n
+\n
+Deadline Alert: 10/11/2016 close of registration date of current election is the last day to register before the 11/8/2016 election.
     </string>
     <string name="disclosure_agreement">
 <![CDATA[

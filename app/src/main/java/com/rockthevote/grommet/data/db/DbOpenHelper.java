@@ -31,7 +31,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + RockyRequest.OPT_IN_SMS + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
             + RockyRequest.OPT_IN_VOLUNTEER + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
             + RockyRequest.PARTNER_OPT_IN_SMS + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
-            + RockyRequest.PARTNER_OPT_IN_EMAIL + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
+            + RockyRequest.PARTNER_OPT_IN_EMAIL + " INTEGER DEFAULT " + Db.BOOLEAN_TRUE + ","
             + RockyRequest.SOURCE_TRACKING_ID + " TEXT,"
             + RockyRequest.PARTNER_TRACKING_ID + " TEXT,"
             + RockyRequest.OPEN_TRACKING_ID + " TEXT,"
