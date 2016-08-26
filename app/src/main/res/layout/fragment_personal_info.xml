@@ -87,11 +87,4 @@
         tools:visibility="visible"
         />
 
-    <CheckBox
-        android:id="@+id/send_copy_in_mail"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/list_item_height"
-        android:layout_columnSpan="2"
-        android:layout_marginStart="@dimen/content_margin"
-        android:text="@string/label_send_copy_in_mail"/>
 </GridLayout>

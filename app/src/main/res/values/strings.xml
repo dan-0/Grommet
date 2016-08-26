@@ -75,6 +75,7 @@
     <string name="county_empty_error">County Required</string>
     <string name="label_no_address">I have no permanent or mailing address</string>
     <string name="error_no_address">Complete registration using paper form</string>
+    <string name="zip_code_error">Invalid zip–code</string>
 
     <!--Register Fragment Strings-->
     <string name="fragment_title_additional_info">Personal</string>

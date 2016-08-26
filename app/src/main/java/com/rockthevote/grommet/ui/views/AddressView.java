@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.Address;
@@ -25,6 +25,7 @@ import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.Strings;
+import com.rockthevote.grommet.util.ZipTextWatcher;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.concurrent.TimeUnit;
@@ -62,7 +63,7 @@ public class AddressView extends FrameLayout {
 
     @BindView(R.id.spinner_state) BetterSpinner stateSpinner;
 
-    @Length(min = 5, max = 10)
+    @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
     @BindView(R.id.til_zip_code) TextInputLayout zipTIL;
     @BindView(R.id.zip) EditText zipEditText;
 
@@ -74,15 +75,14 @@ public class AddressView extends FrameLayout {
 
     @Inject BriteDatabase db;
 
-    ObservableValidator validator;
+    private ObservableValidator validator;
 
     private ArrayAdapter<CharSequence> countyAdapter;
-
     private ArrayAdapter<CharSequence> stateAdapter;
 
     private Address.Type type;
-
     private CompositeSubscription subscriptions = new CompositeSubscription();
+    private ZipTextWatcher zipTextWatcher = new ZipTextWatcher();
 
     public AddressView(Context context) {
         this(context, null);
@@ -182,6 +182,7 @@ public class AddressView extends FrameLayout {
             if (Strings.isBlank(stateSpinner.getEditText().getEditableText().toString())) {
                 stateSpinner.getEditText().setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
             }
+
         }
     }
 
@@ -189,6 +190,8 @@ public class AddressView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
+            zipEditText.addTextChangedListener(zipTextWatcher);
+
             subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(streetEditText),
                     RxTextView.afterTextChangeEvents(unitEditText),
                     RxTextView.afterTextChangeEvents(cityEditText),
@@ -215,6 +218,7 @@ public class AddressView extends FrameLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         subscriptions.unsubscribe();
+        zipEditText.removeTextChangedListener(zipTextWatcher);
     }
 
     @Override

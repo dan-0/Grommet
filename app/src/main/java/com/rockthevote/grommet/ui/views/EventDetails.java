@@ -13,7 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
-import com.mobsandgeeks.saripaar.annotation.Length;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
@@ -25,7 +25,9 @@ import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
+import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.Strings;
+import com.rockthevote.grommet.util.ZipTextWatcher;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +41,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.rockthevote.grommet.ui.views.EditableActionView.EditableActionViewListener;
+
 public class EventDetails extends FrameLayout {
 
     static final ButterKnife.Setter<View, Boolean> ENABLED =
@@ -47,46 +51,35 @@ public class EventDetails extends FrameLayout {
     @BindViews({R.id.ede_til_canvasser_name, R.id.ede_til_event_name,
                        R.id.ede_til_event_zip, R.id.ede_til_partner_id})
     List<TextInputLayout> editableViews;
-
     @BindView(R.id.ed_animator) BetterViewAnimator viewAnimator;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
-
     @BindView(R.id.ed_event_name) TextView edEventName;
-
     @BindView(R.id.ed_event_zip) TextView edEventZip;
-
     @BindView(R.id.ed_partner_name) TextView edPartnerName;
 
     @BindView(R.id.ede_canvasser_name) EditText edeCanvasserName;
-
     @BindView(R.id.ede_event_name) EditText edeEventName;
 
+    @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
+    @BindView(R.id.ede_til_event_zip) TextInputLayout edeEventZipTIL;
     @BindView(R.id.ede_event_zip) EditText edeEventZip;
-
     @BindView(R.id.ede_til_partner_id) TextInputLayout edePartnerIdTIL;
-
     @BindView(R.id.ede_partner_id) EditText edePartnerId;
 
     @Inject @EventRegTotal Preference<Integer> eventRegTotalPref;
-
     @Inject @CanvasserName Preference<String> canvasserNamePref;
-
     @Inject @EventName Preference<String> eventNamePref;
-
     @Inject @EventZip Preference<String> eventZipPref;
-
     @Inject @PartnerId Preference<String> partnerIdPref;
-
     @Inject @PartnerName Preference<String> partnerNamePref;
 
     @Inject RockyService rockyService;
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
-
-    private EditableActionView.EditableActionViewListener listener;
-
     private EditableActionView editableActionView;
+    private ZipTextWatcher zipTextWatcher = new ZipTextWatcher();
+    private ObservableValidator validator;
 
     public EventDetails(Context context) {
         this(context, null);
@@ -109,13 +102,18 @@ public class EventDetails extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        if (!isInEditMode()) {
+            ButterKnife.bind(this);
+            validator = new ObservableValidator(this, getContext());
+        }
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
+            edeEventZip.addTextChangedListener(zipTextWatcher);
+
             subscriptions.add(canvasserNamePref.asObservable()
                     .subscribe(name -> edCanvasserName.setText(name)));
 
@@ -132,7 +130,7 @@ public class EventDetails extends FrameLayout {
 
     public void setEditableActionView(EditableActionView view) {
         editableActionView = view;
-        listener = new EditableActionView.EditableActionViewListener() {
+        editableActionView.setListener(new EditableActionViewListener() {
             @Override
             public void onEdit() {
                 enableEditMode(true);
@@ -147,41 +145,41 @@ public class EventDetails extends FrameLayout {
             public void onSave() {
 
                 // allow the user to not set a partner ID
-                if (Strings.isBlank(edePartnerId.getText().toString())) {
-                    setPartnerName("");
-                } else if (edePartnerId.getText().toString().equals(partnerIdPref.get())) {
-                    setPartnerName(partnerNamePref.get());
-                } else {
-                    rockyService.getPartnerName(edePartnerId.getText().toString())
-                            .subscribeOn(Schedulers.io())
-                            .delay(500, TimeUnit.MILLISECONDS)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe(() -> {
-                                editableActionView.showSpinner();
-                                ButterKnife.apply(editableViews, ENABLED, false);
-                            })
-                            .doOnCompleted(() -> ButterKnife.apply(editableViews, ENABLED, true))
-                            .subscribe(result -> {
-                                if (!result.isError() && result.response().isSuccessful()) {
-                                    PartnerNameResponse partnerNameResponse = result.response().body();
-                                    if (partnerNameResponse.isValid()) {
-                                        setPartnerName(partnerNameResponse.partnerName());
+                if (validator.validate().toBlocking().single()) {
+                    if (Strings.isBlank(edePartnerId.getText().toString())) {
+                        setPartnerName("");
+                    } else if (edePartnerId.getText().toString().equals(partnerIdPref.get())) {
+                        setPartnerName(partnerNamePref.get());
+                    } else {
+                        rockyService.getPartnerName(edePartnerId.getText().toString())
+                                .subscribeOn(Schedulers.io())
+                                .delay(500, TimeUnit.MILLISECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe(() -> {
+                                    editableActionView.showSpinner();
+                                    ButterKnife.apply(editableViews, ENABLED, false);
+                                })
+                                .doOnCompleted(() -> ButterKnife.apply(editableViews, ENABLED, true))
+                                .subscribe(result -> {
+                                    if (!result.isError() && result.response().isSuccessful()) {
+                                        PartnerNameResponse partnerNameResponse = result.response().body();
+                                        if (partnerNameResponse.isValid()) {
+                                            setPartnerName(partnerNameResponse.partnerName());
+                                        } else {
+                                            edePartnerIdTIL.setError(
+                                                    getContext().getString(R.string.error_partner_id));
+                                            editableActionView.showSaveCancel();
+                                        }
                                     } else {
                                         edePartnerIdTIL.setError(
                                                 getContext().getString(R.string.error_partner_id));
                                         editableActionView.showSaveCancel();
                                     }
-                                } else {
-                                    edePartnerIdTIL.setError(
-                                            getContext().getString(R.string.error_partner_id));
-                                    editableActionView.showSaveCancel();
-                                }
-                            });
+                                });
+                    }
                 }
             }
-        };
-
-        editableActionView.setListener(listener);
+        });
     }
 
     private void setPartnerName(String name) {
