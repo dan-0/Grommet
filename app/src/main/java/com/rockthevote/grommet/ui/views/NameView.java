@@ -41,6 +41,9 @@ import static com.rockthevote.grommet.data.db.model.Name.Suffix;
 
 public class NameView extends FrameLayout {
 
+    private String childrenStateKey;
+    private String superStateKey;
+
     @BindView(R.id.name_section_title) TextView sectionTitle;
 
     @NotEmpty
@@ -108,7 +111,8 @@ public class NameView extends FrameLayout {
             } finally {
                 typedArray.recycle();
             }
-
+            superStateKey = NameView.class.getSimpleName() + ".superState." + type.toString();
+            childrenStateKey = NameView.class.getSimpleName() + ".childState." + type.toString();
         }
     }
 
@@ -182,9 +186,9 @@ public class NameView extends FrameLayout {
     @Override
     protected Parcelable onSaveInstanceState() {
         final Bundle state = new Bundle();
-        state.putParcelable("superState", super.onSaveInstanceState());
-        state.putSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY,
-                ChildrenViewStateHelper.newInstance(this).saveChildrenState());
+        state.putParcelable(superStateKey, super.onSaveInstanceState());
+        state.putSparseParcelableArray(childrenStateKey,
+                ChildrenViewStateHelper.newInstance(this).saveChildrenState(childrenStateKey));
         return state;
     }
 
@@ -192,9 +196,9 @@ public class NameView extends FrameLayout {
     protected void onRestoreInstanceState(final Parcelable state) {
         if (state instanceof Bundle) {
             final Bundle localState = (Bundle) state;
-            super.onRestoreInstanceState(localState.getParcelable("superState"));
+            super.onRestoreInstanceState(localState.getParcelable(superStateKey));
             ChildrenViewStateHelper.newInstance(this).restoreChildrenState(localState
-                    .getSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY));
+                    .getSparseParcelableArray(childrenStateKey), childrenStateKey);
         } else {
             super.onRestoreInstanceState(state);
         }

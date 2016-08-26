@@ -156,6 +156,7 @@
             android:id="@+id/ssn_last_four_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:digits="0123456789"
             android:hint="@string/label_ssn_last_four"
             android:inputType="number"
             android:maxLength="4"

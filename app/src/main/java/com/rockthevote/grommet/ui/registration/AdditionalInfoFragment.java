@@ -53,6 +53,7 @@ import static com.rockthevote.grommet.data.db.model.VoterId.Type.DRIVERS_LICENSE
 import static com.rockthevote.grommet.data.db.model.VoterId.Type.SSN_LAST_FOUR;
 
 public class AdditionalInfoFragment extends BaseRegistrationFragment {
+    private static final String OTHER_PARTY_VISIBILITY_KEY = "other_party_visibility_key";
 
     @BindView(R.id.spinner_race) BetterSpinner raceSpinner;
 
@@ -131,7 +132,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         validator = new ObservableValidator(this, getActivity());
 
-
         // Setup Race Spinner
         raceEnumAdapter = new EnumAdapter<>(getActivity(), Race.class);
         raceSpinner.setAdapter(raceEnumAdapter);
@@ -139,7 +139,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
             raceSpinner.getEditText().setText(raceEnumAdapter.getItem(i).toString());
             raceSpinner.dismiss();
         });
-        raceSpinner.getEditText().setText(Race.OTHER.toString());
 
 
         // Setup Party Spinner
@@ -168,12 +167,24 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
             phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(i).toString());
             phoneTypeSpinner.dismiss();
         });
-        phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(0).toString());
+
+        if (null != savedInstanceState) {
+            otherPartyTIL.setVisibility(savedInstanceState.getBoolean(OTHER_PARTY_VISIBILITY_KEY) ?
+                    View.VISIBLE : View.GONE);
+        }
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        // set up defaults
+        if (null == savedInstanceState) {
+            raceSpinner.getEditText().setText(Race.OTHER.toString());
+            phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(0).toString());
+        }
+
         phoneOptIn.setText(getString(R.string.label_receive_text, partnerNamePref.get()));
         emailOptIn.setText(getString(R.string.label_receive_email, partnerNamePref.get()));
     }
@@ -222,7 +233,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         subscriptions.add(RxTextView.afterTextChangeEvents(preferredLanguage)
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
                 .subscribe(event -> {
                     AdditionalInfo.insertOrUpdate(db, rockyRequestRowId.get(),
                             LANGUAGE_PREF, new AdditionalInfo.Builder()
@@ -354,6 +364,12 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
             ssnTIL.setErrorEnabled(false);
         }
         doesNotHaveSSN.onNext(checked);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(OTHER_PARTY_VISIBILITY_KEY, View.VISIBLE == otherPartyTIL.getVisibility());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
