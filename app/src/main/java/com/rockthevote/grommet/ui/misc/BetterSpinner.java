@@ -1,11 +1,14 @@
 package com.rockthevote.grommet.ui.misc;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.ListPopupWindow;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 
@@ -13,6 +16,8 @@ import com.rockthevote.grommet.R;
 
 
 public class BetterSpinner extends TextInputLayout {
+    private String childrenStateKey;
+    private String superStateKey;
 
     ListPopupWindow listPopupWindow;
     ListAdapter listAdapter;
@@ -28,6 +33,10 @@ public class BetterSpinner extends TextInputLayout {
 
     public BetterSpinner(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        superStateKey = BetterSpinner.class.getSimpleName() + ".superState";
+        childrenStateKey = BetterSpinner.class.getSimpleName() + ".childState";
+
 
         editText = new TextInputEditText(context);
         editText.setId(R.id.titleId);
@@ -62,6 +71,46 @@ public class BetterSpinner extends TextInputLayout {
      */
     public void setHeight(int height) {
         listPopupWindow.setHeight(height);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        final Bundle state = new Bundle();
+        state.putParcelable(superStateKey, super.onSaveInstanceState());
+        state.putSparseParcelableArray(childrenStateKey,
+                ChildrenViewStateHelper.newInstance(this).saveChildrenState(childrenStateKey));
+        return state;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Parcelable state) {
+        if (state instanceof Bundle) {
+            final Bundle localState = (Bundle) state;
+            super.onRestoreInstanceState(localState.getParcelable(superStateKey));
+            ChildrenViewStateHelper.newInstance(this).restoreChildrenState(localState
+                    .getSparseParcelableArray(childrenStateKey), childrenStateKey);
+        } else {
+            super.onRestoreInstanceState(state);
+        }
+    }
+
+    @Override
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+        dispatchFreezeSelfOnly(container);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        dispatchThawSelfOnly(container);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (!enabled) {
+            getEditText().setText("");
+        }
+        getEditText().setEnabled(enabled);
     }
 
     @NonNull

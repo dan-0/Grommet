@@ -137,7 +137,15 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 .subscribe(rockyRequest -> {
                     birthday.setText(Dates.formatAsISO8601_ShortDate(rockyRequest.dateOfBirth()));
                     race.setText(rockyRequest.race().toString());
-                    party.setText(rockyRequest.party().toString());
+
+                    String polParty;
+                    if (RockyRequest.Party.OTHER_PARTY == rockyRequest.party()) {
+                        polParty = rockyRequest.otherParty();
+                    } else {
+                        polParty = rockyRequest.party().toString();
+                    }
+
+                    party.setText(polParty);
                     phoneLabel.setText(rockyRequest.phoneType().toString());
                     // show/hide registration address views
                     for (View v : mailingAddressViews) {
@@ -187,6 +195,8 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     public void onCheckChanged(boolean checked) {
         if (checked) {
             dialog.show(getFragmentManager(), "disclosure_dialog");
+        } else {
+            buttonRegister.setEnabled(false);
         }
     }
 
@@ -198,7 +208,8 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @Override
     public void onSigned() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Bitmap image = (Images.aspectSafeScale(Images.transformAspectRatio(signaturePad.getSignatureBitmap(), 3, 1), 180, 60));
+        Bitmap image = Images.transformAspectRatio(signaturePad.getSignatureBitmap(), 3, 1);
+        image = Images.aspectSafeScale(image, 180, 60);
         image.compress(Bitmap.CompressFormat.PNG, 100, baos);
 
         db.update(RockyRequest.TABLE,

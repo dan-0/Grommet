@@ -65,20 +65,25 @@ public class StepperTabLayout extends TabLayout {
     @Override
     protected Parcelable onSaveInstanceState() {
         final Bundle state = new Bundle();
-        state.putParcelable("superState", super.onSaveInstanceState());
+        state.putParcelable("stepperSuperState", super.onSaveInstanceState());
         state.putParcelable(STEPPER_STATE_KEY, new SparseBooleanArrayParcelable(enabled));
         return state;
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onRestoreInstanceState(final Parcelable state) {
         if (state instanceof Bundle) {
             final Bundle localState = (Bundle) state;
-            super.onRestoreInstanceState(localState.getParcelable("superState"));
+            super.onRestoreInstanceState(localState.getParcelable("stepperSuperState"));
             enabled = localState.getParcelable(STEPPER_STATE_KEY);
+            for (int i = 0; i < getTabCount(); i++) {
+                getTabAt(i).getCustomView().setEnabled(enabled.get(i));
+            }
         } else {
             super.onRestoreInstanceState(state);
         }
     }
+
 
 }

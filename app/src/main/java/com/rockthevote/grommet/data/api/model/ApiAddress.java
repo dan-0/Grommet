@@ -134,7 +134,7 @@ public abstract class ApiAddress {
             writer.beginObject();
             writer.name("sub_address_type");
             writer.value("APT");
-            writer.name("subAddress");
+            writer.name("sub_address");
             subAddressAdapter.toJson(writer, value.subAddress());
             writer.endObject();
 

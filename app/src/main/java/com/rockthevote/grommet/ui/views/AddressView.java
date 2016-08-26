@@ -24,6 +24,7 @@ import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,11 @@ import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
 
 public class AddressView extends FrameLayout {
     private static final String PA_ABREV = "PA";
+
+    private static final String COUNTY_ENABLED_KEY = "county_enabled_key";
+
+    private String childrenStateKey;
+    private String superStateKey;
 
     @NotEmpty
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
@@ -112,10 +118,14 @@ public class AddressView extends FrameLayout {
                         break;
                     case 4:
                         type = Address.Type.ASSISTANT_ADDRESS;
+                        break;
                 }
             } finally {
                 typedArray.recycle();
             }
+
+            superStateKey = AddressView.class.getSimpleName() + ".superState." + type.toString();
+            childrenStateKey = AddressView.class.getSimpleName() + ".childState." + type.toString();
         }
     }
 
@@ -163,16 +173,15 @@ public class AddressView extends FrameLayout {
                 if (!PA_ABREV.equals(stateAdapter.getItem(i))) {
                     countySpinner.setErrorEnabled(false);
                     countySpinner.setEnabled(false);
-                    countySpinner.getEditText().setText("");
-                    countySpinner.getEditText().setEnabled(false);
                 } else {
-                    countySpinner.getEditText().setEnabled(true);
                     countySpinner.setEnabled(true);
                 }
 
                 stateSpinner.dismiss();
             });
-            stateSpinner.getEditText().setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
+            if (Strings.isBlank(stateSpinner.getEditText().getEditableText().toString())) {
+                stateSpinner.getEditText().setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
+            }
         }
     }
 
@@ -211,9 +220,10 @@ public class AddressView extends FrameLayout {
     @Override
     protected Parcelable onSaveInstanceState() {
         final Bundle state = new Bundle();
-        state.putParcelable("superState", super.onSaveInstanceState());
-        state.putSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY,
-                ChildrenViewStateHelper.newInstance(this).saveChildrenState());
+        state.putParcelable(superStateKey, super.onSaveInstanceState());
+        state.putBoolean(COUNTY_ENABLED_KEY, countySpinner.isEnabled());
+        state.putSparseParcelableArray(childrenStateKey,
+                ChildrenViewStateHelper.newInstance(this).saveChildrenState(childrenStateKey));
         return state;
     }
 
@@ -221,9 +231,10 @@ public class AddressView extends FrameLayout {
     protected void onRestoreInstanceState(final Parcelable state) {
         if (state instanceof Bundle) {
             final Bundle localState = (Bundle) state;
-            super.onRestoreInstanceState(localState.getParcelable("superState"));
+            super.onRestoreInstanceState(localState.getParcelable(superStateKey));
             ChildrenViewStateHelper.newInstance(this).restoreChildrenState(localState
-                    .getSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY));
+                    .getSparseParcelableArray(childrenStateKey), childrenStateKey);
+            countySpinner.setEnabled(localState.getBoolean(COUNTY_ENABLED_KEY, true));
         } else {
             super.onRestoreInstanceState(state);
         }
