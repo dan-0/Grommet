@@ -64,7 +64,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
     private PhoneNumberFormattingTextWatcher phoneFormatter;
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private CompositeSubscription subscriptions;
 
     @Nullable
     @Override
@@ -89,6 +89,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
         phoneFormatter = new PhoneNumberFormattingTextWatcher();
         phoneEditText.addTextChangedListener(phoneFormatter);
 
+        subscriptions = new CompositeSubscription();
         subscriptions.add(RxTextView.afterTextChangeEvents(phoneEditText)
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)

@@ -103,7 +103,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Inject BriteDatabase db;
 
     private ObservableValidator validator;
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private CompositeSubscription subscriptions;
     private EnumAdapter<Race> raceEnumAdapter;
     private EnumAdapter<Party> partyEnumAdapter;
 
@@ -192,9 +192,9 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onResume() {
         super.onResume();
-
         phoneFormatter = new PhoneNumberFormattingTextWatcher();
         phone.addTextChangedListener(phoneFormatter);
+        subscriptions = new CompositeSubscription();
 
         subscriptions.add(RxTextView.afterTextChangeEvents(raceSpinner.getEditText())
                 .observeOn(Schedulers.io())
@@ -333,8 +333,8 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onPause() {
         super.onPause();
-        subscriptions.unsubscribe();
         phone.removeTextChangedListener(phoneFormatter);
+        subscriptions.unsubscribe();
     }
 
     /**

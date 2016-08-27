@@ -73,7 +73,7 @@ public class NameView extends FrameLayout {
 
     private Name.Type type;
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private CompositeSubscription subscriptions;
 
     public NameView(Context context) {
         this(context, null);
@@ -156,6 +156,7 @@ public class NameView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
+            subscriptions = new CompositeSubscription();
             subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(firstNameEditText),
                     RxTextView.afterTextChangeEvents(middleNameEditText),
                     RxTextView.afterTextChangeEvents(lastNameEditText),
