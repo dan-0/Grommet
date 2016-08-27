@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Main Activity Strings-->
+    <string name="label_total_registered">Total Registered</string>
+    <string name="label_registered_event">Registered</string>
+    <string name="button_label_new_voter">New Voter</string>
+    <string name="event_details">Event Details</string>
+    <string name="error_partner_id">Invalid Partner ID</string>
+    <string name="label_partner_name_spinner">Validating Partner ID</string>
+
+    <!--Registration Activity Strings-->
+    <string name="cancel_dialog_message">¿Cancelar esta registración?</string>
+    <string name="dialog_yes">Sí</string>
+    <string name="dialog_no">No</string>
+    <string name="navigation_label_previous">anterior</string>
+    <string name="navigation_label_next">próximas</string>
+
+    <!--Eligibility Fragment Strings-->
+    <string name="fragment_title_new_registrant">Nombre</string>
+    <string name="label_us_citizen">Soy ciudadano de los Estados Unidos.</string>
+    <string name="label_eighteen_or_older">Tendré por lo menos 18 años en la fecha de las siguientes elecciones.</string>
+    <string name="label_has_id">Tengo una licencia de conducir de Pennsylvania.</string>
+    <string name="label_first_time_voter">Si es la primera vez que se inscribe para votar.</string>
+    <string name="label_name_prefix">Titulo</string>
+    <string name="label_first_name">Nombre</string>
+    <string name="label_middle_name">Segundo nombr</string>
+    <string name="label_last_name">Apellido</string>
+    <string name="label_name_suffix">Sufijo</string>
+    <string name="label_suffix">Sufijo</string>
+
+    <string name="label_birthday">Fecha de nacimiento</string>
+    <string name="section_label_eligibility">Elegibilidad</string>
+    <string name="section_label_basic_info">Información Básica</string>
+    <string name="section_label_new_registrant">Nueva Inscripción</string>
+    <string name="eighteen_or_older_err">Tendré por lo menos 18 años en la fecha de las siguientes elecciones.</string>
+    <string name="us_citizen_err">Soy ciudadano de los Estados Unidos.</string>
+    <string name="email_error">Dirección de email no es correcto</string>
+
+
+    <!--Personal Information Strings-->
+    <string name="fragment_title_personal_info">Dirección</string>
+    <string name="section_label_personal_info">Información de la Dirección</string>
+    <string name="section_label_name">el Nombre</string>
+    <string name="section_label_previous_name">Nombre anterior</string>
+    <string name="section_label_registration_address">Dirección de Residencia</string>
+    <string name="section_label_mailing_address">Dirección Postal</string>
+    <string name="section_label_previous_address">Dirección Anterior</string>
+    <string name="section_label_phone">Número de teléfono</string>
+    <string name="label_street">Dirección</string>
+    <string name="label_city">Ciudad</string>
+    <string name="label_zip_code">Código postal</string>
+    <string name="label_state">Estado</string>
+    <string name="label_unit_num">Unidad Número</string>
+    <string name="label_county">Condado donde vive</string>
+    <string name="checkbox_mailing_address_is_different">Consigo mi correo desde una dirección diferente a la de arriba.</string>
+    <string name="checkbox_address_changed">He cambiado mi dirección.</string>
+    <string name="label_send_copy_in_mail">I would like to receive a copy of my voter registration in the mail</string>
+    <string name="checkbox_name_changed">He cambiado mi nombre.</string>
+    <string name="label_receive_text">Estoy de acuerdo que puede llamar a %s y texto con actualizaciones importantes y recordatorios.</string>
+    <string name="county_empty_error">Condado donde vive es obligatorio</string>
+    <string name="label_no_address">No tengo dirección normal ni dirección permanente</string>
+    <string name="error_no_address">Completa registro mediante formulario en papel</string>
+    <string name="zip_code_error">código postal no válido</string>
+
+    <!--Register Fragment Strings-->
+    <string name="fragment_title_additional_info">Personal</string>
+    <string name="fragment_title_assistant_info">Asistencia</string>
+    <string name="section_label_gender">Sexo</string>
+    <string name="section_label_race">Raza</string>
+    <string name="section_label_party">Partido Político</string>
+    <string name="section_label_verification">La Verificación</string>
+    <string name="label_male">Masculino</string>
+    <string name="label_female">Femenino</string>
+    <string name="signature_description">Firme aquí</string>
+    <string name="label_button_register">Registrar</string>
+    <string name="label_agreement_prefix">He leido la \u0020</string>
+    <string name="label_agreement_link">Voter Registration Agreement</string>
+    <string name="agreement_neutral_button">Terminado</string>
+    <string name="voter_registration_agreement_title">Inscripción de Votantes Acuerdo</string>
+
+    <!--Additional Info Strings-->
+    <string name="label_preferred_language">Idioma de Preferencia</string>
+    <string name="label_drivers_license_id">Número de Licencia de Conducir de PA</string>
+    <string name="label_other_party">Otro Partido Político</string>
+    <string name="label_does_not_have_penn_dot">No sé mi número de PennDOT</string>
+    <string name="label_ssn_last_four">Los últimos 4 dígitos de su número de seguro social</string>
+    <string name="label_does_not_have_ssn">No sé mi número de los últimos 4 dígitos de su número de seguro social</string>
+    <string name="preferred_language_label">Idioma preferido para recibir los materiales electorales</string>
+    <string name="section_label_election_info">Información de las Elecciones</string>
+    <string name="penn_dot_enforcer_text">Ingrese el número de licencia de conducir de PA o de identificación PennDOT, los últimos cuatro dígitos de su número de seguro social.</string>
+    <string name="error_penn_dot">Marque \"no sé\" si no sabes su de identificación PennDOT</string>
+    <string name="ssn_enforcer_text">Si no cuenta con un número PennDOT, ingrese los últimos 4 dígitos de su número de seguro social. </string>
+    <string name="error_ssn">Marque \"no sé\" si no sabes los últimos cuatro dígitos de su número de seguro social.</string>
+    <string name="label_has_assistant">¿Alguien se ayudó con este formulario?</string>
+    <string name="section_label_assistant_name">Ayudante Nombre</string>
+    <string name="section_label_assistant_address">Ayudante Dirección</string>
+    <string name="section_label_assistant_contact_info">Información de Contacto de Ayudante</string>
+    <string name="phone_format_error">El número de teléfono que ingresó no es válido.</string>
+    <string name="label_email">Dirección de Email</string>
+    <string name="label_phone">Número de Teléfono</string>
+    <string name="label_phone_type">Tipo</string>
+    <string name="label_receive_email">"Doy permiso a %s para enviarme noticias y actualizaciones</string>
+    <string name="preferred_language_default">Español</string>
+    <string name="label_email_confirmation">
+        Enviar correo electrónico para permitir que Departamento de Estado de Pennsylvania le enviará un mensaje confirmando la recepción de su solicitud de registro de votante:
+    \n
+    \n
+    \u2022 Por favor tenga en cuenta que este correo electrónico puede tardar hasta 24 horas en llegar a usted."
+    </string>
+    <string name="label_assistant_declaration">
+        Si usted ayudó a un votante a llenar esta solicitud de inscripción de votante, también debe firmar la solicitud.  Marcar la casilla significa que usted está firmando electrónicamente la solicitud.
+\n
+\n
+Al hacerlo:
+\n
+\n
+\u2022 Afirma que entiende que su firma electrónica en esta solicitud constituye el equivalente legal de su firma.
+\n
+\n
+\u2022 Afirma que acepta firmar esta solicitud a través de medios electrónicos y que se aplicarán todas las leyes del estado Pennsylvania.
+    </string>
+    <string name="label_assistant_confirmation">CONFIRMO QUE LEÍ Y QUE ACEPTO LOS TÉRMINOS ANTERIORES.</string>
+
+    <!--Review and Confirm Fragment Strings-->
+    <string name="fragment_title_review">Revisar</string>
+    <string name="voter_agreement_text">He revisado la información anterior, y es verdad y exacta a lo mejor de mi conocimiento.</string>
+    <string name="title_activity_settings">La Configuración</string>
+    <string name="name_phrase_formatter">{title} {first_name} {middle_name} {last_name} {suffix}</string>
+    <string name="section_label_contact_info">Información de Contacto</string>
+    <string name="review_confirm_instructions">Por favor revise la siguiente información y confirmar su exactitud.</string>
+    <string name="section_label_signature">Su Firma</string>
+    <string name="signature_instructions">Por favor, use la lapicera electrónica para la captura de firmas</string>
+    <string name="signature_pad_error">Firma es necesaria</string>
+    <string name="action_cancel_reg">Cancelar la Inscripción</string>
+    <string name="registration_complete">Su inscripción estará completa</string>
+    <string name="disclosure_agreement_title">Declaración / Sancaón</string>
+    <string name="registration_complete_dialog_text">
+\n
+\u2022 Su solicitud se ha enviado a la oficina de registro de votantes del condado.
+\n
+\n
+\u2022 Su inscripción no estará completa hasta que sea procesada y aceptada por la oficina de inscripción de su condado.
+\n
+\n
+\u2022 Si acepta, recibirá su Tarjeta de Inscripción de Votante por correo.
+\n
+\n
+\u2022 Si en 14 días no ha recibido su Tarjeta de Inscripción de Votante, llame a su oficina de inscripción de votantes.
+\n
+\n
+Atención: La fecha límite para inscribirse y poder votar en las próximas elecciones 10/11/2016 es 11/8/2016.
+    </string>
+    <string name="disclosure_agreement">
+<![CDATA[
+
+<p>
+Declaro que
+</p>
+<ol >
+<li>
+Soy ciudadano de los Estados Unidos y habré sido ciudadano por lo menos 1 mes antes de la fecha de las siguientes elecciones.
+</li>
+<li>
+Tendré por lo menos 18 años en la fecha de las siguientes elecciones.
+</li>
+<li>
+Habré vivido en este dirección al menos durante 30 días antes de las próximas elecciones.
+</li>
+<li>
+Cumplo con los requisitos legales para votar.
+</li>
+</ol >
+<p>
+Lo declarado anteriormente es verdadero. Entiendo que esta declaración es una declaración jurada y si la información no es verdadera seré acusado(a) de perjurio y sentenciado(a) a prisión durante 7 años o a pagar una multa máxima de $15,000, o ambos.
+
+Marcar la casilla de abajo significa que usted está firmando la solicitud electrónicamente. Al hacerlo:
+<p>
+<ol>
+<li>
+Afirma que leyó y que acepta los términos de la declaración anterior.
+</li>
+<li>
+Afirma que entiende que su firma electrónica en esta solicitud constituye el equivalente legal de su firma para esta solicitud de inscripción de votante.
+</li>
+<li>
+Afirma que acepta hacer la transacción de la inscripción de votante a través de medios electrónicos y que entiende que todas las leyes de Pennsylvania se aplicarán a esta transacción.
+</li>
+</ol>
+<p>
+Si proporcionó su número de licencia de conducir de PA o de identificación de PennDOT, afirma que entiende que la firma que figura en su registro PennDOT constituirá su firma en el registro de inscripción de votante. Si usted sube una imagen de su firma, comprende que la firma que sube representará su firma en su archivo de inscripción de elector. Afirma que entiende que no es obligatorio inscribirse electrónicamente y que puede usar un formulario impreso o no electrónico para su solicitud de inscripción como votante.
+</p>
+<p>
+SANCIÓN POR DECLARACIÓN FALSA
+</p>
+<p>
+Advertencia: si una persona firma una solicitud de inscripción oficial sabiendo que algo de lo que declaró en la solicitud es falso, hace una inscripción falsa o proporciona información falsa, esa persona comete perjurio. Si se comprueba que cometió delito de perjurio será castigado con prisión máxima de siete años, o una multa máxima de $15,000, o ambos, a discreción del tribunal.
+</p>
+<p>
+Presentar una solicitud con datos falsos también puede estar sujeto a otras sanciones, incluso pérdida del derecho al voto según las leyes estatales o federales.
+</p>
+]]>
+    </string>
+
+
+    <!--Multi use strings-->
+    <string name="action_ok">Okay</string>
+    <string name="action_accept">Aceptar</string>
+    <string name="action_decline">Rechazar</string>
+</resources>

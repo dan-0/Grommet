@@ -20,7 +20,10 @@ import com.rockthevote.grommet.ui.BaseActivity;
 import com.rockthevote.grommet.ui.ViewContainer;
 import com.rockthevote.grommet.ui.misc.StepperTabLayout;
 import com.rockthevote.grommet.util.KeyboardUtil;
+import com.rockthevote.grommet.util.LocaleUtils;
 import com.squareup.sqlbrite.BriteDatabase;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -51,6 +54,10 @@ public class RegistrationActivity extends BaseActivity {
     private OnPageChangeListener listener;
 
     private KeyboardUtil keyboardUtil;
+
+    public RegistrationActivity() {
+        LocaleUtils.updateConfig(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +122,14 @@ public class RegistrationActivity extends BaseActivity {
             case R.id.action_cancel:
                 showCancelDialog();
                 return true;
+            case R.id.action_english:
+                LocaleUtils.setLocale(new Locale("en"));
+                recreate();
+                return true;
+            case R.id.action_espanol:
+                LocaleUtils.setLocale(new Locale("es"));
+                recreate();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -137,6 +152,7 @@ public class RegistrationActivity extends BaseActivity {
                             RockyRequest._ID + " = ? ",
                             String.valueOf(rockyRequestRowId.get()));
 
+                    LocaleUtils.setLocale(new Locale("en"));
                     finish();
 
                 }))

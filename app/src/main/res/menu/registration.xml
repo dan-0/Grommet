@@ -8,11 +8,11 @@
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/english"
+                android:id="@+id/action_english"
                 android:title="English"
                 app:showAsAction="never"/>
             <item
-                android:id="@+id/espanol"
+                android:id="@+id/action_espanol"
                 android:title="Espanol"
                 app:showAsAction="never"/>
         </menu>

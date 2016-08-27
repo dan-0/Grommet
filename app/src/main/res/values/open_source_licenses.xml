@@ -2,7 +2,7 @@
 <resources>
     <string name="label_open_source_licenses">Open Source Licenses</string>
 
-    <string name="square_license">
+    <string name="square_license" translatable="false">
 Copyright 2013 Square, Inc.\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -18,7 +18,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="butter_knife_license">
+    <string name="butter_knife_license" translatable="false">
 Copyright 2013 Jake Wharton\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -34,7 +34,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="auto_value_license">
+    <string name="auto_value_license" translatable="false">
 Copyright 2013 Google, Inc.\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -50,7 +50,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="sqlbrite_license">
+    <string name="sqlbrite_license" translatable="false">
 Copyright 2015 Square, Inc.\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -66,7 +66,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="rxbinding_license">
+    <string name="rxbinding_license" translatable="false">
 Copyright © 2015 Jake Wharton\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -82,7 +82,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="signature_pad_license">
+    <string name="signature_pad_license" translatable="false">
 Copyright 2014-2016 Gianluca Cacace\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -98,7 +98,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="rx_java_license">
+    <string name="rx_java_license" translatable="false">
 Copyright 2013 Netflix, Inc.\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -114,7 +114,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="reactive_location_license">
+    <string name="reactive_location_license" translatable="false">
 Copyright © 2015 Michał Charmas (http://blog.charmas.pl)\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -130,7 +130,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="rx_preferences_license">
+    <string name="rx_preferences_license" translatable="false">
 Copyright 2014 Prateek Srivastava\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n
@@ -146,7 +146,7 @@ See the License for the specific language governing permissions and\n
 limitations under the License.\n
     </string>
 
-    <string name="saripaar_license">
+    <string name="saripaar_license" translatable="false">
 Copyright 2012 - 2015 Mobs &amp; Geeks\n
 \n
 Licensed under the Apache License, Version 2.0 (the "License");\n

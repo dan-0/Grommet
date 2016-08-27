@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">PA OVR APP</string>
+    <string name="app_name" translatable="false">PA OVR APP</string>
 
-    <string name="no_intent_handler">
+    <string name="no_intent_handler" translatable="false">
         There are no applications available to handle this action.
     </string>
 
@@ -9,20 +9,20 @@
     <string name="navigation_label_next">next</string>
 
     <!--Nav Drawer Strings-->
-    <string name="nav_title_home">Home</string>
-    <string name="nav_title_about">About</string>
-    <string name="nav_title_data_usage">Data Usage</string>
-    <string name="nav_title_help">Help</string>
+    <string name="nav_title_home" translatable="false">Home</string>
+    <string name="nav_title_about" translatable="false">About</string>
+    <string name="nav_title_data_usage" translatable="false">Data Usage</string>
+    <string name="nav_title_help" translatable="false">Help</string>
     <string name="incomplete_profile_alert">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip before registering voters</string>
     <string name="dialog_no_thanks">No Thanks</string>
     <string name="dialog_enter_info">Enter Info</string>
 
     <!--Main Activity Strings-->
-    <string name="label_total_registered">Total Registered</string>
+    <string name="label_total_registered" translatable="false">Total Registered</string>
     <string name="label_registered_event">Registered</string>
-    <string name="button_label_new_voter">New Voter</string>
-    <string name="event_details">Event Details</string>
-    <string name="error_partner_id">Invalid Partner ID</string>
+    <string name="button_label_new_voter" translatable="false">New Voter</string>
+    <string name="event_details" translatable="false">Event Details</string>
+    <string name="error_partner_id" translatable="false">Invalid Partner ID</string>
     <string name="label_partner_name_spinner">Validating Partner ID</string>
 
     <!--Registration Activity Strings-->
@@ -65,11 +65,10 @@
     <string name="label_city">City</string>
     <string name="label_zip_code">Zip Code</string>
     <string name="label_state">State</string>
-    <string name="label_unit_num">Unit #</string>
+    <string name="label_unit_num" translatable="false">Unit #</string>
     <string name="label_county">County</string>
     <string name="checkbox_mailing_address_is_different"> I get my mail from a different address from the one above</string>
     <string name="checkbox_address_changed">I have changed my address</string>
-    <string name="label_send_copy_in_mail">I would like to receive a copy of my voter registration in the mail</string>
     <string name="checkbox_name_changed">I have changed my name</string>
     <string name="label_receive_text">I agree that %s/Pennsylvania Voice/State Voices may call and text me with important updates and reminders</string>
     <string name="county_empty_error">County Required</string>
@@ -141,7 +140,6 @@ In doing so:
     <string name="fragment_title_review">Review</string>
     <string name="voter_agreement_text">I have reviewed the above information, and it is true and accurate to the best of my knowledge.</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="name_phrase_formatter">{title} {first_name} {middle_name} {last_name} {suffix}</string>
     <string name="section_label_contact_info">Contact Info</string>
     <string name="review_confirm_instructions">Please review the following information and confirm its accuracy.</string>
     <string name="section_label_signature">Signature</string>
@@ -180,7 +178,7 @@ I am a United States citizen and will have been a citizen for at least 1 month o
 I will be at least 18 years old on the day of the next election.
 </li>
 <li>
-I will have lived at the address in section 5 for at least 30 days before the election.
+I will have lived at this address for at least 30 days before the election.
 </li>
 <li>
 I am legally qualified to vote.
@@ -218,35 +216,34 @@ Submitting an application containing false information may also subject a person
     </string>
 
     <!-- Preference Strings -->
-    <string name="pref_key_partner_id">partner_id</string>
-    <string name="pref_key_partner_name">partner_name</string>
-    <string name="pref_key_canvasser_name">canvasser_name</string>
-    <string name="pref_key_event_zip_code">event_zip</string>
-    <string name="pref_key_event_name">event_name</string>
-    <string name="pref_key_event_reg_total">event_reg_total</string>
-    <string name="pref_key_app_reg_total">app_reg_total</string>
+    <string name="pref_key_partner_id" translatable="false">partner_id</string>
+    <string name="pref_key_partner_name" translatable="false">partner_name</string>
+    <string name="pref_key_canvasser_name" translatable="false">canvasser_name</string>
+    <string name="pref_key_event_zip_code" translatable="false">event_zip</string>
+    <string name="pref_key_event_name" translatable="false">event_name</string>
+    <string name="pref_key_event_reg_total" translatable="false">event_reg_total</string>
+    <string name="pref_key_app_reg_total" translatable="false">app_reg_total</string>
 
-    <string name="pref_title_partner_name">Partner Name</string>
-    <string name="pref_title_partner_id">Partner ID</string>
-    <string name="pref_title_canvaser_name">Canvaser Name</string>
-    <string name="pref_title_event_zip_code">Event Zip Code</string>
-    <string name="pref_title_event_name">Event Name</string>
+    <string name="pref_title_partner_name" translatable="false">Partner Name</string>
+    <string name="pref_title_partner_id" translatable="false">Partner ID</string>
+    <string name="pref_title_canvaser_name" translatable="false">Canvaser Name</string>
+    <string name="pref_title_event_zip_code" translatable="false">Event Zip Code</string>
+    <string name="pref_title_event_name" translatable="false">Event Name</string>
 
     <!--Multi use strings-->
     <string name="action_cancel">Cancel</string>
     <string name="action_save">Save</string>
-    <string name="action_edit">Edit</string>
     <string name="action_ok">OK</string>
     <string name="action_accept">Accept</string>
     <string name="action_decline">Decline</string>
 
-    <string name="upload_notification_title_success">PA Registration Success</string>
-    <string name="upload_notification_title_failure">PA Registration Failed</string>
-    <string name="upload_notification_content_success">Registration submitted</string>
-    <string name="upload_notification_content_client_failure">Bad registration data</string>
-    <string name="upload_notification_content_connection_failure">Unable to contact server</string>
+    <string name="upload_notification_title_success" translatable="false">PA Registration Success</string>
+    <string name="upload_notification_title_failure" translatable="false">PA Registration Failed</string>
+    <string name="upload_notification_content_success" translatable="false">Registration submitted</string>
+    <string name="upload_notification_content_client_failure" translatable="false">Bad registration data</string>
+    <string name="upload_notification_content_connection_failure" translatable="false">Unable to contact server</string>
 
-    <string name="about_activity_text">
+    <string name="about_activity_text" translatable="false">
 <![CDATA[
 
 <p>
@@ -279,7 +276,7 @@ outcomes.
 ]]>
     </string>
 
-     <string name="data_usage_activity_text">
+     <string name="data_usage_activity_text" translatable="false">
 <![CDATA[
 
 <p>
@@ -322,7 +319,7 @@ ensure its security on our systems.
 ]]>
     </string>
 
-    <string name="help_activity_text">
+    <string name="help_activity_text" translatable="false">
 <![CDATA[
 <p>
 &nbsp&nbsp&nbsp&nbsp If you have any questions about this app or its data usage policy please contact

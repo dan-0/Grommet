@@ -12,6 +12,8 @@ import com.rockthevote.grommet.data.db.Db;
 import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import java.util.Locale;
+
 import rx.functions.Func1;
 
 @AutoValue
@@ -202,24 +204,35 @@ public abstract class Name implements Parcelable, BaseColumns {
     }
 
     public enum Prefix {
-        MR("Mr"), MS("Ms"), MRS("Mrs"), MISS("Miss");
+        MR("Mr", "Sr"),
+        MS("Ms", "Ms"), // intentionally the same
+        MRS("Mrs", "Srta"),
+        MISS("Miss", "Sra");
 
-        private final String title;
+        private final String enTitle;
+        private final String esTitle;
 
-        Prefix(String title) {
-            this.title = title;
+        Prefix(String enTitle, String esTitle) {
+            this.enTitle = enTitle;
+            this.esTitle = esTitle;
         }
 
         @Override
         @NonNull
         public String toString() {
-            return title;
+            if ("es".equals(Locale.getDefault().getLanguage())) {
+                return esTitle;
+            } else {
+                // default to english
+                return enTitle;
+            }
         }
 
         @NonNull
         public static Prefix fromString(String title) {
             for (Prefix value : Prefix.values()) {
-                if (value.title.equals(title)) {
+                if (value.enTitle.equals(title) ||
+                        value.esTitle.equals(title)) {
                     return value;
                 }
             }
