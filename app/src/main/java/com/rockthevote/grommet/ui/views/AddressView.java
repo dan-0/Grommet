@@ -81,7 +81,7 @@ public class AddressView extends FrameLayout {
     private ArrayAdapter<CharSequence> stateAdapter;
 
     private Address.Type type;
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private CompositeSubscription subscriptions;
     private ZipTextWatcher zipTextWatcher = new ZipTextWatcher();
 
     public AddressView(Context context) {
@@ -192,6 +192,7 @@ public class AddressView extends FrameLayout {
         if (!isInEditMode()) {
             zipEditText.addTextChangedListener(zipTextWatcher);
 
+            subscriptions = new CompositeSubscription();
             subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(streetEditText),
                     RxTextView.afterTextChangeEvents(unitEditText),
                     RxTextView.afterTextChangeEvents(cityEditText),
