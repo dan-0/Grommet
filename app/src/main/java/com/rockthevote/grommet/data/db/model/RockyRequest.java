@@ -12,6 +12,7 @@ import com.rockthevote.grommet.data.db.Db;
 import com.rockthevote.grommet.util.Dates;
 
 import java.util.Date;
+import java.util.Locale;
 
 import rx.functions.Func1;
 
@@ -286,29 +287,37 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     }
 
     public enum Race {
-        OTHER("Other"),
-        AM_IND_AK_NATIVE("American Indian / Alaskan Native"),
-        ASIAN_PACIFIC_ISLANDER("Asian / Pacific Islander"),
-        BLACK("Black (not Hispanic)"),
-        HISPANIC("Hispanic"),
-        MULTI_RACIAL("Multi-Racial"),
-        WHITE("White (Not Hispanic)"),
-        DECLINE("Decline to state");
+        OTHER("Other", "OTRO"),
+        AM_IND_AK_NATIVE("American Indian / Alaskan Native", "Nativoamericano"),
+        ASIAN_PACIFIC_ISLANDER("Asian / Pacific Islander", "Asiatico"),
+        BLACK("Black (not Hispanic)", "Afroamericano"),
+        HISPANIC("Hispanic", "Hispano"),
+        MULTI_RACIAL("Multi-Racial", "Multi"),
+        WHITE("White (Not Hispanic)", "Anglosajón"),
+        DECLINE("Decline to state", "Rechazar");
 
-        private final String race;
+        private final String enRace;
+        private final String esRace;
 
-        Race(String race) {
-            this.race = race;
+        Race(String enRace, String esRace) {
+            this.enRace = enRace;
+            this.esRace = esRace;
         }
 
         @Override
         public String toString() {
-            return race;
+            if ("es".equals(Locale.getDefault().getLanguage())) {
+                return esRace;
+            } else {
+                // default to english
+                return enRace;
+            }
         }
 
         public static Race fromString(String race) {
             for (Race val : values()) {
-                if (val.toString().equals(race)) {
+                if (val.enRace.equals(race) ||
+                        val.esRace.equals(race)) {
                     return val;
                 }
             }
@@ -317,25 +326,33 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     }
 
     public enum Party {
-        DEMOCRATIC("Democratic"),
-        REPUBLICAN("Republican"),
-        NO_PARTY("none"),
-        OTHER_PARTY("Other");
+        DEMOCRATIC("Democratic", "Demócrata"),
+        REPUBLICAN("Republican", "Republicano"),
+        NO_PARTY("None", "Ninguno"),
+        OTHER_PARTY("Other", "Otro");
 
-        private final String party;
+        private final String enParty;
+        private final String esParty;
 
-        Party(String party) {
-            this.party = party;
+        Party(String enParty, String esParty) {
+            this.enParty = enParty;
+            this.esParty = esParty;
         }
 
         @Override
         public String toString() {
-            return party;
+            if ("es".equals(Locale.getDefault().getLanguage())) {
+                return esParty;
+            } else {
+                // default to english
+                return enParty;
+            }
         }
 
         public static Party fromString(String party) {
             for (Party val : values()) {
-                if (val.toString().equals(party)) {
+                if (val.enParty.equals(party) ||
+                        val.esParty.equals(party)) {
                     return val;
                 }
             }
@@ -373,23 +390,33 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     }
 
     public enum PhoneType {
-        MOBILE("Mobile"), HOME("Home"), WORK("Work");
+        MOBILE("Mobile", "Móvil"),
+        HOME("Home", "Casa"),
+        WORK("Work", "Trabajo");
 
-        private final String phoneType;
+        private final String enPhoneType;
+        private final String esPhoneType;
 
-        PhoneType(String phoneType) {
-            this.phoneType = phoneType;
+        PhoneType(String enPhoneType, String esPhoneType) {
+            this.enPhoneType = enPhoneType;
+            this.esPhoneType = esPhoneType;
         }
 
         @Override
         public @NonNull String toString() {
-            return phoneType;
+            if ("es".equals(Locale.getDefault().getLanguage())) {
+                return esPhoneType;
+            } else {
+                // default to english
+                return enPhoneType;
+            }
         }
 
         @NonNull
         public static PhoneType fromString(String phoneType) {
             for (PhoneType value : PhoneType.values()) {
-                if (value.phoneType.equals(phoneType)) {
+                if (value.enPhoneType.equals(phoneType) ||
+                        value.esPhoneType.equals(phoneType)) {
                     return value;
                 }
             }

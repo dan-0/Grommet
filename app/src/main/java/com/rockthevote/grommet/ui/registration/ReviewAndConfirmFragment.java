@@ -24,10 +24,12 @@ import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.util.Dates;
 import com.rockthevote.grommet.util.Images;
+import com.rockthevote.grommet.util.LocaleUtils;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -252,6 +254,8 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
             RegistrationCompleteDialogFragment dialog = new RegistrationCompleteDialogFragment();
             dialog.setCancelable(false);
             dialog.show(getFragmentManager(), "complete_dialog");
+
+            LocaleUtils.setLocale(new Locale("en"));
         } else {
             signaturePadError.setVisibility(View.VISIBLE);
         }
