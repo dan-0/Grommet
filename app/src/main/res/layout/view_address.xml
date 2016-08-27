@@ -69,7 +69,7 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_city"
         android:layout_width="0dp"
-        android:layout_columnWeight=".7"
+        android:layout_columnWeight=".5"
         android:layout_gravity="fill_horizontal"
         android:layout_marginStart="@dimen/content_margin"
         app:errorEnabled="false"
@@ -88,7 +88,7 @@
     <com.rockthevote.grommet.ui.misc.BetterSpinner
         android:id="@+id/spinner_state"
         android:layout_width="0dp"
-        android:layout_columnWeight=".3"
+        android:layout_columnWeight=".2"
         android:layout_gravity="fill_horizontal"
         android:hint="@string/label_state"
         app:errorEnabled="false"/>
@@ -107,8 +107,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:hint="@string/label_zip_code"
-            android:inputType="number"
-            android:maxEms="5"
+            android:inputType="phone"
+            android:maxLength="10"
             android:maxLines="1"/>
 
     </android.support.design.widget.TextInputLayout>

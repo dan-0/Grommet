@@ -63,7 +63,8 @@
             style="@android:style/TextAppearance.Material.Subhead"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:inputType="phone"
+            android:maxLength="10"
             android:maxLines="1"
             />
 
