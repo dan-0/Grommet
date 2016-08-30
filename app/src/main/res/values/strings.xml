@@ -13,9 +13,9 @@
     <string name="nav_title_about" translatable="false">About</string>
     <string name="nav_title_data_usage" translatable="false">Data Usage</string>
     <string name="nav_title_help" translatable="false">Help</string>
-    <string name="incomplete_profile_alert">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip before registering voters</string>
-    <string name="dialog_no_thanks">No Thanks</string>
-    <string name="dialog_enter_info">Enter Info</string>
+    <string name="incomplete_profile_alert" translatable="false">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip before registering voters</string>
+    <string name="dialog_no_thanks" translatable="false">No Thanks</string>
+    <string name="dialog_enter_info" translatable="false">Enter Info</string>
 
     <!--Main Activity Strings-->
     <string name="label_total_registered" translatable="false">Total Registered</string>
@@ -65,7 +65,7 @@
     <string name="label_city">City</string>
     <string name="label_zip_code">Zip Code</string>
     <string name="label_state">State</string>
-    <string name="label_unit_num" translatable="false">Unit Type &amp; Number</string>
+    <string name="label_unit_num">Unit Type &amp; Number</string>
     <string name="label_county">County</string>
     <string name="checkbox_mailing_address_is_different"> I get my mail from a different address from the one above</string>
     <string name="checkbox_address_changed">I have changed my address</string>
@@ -231,8 +231,8 @@ Submitting an application containing false information may also subject a person
     <string name="pref_title_event_name" translatable="false">Event Name</string>
 
     <!--Multi use strings-->
-    <string name="action_cancel">Cancel</string>
-    <string name="action_save">Save</string>
+    <string name="action_cancel" translatable="false">Cancel</string>
+    <string name="action_save" translatable="false">Save</string>
     <string name="action_ok">OK</string>
     <string name="action_accept">Accept</string>
     <string name="action_decline">Decline</string>

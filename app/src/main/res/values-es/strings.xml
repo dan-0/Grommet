@@ -2,11 +2,7 @@
 <resources>
 
     <!--Main Activity Strings-->
-    <string name="label_total_registered">Total Registered</string>
     <string name="label_registered_event">Registered</string>
-    <string name="button_label_new_voter">New Voter</string>
-    <string name="event_details">Event Details</string>
-    <string name="error_partner_id">Invalid Partner ID</string>
     <string name="label_partner_name_spinner">Validating Partner ID</string>
 
     <!--Registration Activity Strings-->
@@ -55,7 +51,6 @@
     <string name="label_county">Condado donde vive</string>
     <string name="checkbox_mailing_address_is_different">Consigo mi correo desde una dirección diferente a la de arriba.</string>
     <string name="checkbox_address_changed">He cambiado mi dirección.</string>
-    <string name="label_send_copy_in_mail">I would like to receive a copy of my voter registration in the mail</string>
     <string name="checkbox_name_changed">He cambiado mi nombre.</string>
     <string name="label_receive_text">Estoy de acuerdo que puede llamar a %s y texto con actualizaciones importantes y recordatorios.</string>
     <string name="county_empty_error">Condado donde vive es obligatorio</string>
@@ -126,7 +121,6 @@ Al hacerlo:
     <string name="fragment_title_review">Revisar</string>
     <string name="voter_agreement_text">He revisado la información anterior, y es verdad y exacta a lo mejor de mi conocimiento.</string>
     <string name="title_activity_settings">La Configuración</string>
-    <string name="name_phrase_formatter">{title} {first_name} {middle_name} {last_name} {suffix}</string>
     <string name="section_label_contact_info">Información de Contacto</string>
     <string name="review_confirm_instructions">Por favor revise la siguiente información y confirmar su exactitud.</string>
     <string name="section_label_signature">Su Firma</string>
