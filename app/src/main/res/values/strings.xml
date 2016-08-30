@@ -65,7 +65,7 @@
     <string name="label_city">City</string>
     <string name="label_zip_code">Zip Code</string>
     <string name="label_state">State</string>
-    <string name="label_unit_num" translatable="false">Unit #</string>
+    <string name="label_unit_num" translatable="false">Unit Type &amp; Number</string>
     <string name="label_county">County</string>
     <string name="checkbox_mailing_address_is_different"> I get my mail from a different address from the one above</string>
     <string name="checkbox_address_changed">I have changed my address</string>

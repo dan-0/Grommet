@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -61,6 +63,11 @@ public class RegistrationActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // inside your activity (if you did not enable transitions in your theme)
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setExitTransition(new Slide());
+        getWindow().setEnterTransition(new Slide());
+
         super.onCreate(savedInstanceState);
 
         ViewGroup contentView = getContentView();
@@ -123,12 +130,16 @@ public class RegistrationActivity extends BaseActivity {
                 showCancelDialog();
                 return true;
             case R.id.action_english:
-                LocaleUtils.setLocale(new Locale("en"));
-                recreate();
+                if (!Locale.getDefault().equals(new Locale("en"))) {
+                    LocaleUtils.setLocale(new Locale("en"));
+                    recreate();
+                }
                 return true;
             case R.id.action_espanol:
-                LocaleUtils.setLocale(new Locale("es"));
-                recreate();
+                if (!Locale.getDefault().equals(new Locale("es"))) {
+                    LocaleUtils.setLocale(new Locale("es"));
+                    recreate();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

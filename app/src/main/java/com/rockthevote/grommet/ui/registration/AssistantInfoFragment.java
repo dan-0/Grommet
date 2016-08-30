@@ -86,10 +86,11 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        phoneFormatter = new PhoneNumberFormattingTextWatcher();
+        subscriptions = new CompositeSubscription();
+
+        phoneFormatter = new PhoneNumberFormattingTextWatcher("en");
         phoneEditText.addTextChangedListener(phoneFormatter);
 
-        subscriptions = new CompositeSubscription();
         subscriptions.add(RxTextView.afterTextChangeEvents(phoneEditText)
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
@@ -107,8 +108,8 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onPause() {
         super.onPause();
-        phoneEditText.removeTextChangedListener(phoneFormatter);
         subscriptions.unsubscribe();
+        phoneEditText.removeTextChangedListener(phoneFormatter);
     }
 
     @OnCheckedChanged(R.id.checkbox_has_assistant)
