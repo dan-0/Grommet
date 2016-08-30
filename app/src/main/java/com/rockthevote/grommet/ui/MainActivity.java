@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -164,7 +165,8 @@ public final class MainActivity extends BaseActivity {
 
                     long rockyRequestRowId = db.insert(RockyRequest.TABLE, builder.build());
                     currentRockyRequestId.set(rockyRequestRowId);
-                    startActivity(new Intent(this, RegistrationActivity.class));
+                    startActivity(new Intent(this, RegistrationActivity.class),
+                            ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 });
     }
 

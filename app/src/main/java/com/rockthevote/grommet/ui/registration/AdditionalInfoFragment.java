@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.f2prateek.rx.preferences.Preference;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.Validator;
@@ -192,9 +193,10 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        phoneFormatter = new PhoneNumberFormattingTextWatcher();
-        phone.addTextChangedListener(phoneFormatter);
         subscriptions = new CompositeSubscription();
+
+        phoneFormatter = new PhoneNumberFormattingTextWatcher("en");
+        phone.addTextChangedListener(phoneFormatter);
 
         subscriptions.add(RxTextView.afterTextChangeEvents(raceSpinner.getEditText())
                 .observeOn(Schedulers.io())
@@ -328,13 +330,14 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                                     .build(),
                             RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
                 }));
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        phone.removeTextChangedListener(phoneFormatter);
         subscriptions.unsubscribe();
+        phone.removeTextChangedListener(phoneFormatter);
     }
 
     /**
