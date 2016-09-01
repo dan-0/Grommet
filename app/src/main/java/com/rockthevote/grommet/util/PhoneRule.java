@@ -5,17 +5,18 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import com.mobsandgeeks.saripaar.AnnotationRule;
 
-public class PhoneOrEmptyRule extends AnnotationRule<PhoneOrEmpty, String> {
+public class PhoneRule extends AnnotationRule<Phone, String> {
 
-    protected PhoneOrEmptyRule(final PhoneOrEmpty email) {
-        super(email);
+    protected PhoneRule(final Phone phone) {
+        super(phone);
     }
 
     @Override
     public boolean isValid(final String phone) {
-        if (Strings.isBlank(phone)) {
+        if (mRuleAnnotation.allowEmpty() && Strings.isBlank(phone)) {
             return true;
         }
+
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         Phonenumber.PhoneNumber number;
         try {
