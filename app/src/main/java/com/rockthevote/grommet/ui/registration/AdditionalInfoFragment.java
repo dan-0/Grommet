@@ -11,7 +11,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.f2prateek.rx.preferences.Preference;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.Validator;
@@ -28,7 +27,7 @@ import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.EmailOrEmpty;
-import com.rockthevote.grommet.util.PhoneOrEmpty;
+import com.rockthevote.grommet.util.Phone;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.concurrent.TimeUnit;
@@ -88,7 +87,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.email_opt_in) CheckBox emailOptIn;
 
-    @PhoneOrEmpty(messageResId = R.string.phone_format_error)
+    @Phone(messageResId = R.string.phone_format_error, allowEmpty = true)
     @BindView(R.id.til_phone_number) TextInputLayout phoneNumber;
 
     @BindView(R.id.phone) EditText phone;
@@ -127,7 +126,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        Validator.registerAnnotation(PhoneOrEmpty.class);
+        Validator.registerAnnotation(Phone.class);
         Validator.registerAnnotation(EmailOrEmpty.class);
         Validator.registerAnnotation(NotEmpty.class);
 
@@ -195,7 +194,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         super.onResume();
         subscriptions = new CompositeSubscription();
 
-        phoneFormatter = new PhoneNumberFormattingTextWatcher("en");
+        phoneFormatter = new PhoneNumberFormattingTextWatcher("US");
         phone.addTextChangedListener(phoneFormatter);
 
         subscriptions.add(RxTextView.afterTextChangeEvents(raceSpinner.getEditText())

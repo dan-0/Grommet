@@ -11,17 +11,19 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.f2prateek.rx.preferences.Preference;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.rockthevote.grommet.ui.views.NameView;
-import com.rockthevote.grommet.util.PhoneOrEmpty;
+import com.rockthevote.grommet.util.Phone;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.concurrent.TimeUnit;
@@ -36,6 +38,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
+import static com.rockthevote.grommet.data.db.model.AdditionalInfo.Type.ASSISTANT_DECLARATION;
 import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.ASSISTANT_PHONE;
 
 public class AssistantInfoFragment extends BaseRegistrationFragment {
@@ -46,7 +49,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.assistant_address) AddressView addressView;
 
-    @PhoneOrEmpty(messageResId = R.string.phone_format_error)
+    @Phone(messageResId = R.string.phone_format_error)
     @BindView(R.id.til_assistant_phone) TextInputLayout phoneTIL;
 
     @BindView(R.id.assistant_phone) EditText phoneEditText;
@@ -78,7 +81,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        Validator.registerAnnotation(PhoneOrEmpty.class);
+        Validator.registerAnnotation(Phone.class);
         validator = new ObservableValidator(this, getActivity());
 
     }
@@ -88,7 +91,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
         super.onResume();
         subscriptions = new CompositeSubscription();
 
-        phoneFormatter = new PhoneNumberFormattingTextWatcher("en");
+        phoneFormatter = new PhoneNumberFormattingTextWatcher("US");
         phoneEditText.addTextChangedListener(phoneFormatter);
 
         subscriptions.add(RxTextView.afterTextChangeEvents(phoneEditText)
@@ -101,6 +104,18 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
                                     .value(event.editable().toString())
                                     .build()
                     );
+                }));
+
+        subscriptions.add(RxCompoundButton.checkedChanges(assistantAffirmation)
+                .observeOn(Schedulers.io())
+                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                .skip(1)
+                .subscribe(checked -> {
+                    AdditionalInfo.insertOrUpdate(db, rockyRequestRowId.get(),
+                            ASSISTANT_DECLARATION, new AdditionalInfo.Builder()
+                                    .type(ASSISTANT_DECLARATION)
+                                    .stringValue(String.valueOf(checked))
+                                    .build());
                 }));
 
     }
