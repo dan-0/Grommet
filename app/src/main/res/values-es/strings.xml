@@ -52,7 +52,7 @@
     <string name="checkbox_mailing_address_is_different">Consigo mi correo desde una dirección diferente a la de arriba.</string>
     <string name="checkbox_address_changed">He cambiado mi dirección.</string>
     <string name="checkbox_name_changed">He cambiado mi nombre.</string>
-    <string name="label_receive_text">Estoy de acuerdo que puede llamar a %s y texto con actualizaciones importantes y recordatorios.</string>
+    <string name="label_receive_text">Estoy de acuerdo que puede llamar a %s/Pennsylvania Voice/State Voices y texto con actualizaciones importantes y recordatorios.</string>
     <string name="county_empty_error">Condado donde vive es obligatorio</string>
     <string name="label_no_address">No tengo dirección normal ni dirección permanente</string>
     <string name="error_no_address">Completa registro mediante formulario en papel</string>

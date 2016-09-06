@@ -4,6 +4,7 @@ package com.rockthevote.grommet.data.api.model;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
+import com.rockthevote.grommet.data.api.Normalize;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
@@ -15,10 +16,13 @@ import java.io.IOException;
 @AutoValue
 public abstract class ApiAddress {
 
+    @Normalize
     abstract String streetName();
 
+    @Normalize
     abstract String subAddress();
 
+    @Normalize
     abstract String municipalJurisdiction();
 
     abstract String county();

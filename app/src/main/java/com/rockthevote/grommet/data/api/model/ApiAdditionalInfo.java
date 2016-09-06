@@ -3,6 +3,7 @@ package com.rockthevote.grommet.data.api.model;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
+import com.rockthevote.grommet.data.api.Normalize;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
@@ -13,6 +14,7 @@ public abstract class ApiAdditionalInfo {
 
     abstract String name();
 
+    @Normalize
     @Json(name = "string_value")
     abstract String stringValue();
 

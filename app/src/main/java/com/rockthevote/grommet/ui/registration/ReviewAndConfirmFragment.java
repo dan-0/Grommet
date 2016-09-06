@@ -19,7 +19,6 @@ import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.data.prefs.AppRegTotal;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.util.Dates;
@@ -72,7 +71,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @BindView(R.id.checkbox_agreement) CheckBox confirmCheckbox;
 
     @Inject @EventRegTotal Preference<Integer> eventRegTotal;
-    @Inject @AppRegTotal Preference<Integer> appRegTotal;
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
 
@@ -247,9 +245,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
 
             int totalEvent = eventRegTotal.get();
             eventRegTotal.set(++totalEvent);
-
-            int totalApp = appRegTotal.get();
-            appRegTotal.set(++totalApp);
 
             RegistrationCompleteDialogFragment dialog = new RegistrationCompleteDialogFragment();
             dialog.setCancelable(false);

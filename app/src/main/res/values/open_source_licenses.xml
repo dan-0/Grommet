@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="label_open_source_licenses">Open Source Licenses</string>
+    <string name="label_open_source_licenses" translatable="false">Open Source Licenses</string>
 
     <string name="square_license" translatable="false">
 Copyright 2013 Square, Inc.\n
