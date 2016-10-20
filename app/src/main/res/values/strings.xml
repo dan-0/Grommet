@@ -18,7 +18,6 @@
     <string name="dialog_enter_info" translatable="false">Enter Info</string>
 
     <!--Main Activity Strings-->
-    <string name="label_total_registered" translatable="false">Total Registered</string>
     <string name="label_registered_event">Registered</string>
     <string name="button_label_new_voter" translatable="false">New Voter</string>
     <string name="event_details" translatable="false">Event Details</string>
@@ -97,11 +96,11 @@
     <string name="label_drivers_license_id">PennDOT number</string>
     <string name="label_other_party">Other Political Party</string>
     <string name="label_does_not_have_penn_dot">I do not know my PennDOT number</string>
-    <string name="label_ssn_last_four">SSN Last Four</string>
-    <string name="label_does_not_have_ssn">I do not know the last four of my SSN</string>
+    <string name="label_ssn_last_four">Last Four Digitals of social security number</string>
+    <string name="label_does_not_have_ssn">I do not know the last four of my social security number</string>
     <string name="preferred_language_label">Preferred Language to Receive Election Materials</string>
-    <string name="section_label_election_info">Election Info</string>
-    <string name="penn_dot_enforcer_text">If you have a PA driver\'s license or PennDOT ID card number, you must use it</string>
+    <string name="section_label_election_info">Personal Info</string>
+    <string name="penn_dot_enforcer_text">If you have a PA driver\'s license or PennDOT ID card number, you must use it.  Your PennDOT is the 8 digit number found on the top right of a PA driver\'s license OR non-driver\'s state ID card</string>
     <string name="error_penn_dot">Check \"I do not know\" if you don\'t know your PennDOT number</string>
     <string name="ssn_enforcer_text">If you do not have a PennDOT number please enter the last 4 digits of your Social Security number </string>
     <string name="error_ssn">Check \"I do not know\" if you don\'t know your SSN last four</string>
@@ -224,7 +223,7 @@ Submitting an application containing false information may also subject a person
     <string name="pref_key_event_reg_total" translatable="false">event_reg_total</string>
     <string name="pref_key_app_reg_total" translatable="false">app_reg_total</string>
 
-    <string name="pref_title_partner_name" translatable="false">Partner Name</string>
+    <string name="pref_title_partner_name" translatable="false">Organization</string>
     <string name="pref_title_partner_id" translatable="false">Partner ID</string>
     <string name="pref_title_canvaser_name" translatable="false">Canvaser Name</string>
     <string name="pref_title_event_zip_code" translatable="false">Event Zip Code</string>
@@ -245,7 +244,14 @@ Submitting an application containing false information may also subject a person
 
     <string name="about_activity_text" translatable="false">
 <![CDATA[
-
+<p>
+&nbsp&nbsp&nbsp&nbsp The Pennsylvania Voter Registration App is the first of its kind in the country
+– and only available in Pennsylvania – allowing canvassers to electronically register voters using
+the Pennsylvania Department of State’s Online Web API. Pennsylvania Voice worked with Rock the Vote
+and OSET’s TrustTheVote Project to build this first-of-its-kind app that feeds registrations
+directly into the innovative PA online voter registration system, developed by the Pennsylvania
+Department of State.
+</p>
 <p>
 &nbsp&nbsp&nbsp&nbsp This mobile application “app” was built by Rock the Vote and OSET’s TrustTheVote Project
 to facilitate the submission of electronic voter registration applications in the Commonwealth of
@@ -255,6 +261,12 @@ platform. All Rock the Vote partners using the app are bound by its
 and the
 <a href="http://www.dos.pa.gov/VotingElections/OtherServicesEvents/Pages/PA-Online-Voter-Registration-Web-API---RFC.aspx">Terms of Services </a>
 outlined by the Pennsylvania Secretary of State’s office
+</p>
+<p>
+&nbsp&nbsp&nbsp&nbsp Pennsylvania Voice, Rock the Vote and their partners are deploying a pilot
+project in the fall of 2016 to see how this technology works in practice and measure its cost
+savings. To learn more about the 2016 Pennsylvania Voter Registration App,
+contact <a href="mailto:ovrtool@rockthevote.com">ovrtool@rockthevote.com</a>.
 </p>
 <p>
 &nbsp&nbsp&nbsp&nbsp Rock the Vote is the largest nonpartisan, nonprofit organization in the country driving the

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.data.prefs.AppRegTotal;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
@@ -47,7 +46,6 @@ public final class MainActivity extends BaseActivity {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.event_details_toolbar) Toolbar eventToolbar;
-    @BindView(R.id.total_registered) TextView totalRegistered;
     @BindView(R.id.registered_for_event) TextView registeredEvent;
     @BindView(R.id.event_details) EventDetails eventDetails;
     @BindView(R.id.editable_action_view) EditableActionView editableActionView;
@@ -63,8 +61,6 @@ public final class MainActivity extends BaseActivity {
     @Inject @CurrentRockyRequestId Preference<Long> currentRockyRequestId;
 
     @Inject @EventRegTotal Preference<Integer> eventRegTotal;
-
-    @Inject @AppRegTotal Preference<Integer> appRegtotal;
 
     @Inject ViewContainer viewContainer;
 
@@ -112,9 +108,6 @@ public final class MainActivity extends BaseActivity {
 
         subscriptions.add(eventRegTotal.asObservable()
                 .subscribe(eventTotal -> registeredEvent.setText(String.valueOf(eventTotal))));
-
-        subscriptions.add(appRegtotal.asObservable()
-                .subscribe(appTotal -> totalRegistered.setText(String.valueOf(appTotal))));
     }
 
     @Override
@@ -155,6 +148,7 @@ public final class MainActivity extends BaseActivity {
                             .partnerTrackingId(eventZipPref.get())
                             .sourceTrackingId(canvasserNamePref.get())
                             .openTrackingId(eventNamePref.get())
+                            .partnerOptInSMS(true) // override database default so we don't have to perform a migration
                             .generateDate();
 
                     if (null != location) {

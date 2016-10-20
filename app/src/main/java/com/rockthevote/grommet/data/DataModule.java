@@ -9,8 +9,8 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
 import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.api.RockyAdapterFactory;
+import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.db.DbModule;
-import com.rockthevote.grommet.data.prefs.AppRegTotal;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
@@ -75,13 +75,6 @@ public final class DataModule {
 
     @Provides
     @Singleton
-    @AppRegTotal
-    Preference<Integer> provideAppRegTotal(RxSharedPreferences prefs, Application app){
-        return prefs.getInteger(app.getResources().getString(R.string.pref_key_app_reg_total), 0);
-    }
-
-    @Provides
-    @Singleton
     @PartnerId
     Preference<String> providePartnerId(RxSharedPreferences prefs, Application app) {
         return prefs.getString(app.getResources().getString(R.string.pref_key_partner_id));
@@ -126,6 +119,7 @@ public final class DataModule {
     @Singleton
     Moshi provideMoshi() {
         return new Moshi.Builder()
+                .add(new StringNormalizerFactory())
                 .add(RockyAdapterFactory.create())
                 .build();
     }
