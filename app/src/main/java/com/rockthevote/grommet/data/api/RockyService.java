@@ -2,8 +2,9 @@ package com.rockthevote.grommet.data.api;
 
 
 import com.rockthevote.grommet.data.api.model.ApiRockyRequestWrapper;
+import com.rockthevote.grommet.data.api.model.ClockInRequest;
+import com.rockthevote.grommet.data.api.model.ClockOutRequest;
 import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
-import com.rockthevote.grommet.data.api.model.ApiRockyRequest;
 import com.rockthevote.grommet.data.api.model.RegistrationResponse;
 
 import retrofit2.adapter.rxjava.Result;
@@ -20,4 +21,10 @@ public interface RockyService {
 
     @GET("partnerIdValidation")
     Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);
+
+    @GET("clockIn")
+    Observable<Result> clockIn(@Body ClockInRequest clockInRequest);
+
+    @GET("clockIn")
+    Observable<Result> clockOut(@Body ClockOutRequest clockOutRequest);
 }
