@@ -13,6 +13,9 @@ public abstract class PartnerNameResponse {
     @Json(name = "partner_name")
     public abstract String partnerName();
 
+    @Json(name = "session_timeout_length")
+    public abstract int sessionTimeoutLength();
+
     public static JsonAdapter<PartnerNameResponse> jsonAdapter(Moshi moshi) {
         return new AutoValue_PartnerNameResponse.MoshiJsonAdapter(moshi);
     }
@@ -27,6 +30,8 @@ public abstract class PartnerNameResponse {
         public abstract Builder isValid(boolean isValid);
 
         public abstract Builder partnerName(String partnerName);
+
+        public abstract Builder sessionTimeoutLength(int sessionTimeoutLength);
 
         public abstract PartnerNameResponse build();
     }

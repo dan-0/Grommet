@@ -3,6 +3,8 @@ package com.rockthevote.grommet.data.api;
 import android.content.SharedPreferences;
 
 import com.rockthevote.grommet.data.api.model.ApiRockyRequestWrapper;
+import com.rockthevote.grommet.data.api.model.ClockInRequest;
+import com.rockthevote.grommet.data.api.model.ClockOutRequest;
 import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
 import com.rockthevote.grommet.data.api.model.RegistrationResponse;
 import com.rockthevote.grommet.util.EnumPreferences;
@@ -36,7 +38,8 @@ public final class MockRockyService implements RockyService {
         //TODO create mock responses
         loadResponse(MockRegistrationResponse.class, MockRegistrationResponse.SUCCESS);
         loadResponse(MockPartnerNameResponse.class, MockPartnerNameResponse.SUCCESS);
-
+        loadResponse(MockClockInResponse.class, MockClockInResponse.SUCCESS);
+        loadResponse(MockClockOutResponse.class, MockClockOutResponse.SUCCESS);
     }
 
     /**
@@ -68,5 +71,31 @@ public final class MockRockyService implements RockyService {
     public Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId) {
         PartnerNameResponse response = getResponse(MockPartnerNameResponse.class).response;
         return delegate.returning(Calls.response(response)).getPartnerName(partnerId);
+    }
+
+    @Override
+    public Observable<Result> clockIn(@Body ClockInRequest clockInRequest) {
+        MockClockInResponse response = getResponse(MockClockInResponse.class);
+        switch (response) {
+            case SUCCESS:
+                return delegate.returning(Calls.response(null)).clockIn(clockInRequest);
+            case FAILURE:
+                return delegate.returning(Calls.failure(null)).clockIn(clockInRequest);
+            default:
+                return delegate.returning(Calls.response(null)).clockIn(clockInRequest);
+        }
+    }
+
+    @Override
+    public Observable<Result> clockOut(@Body ClockOutRequest clockOutRequest) {
+        MockClockOutResponse response = getResponse(MockClockOutResponse.class);
+        switch (response) {
+            case SUCCESS:
+                return delegate.returning(Calls.response(null)).clockOut(clockOutRequest);
+            case FAILURE:
+                return delegate.returning(Calls.failure(null)).clockOut(clockOutRequest);
+            default:
+                return delegate.returning(Calls.response(null)).clockOut(clockOutRequest);
+        }
     }
 }
