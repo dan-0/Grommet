@@ -9,12 +9,18 @@ import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.db.model.VoterId;
 
+import timber.log.Timber;
+
 public class DbOpenHelper extends SQLiteOpenHelper {
 
-    private static final int VERSION = 1;
+    private static final int INITIAL_VERSION = 1;
+    private static final int VER_JULY_2017_RELEASE_A = 200;
+
+    private static final int CUR_DATABASE_VERSION = VER_JULY_2017_RELEASE_A;
 
     /**
      * Only model the relations, not the objects
@@ -118,8 +124,34 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY (" + AdditionalInfo.ROCKY_REQUEST_ID + ") REFERENCES " + RockyRequest.TABLE + "(" + RockyRequest._ID + ") ON DELETE CASCADE "
             + ")";
 
+    private static final String CREATE_SESSION_TABLE = ""
+            + "CREATE TABLE " + Session.TABLE + "("
+            + Session._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+            + Session.SESSION_ID + " INTEGER NOT NULL,"
+            + Session.CLOCK_IN_TIME + " TEXT,"
+            + Session.CLOCK_OUT_TIME + " TEXT,"
+            + Session.CLOCK_IN_REPORTED + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
+            + Session.CLOCK_OUT_REPORTED + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
+            + Session.CANVASSER_NAME + " TEXT,"
+            + Session.SOURCE_TRACKING_ID + " INTEGER,"
+            + Session.PARTNER_TRACKING_ID + " INTEGER,"
+            + Session.LATITUTDE + " INTEGER,"
+            + Session.LONGITUDE + " INTEGER,"
+            + Session.SESSION_TIMEOUT + " INTEGER,"
+            + Session.TOTAL_REGISTRATIONS + " INTEGER,"
+            + Session.TOTAL_ABANDONED + " INTEGER,"
+            + Session.TOTAL_INCLUDE_EMAIL + " INTEGER,"
+            + Session.TOTAL_INCLUDE_PHONE + " INTEGER,"
+            + Session.TOTAL_INCLUDE_DLN + " INTEGER,"
+            + Session.TOTAL_INCLUDE_SSN + " INTEGER"
+            + ")";
+
+    private static final String ADD_SESSION_ID_TO_ROCKY_REQUEST = ""
+            + "ALTER TABLE " + RockyRequest.TABLE + " "
+            + "ADD COLUMN " + RockyRequest.SESSION_ID + " INTEGER";
+
     public DbOpenHelper(Context context) {
-        super(context, "grommet.db", null, VERSION);
+        super(context, "grommet.db", null, CUR_DATABASE_VERSION);
     }
 
     @Override
@@ -131,6 +163,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_VOTER_ID);
         db.execSQL(CREATE_CONTACT_METHOD);
         db.execSQL(CREATE_ADDITIONAL_INFO);
+
+        upgradeFromInitialVersionToJuly2017A(db);
     }
 
     @Override
@@ -140,7 +174,20 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        int version = oldVersion;
+
+        if (version == INITIAL_VERSION) {
+            Timber.d("upgrading from %d to %d", oldVersion, newVersion);
+            upgradeFromInitialVersionToJuly2017A(db);
+            version = VER_JULY_2017_RELEASE_A;
+        }
+
+    }
+
+    private static void upgradeFromInitialVersionToJuly2017A(SQLiteDatabase db) {
+        db.execSQL(CREATE_SESSION_TABLE);
+        db.execSQL(ADD_SESSION_ID_TO_ROCKY_REQUEST);
 
     }
 }
