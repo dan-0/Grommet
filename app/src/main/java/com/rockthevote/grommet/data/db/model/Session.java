@@ -1,5 +1,6 @@
 package com.rockthevote.grommet.data.db.model;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
@@ -40,6 +41,23 @@ public abstract class Session implements Parcelable, BaseColumns {
     public static final String TOTAL_INCLUDE_DLN = "total_include_dln";
     public static final String TOTAL_INCLUDE_SSN = "total_include_ssn";
 
+    public static final String SELECT_UNREPORTED_CLOCK_IN = ""
+            + "SELECT * FROM "
+            + TABLE
+            + " WHERE "
+            + CLOCK_IN_REPORTED + " = " + Db.BOOLEAN_FALSE
+            + " AND "
+            + CLOCK_IN_TIME + " IS NOT NULL "
+            + " LIMIT 1";
+
+    public static final String SELECT_UNREPORTED_CLOCK_OUT = ""
+            + "SELECT * FROM "
+            + TABLE
+            + " WHERE "
+            + CLOCK_OUT_REPORTED + " = " + Db.BOOLEAN_FALSE
+            + " AND "
+            + CLOCK_OUT_TIME + " IS NOT NULL "
+            + " LIMIT 1";
 
     public abstract long id();
 
@@ -105,5 +123,100 @@ public abstract class Session implements Parcelable, BaseColumns {
                     totalIncludePhone, totalIncludeDLN, totalIncludeSSN);
         }
     };
+
+
+    public static final class Builder {
+        private final ContentValues values = new ContentValues();
+
+        public Builder id(long id) {
+            values.put(_ID, id);
+            return this;
+        }
+
+
+        public Builder clockInTime(Date date) {
+            values.put(CLOCK_IN_TIME, Dates.formatAsISO8601_Date(date));
+            return this;
+        }
+
+        public Builder clockOutTime(Date date) {
+            values.put(CLOCK_OUT_TIME, Dates.formatAsISO8601_Date(date));
+            return this;
+        }
+
+        public Builder clockInReported(boolean val) {
+            values.put(CLOCK_IN_REPORTED, val);
+            return this;
+        }
+
+        public Builder clockOutReported(boolean val) {
+            values.put(CLOCK_OUT_REPORTED, val);
+            return this;
+        }
+
+        public Builder canvasserName(String val) {
+            values.put(CANVASSER_NAME, val);
+            return this;
+        }
+
+        public Builder sourceTrackingId(String val) {
+            values.put(SOURCE_TRACKING_ID, val);
+            return this;
+        }
+
+        public Builder partnerTrackingId(String val) {
+            values.put(PARTNER_TRACKING_ID, val);
+            return this;
+        }
+
+        public Builder latitude(long val) {
+            values.put(LATITUTDE, val);
+            return this;
+        }
+
+        public Builder longitude(long val) {
+            values.put(LONGITUDE, val);
+            return this;
+        }
+
+        public Builder sessionTimeout(long val) {
+            values.put(SESSION_TIMEOUT, val);
+            return this;
+        }
+
+        public Builder totalRegistrations(int val) {
+            values.put(TOTAL_REGISTRATIONS, val);
+            return this;
+        }
+
+        public Builder totalAbandond(int val) {
+            values.put(TOTAL_ABANDONED, val);
+            return this;
+        }
+
+        public Builder totalIncludeEmail(int val) {
+            values.put(TOTAL_INCLUDE_EMAIL, val);
+            return this;
+        }
+
+        public Builder totalIncludePhone(int val) {
+            values.put(TOTAL_INCLUDE_PHONE, val);
+            return this;
+        }
+
+        public Builder totalIncludeDLN(int val) {
+            values.put(TOTAL_INCLUDE_DLN, val);
+            return this;
+        }
+
+        public Builder totalIncludeSSN(int val) {
+            values.put(TOTAL_INCLUDE_SSN, val);
+            return this;
+        }
+
+        public ContentValues build() {
+            return values;
+        }
+    }
 
 }

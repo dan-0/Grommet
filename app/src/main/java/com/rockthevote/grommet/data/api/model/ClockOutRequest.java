@@ -31,7 +31,7 @@ public abstract class ClockOutRequest {
     public abstract String clockOutDatetime();
 
     @Json(name = "session_timeout_length")
-    public abstract int sessionTimeoutLength();
+    public abstract long sessionTimeoutLength();
 
     public static JsonAdapter<ClockOutRequest> jsonAdapter(Moshi moshi) {
         return new AutoValue_ClockOutRequest.MoshiJsonAdapter(moshi);
@@ -56,7 +56,7 @@ public abstract class ClockOutRequest {
 
         public abstract Builder clockOutDatetime(String clockOutDatetime);
 
-        public abstract Builder sessionTimeoutLength(int sessionTimeoutLength);
+        public abstract Builder sessionTimeoutLength(long sessionTimeoutLength);
 
         public abstract ClockOutRequest build();
 

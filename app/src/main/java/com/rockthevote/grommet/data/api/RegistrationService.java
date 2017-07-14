@@ -27,14 +27,18 @@ import com.rockthevote.grommet.data.api.model.ApiVoterClassification;
 import com.rockthevote.grommet.data.api.model.ApiVoterId;
 import com.rockthevote.grommet.data.api.model.ApiVoterRecordsRequest;
 import com.rockthevote.grommet.data.api.model.ApiVoterRegistration;
+import com.rockthevote.grommet.data.api.model.ClockInRequest;
+import com.rockthevote.grommet.data.api.model.ClockOutRequest;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.db.model.VoterId;
 import com.rockthevote.grommet.ui.UploadNotification;
+import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.AbstractMap;
@@ -94,33 +98,12 @@ public class RegistrationService extends Service {
     }
 
     private void doWorkIfNeeded() {
+        
+        if (isConnected()) {
 
-        // check to make sure we have internet
-        ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
-
-        if (isConnected) {
-
-            Cursor cursor = db.query(RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString());
-            int rows = cursor.getCount();
-            cursor.close();
-            totalCount.set(rows);
-
-            if (0 == rows) {
-                Timber.d("RegistrationService stopping: no rows to upload");
-                stopSelf();
-                return;
-            }
-
-            db.createQuery(RockyRequest.TABLE,
-                    RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
-                    .mapToList(RockyRequest.MAPPER)
-                    .flatMap(Observable::from)
-                    .take(rows)
-                    .subscribe(this::doWork);
+            uploadRegistrationsIfNeeded();
+            reportClockInIfNeeded();
+            reportClockOutIfNeeded();
 
         } else {
             Timber.d("RegistrationService stopping: no wifi");
@@ -138,7 +121,150 @@ public class RegistrationService extends Service {
         }
     }
 
-    private void doWork(final RockyRequest rockyRequest) {
+    private void shouldStop() {
+
+        Cursor cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
+        int clockInRows = cursor.getCount();
+        cursor.close();
+
+        cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
+        int clockOutRows = cursor.getCount();
+        cursor.close();
+
+        if (refCount.incrementAndGet() == totalCount.get()
+                && clockInRows == 0
+                && clockOutRows == 0) {
+
+            stopSelf();
+        }
+    }
+
+    private void uploadRegistrationsIfNeeded() {
+
+        Cursor cursor = db.query(RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString());
+        int rows = cursor.getCount();
+        cursor.close();
+        totalCount.set(rows);
+
+        if (rows > 0) {
+            // check for registrations to upload
+            db.createQuery(RockyRequest.TABLE,
+                    RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
+                    .mapToList(RockyRequest.MAPPER)
+                    .flatMap(Observable::from)
+                    .take(rows)
+                    .subscribe(this::uploadRegistration);
+        } else {
+            Timber.d("RegistrationService stopping: no rows to upload");
+            shouldStop();
+        }
+    }
+
+    private void reportClockInIfNeeded() {
+        // check to see if there are any clock out reports to send
+        Cursor cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
+        int rows = cursor.getCount();
+        cursor.close();
+
+        if (rows > 0) {
+            // check for clock-in requests to upload
+            db.createQuery(Session.TABLE,
+                    Session.SELECT_UNREPORTED_CLOCK_IN)
+                    .mapToOne(Session.MAPPER)
+                    .single()
+                    .subscribe(this::reportClockIn);
+        } else {
+            shouldStop();
+        }
+    }
+
+    private void reportClockOutIfNeeded() {
+        // check to see if there are any clock out reports to send
+        Cursor cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
+        int rows = cursor.getCount();
+        cursor.close();
+
+        if (rows > 0) {
+            db.createQuery(Session.TABLE,
+                    Session.SELECT_UNREPORTED_CLOCK_OUT)
+                    .mapToOne(Session.MAPPER)
+                    .single()
+                    .subscribe(this::reportClockOut);
+        } else {
+            shouldStop();
+        }
+    }
+
+    private boolean isConnected() {
+        // check to make sure we have internet
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
+
+    private void reportClockIn(final Session session) {
+        ClockInRequest request = ClockInRequest.builder()
+                .canvasserName(session.canvasserName())
+                .clockInDatetime(Dates.formatAsISO8601_Date(session.clockInTime()))
+                .geoLocation(ApiGeoLocation.builder()
+                        .latitude(session.latitude())
+                        .longitude(session.longitude())
+                        .build())
+                .partnerTrackingId(session.partnerTrackingId())
+                .sessionTimeoutLength(session.sessionTimeout())
+                .build();
+
+        rockyService.clockIn(request)
+                .subscribeOn(Schedulers.io())
+                .subscribe(result ->
+                {
+                    Timber.d("reporting clock in");
+
+                    if (!result.isError() && result.response().isSuccessful()) {
+                        db.update(Session.TABLE,
+                                new Session.Builder()
+                                        .clockInReported(true)
+                                        .build(),
+                                Session._ID + " = ? ", String.valueOf(session.id()));
+                    }
+
+                    reportClockInIfNeeded();
+                });
+    }
+
+    private void reportClockOut(final Session session) {
+        ClockOutRequest request = ClockOutRequest.builder()
+                .canvasserName(session.canvasserName())
+                .clockOutDatetime(Dates.formatAsISO8601_Date(session.clockOutTime()))
+                .geoLocation(ApiGeoLocation.builder()
+                        .latitude(session.latitude())
+                        .longitude(session.longitude())
+                        .build())
+                .partnerTrackingId(session.partnerTrackingId())
+                .sessionTimeoutLength(session.sessionTimeout())
+                .build();
+
+        rockyService.clockOut(request)
+                .subscribeOn(Schedulers.io())
+                .subscribe(result ->
+                {
+                    Timber.d("reporting clock out");
+
+                    if (!result.isError() && result.response().isSuccessful()) {
+                        db.update(Session.TABLE,
+                                new Session.Builder()
+                                        .clockOutReported(true)
+                                        .build(),
+                                Session._ID + " = ? ", String.valueOf(session.id()));
+                    }
+
+                    reportClockOutIfNeeded();
+                });
+    }
+
+    private void uploadRegistration(final RockyRequest rockyRequest) {
         if (null == rockyRequest) {
             return;
         }
@@ -147,9 +273,13 @@ public class RegistrationService extends Service {
                 .flatMap(apiRockyRequestWrapper -> rockyService.register(apiRockyRequestWrapper))
                 .subscribeOn(Schedulers.io())
                 .doOnCompleted(() -> {
+                    /*
+                    because this method processes each row in the initial query one-at-a-time
+                    we need to check after each row finishes to see if we should stop the service
+                    */
                     if (refCount.incrementAndGet() == totalCount.get()) {
                         Timber.d("RegistrationService stopping: work complete");
-                        stopSelf();
+                        shouldStop();
                     }
                 })
                 .subscribe(regResponse ->
