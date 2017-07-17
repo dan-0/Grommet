@@ -18,17 +18,17 @@ public abstract class ApiGeoLocation {
         return new AutoValue_ApiGeoLocation.MoshiJsonAdapter(moshi);
     }
 
-    static Builder builder() {
+    public static Builder builder() {
         return new AutoValue_ApiGeoLocation.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
-        abstract Builder latitude(long value);
+    public abstract static class Builder {
+        public abstract Builder latitude(long value);
 
-        abstract Builder longitude(long value);
+        public abstract Builder longitude(long value);
 
-        abstract ApiGeoLocation build();
+        public abstract ApiGeoLocation build();
     }
 
     public static ApiGeoLocation fromDb(RockyRequest rockyRequest) {
