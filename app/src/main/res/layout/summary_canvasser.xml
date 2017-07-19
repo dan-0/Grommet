@@ -1,0 +1,86 @@
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/session_summary_details"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:columnCount="2"
+    android:useDefaultMargins="false"
+    tools:layout_height="match_parent">
+
+    <TextView
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:text="@string/label_canvasser"
+        android:textColor="@color/colorSecondaryText"
+        />
+
+    <TextView
+        android:id="@+id/summary_canvasser_name"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:paddingTop="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="Aaron Huttner"/>
+
+    <TextView
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:text="@string/label_event"
+        android:textColor="@color/colorSecondaryText"/>
+
+    <TextView
+        android:id="@+id/summary_event_name"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="Orange Line Canvassing"/>
+
+    <TextView
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:text="@string/label_zip_code"
+        android:textColor="@color/colorSecondaryText"/>
+
+    <TextView
+        android:id="@+id/summary_event_zip"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="22201"/>
+
+    <TextView
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:text="@string/label_org"
+        android:textColor="@color/colorSecondaryText"/>
+
+    <TextView
+        android:id="@+id/summary_partner_name"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="12345"/>
+
+</GridLayout>

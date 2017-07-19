@@ -1,6 +1,10 @@
 package com.rockthevote.grommet.ui;
 
 
+import com.rockthevote.grommet.ui.eventFlow.EventDetailsEditable;
+import com.rockthevote.grommet.ui.eventFlow.SessionTimeTracking;
+import com.rockthevote.grommet.ui.eventFlow.EventFlowWizard;
+import com.rockthevote.grommet.ui.eventFlow.SessionSummary;
 import com.rockthevote.grommet.ui.registration.AdditionalInfoFragment;
 import com.rockthevote.grommet.ui.registration.AssistantInfoFragment;
 import com.rockthevote.grommet.ui.registration.NewRegistrantFragment;
@@ -8,7 +12,6 @@ import com.rockthevote.grommet.ui.registration.PersonalInfoFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
 import com.rockthevote.grommet.ui.registration.ReviewAndConfirmFragment;
 import com.rockthevote.grommet.ui.views.AddressView;
-import com.rockthevote.grommet.ui.views.EventDetails;
 import com.rockthevote.grommet.ui.views.NameView;
 
 import javax.inject.Singleton;
@@ -31,7 +34,10 @@ import dagger.Provides;
                 ReviewAndConfirmFragment.class,
                 AddressView.class,
                 NameView.class,
-                EventDetails.class
+                EventDetailsEditable.class,
+                SessionTimeTracking.class,
+                EventFlowWizard.class,
+                SessionSummary.class
         },
         complete = false,
         library = true

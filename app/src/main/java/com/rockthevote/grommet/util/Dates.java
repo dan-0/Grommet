@@ -6,15 +6,21 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class Dates {
 
     private static final String TIME_ZONE_UTC = "UTC";
     private static final String SHORT_DATE_FORMAT = "yyyy-MM-dd";
+    private static final String TIME_OF_DAY_FORMAT = "MMM d, h:mm a";
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm'Z'";
 
     public static Date parseISO8601_Date(String date) {
+        if (Strings.isBlank(date)) {
+            return null;
+        }
+
         DateFormat df = new SimpleDateFormat(DATE_FORMAT);
         df.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
 
@@ -66,6 +72,17 @@ public class Dates {
 
         DateFormat df = new SimpleDateFormat(SHORT_DATE_FORMAT);
         df.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
+
+        return df.format(date);
+    }
+
+    public static String formatAs_LocalTimeOfDay(Date date){
+        if(null == date){
+            return "";
+        }
+
+        DateFormat df = new SimpleDateFormat(TIME_OF_DAY_FORMAT);
+//        df.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
 
         return df.format(date);
     }

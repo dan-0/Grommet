@@ -15,7 +15,7 @@
 
         <include
             android:id="@+id/static_details"
-            layout="@layout/event_details_static"/>
+            layout="@layout/session_time_tracking"/>
 
         <include
             android:id="@+id/editable_details"

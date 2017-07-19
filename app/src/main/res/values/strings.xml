@@ -13,16 +13,37 @@
     <string name="nav_title_about" translatable="false">About</string>
     <string name="nav_title_data_usage" translatable="false">Data Usage</string>
     <string name="nav_title_help" translatable="false">Help</string>
-    <string name="incomplete_profile_alert" translatable="false">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip before registering voters</string>
+    <string name="incomplete_profile_alert" translatable="false">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip and Clock-In before registering voters</string>
     <string name="dialog_no_thanks" translatable="false">No Thanks</string>
     <string name="dialog_enter_info" translatable="false">Enter Info</string>
 
     <!--Main Activity Strings-->
     <string name="label_registered_event">Registered</string>
     <string name="button_label_new_voter" translatable="false">New Voter</string>
-    <string name="event_details" translatable="false">Event Details</string>
+    <string name="session_details" translatable="false">Session Details</string>
     <string name="error_partner_id" translatable="false">Invalid Partner ID</string>
     <string name="label_partner_name_spinner">Validating Partner ID</string>
+    <string name="clock_in_text">Clock In</string>
+    <string name="clock_out_text">Clock Out</string>
+    <string name="label_event_total_reg">Registrations</string>
+    <string name="label_event_total_abandoned">Abandoned</string>
+    <string name="label_event_total_dln">DLN</string>
+    <string name="label_event_total_ssn">SSN</string>
+    <string name="label_event_total_email_opt_in">Email Opt In</string>
+    <string name="label_event_total_sms_opt_in">SMS Opt In</string>
+    <string name="label_event_total_hours_worked">Hours Worked</string>
+    <string name="label_event_clock_in_time">Clock In</string>
+    <string name="label_event_clock_out_time">Clock Out</string>
+    <string name="title_event_details">Shift Location</string>
+    <string name="title_time_tracking">Time Tracking</string>
+    <string name="title_session_summary">Shift Report</string>
+    <string name="label_canvasser">Canvasser</string>
+    <string name="label_event">Event</string>
+    <string name="label_org">Org</string>
+    <string name="label_total_registrations">Total Registrations</string>
+    <string name="label_time_tracking">Time Tracking</string>
+    <string name="time_tracking_default_value">--:--:--</string>
+    <string name="clock_out_dialog_text">Do you want to end your canvassing session?</string>
 
     <!--Registration Activity Strings-->
     <string name="cancel_dialog_message">Cancel current registration?</string>
@@ -235,7 +256,9 @@ Submitting an application containing false information may also subject a person
     <string name="action_ok">OK</string>
     <string name="action_accept">Accept</string>
     <string name="action_decline">Decline</string>
-
+    <string name="action_back">Back</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_clear">clear</string>
     <string name="upload_notification_title_success" translatable="false">PA Registration Success</string>
     <string name="upload_notification_title_failure" translatable="false">PA Registration Failed</string>
     <string name="upload_notification_content_success" translatable="false">Registration submitted</string>

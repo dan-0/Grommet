@@ -20,9 +20,9 @@
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 
-    <!--<style name="GrommetDialog" parent="Theme.AppCompat.Light.Dialog">-->
-        <!--<item name="windowNoTitle">false</item>-->
-    <!--</style>-->
+    <style name="OvalMaterialButton" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/oval_button</item>
+    </style>
 
     <style name="GrommetDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:datePickerStyle">@style/GrommetDatePicker</item>
