@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:layout_height="@dimen/detail_backdrop_height">
+
+    <TextView
+        android:id="@+id/session_summary_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:layout_marginStart="@dimen/content_margin"
+        android:gravity="center_vertical"
+        android:text="@string/title_session_summary"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+    <View
+        android:id="@+id/session_summary_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/session_summary_title"
+        android:alpha="0.12"
+        android:background="@android:color/black"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/session_summary_scroll_view"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/session_summary_clear"
+        android:layout_below="@id/session_summary_divider"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:id="@+id/session_summary_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/content_margin"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            >
+
+            <include layout="@layout/summary_canvasser"/>
+
+            <View
+                android:layout_height="1dp"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@color/divider"/>
+
+            <include layout="@layout/summary_time_tracking"/>
+
+            <View
+                android:layout_height="1dp"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@color/divider"/>
+
+            <include layout="@layout/summary_totals"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <Button
+        android:id="@+id/session_summary_clear"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:text="@string/action_clear"/>
+
+</RelativeLayout>

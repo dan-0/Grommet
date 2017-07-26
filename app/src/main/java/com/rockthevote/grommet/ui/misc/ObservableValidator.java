@@ -25,7 +25,7 @@ public class ObservableValidator {
             public void onAllRulesPassed(View view) {
                 if (view instanceof TextInputLayout) {
                     ((TextInputLayout) view).setError(null);
-                    ((TextInputLayout) view).setErrorEnabled(false);
+//                    ((TextInputLayout) view).setErrorEnabled(false);
                 } else if (view instanceof CheckBox) {
                     ((CheckBox) view).setError(null);
                 }

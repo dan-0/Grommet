@@ -5,72 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="@string/app_name"
+        app:titleMarginBottom="84dp"/>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginTop="64dp"
+        android:background="@android:color/transparent"
+        android:elevation="6dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"
-            android:background="?attr/colorPrimary"
-            app:title="@string/app_name"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/content_margin"
-            android:layout_marginStart="@dimen/content_margin"
-            android:background="@drawable/rounded_top"
-            android:elevation="2dp"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/event_details_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/toolbar_height"
-                app:contentInsetStart="@dimen/content_margin"
-                app:paddingStart="0dp"
-                app:title="@string/event_details"
-                app:titleTextColor="@color/colorSecondaryText"
-                >
-
-                <com.rockthevote.grommet.ui.views.EditableActionView
-                    android:id="@+id/editable_action_view"
-                    android:layout_gravity="end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </android.support.v7.widget.Toolbar>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:alpha="0.12"
-                android:background="@android:color/black"/>
-        </LinearLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="4dp"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <com.rockthevote.grommet.ui.views.EventDetails
-            android:id="@+id/event_details"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/toolbar_height"
             android:layout_marginEnd="@dimen/content_margin"
             android:layout_marginStart="@dimen/content_margin"
-            android:background="@drawable/rounded_bottom"
-            android:elevation="2dp"/>
-    </LinearLayout>
+            app:cardBackgroundColor="@android:color/white">
+
+            <com.rockthevote.grommet.ui.eventFlow.EventFlowWizard
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -79,11 +44,10 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="@dimen/content_margin"
         android:layout_marginEnd="@dimen/content_margin"
-        android:src="@drawable/register_a_voter"
         android:scaleType="centerInside"
+        android:src="@drawable/register_a_voter"
         android:tint="@android:color/white"
         app:elevation="4dp"
-        app:fabSize="auto"
-        />
+        app:fabSize="auto"/>
 
 </android.support.design.widget.CoordinatorLayout>

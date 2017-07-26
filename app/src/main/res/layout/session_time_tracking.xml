@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:layout_height="@dimen/detail_backdrop_height">
+
+    <TextView
+        android:id="@+id/time_tracking_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:layout_marginStart="@dimen/content_margin"
+        android:gravity="center_vertical"
+        android:text="@string/title_time_tracking"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+    <View
+        android:id="@+id/time_tracking_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/time_tracking_title"
+        android:alpha="0.12"
+        android:background="@android:color/black"/>
+
+    <GridLayout
+        android:id="@+id/time_tracking_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/time_tracking_divider"
+        android:columnCount="2"
+        android:useDefaultMargins="false">
+
+        <TextView
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/content_margin"
+            android:layout_marginTop="@dimen/content_area_padding"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="@string/pref_title_canvaser_name"
+            android:textColor="@color/colorSecondaryText"
+            />
+
+        <TextView
+            android:id="@+id/ed_canvasser_name"
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+
+            android:layout_marginTop="@dimen/content_area_padding"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:textColor="@color/colorSecondaryText"
+            android:textStyle="bold"
+            tools:text="Aaron Huttner"/>
+
+        <TextView
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/content_margin"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="@string/pref_title_event_name"
+            android:textColor="@color/colorSecondaryText"/>
+
+        <TextView
+            android:id="@+id/ed_event_name"
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:textColor="@color/colorSecondaryText"
+            android:textStyle="bold"
+            tools:text="Orange Line Canvassing"/>
+
+        <TextView
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/content_margin"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="@string/pref_title_event_zip_code"
+            android:textColor="@color/colorSecondaryText"/>
+
+        <TextView
+            android:id="@+id/ed_event_zip"
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:textColor="@color/colorSecondaryText"
+            android:textStyle="bold"
+            tools:text="22201"/>
+
+        <TextView
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/content_margin"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="@string/pref_title_partner_name"
+            android:textColor="@color/colorSecondaryText"/>
+
+        <TextView
+            android:id="@+id/ed_partner_name"
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:textColor="@color/colorSecondaryText"
+            android:textStyle="bold"
+            tools:text="12345"/>
+
+        <TextView
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/content_margin"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="@string/label_event_clock_in_time"
+            android:textColor="@color/colorSecondaryText"/>
+
+        <TextView
+            android:id="@+id/ed_clock_in_time"
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="@string/time_tracking_default_value"
+            android:textColor="@color/colorSecondaryText"
+            android:textStyle="bold"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="@dimen/content_margin"
+            android:layout_marginTop="16dp"
+            android:background="@color/divider"/>
+
+    </GridLayout>
+
+
+    <FrameLayout
+        android:id="@+id/clock_in_button"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/time_tracking_details"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/clock_in_selector"
+        android:clickable="true"
+        >
+
+        <TextView
+            android:id="@+id/clock_in_button_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="11"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/clock_in_text"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"/>
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/event_details_static_edit"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/action_edit"/>
+</RelativeLayout>

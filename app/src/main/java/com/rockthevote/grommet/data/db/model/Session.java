@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.db.Db;
@@ -24,6 +25,7 @@ public abstract class Session implements Parcelable, BaseColumns {
 
 
     public static final String SESSION_ID = "session_id";
+    public static final String SESSION_STATUS = "session_status";
     public static final String CLOCK_IN_TIME = "clock_in_time";
     public static final String CLOCK_OUT_TIME = "clock_out_time";
     public static final String CLOCK_IN_REPORTED = "clock_in_reported";
@@ -59,22 +61,41 @@ public abstract class Session implements Parcelable, BaseColumns {
             + CLOCK_OUT_TIME + " IS NOT NULL "
             + " LIMIT 1";
 
+    public static final String SELECT_CURRENT_SESSION = ""
+            + "SELECT * FROM "
+            + TABLE
+            + " ORDER BY "
+            + _ID + " DESC "
+            + " LIMIT 1";
+
+    public static final String DELETE_REPORTED_ROWS_WHERE_CLAUSE = ""
+            + CLOCK_OUT_REPORTED + " = " + Db.BOOLEAN_TRUE
+            + " AND "
+            + CLOCK_IN_REPORTED + " = " + Db.BOOLEAN_TRUE;
+
     public abstract long id();
 
-    public abstract long sessionId();
+    public abstract String sessionId();
 
+    public abstract SessionStatus sessionStatus();
+
+    @Nullable
     public abstract Date clockInTime();
 
+    @Nullable
     public abstract Date clockOutTime();
 
     public abstract boolean clockInReported();
 
     public abstract boolean clockOutReported();
 
+    @Nullable
     public abstract String canvasserName();
 
+    @Nullable
     public abstract String sourceTrackingId();
 
+    @Nullable
     public abstract String partnerTrackingId();
 
     public abstract long latitude();
@@ -99,7 +120,8 @@ public abstract class Session implements Parcelable, BaseColumns {
         @Override
         public Session call(Cursor cursor) {
             long id = Db.getLong(cursor, _ID);
-            long sessionId = Db.getLong(cursor, SESSION_ID);
+            String sessionId = Db.getString(cursor, SESSION_ID);
+            SessionStatus sessionStatus = SessionStatus.fromString(Db.getString(cursor, SESSION_STATUS));
             Date clockInTime = Dates.parseISO8601_Date(Db.getString(cursor, CLOCK_IN_TIME));
             Date clockOutTime = Dates.parseISO8601_Date(Db.getString(cursor, CLOCK_OUT_TIME));
             boolean clockInReported = Db.getBoolean(cursor, CLOCK_IN_REPORTED);
@@ -117,7 +139,7 @@ public abstract class Session implements Parcelable, BaseColumns {
             int totalIncludeDLN = Db.getInt(cursor, TOTAL_INCLUDE_DLN);
             int totalIncludeSSN = Db.getInt(cursor, TOTAL_INCLUDE_SSN);
 
-            return new AutoValue_Session(id, sessionId, clockInTime, clockOutTime, clockInReported,
+            return new AutoValue_Session(id, sessionId, sessionStatus, clockInTime, clockOutTime, clockInReported,
                     clockOutReported, canvasserName, sourceTrackingId, partnerTrackingId, latitude,
                     longitude, sessionTimeout, totalRegistrations, totalAbandoned, totalIncludeEmail,
                     totalIncludePhone, totalIncludeDLN, totalIncludeSSN);
@@ -133,6 +155,15 @@ public abstract class Session implements Parcelable, BaseColumns {
             return this;
         }
 
+        public Builder sessionId(String sessionId) {
+            values.put(SESSION_ID, sessionId);
+            return this;
+        }
+
+        public Builder sessionStatus(SessionStatus sessionStatus) {
+            values.put(SESSION_STATUS, sessionStatus.toString());
+            return this;
+        }
 
         public Builder clockInTime(Date date) {
             values.put(CLOCK_IN_TIME, Dates.formatAsISO8601_Date(date));
@@ -216,6 +247,36 @@ public abstract class Session implements Parcelable, BaseColumns {
 
         public ContentValues build() {
             return values;
+        }
+    }
+
+
+    public enum SessionStatus {
+        NEW_SESSION("new"),
+        SESSION_CLEARED("session_cleared"),
+        DETAILS_ENTERED("details_entered"),
+        CLOCKED_IN("clocked_in"),
+        CLOCKED_OUT("clocked_out");
+
+        private final String type;
+
+        SessionStatus(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return type;
+        }
+
+        @Nullable
+        public static SessionStatus fromString(String type) {
+            for (SessionStatus val : values()) {
+                if (val.toString().equals(type)) {
+                    return val;
+                }
+            }
+            return null;
         }
     }
 

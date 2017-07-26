@@ -102,8 +102,8 @@ public class RegistrationService extends Service {
         if (isConnected()) {
 
             uploadRegistrationsIfNeeded();
-            reportClockInIfNeeded();
-            reportClockOutIfNeeded();
+//            reportClockInIfNeeded();
+//            reportClockOutIfNeeded();
 
         } else {
             Timber.d("RegistrationService stopping: no wifi");

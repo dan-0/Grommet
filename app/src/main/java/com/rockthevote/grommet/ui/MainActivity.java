@@ -2,16 +2,17 @@ package com.rockthevote.grommet.ui;
 
 import android.Manifest;
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
@@ -23,8 +24,6 @@ import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
-import com.rockthevote.grommet.ui.views.EditableActionView;
-import com.rockthevote.grommet.ui.views.EventDetails;
 import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -45,10 +44,8 @@ public final class MainActivity extends BaseActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.event_details_toolbar) Toolbar eventToolbar;
-    @BindView(R.id.registered_for_event) TextView registeredEvent;
-    @BindView(R.id.event_details) EventDetails eventDetails;
-    @BindView(R.id.editable_action_view) EditableActionView editableActionView;
+    @BindView(R.id.viewpager) ViewPager viewPager;
+    @BindView(R.id.main_content) CoordinatorLayout coordinatorLayout;
 
     @Inject @PartnerId Preference<String> partnerIdPref;
 
@@ -73,11 +70,10 @@ public final class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View v = getLayoutInflater().inflate(R.layout.activity_main, getContentView());
-        ButterKnife.bind(this, v);
-        setSupportActionBar(eventToolbar);
+        View view = getLayoutInflater().inflate(R.layout.activity_main, getContentView());
+        ButterKnife.bind(this, view);
+        setSupportActionBar(toolbar);
         requestGPSPermission();
-        eventDetails.setEditableActionView(editableActionView);
     }
 
     private void requestGPSPermission() {
@@ -106,8 +102,8 @@ public final class MainActivity extends BaseActivity {
         super.onResume();
         subscriptions = new CompositeSubscription();
 
-        subscriptions.add(eventRegTotal.asObservable()
-                .subscribe(eventTotal -> registeredEvent.setText(String.valueOf(eventTotal))));
+//        subscriptions.add(eventRegTotal.asObservable()
+//                .subscribe(eventTotal -> registeredEvent.setText(String.valueOf(eventTotal))));
     }
 
     @Override
@@ -126,14 +122,13 @@ public final class MainActivity extends BaseActivity {
                 .all(s -> !Strings.isBlank(s))
                 .subscribe(noneAreEmpty -> {
                     if (noneAreEmpty) {
+                        //TODO check for clock in
                         createNewVoterRecord();
                     } else {
-                        new AlertDialog.Builder(this)
-                                .setMessage(R.string.incomplete_profile_alert)
-                                .setNegativeButton(R.string.dialog_no_thanks, (dialogInterface, i) -> dialogInterface.dismiss())
-                                .setPositiveButton(R.string.dialog_enter_info, (dialogInterface, i) -> {
-                                    eventDetails.enableEditMode(true);
-                                }).create().show();
+                        Snackbar.make(
+                                coordinatorLayout,
+                                R.string.incomplete_profile_alert,
+                                Snackbar.LENGTH_LONG).show();
                     }
                 });
     }

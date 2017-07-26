@@ -13,6 +13,7 @@ import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.db.DbModule;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
@@ -113,6 +114,13 @@ public final class DataModule {
     @CurrentRockyRequestId
     Preference<Long> provideCurrentRockyRequestId(RxSharedPreferences prefs) {
         return prefs.getLong("cur_rocky_request_id");
+    }
+
+    @Provides
+    @Singleton
+    @CurrentSessionRowId
+    Preference<Long> provideCurrentSessionRowtId(RxSharedPreferences prefs) {
+        return prefs.getLong("cur_session_row_id");
     }
 
     @Provides

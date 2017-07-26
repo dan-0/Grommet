@@ -9,7 +9,7 @@
     <dimen name="detail_horizontal_padding">16dp</dimen>
     <dimen name="detail_vertical_padding">16dp</dimen>
 
-    <dimen name="detail_backdrop_height">276dp</dimen>
+    <dimen name="detail_backdrop_height">450dp</dimen>
     <dimen name="card_margin">16dp</dimen>
     <dimen name="card_radius">4dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
@@ -27,4 +27,6 @@
     <dimen name="signature_height">216dp</dimen>
 
     <dimen name="alert_dialog_button_height">24dp</dimen>
+
+    <dimen name="clock_in_transition_width">40dp</dimen>
 </resources>
