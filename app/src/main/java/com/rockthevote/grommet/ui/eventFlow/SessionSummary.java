@@ -23,6 +23,7 @@ import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -129,16 +130,19 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         clockInTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockInTime()));
         clockoutTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockOutTime()));
 
-        long elapsedMilliseconds = session.clockOutTime().getTime() - session.clockInTime().getTime();
+        Date in = session.clockInTime();
+        Date out = session.clockOutTime();
+        if (null != out && null != in) {
+            long elapsedMilliseconds = out.getTime() - in.getTime();
 
-        String elapsedTime = String.format("%d hours, %d min",
-                TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
-                TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
-                        TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
-        );
+            String elapsedTime = String.format("%d hours, %d min",
+                    TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
+                    TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
+                            TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
+            );
 
-        totalTime.setText(elapsedTime);
-
+            totalTime.setText(elapsedTime);
+        }
     }
 
     @OnClick(R.id.session_summary_clear)

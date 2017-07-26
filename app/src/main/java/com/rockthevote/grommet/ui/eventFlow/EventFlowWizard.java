@@ -127,6 +127,15 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
                 viewPager.setCurrentItem(1, smoothScroll);
                 ((SessionTimeTracking) adapter.getPageAtPosition(1)).updateUI(CLOCKED_IN);
                 break;
+            case TIMED_OUT:
+                new android.app.AlertDialog.Builder(getContext())
+                        .setIcon(R.drawable.ic_warning_24dp)
+                        .setTitle(R.string.session_timeout_title)
+                        .setMessage(R.string.session_timeout_message)
+                        .setPositiveButton(R.string.action_ok,
+                                (dialogInterface, i) -> dialogInterface.dismiss())
+                        .create()
+                        .show();
             case CLOCKED_OUT:
                 // show session summary
                 viewPager.setCurrentItem(2, smoothScroll);

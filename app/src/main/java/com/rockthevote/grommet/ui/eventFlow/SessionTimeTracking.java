@@ -32,7 +32,7 @@ import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
 import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
 
-import java.util.GregorianCalendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -227,7 +227,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     private void clockIn() {
 
         Session.Builder builder = new Session.Builder()
-                .clockInTime(new GregorianCalendar().getTime())
+                .clockInTime(new Date())
                 .sessionStatus(CLOCKED_IN);
 
         db.update(Session.TABLE,
@@ -255,7 +255,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     private void clockOut() {
         Session.Builder builder = new Session.Builder()
-                .clockOutTime(new GregorianCalendar().getTime())
+                .clockOutTime(new Date())
                 .sessionStatus(CLOCKED_OUT);
 
         db.update(Session.TABLE,

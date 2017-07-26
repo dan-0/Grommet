@@ -44,6 +44,8 @@
     <string name="label_time_tracking">Time Tracking</string>
     <string name="time_tracking_default_value">--:--:--</string>
     <string name="clock_out_dialog_text">Do you want to end your canvassing session?</string>
+    <string name="session_timeout_title">Session Timed Out</string>
+    <string name="session_timeout_message">Your canvassing session has timed out. Please start a new session to continue.</string>
 
     <!--Registration Activity Strings-->
     <string name="cancel_dialog_message">Cancel current registration?</string>

@@ -6,7 +6,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class Dates {
@@ -82,8 +81,6 @@ public class Dates {
         }
 
         DateFormat df = new SimpleDateFormat(TIME_OF_DAY_FORMAT);
-//        df.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
-
         return df.format(date);
     }
 
