@@ -2,20 +2,28 @@ package com.rockthevote.grommet;
 
 import android.app.Application;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.f2prateek.rx.preferences.Preference;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.LumberYard;
 import com.rockthevote.grommet.data.api.RegistrationService;
+import com.rockthevote.grommet.data.db.model.Session;
+import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.ui.ActivityHierarchyServer;
 import com.squareup.leakcanary.LeakCanary;
+import com.squareup.sqlbrite.BriteDatabase;
+
+import java.util.Date;
 
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 import timber.log.Timber;
 
+import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_IN;
 import static timber.log.Timber.DebugTree;
 
 public final class GrommetApp extends Application {
@@ -26,6 +34,8 @@ public final class GrommetApp extends Application {
     @Inject
     LumberYard lumberYard;
 
+    @Inject BriteDatabase db;
+    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
     @Override
     public void onCreate() {
@@ -50,6 +60,32 @@ public final class GrommetApp extends Application {
         // check the db for rows that need to be uploaded
         Intent regService = new Intent(this, RegistrationService.class);
         startService(regService);
+
+        // check for session timeout
+        Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
+        if (cursor.moveToNext()) {
+            Session session = Session.MAPPER.call(cursor);
+            Date in = session.clockInTime();
+            if (null != in
+                    && session.sessionStatus() == CLOCKED_IN
+                    && session.sessionTimeout() > 0 // zero means no timeout was set
+                    && (System.currentTimeMillis() - in.getTime()) > session.sessionTimeout()) {
+
+                // if the session is timed out then clock the user out and mark as reported since we don't report timeouts
+                long clockOutTime = in.getTime() + session.sessionTimeout();
+
+                Session.Builder builder = new Session.Builder()
+                        .clockOutTime(new Date(clockOutTime))
+                        .sessionStatus(Session.SessionStatus.TIMED_OUT)
+                        .clockOutReported(true);
+
+                db.update(Session.TABLE,
+                        builder.build(),
+                        Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
+            }
+        }
+        cursor.close();
+
     }
 
     @Override

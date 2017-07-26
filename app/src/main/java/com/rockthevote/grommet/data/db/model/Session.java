@@ -256,7 +256,8 @@ public abstract class Session implements Parcelable, BaseColumns {
         SESSION_CLEARED("session_cleared"),
         DETAILS_ENTERED("details_entered"),
         CLOCKED_IN("clocked_in"),
-        CLOCKED_OUT("clocked_out");
+        CLOCKED_OUT("clocked_out"),
+        TIMED_OUT("timed_out"); // basically the same as clocked_out but it displays an alert dialog
 
         private final String type;
 
