@@ -23,8 +23,8 @@ public interface RockyService {
     Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);
 
     @GET("clockIn")
-    Observable<Result> clockIn(@Body ClockInRequest clockInRequest);
+    Observable<Result<Void>> clockIn(@Body ClockInRequest clockInRequest);
 
     @GET("clockIn")
-    Observable<Result> clockOut(@Body ClockOutRequest clockOutRequest);
+    Observable<Result<Void>> clockOut(@Body ClockOutRequest clockOutRequest);
 }

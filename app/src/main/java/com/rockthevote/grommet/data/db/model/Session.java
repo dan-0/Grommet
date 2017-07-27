@@ -31,7 +31,7 @@ public abstract class Session implements Parcelable, BaseColumns {
     public static final String CLOCK_IN_REPORTED = "clock_in_reported";
     public static final String CLOCK_OUT_REPORTED = "clock_out_reported";
     public static final String CANVASSER_NAME = "canvasser_name";
-    public static final String SOURCE_TRACKING_ID = "source_tracking_id";
+    public static final String OPEN_TRACKING_ID = "open_tracking_id";
     public static final String PARTNER_TRACKING_ID = "partner_tracking_id";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
@@ -96,12 +96,18 @@ public abstract class Session implements Parcelable, BaseColumns {
     public abstract String sourceTrackingId();
 
     @Nullable
+    public abstract String openTrackingId();
+
+    @Nullable
     public abstract String partnerTrackingId();
 
     public abstract long latitude();
 
     public abstract long longitude();
 
+    /*
+        time in minutes until the canvassing session times out
+     */
     public abstract long sessionTimeout();
 
     public abstract int totalRegistrations();
@@ -127,7 +133,8 @@ public abstract class Session implements Parcelable, BaseColumns {
             boolean clockInReported = Db.getBoolean(cursor, CLOCK_IN_REPORTED);
             boolean clockOutReported = Db.getBoolean(cursor, CLOCK_OUT_REPORTED);
             String canvasserName = Db.getString(cursor, CANVASSER_NAME);
-            String sourceTrackingId = Db.getString(cursor, SOURCE_TRACKING_ID);
+            String sourceTrackingId = canvasserName + "::" + sessionId;
+            String openTrackingId = Db.getString(cursor, OPEN_TRACKING_ID);
             String partnerTrackingId = Db.getString(cursor, PARTNER_TRACKING_ID);
             long latitude = Db.getLong(cursor, LATITUDE);
             long longitude = Db.getLong(cursor, LONGITUDE);
@@ -140,7 +147,7 @@ public abstract class Session implements Parcelable, BaseColumns {
             int totalIncludeSSN = Db.getInt(cursor, TOTAL_INCLUDE_SSN);
 
             return new AutoValue_Session(id, sessionId, sessionStatus, clockInTime, clockOutTime, clockInReported,
-                    clockOutReported, canvasserName, sourceTrackingId, partnerTrackingId, latitude,
+                    clockOutReported, canvasserName, sourceTrackingId, openTrackingId, partnerTrackingId, latitude,
                     longitude, sessionTimeout, totalRegistrations, totalAbandoned, totalEmailOptIn,
                     totalSMSOptIn, totalIncludeDLN, totalIncludeSSN);
         }
@@ -190,8 +197,8 @@ public abstract class Session implements Parcelable, BaseColumns {
             return this;
         }
 
-        public Builder sourceTrackingId(String val) {
-            values.put(SOURCE_TRACKING_ID, val);
+        public Builder openTrackingId(String val) {
+            values.put(OPEN_TRACKING_ID, val);
             return this;
         }
 
@@ -249,7 +256,6 @@ public abstract class Session implements Parcelable, BaseColumns {
             return values;
         }
     }
-
 
     public enum SessionStatus {
         NEW_SESSION("new"),

@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
@@ -249,6 +251,10 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 });
 
         listener.setState(CLOCKED_IN, false);
+
+        // try to register the clock in
+        Intent regService = new Intent(getContext(), RegistrationService.class);
+        getContext().startService(regService);
     }
 
     private void clockOut() {
@@ -261,5 +267,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
 
         listener.setState(CLOCKED_OUT, true);
+
+        // try to register the clock out
+        Intent regService = new Intent(getContext(), RegistrationService.class);
+        getContext().startService(regService);
     }
 }

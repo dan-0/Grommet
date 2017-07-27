@@ -66,10 +66,12 @@ public final class GrommetApp extends Application {
         if (cursor.moveToNext()) {
             Session session = Session.MAPPER.call(cursor);
             Date in = session.clockInTime();
+            long timeoutMilliseconds = session.sessionTimeout() * 1000;
+
             if (null != in
                     && session.sessionStatus() == CLOCKED_IN
-                    && session.sessionTimeout() > 0 // zero means no timeout was set
-                    && (System.currentTimeMillis() - in.getTime()) > session.sessionTimeout()) {
+                    && timeoutMilliseconds > 0 // zero means no timeout was set
+                    && (System.currentTimeMillis() - in.getTime()) > timeoutMilliseconds) {
 
                 // if the session is timed out then clock the user out and mark as reported since we don't report timeouts
                 long clockOutTime = in.getTime() + session.sessionTimeout();

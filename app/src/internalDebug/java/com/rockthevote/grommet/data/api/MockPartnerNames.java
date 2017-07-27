@@ -6,6 +6,6 @@ public final class MockPartnerNames {
     static final PartnerNameResponse SUCCESS = PartnerNameResponse.builder()
             .isValid(true)
             .partnerName("OSET Org")
-            .sessionTimeoutLength(10000)
+            .sessionTimeoutLength(10)
             .build();
 }

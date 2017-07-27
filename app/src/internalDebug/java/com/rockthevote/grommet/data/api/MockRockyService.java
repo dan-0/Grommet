@@ -74,7 +74,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Observable<Result> clockIn(@Body ClockInRequest clockInRequest) {
+    public Observable<Result<Void>> clockIn(@Body ClockInRequest clockInRequest) {
         MockClockInResponse response = getResponse(MockClockInResponse.class);
         switch (response) {
             case SUCCESS:
@@ -87,7 +87,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Observable<Result> clockOut(@Body ClockOutRequest clockOutRequest) {
+    public Observable<Result<Void>> clockOut(@Body ClockOutRequest clockOutRequest) {
         MockClockOutResponse response = getResponse(MockClockOutResponse.class);
         switch (response) {
             case SUCCESS:
