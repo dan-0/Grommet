@@ -24,7 +24,6 @@ import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
@@ -59,7 +58,6 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @BindView(R.id.event_details_static_edit) Button editButton;
     @BindView(R.id.ed_clock_in_time) TextView clockInTime;
 
-    @Inject @EventRegTotal Preference<Integer> eventRegTotalPref;
     @Inject @CanvasserName Preference<String> canvasserNamePref;
     @Inject @EventName Preference<String> eventNamePref;
     @Inject @EventZip Preference<String> eventZipPref;

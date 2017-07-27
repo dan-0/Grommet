@@ -338,6 +338,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public enum Party {
         DEMOCRATIC("Democratic", "Demócrata"),
         REPUBLICAN("Republican", "Republicano"),
+        GREEN("Green", "Verde"),
+        LIBERTARIAN("Libertarian","Libertario"),
         NO_PARTY("None", "Ninguno"),
         OTHER_PARTY("Other", "Otro");
 

@@ -33,13 +33,13 @@ public abstract class Session implements Parcelable, BaseColumns {
     public static final String CANVASSER_NAME = "canvasser_name";
     public static final String SOURCE_TRACKING_ID = "source_tracking_id";
     public static final String PARTNER_TRACKING_ID = "partner_tracking_id";
-    public static final String LATITUTDE = "latitutde";
+    public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
     public static final String SESSION_TIMEOUT = "session_timeout";
     public static final String TOTAL_REGISTRATIONS = "total_registrations";
     public static final String TOTAL_ABANDONED = "total_abandoned";
-    public static final String TOTAL_INCLUDE_EMAIL = "total_include_email";
-    public static final String TOTAL_INCLUDE_PHONE = "total_include_phone";
+    public static final String TOTAL_EMAIL_OPT_IN = "total_email_opt_in";
+    public static final String TOTAL_SMS_OPT_IN = "total_sms_opt_in";
     public static final String TOTAL_INCLUDE_DLN = "total_include_dln";
     public static final String TOTAL_INCLUDE_SSN = "total_include_ssn";
 
@@ -108,9 +108,9 @@ public abstract class Session implements Parcelable, BaseColumns {
 
     public abstract int totalAbandoned();
 
-    public abstract int totalIncludeEmail();
+    public abstract int totalEmailOptIn();
 
-    public abstract int totalIncludePhone();
+    public abstract int totalSMSOptIn();
 
     public abstract int totalIncludeDLN();
 
@@ -129,20 +129,20 @@ public abstract class Session implements Parcelable, BaseColumns {
             String canvasserName = Db.getString(cursor, CANVASSER_NAME);
             String sourceTrackingId = Db.getString(cursor, SOURCE_TRACKING_ID);
             String partnerTrackingId = Db.getString(cursor, PARTNER_TRACKING_ID);
-            long latitude = Db.getLong(cursor, LATITUTDE);
+            long latitude = Db.getLong(cursor, LATITUDE);
             long longitude = Db.getLong(cursor, LONGITUDE);
             long sessionTimeout = Db.getLong(cursor, SESSION_TIMEOUT);
             int totalRegistrations = Db.getInt(cursor, TOTAL_REGISTRATIONS);
             int totalAbandoned = Db.getInt(cursor, TOTAL_ABANDONED);
-            int totalIncludeEmail = Db.getInt(cursor, TOTAL_INCLUDE_EMAIL);
-            int totalIncludePhone = Db.getInt(cursor, TOTAL_INCLUDE_PHONE);
+            int totalEmailOptIn = Db.getInt(cursor, TOTAL_EMAIL_OPT_IN);
+            int totalSMSOptIn = Db.getInt(cursor, TOTAL_SMS_OPT_IN);
             int totalIncludeDLN = Db.getInt(cursor, TOTAL_INCLUDE_DLN);
             int totalIncludeSSN = Db.getInt(cursor, TOTAL_INCLUDE_SSN);
 
             return new AutoValue_Session(id, sessionId, sessionStatus, clockInTime, clockOutTime, clockInReported,
                     clockOutReported, canvasserName, sourceTrackingId, partnerTrackingId, latitude,
-                    longitude, sessionTimeout, totalRegistrations, totalAbandoned, totalIncludeEmail,
-                    totalIncludePhone, totalIncludeDLN, totalIncludeSSN);
+                    longitude, sessionTimeout, totalRegistrations, totalAbandoned, totalEmailOptIn,
+                    totalSMSOptIn, totalIncludeDLN, totalIncludeSSN);
         }
     };
 
@@ -201,7 +201,7 @@ public abstract class Session implements Parcelable, BaseColumns {
         }
 
         public Builder latitude(long val) {
-            values.put(LATITUTDE, val);
+            values.put(LATITUDE, val);
             return this;
         }
 
@@ -225,13 +225,13 @@ public abstract class Session implements Parcelable, BaseColumns {
             return this;
         }
 
-        public Builder totalIncludeEmail(int val) {
-            values.put(TOTAL_INCLUDE_EMAIL, val);
+        public Builder totalEmailOptIn(int val) {
+            values.put(TOTAL_EMAIL_OPT_IN, val);
             return this;
         }
 
-        public Builder totalIncludePhone(int val) {
-            values.put(TOTAL_INCLUDE_PHONE, val);
+        public Builder totalSMSOptIn(int val) {
+            values.put(TOTAL_SMS_OPT_IN, val);
             return this;
         }
 

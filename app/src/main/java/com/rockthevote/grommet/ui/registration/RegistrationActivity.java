@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.registration;
 
 import android.app.AlertDialog;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewPager;
@@ -17,7 +18,9 @@ import android.widget.LinearLayout;
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.ui.BaseActivity;
 import com.rockthevote.grommet.ui.ViewContainer;
 import com.rockthevote.grommet.ui.misc.StepperTabLayout;
@@ -41,8 +44,10 @@ import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONE
 public class RegistrationActivity extends BaseActivity {
 
     @Inject ViewContainer viewContainer;
-    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
+
     @Inject BriteDatabase db;
+    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
+    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
     @BindView(R.id.appbar) AppBarLayout appbar;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -162,6 +167,20 @@ public class RegistrationActivity extends BaseActivity {
                                     .build(),
                             RockyRequest._ID + " = ? ",
                             String.valueOf(rockyRequestRowId.get()));
+
+                    // update abandoned count
+                    Cursor sessionCursor =
+                            db.query(Session.SELECT_CURRENT_SESSION);
+
+                    if (sessionCursor.moveToNext()) {
+                        Session session = Session.MAPPER.call(sessionCursor);
+                        db.update(Session.TABLE,
+                                new Session.Builder()
+                                        .totalAbandond(session.totalAbandoned() + 1)
+                                        .build(), Session._ID + " = ? ",
+                                String.valueOf(currentSessionRowId.get()));
+                    }
+                    sessionCursor.close();
 
                     LocaleUtils.setLocale(new Locale("en"));
                     finish();
