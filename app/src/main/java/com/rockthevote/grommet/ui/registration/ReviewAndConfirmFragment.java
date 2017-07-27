@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.registration;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,8 +20,10 @@ import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.Session;
+import com.rockthevote.grommet.data.db.model.VoterId;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
-import com.rockthevote.grommet.data.prefs.EventRegTotal;
+import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.util.Dates;
 import com.rockthevote.grommet.util.Images;
 import com.rockthevote.grommet.util.LocaleUtils;
@@ -70,9 +73,8 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
 
     @BindView(R.id.checkbox_agreement) CheckBox confirmCheckbox;
 
-    @Inject @EventRegTotal Preference<Integer> eventRegTotal;
-
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
+    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
     @Inject BriteDatabase db;
 
@@ -240,11 +242,10 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                             .build(),
                     RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
 
+            updateSessionTotals();
+
             Intent regService = new Intent(getContext(), RegistrationService.class);
             getActivity().startService(regService);
-
-            int totalEvent = eventRegTotal.get();
-            eventRegTotal.set(++totalEvent);
 
             RegistrationCompleteDialogFragment dialog = new RegistrationCompleteDialogFragment();
             dialog.setCancelable(false);
@@ -254,5 +255,54 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         } else {
             signaturePadError.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void updateSessionTotals() {
+        Cursor rockyCursor =
+                db.query(RockyRequest.SELECT_BY_ID, String.valueOf(rockyRequestRowId.get()));
+        Cursor sessionCursor =
+                db.query(Session.SELECT_CURRENT_SESSION);
+
+        if (rockyCursor.moveToNext() && sessionCursor.moveToNext()) {
+            RockyRequest rockyRequest = RockyRequest.MAPPER.call(rockyCursor);
+            Session session = Session.MAPPER.call(sessionCursor);
+
+            boolean hasDLN = false;
+            boolean hasSSN = false;
+
+            Cursor voterIdCursor = db.query(VoterId.SELECT_BY_ROCKY_REQUEST_ID,
+                    String.valueOf(rockyRequestRowId.get()));
+            while (voterIdCursor.moveToNext()) {
+                VoterId voterId = VoterId.MAPPER.call(voterIdCursor);
+                if (VoterId.Type.DRIVERS_LICENSE == voterId.type()) {
+                    hasDLN = !voterId.attestNoSuchId();
+                }
+
+                if (VoterId.Type.SSN_LAST_FOUR == voterId.type()) {
+                    hasSSN = !voterId.attestNoSuchId();
+                }
+            }
+
+            voterIdCursor.close();
+
+            Session.Builder sessionValues = new Session.Builder()
+                    .totalRegistrations(session.totalRegistrations()
+                            + 1)
+                    .totalEmailOptIn(session.totalEmailOptIn()
+                            + (rockyRequest.partnerOptInEmail() ? 1 : 0))
+                    .totalSMSOptIn(session.totalSMSOptIn()
+                            + (rockyRequest.partnerOptInSMS() ? 1 : 0))
+                    .totalIncludeSSN(session.totalIncludeSSN()
+                            + (hasSSN ? 1 : 0))
+                    .totalIncludeDLN(session.totalIncludeDLN()
+                            + (hasDLN ? 1 : 0));
+
+            db.update(Session.TABLE,
+                    sessionValues.build(), Session._ID + " = ? ",
+                    String.valueOf(currentSessionRowId.get()));
+        }
+
+        rockyCursor.close();
+        sessionCursor.close();
     }
 }

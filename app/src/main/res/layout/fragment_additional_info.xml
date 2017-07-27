@@ -270,6 +270,7 @@
         style="@style/GrommetContentArea"
         android:layout_width="wrap_content"
         android:layout_columnSpan="2"
+        android:checked="true"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/label_receive_text"/>

@@ -50,14 +50,24 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
     @Inject @PartnerId Preference<String> partnerIdPref;
     @Inject @PartnerName Preference<String> partnerNamePref;
 
+    // Session Details
     @BindView(R.id.summary_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.summary_event_name) TextView edEventName;
     @BindView(R.id.summary_event_zip) TextView edEventZip;
     @BindView(R.id.summary_partner_name) TextView edPartnerName;
 
+    // Time Tracking
     @BindView(R.id.summary_clock_in_time) TextView clockInTime;
     @BindView(R.id.summary_clock_out_time) TextView clockoutTime;
     @BindView(R.id.summary_total_time) TextView totalTime;
+
+    // Total Counts
+    @BindView(R.id.summary_total_registrations) TextView totalRegistrations;
+    @BindView(R.id.summary_total_abandoned) TextView totalAbandoned;
+    @BindView(R.id.summary_total_dln) TextView totalDLN;
+    @BindView(R.id.summary_total_ssn) TextView totalSSN;
+    @BindView(R.id.summary_total_email_opt_in) TextView totalEmailOptIn;
+    @BindView(R.id.summary_total_sms_opt_in) TextView totalSMSOptIn;
 
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
@@ -123,26 +133,36 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
     @SuppressLint("DefaultLocale")
     void updateUI() {
         Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
-        cursor.moveToNext();
-        Session session = Session.MAPPER.call(cursor);
-        cursor.close();
+        if (cursor.moveToNext()) {
+            Session session = Session.MAPPER.call(cursor);
 
-        clockInTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockInTime()));
-        clockoutTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockOutTime()));
+            clockInTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockInTime()));
+            clockoutTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockOutTime()));
 
-        Date in = session.clockInTime();
-        Date out = session.clockOutTime();
-        if (null != out && null != in) {
-            long elapsedMilliseconds = out.getTime() - in.getTime();
+            Date in = session.clockInTime();
+            Date out = session.clockOutTime();
+            if (null != out && null != in) {
+                long elapsedMilliseconds = out.getTime() - in.getTime();
 
-            String elapsedTime = String.format("%d hours, %d min",
-                    TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
-                    TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
-                            TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
-            );
+                String elapsedTime = String.format("%d hours, %d min",
+                        TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
+                        TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
+                                TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
+                );
 
-            totalTime.setText(elapsedTime);
+                totalTime.setText(elapsedTime);
+            }
+
+            // update count totals
+            totalRegistrations.setText(String.valueOf(session.totalRegistrations()));
+            totalAbandoned.setText(String.valueOf(session.totalAbandoned()));
+            totalDLN.setText(String.valueOf(session.totalIncludeDLN()));
+            totalSSN.setText(String.valueOf(session.totalIncludeSSN()));
+            totalEmailOptIn.setText(String.valueOf(session.totalEmailOptIn()));
+            totalSMSOptIn.setText(String.valueOf(session.totalSMSOptIn()));
         }
+
+        cursor.close();
     }
 
     @OnClick(R.id.session_summary_clear)

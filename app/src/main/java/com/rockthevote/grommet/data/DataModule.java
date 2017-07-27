@@ -15,7 +15,6 @@ import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
@@ -65,13 +64,6 @@ public final class DataModule {
     @Singleton
     RxSharedPreferences provideRxSharedPreferences(SharedPreferences prefs) {
         return RxSharedPreferences.create(prefs);
-    }
-
-    @Provides
-    @Singleton
-    @EventRegTotal
-    Preference<Integer> provideEventRegTotal(RxSharedPreferences prefs, Application app){
-        return prefs.getInteger(app.getResources().getString(R.string.pref_key_event_reg_total), 0);
     }
 
     @Provides

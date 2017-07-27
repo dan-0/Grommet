@@ -7,24 +7,23 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventRegTotal;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
-import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import javax.inject.Inject;
@@ -33,12 +32,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
-import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
+import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_IN;
 
 public final class MainActivity extends BaseActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
@@ -56,8 +56,6 @@ public final class MainActivity extends BaseActivity {
     @Inject @EventZip Preference<String> eventZipPref;
 
     @Inject @CurrentRockyRequestId Preference<Long> currentRockyRequestId;
-
-    @Inject @EventRegTotal Preference<Integer> eventRegTotal;
 
     @Inject ViewContainer viewContainer;
 
@@ -114,21 +112,25 @@ public final class MainActivity extends BaseActivity {
 
     @OnClick(R.id.fab)
     public void onClick(View v) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.clock_in_alert_title)
+                .setIcon(R.drawable.ic_timer_black_24dp)
+                .setMessage(R.string.clock_in_alert_message)
+                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                })
+                .create();
 
-        Observable.just(partnerIdPref.get(),
-                canvasserNamePref.get(),
-                eventNamePref.get(),
-                eventZipPref.get())
-                .all(s -> !Strings.isBlank(s))
-                .subscribe(noneAreEmpty -> {
-                    if (noneAreEmpty) {
-                        //TODO check for clock in
+        db.createQuery(Session.TABLE,
+                Session.SELECT_CURRENT_SESSION)
+                .mapToOne(Session.MAPPER)
+                .first()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(session -> {
+                    if (CLOCKED_IN == session.sessionStatus()) {
                         createNewVoterRecord();
                     } else {
-                        Snackbar.make(
-                                coordinatorLayout,
-                                R.string.incomplete_profile_alert,
-                                Snackbar.LENGTH_LONG).show();
+                        dialog.show();
                     }
                 });
     }
