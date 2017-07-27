@@ -75,7 +75,7 @@ public class BottomBarBehavior<V extends View> extends CoordinatorLayout.Behavio
 
                     public void onAnimationEnd(View view) {
                         BottomBarBehavior.this.mIsAnimatingOut = false;
-                        view.setVisibility(View.GONE);
+                        view.setVisibility(View.INVISIBLE);
                     }
                 }).start();
 
