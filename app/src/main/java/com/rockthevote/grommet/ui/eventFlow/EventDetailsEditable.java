@@ -163,7 +163,8 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
         partnerNamePref.set(name);
 
         Session.Builder builder = new Session.Builder()
-                .partnerTrackingId(edePartnerId.getText().toString())
+                .openTrackingId(edeEventName.getText().toString())
+                .partnerTrackingId(edeEventZip.getText().toString())
                 .canvasserName(edeCanvasserName.getText().toString())
                 .sessionStatus(DETAILS_ENTERED);
 

@@ -80,8 +80,14 @@ public class RegistrationService extends Service {
     @SuppressWarnings("WeakerAccess")
     @Inject RockyService rockyService;
 
-    private final AtomicInteger refCount = new AtomicInteger(0);
-    private final AtomicInteger totalCount = new AtomicInteger(0);
+    private final AtomicInteger regRefCount = new AtomicInteger(0);
+    private final AtomicInteger regTotalCount = new AtomicInteger(0);
+
+    private final AtomicInteger inRefCount = new AtomicInteger(0);
+    private final AtomicInteger inTotalCount = new AtomicInteger(0);
+
+    private final AtomicInteger outRefCount = new AtomicInteger(0);
+    private final AtomicInteger outTotalCount = new AtomicInteger(0);
 
     @Override
     public void onCreate() {
@@ -98,12 +104,12 @@ public class RegistrationService extends Service {
     }
 
     private void doWorkIfNeeded() {
-        
+
         if (isConnected()) {
 
             uploadRegistrationsIfNeeded();
-//            reportClockInIfNeeded();
-//            reportClockOutIfNeeded();
+            reportClockInIfNeeded();
+            reportClockOutIfNeeded();
 
         } else {
             Timber.d("RegistrationService stopping: no wifi");
@@ -122,18 +128,9 @@ public class RegistrationService extends Service {
     }
 
     private void shouldStop() {
-
-        Cursor cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
-        int clockInRows = cursor.getCount();
-        cursor.close();
-
-        cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
-        int clockOutRows = cursor.getCount();
-        cursor.close();
-
-        if (refCount.incrementAndGet() == totalCount.get()
-                && clockInRows == 0
-                && clockOutRows == 0) {
+        if (regRefCount.get() == regTotalCount.get()
+                && inRefCount.get() == inTotalCount.get()
+                && outRefCount.get() == outTotalCount.get()) {
 
             stopSelf();
         }
@@ -144,7 +141,7 @@ public class RegistrationService extends Service {
         Cursor cursor = db.query(RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString());
         int rows = cursor.getCount();
         cursor.close();
-        totalCount.set(rows);
+        regTotalCount.set(rows);
 
         if (rows > 0) {
             // check for registrations to upload
@@ -165,14 +162,17 @@ public class RegistrationService extends Service {
         Cursor cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
         int rows = cursor.getCount();
         cursor.close();
+        inTotalCount.set(rows);
 
         if (rows > 0) {
             // check for clock-in requests to upload
             db.createQuery(Session.TABLE,
                     Session.SELECT_UNREPORTED_CLOCK_IN)
-                    .mapToOne(Session.MAPPER)
-                    .single()
-                    .subscribe(this::reportClockIn);
+                    .mapToList(Session.MAPPER)
+                    .flatMap(Observable::from)
+                    .take(rows)
+                    .subscribe(this::reportClockIn,
+                            throwable -> Timber.d(throwable, "report clock in error"));
         } else {
             shouldStop();
         }
@@ -183,13 +183,16 @@ public class RegistrationService extends Service {
         Cursor cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
         int rows = cursor.getCount();
         cursor.close();
+        outTotalCount.set(rows);
 
         if (rows > 0) {
             db.createQuery(Session.TABLE,
                     Session.SELECT_UNREPORTED_CLOCK_OUT)
-                    .mapToOne(Session.MAPPER)
-                    .single()
-                    .subscribe(this::reportClockOut);
+                    .mapToList(Session.MAPPER)
+                    .flatMap(Observable::from)
+                    .take(rows)
+                    .subscribe(this::reportClockOut,
+                            throwable -> Timber.d(throwable, "report clock out error"));
         } else {
             shouldStop();
         }
@@ -213,11 +216,23 @@ public class RegistrationService extends Service {
                         .longitude(session.longitude())
                         .build())
                 .partnerTrackingId(session.partnerTrackingId())
+                .sourceTrackingId(session.sourceTrackingId())
+                .openTrackingId(session.openTrackingId())
                 .sessionTimeoutLength(session.sessionTimeout())
                 .build();
 
         rockyService.clockIn(request)
                 .subscribeOn(Schedulers.io())
+                .doOnCompleted(() -> {
+                    /*
+                    because this method processes each row in the initial query one-at-a-time
+                    we need to check after each row finishes to see if we should stop the service
+                    */
+                    if (inRefCount.incrementAndGet() == inTotalCount.get()) {
+                        Timber.d("Finished reporting clock-ins");
+                        shouldStop();
+                    }
+                })
                 .subscribe(result ->
                 {
                     Timber.d("reporting clock in");
@@ -229,8 +244,6 @@ public class RegistrationService extends Service {
                                         .build(),
                                 Session._ID + " = ? ", String.valueOf(session.id()));
                     }
-
-                    reportClockInIfNeeded();
                 });
     }
 
@@ -243,11 +256,23 @@ public class RegistrationService extends Service {
                         .longitude(session.longitude())
                         .build())
                 .partnerTrackingId(session.partnerTrackingId())
+                .sourceTrackingId("")
+                .openTrackingId("")
                 .sessionTimeoutLength(session.sessionTimeout())
                 .build();
 
         rockyService.clockOut(request)
                 .subscribeOn(Schedulers.io())
+                .doOnCompleted(() -> {
+                    /*
+                    because this method processes each row in the initial query one-at-a-time
+                    we need to check after each row finishes to see if we should stop the service
+                    */
+                    if (outRefCount.incrementAndGet() == outTotalCount.get()) {
+                        Timber.d("Finished reporting clock-outs");
+                        shouldStop();
+                    }
+                })
                 .subscribe(result ->
                 {
                     Timber.d("reporting clock out");
@@ -259,8 +284,6 @@ public class RegistrationService extends Service {
                                         .build(),
                                 Session._ID + " = ? ", String.valueOf(session.id()));
                     }
-
-                    reportClockOutIfNeeded();
                 });
     }
 
@@ -277,7 +300,7 @@ public class RegistrationService extends Service {
                     because this method processes each row in the initial query one-at-a-time
                     we need to check after each row finishes to see if we should stop the service
                     */
-                    if (refCount.incrementAndGet() == totalCount.get()) {
+                    if (regRefCount.incrementAndGet() == regTotalCount.get()) {
                         Timber.d("RegistrationService stopping: work complete");
                         shouldStop();
                     }

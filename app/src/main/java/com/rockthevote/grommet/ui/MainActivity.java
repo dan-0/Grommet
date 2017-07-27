@@ -33,7 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -62,8 +61,6 @@ public final class MainActivity extends BaseActivity {
     @Inject BriteDatabase db;
 
     @Inject ReactiveLocationProvider locationProvider;
-
-    private CompositeSubscription subscriptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,21 +92,6 @@ public final class MainActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        subscriptions = new CompositeSubscription();
-
-//        subscriptions.add(eventRegTotal.asObservable()
-//                .subscribe(eventTotal -> registeredEvent.setText(String.valueOf(eventTotal))));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        subscriptions.unsubscribe();
-    }
-
     @OnClick(R.id.fab)
     public void onClick(View v) {
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -128,14 +110,14 @@ public final class MainActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(session -> {
                     if (CLOCKED_IN == session.sessionStatus()) {
-                        createNewVoterRecord();
+                        createNewVoterRecord(session);
                     } else {
                         dialog.show();
                     }
                 });
     }
 
-    private void createNewVoterRecord() {
+    private void createNewVoterRecord(Session session) {
         locationProvider.getLastKnownLocation()
                 .singleOrDefault(null)
                 .subscribe(location -> {
@@ -143,7 +125,7 @@ public final class MainActivity extends BaseActivity {
                             .status(IN_PROGRESS)
                             .partnerId(partnerIdPref.get())
                             .partnerTrackingId(eventZipPref.get())
-                            .sourceTrackingId(canvasserNamePref.get())
+                            .sourceTrackingId(session.sourceTrackingId())
                             .openTrackingId(eventNamePref.get())
                             .partnerOptInSMS(true) // override database default so we don't have to perform a migration
                             .generateDate();
