@@ -104,7 +104,8 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <FrameLayout
+    <com.rockthevote.grommet.ui.misc.BetterViewAnimator
+        android:id="@+id/save_view_animator"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -115,5 +116,25 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:text="@string/action_save"/>
-    </FrameLayout>
+
+
+        <LinearLayout
+            android:id="@+id/save_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/validating_partner_id"/>
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:paddingEnd="28dp"/>
+        </LinearLayout>
+    </com.rockthevote.grommet.ui.misc.BetterViewAnimator>
 </LinearLayout>

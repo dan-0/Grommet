@@ -25,6 +25,7 @@ import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -55,6 +56,7 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
                        R.id.ede_til_event_zip, R.id.ede_til_partner_id})
     List<TextInputLayout> editableViews;
 
+    @BindView(R.id.save_view_animator) BetterViewAnimator viewAnimator;
     @BindView(R.id.ede_canvasser_name) EditText edeCanvasserName;
     @BindView(R.id.ede_event_name) EditText edeEventName;
 
@@ -103,14 +105,16 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
         if (!isInEditMode()) {
             ButterKnife.bind(this);
             validator = new ObservableValidator(this, getContext());
+            resetForm();
         }
     }
 
     void resetForm() {
-        edeCanvasserName.setText("");
-        edeEventName.setText("");
-        edeEventZip.setText("");
-        edePartnerId.setText("");
+
+        edeCanvasserName.setText(canvasserNamePref.get());
+        edeEventName.setText(eventNamePref.get());
+        edeEventZip.setText(eventZipPref.get());
+        edePartnerId.setText(partnerIdPref.get());
         edeCanvasserName.requestFocus();
     }
 
@@ -131,9 +135,13 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
                         .delay(500, TimeUnit.MILLISECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe(() -> {
+                            viewAnimator.setDisplayedChildId(R.id.save_progress_bar);
                             ButterKnife.apply(editableViews, ENABLED, false);
                         })
-                        .doOnCompleted(() -> ButterKnife.apply(editableViews, ENABLED, true))
+                        .doOnCompleted(() -> {
+                            viewAnimator.setDisplayedChildId(R.id.event_details_save);
+                            ButterKnife.apply(editableViews, ENABLED, true);
+                        })
                         .subscribe(result -> {
                             if (!result.isError() && result.response().isSuccessful()) {
                                 PartnerNameResponse partnerNameResponse = result.response().body();
