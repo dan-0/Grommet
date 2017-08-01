@@ -25,30 +25,30 @@
     <string name="session_details" translatable="false">Session Details</string>
     <string name="error_partner_id" translatable="false">Invalid Partner ID</string>
     <string name="label_partner_name_spinner">Validating Partner ID</string>
-    <string name="clock_in_text">Clock In</string>
-    <string name="clock_out_text">Clock Out</string>
-    <string name="label_event_total_reg">Registrations</string>
-    <string name="label_event_total_abandoned">Abandoned</string>
-    <string name="label_event_total_dln">DLN</string>
-    <string name="label_event_total_ssn">SSN</string>
-    <string name="label_event_total_email_opt_in">Email Opt In</string>
-    <string name="label_event_total_sms_opt_in">SMS Opt In</string>
-    <string name="label_event_total_hours_worked">Hours Worked</string>
-    <string name="label_event_clock_in_time">Clock In</string>
-    <string name="label_event_clock_out_time">Clock Out</string>
-    <string name="title_event_details">Shift Location</string>
-    <string name="title_time_tracking">Time Tracking</string>
-    <string name="title_session_summary">Shift Report</string>
-    <string name="label_canvasser">Canvasser</string>
-    <string name="label_event">Event</string>
-    <string name="label_org">Org</string>
-    <string name="label_total_registrations">Total Registrations</string>
-    <string name="label_time_tracking">Time Tracking</string>
-    <string name="time_tracking_default_value">--:--:--</string>
-    <string name="clock_out_dialog_text">Do you want to end your canvassing session?</string>
-    <string name="session_timeout_title">Session Timed Out</string>
-    <string name="session_timeout_message">Your canvassing session has timed out. Please start a new session to continue.</string>
-    <string name="validating_partner_id">Validating Partner ID</string>
+    <string name="clock_in_text" translatable="false">Clock In</string>
+    <string name="clock_out_text" translatable="false">Clock Out</string>
+    <string name="label_event_total_reg" translatable="false">Registrations</string>
+    <string name="label_event_total_abandoned" translatable="false">Abandoned</string>
+    <string name="label_event_total_dln" translatable="false">DLN</string>
+    <string name="label_event_total_ssn" translatable="false">SSN</string>
+    <string name="label_event_total_email_opt_in" translatable="false">Email Opt In</string>
+    <string name="label_event_total_sms_opt_in" translatable="false">SMS Opt In</string>
+    <string name="label_event_total_hours_worked" translatable="false">Hours Worked</string>
+    <string name="label_event_clock_in_time" translatable="false">Clock In</string>
+    <string name="label_event_clock_out_time" translatable="false">Clock Out</string>
+    <string name="title_event_details" translatable="false">Shift Location</string>
+    <string name="title_time_tracking" translatable="false">Time Tracking</string>
+    <string name="title_session_summary" translatable="false">Shift Report</string>
+    <string name="label_canvasser" translatable="false">Canvasser</string>
+    <string name="label_event" translatable="false">Event</string>
+    <string name="label_org" translatable="false">Org</string>
+    <string name="label_total_registrations" translatable="false">Total Registrations</string>
+    <string name="label_time_tracking" translatable="false">Time Tracking</string>
+    <string name="time_tracking_default_value" translatable="false">--:--:--</string>
+    <string name="clock_out_dialog_text" translatable="false">Do you want to end your canvassing session?</string>
+    <string name="session_timeout_title" translatable="false">Session Timed Out</string>
+    <string name="session_timeout_message" translatable="false">Your canvassing session has timed out. Please start a new session to continue.</string>
+    <string name="validating_partner_id" translatable="false">Validating Partner ID</string>
 
     <!--Registration Activity Strings-->
     <string name="cancel_dialog_message">Cancel current registration?</string>
@@ -261,9 +261,9 @@ Submitting an application containing false information may also subject a person
     <string name="action_ok">OK</string>
     <string name="action_accept">Accept</string>
     <string name="action_decline">Decline</string>
-    <string name="action_back">Back</string>
-    <string name="action_edit">Edit</string>
-    <string name="action_clear">clear</string>
+    <string name="action_back" translatable="false">Back</string>
+    <string name="action_edit" translatable="false">Edit</string>
+    <string name="action_clear" translatable="false">clear</string>
     <string name="upload_notification_title_success" translatable="false">PA Registration Success</string>
     <string name="upload_notification_title_failure" translatable="false">PA Registration Failed</string>
     <string name="upload_notification_content_success" translatable="false">Registration submitted</string>

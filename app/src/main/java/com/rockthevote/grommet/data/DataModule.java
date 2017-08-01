@@ -2,6 +2,7 @@ package com.rockthevote.grommet.data;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatActivity;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.f2prateek.rx.preferences.RxSharedPreferences;
@@ -18,6 +19,7 @@ import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.ui.MainActivity;
 import com.squareup.moshi.Moshi;
 
 import java.io.File;
@@ -40,7 +42,8 @@ import static com.jakewharton.byteunits.DecimalByteUnit.MEGABYTES;
                 DbModule.class
         },
         injects = {
-                RegistrationService.class
+                RegistrationService.class,
+                MainActivity.class
         },
         complete = false,
         library = true
@@ -128,6 +131,27 @@ public final class DataModule {
     @Singleton
     OkHttpClient provideOkHttpClient(Application app) {
         return createOkHttpClient(app).build();
+    }
+
+    @Provides
+    @Singleton
+    HockeyAppHelper provideHockeyAppHelper() {
+        return new HockeyAppHelper() {
+            @Override
+            public void checkForUpdates(AppCompatActivity activity) {
+                // do nothing
+            }
+
+            @Override
+            public void checkForCrashes(AppCompatActivity activity) {
+                // do nothing
+            }
+
+            @Override
+            public void unRegister() {
+                // do nothing
+            }
+        };
     }
 
     static OkHttpClient.Builder createOkHttpClient(Application app) {

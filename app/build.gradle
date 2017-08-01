@@ -1,7 +1,7 @@
 // Manifest version information!
 def versionMajor = 1
-def versionMinor = 1
-def versionPatch = 4
+def versionMinor = 2
+def versionPatch = 1
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 apply plugin: 'com.android.application'
@@ -50,6 +50,7 @@ android {
             keyAlias 'grommetKey'
             keyPassword System.env['KEY_PASSWORD']
         }
+
         debug {
             storeFile file('../keys/debug.keystore')
             storePassword 'android'
@@ -69,6 +70,8 @@ android {
         buildConfigField 'long', 'GIT_TIMESTAMP', "${gitTimestamp()}L"
 
         signingConfig signingConfigs.grommet
+
+        manifestPlaceholders = [HOCKEYAPP_APP_ID: "9aa043263d8e4edb902b860bf5098acb"]
     }
 
     buildTypes {
@@ -77,7 +80,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled false
         }
-        release{
+        release {
             minifyEnabled false
         }
     }
@@ -93,7 +96,8 @@ android {
 
     lintOptions {
         abortOnError false
-        ignore 'InvalidPackage'// Provided AutoValue pulls in Guava and friends. Doesn't end up in APK.
+        ignore 'InvalidPackage'
+// Provided AutoValue pulls in Guava and friends. Doesn't end up in APK.
     }
 
     dexOptions {
@@ -123,7 +127,10 @@ android {
             manifest.srcFile
             'src/internalDebug/AndroidManifest.xml'
         }
-        internalRelease { res.srcDirs = ['src/internalRelease/res', 'src/internalRelease/res/'] }
+        internalRelease {
+            res.srcDirs = ['src/internalRelease/res', 'src/internalRelease/res/']
+            manifest.srcFile 'src/internalRelease/AndroidManifest.xml'
+        }
         productionDebug { res.srcDirs = ['src/productionDebug/res', 'src/productionDebug/res/'] }
         productionRelease {
             res.srcDirs = ['src/productionRelease/res', 'src/productionRelease/res/']
@@ -169,6 +176,8 @@ dependencies {
 //    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
 
     internalCompile 'com.mattprecious.telescope:telescope:2.1.0'
+
+    internalReleaseCompile 'net.hockeyapp.android:HockeySDK:4.1.5'
 
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'

@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.f2prateek.rx.preferences.Preference;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
@@ -62,6 +63,8 @@ public final class MainActivity extends BaseActivity {
 
     @Inject ReactiveLocationProvider locationProvider;
 
+    @Inject HockeyAppHelper hockeyAppHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +72,25 @@ public final class MainActivity extends BaseActivity {
         ButterKnife.bind(this, view);
         setSupportActionBar(toolbar);
         requestGPSPermission();
+        hockeyAppHelper.checkForUpdates(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hockeyAppHelper.checkForCrashes(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hockeyAppHelper.unRegister();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hockeyAppHelper.unRegister();
     }
 
     private void requestGPSPermission() {
