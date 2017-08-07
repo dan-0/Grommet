@@ -256,8 +256,8 @@ public class RegistrationService extends Service {
                         .longitude(session.longitude())
                         .build())
                 .partnerTrackingId(session.partnerTrackingId())
-                .sourceTrackingId("")
-                .openTrackingId("")
+                .sourceTrackingId(session.sourceTrackingId())
+                .openTrackingId(session.openTrackingId())
                 .sessionTimeoutLength(session.sessionTimeout())
                 .build();
 
