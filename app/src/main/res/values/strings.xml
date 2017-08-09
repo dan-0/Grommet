@@ -13,7 +13,7 @@
     <string name="nav_title_about" translatable="false">About</string>
     <string name="nav_title_data_usage" translatable="false">Data Usage</string>
     <string name="nav_title_help" translatable="false">Help</string>
-    <string name="incomplete_profile_alert" translatable="false">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Event Zip and Clock-In before registering voters</string>
+    <string name="incomplete_profile_alert" translatable="false">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Zip and Clock-In before registering voters</string>
     <string name="clock_in_alert_title" translatable="false">Not Clocked In</string>
     <string name="clock_in_alert_message" translatable="false">You must clock in before registering voters.</string>
     <string name="dialog_no_thanks" translatable="false">No Thanks</string>
@@ -28,7 +28,7 @@
     <string name="clock_in_text" translatable="false">Clock In</string>
     <string name="clock_out_text" translatable="false">Clock Out</string>
     <string name="label_event_total_reg" translatable="false">Registrations</string>
-    <string name="label_event_total_abandoned" translatable="false">Abandoned</string>
+    <string name="label_event_total_abandoned" translatable="false">Cancelled</string>
     <string name="label_event_total_dln" translatable="false">DLN</string>
     <string name="label_event_total_ssn" translatable="false">SSN</string>
     <string name="label_event_total_email_opt_in" translatable="false">Email Opt In</string>
@@ -252,8 +252,8 @@ Submitting an application containing false information may also subject a person
     <string name="pref_title_partner_name" translatable="false">Organization</string>
     <string name="pref_title_partner_id" translatable="false">Partner ID</string>
     <string name="pref_title_canvaser_name" translatable="false">Canvaser Name</string>
-    <string name="pref_title_event_zip_code" translatable="false">Event Zip Code</string>
-    <string name="pref_title_event_name" translatable="false">Event Name</string>
+    <string name="pref_title_event_zip_code" translatable="false">Zip Code</string>
+    <string name="pref_title_event_name" translatable="false">Location</string>
 
     <!--Multi use strings-->
     <string name="action_cancel" translatable="false">Cancel</string>
