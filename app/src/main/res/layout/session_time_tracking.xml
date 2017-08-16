@@ -5,17 +5,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:layout_height="@dimen/detail_backdrop_height">
 
-    <TextView
+    <LinearLayout
         android:id="@+id/time_tracking_title"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:layout_marginStart="@dimen/content_margin"
-        android:gravity="center_vertical"
-        android:text="@string/title_time_tracking"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/content_margin"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/title_time_tracking"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+    </LinearLayout>
 
     <View
         android:id="@+id/time_tracking_divider"
@@ -162,6 +173,19 @@
             android:textColor="@color/colorSecondaryText"
             android:textStyle="bold"/>
 
+        <Button
+            android:id="@+id/session_progress_button"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_marginStart="66dp"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="Check Progress"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:drawableStart="@drawable/ic_insert_chart_black_24dp"/>
+
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
@@ -181,7 +205,6 @@
         android:layout_height="50dp"
         android:layout_below="@+id/time_tracking_details"
         android:layout_centerInParent="true"
-        android:layout_marginTop="32dp"
         android:background="@drawable/clock_in_selector"
         android:clickable="true"
         >

@@ -12,8 +12,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="textColorError">@android:color/holo_red_dark</item>
-        <item name="android:dialogTheme">@style/GrommetDatePickerDialog</item>
-
     </style>
 
     <style name="RegistrationTheme" parent="GrommetTheme">
@@ -22,13 +20,6 @@
 
     <style name="OvalMaterialButton" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:background">@drawable/oval_button</item>
-    </style>
-
-    <style name="GrommetDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:datePickerStyle">@style/GrommetDatePicker</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="android:windowNoTitle">false</item>
     </style>
 
     <style name="GrommetDatePicker" parent="android:Widget.Material.Light.DatePicker">

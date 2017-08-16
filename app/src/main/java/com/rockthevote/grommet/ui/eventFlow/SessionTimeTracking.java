@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
@@ -59,6 +61,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @BindView(R.id.clock_in_button) View clockInButton;
     @BindView(R.id.event_details_static_edit) Button editButton;
     @BindView(R.id.ed_clock_in_time) TextView clockInTime;
+    @BindView(R.id.session_progress_button) Button sessionProgressButton;
 
     @Inject @CanvasserName Preference<String> canvasserNamePref;
     @Inject @EventName Preference<String> eventNamePref;
@@ -146,8 +149,16 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         }
 
         editButton.setEnabled(!clockInButton.isSelected());
+
         TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
         text.setText(clockInButton.isSelected() ? R.string.clock_out_text : R.string.clock_in_text);
+    }
+
+    @OnClick(R.id.session_progress_button)
+    public void onProgressClick(View v) {
+        SessionProgressDialogFragment.newInstance()
+                .show(((AppCompatActivity) getContext()).getSupportFragmentManager(),
+                        "session_progress");
     }
 
     @OnClick(R.id.event_details_static_edit)

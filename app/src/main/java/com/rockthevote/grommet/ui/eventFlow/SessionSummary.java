@@ -58,17 +58,8 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
 
     // Time Tracking
     @BindView(R.id.summary_clock_in_time) TextView clockInTime;
-    @BindView(R.id.summary_clock_out_time) TextView clockoutTime;
+    @BindView(R.id.summary_clock_out_time) TextView clockOutTime;
     @BindView(R.id.summary_total_time) TextView totalTime;
-
-    // Total Counts
-    @BindView(R.id.summary_total_registrations) TextView totalRegistrations;
-    @BindView(R.id.summary_total_abandoned) TextView totalAbandoned;
-    @BindView(R.id.summary_total_dln) TextView totalDLN;
-    @BindView(R.id.summary_total_ssn) TextView totalSSN;
-    @BindView(R.id.summary_total_email_opt_in) TextView totalEmailOptIn;
-    @BindView(R.id.summary_total_sms_opt_in) TextView totalSMSOptIn;
-
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
 
@@ -109,6 +100,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
 
             subscriptions.add(partnerNamePref.asObservable()
                     .subscribe(name -> edPartnerName.setText(name)));
+
         }
     }
 
@@ -137,7 +129,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
             Session session = Session.MAPPER.call(cursor);
 
             clockInTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockInTime()));
-            clockoutTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockOutTime()));
+            clockOutTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockOutTime()));
 
             Date in = session.clockInTime();
             Date out = session.clockOutTime();
@@ -153,13 +145,6 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
                 totalTime.setText(elapsedTime);
             }
 
-            // update count totals
-            totalRegistrations.setText(String.valueOf(session.totalRegistrations()));
-            totalAbandoned.setText(String.valueOf(session.totalAbandoned()));
-            totalDLN.setText(String.valueOf(session.totalIncludeDLN()));
-            totalSSN.setText(String.valueOf(session.totalIncludeSSN()));
-            totalEmailOptIn.setText(String.valueOf(session.totalEmailOptIn()));
-            totalSMSOptIn.setText(String.valueOf(session.totalSMSOptIn()));
         }
 
         cursor.close();

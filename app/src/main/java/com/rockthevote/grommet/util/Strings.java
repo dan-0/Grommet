@@ -18,4 +18,8 @@ public final class Strings {
     public static String truncateAt(String string, int length) {
         return string.length() > length ? string.substring(0, length) : string;
     }
+
+    public static String formatNumberAsPercentage(double number) {
+        return String.format("%.0f%%", number * 100);
+    }
 }

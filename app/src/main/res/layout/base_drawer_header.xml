@@ -4,13 +4,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="192dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimary">
 
-    <!--<ImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:scaleType="centerCrop"-->
-        <!--android:src="@drawable/drawer_header_img"-->
-        <!--android:tint="#60000000"/>-->
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="46dp"
+        android:layout_marginStart="24dp"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        tools:text="version 123"
+        android:textColor="@android:color/white"/>
 
 </FrameLayout>
