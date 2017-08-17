@@ -130,8 +130,8 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
             case TIMED_OUT:
                 new android.app.AlertDialog.Builder(getContext())
                         .setIcon(R.drawable.ic_warning_24dp)
-                        .setTitle(R.string.session_timeout_title)
-                        .setMessage(R.string.session_timeout_message)
+                        .setTitle(R.string.shift_timeout_title)
+                        .setMessage(R.string.shift_timeout_message)
                         .setPositiveButton(R.string.action_ok,
                                 (dialogInterface, i) -> dialogInterface.dismiss())
                         .create()

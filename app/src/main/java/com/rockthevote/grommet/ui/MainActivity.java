@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.f2prateek.rx.preferences.Preference;
+import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.db.model.RockyRequest;

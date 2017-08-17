@@ -22,7 +22,7 @@
     <!--Main Activity Strings-->
     <string name="label_registered_event">Registered</string>
     <string name="button_label_new_voter" translatable="false">New Voter</string>
-    <string name="session_details" translatable="false">Session Details</string>
+    <string name="shift_details" translatable="false">Shift Details</string>
     <string name="error_partner_id" translatable="false">Invalid Partner ID</string>
     <string name="label_partner_name_spinner">Validating Partner ID</string>
     <string name="clock_in_text" translatable="false">Clock In</string>
@@ -38,17 +38,18 @@
     <string name="label_event_clock_out_time" translatable="false">Clock Out</string>
     <string name="title_event_details" translatable="false">Shift Location</string>
     <string name="title_time_tracking" translatable="false">Time Tracking</string>
-    <string name="title_session_summary" translatable="false">Shift Report</string>
+    <string name="title_shift_summary" translatable="false">Shift Report</string>
     <string name="label_canvasser" translatable="false">Canvasser</string>
     <string name="label_event" translatable="false">Event</string>
     <string name="label_org" translatable="false">Org</string>
     <string name="label_total_registrations" translatable="false">Total Registrations</string>
     <string name="label_time_tracking" translatable="false">Time Tracking</string>
     <string name="time_tracking_default_value" translatable="false">--:--:--</string>
-    <string name="clock_out_dialog_text" translatable="false">Do you want to end your canvassing session?</string>
-    <string name="session_timeout_title" translatable="false">Session Timed Out</string>
-    <string name="session_timeout_message" translatable="false">Your canvassing session has timed out. Please start a new session to continue.</string>
+    <string name="clock_out_dialog_text" translatable="false">Do you want to end your canvassing shift?</string>
+    <string name="shift_timeout_title" translatable="false">Shift Timed Out</string>
+    <string name="shift_timeout_message" translatable="false">Your canvassing shift has timed out. Please start a new shift to continue.</string>
     <string name="validating_partner_id" translatable="false">Validating Partner ID</string>
+    <string name="shift_progress" translatable="false">Shift Progress</string>
 
     <!--Registration Activity Strings-->
     <string name="cancel_dialog_message">Cancel current registration?</string>
@@ -257,6 +258,7 @@ Submitting an application containing false information may also subject a person
 
     <!--Multi use strings-->
     <string name="action_cancel" translatable="false">Cancel</string>
+    <string name="action_dismiss" translatable="false">Dismiss</string>
     <string name="action_save" translatable="false">Save</string>
     <string name="action_ok">OK</string>
     <string name="action_accept">Accept</string>
@@ -269,6 +271,7 @@ Submitting an application containing false information may also subject a person
     <string name="upload_notification_content_success" translatable="false">Registration submitted</string>
     <string name="upload_notification_content_client_failure" translatable="false">Bad registration data</string>
     <string name="upload_notification_content_connection_failure" translatable="false">Unable to contact server</string>
+    <string name="percent_format" translatable="false">%d%%</string>
 
     <string name="about_activity_text" translatable="false">
 <![CDATA[

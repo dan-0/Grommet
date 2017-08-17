@@ -15,7 +15,7 @@
         android:layout_height="@dimen/toolbar_height"
         android:layout_marginStart="@dimen/content_margin"
         android:gravity="center_vertical"
-        android:text="@string/title_session_summary"
+        android:text="@string/title_shift_summary"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
     <View
@@ -61,7 +61,11 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@color/divider"/>
 
-            <include layout="@layout/summary_totals"/>
+            <fragment
+                android:id="@+id/summary_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:name="com.rockthevote.grommet.ui.eventFlow.SessionProgressDialogFragment"/>
 
         </LinearLayout>
 

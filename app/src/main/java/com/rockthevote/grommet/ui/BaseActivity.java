@@ -14,8 +14,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.f2prateek.rx.preferences.Preference;
+import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
@@ -108,6 +110,8 @@ public class BaseActivity extends AppCompatActivity {
 
         drawer.setCheckedItem(getSelfNavDrawerItem());
 
+        TextView version = (TextView) drawer.getHeaderView(0).findViewById(R.id.version);
+        version.setText("Version " + BuildConfig.VERSION_NAME);
     }
 
     private void goToNavDrawerItem(MenuItem item) {

@@ -28,8 +28,7 @@ public class DatePickerDialogFragment extends DialogFragment {
         // start the date picker at Jan 1, 1998
         return new DatePickerDialog(
                 getActivity(),
-                R.style.GrommetDatePickerDialog,
                 listener,
-                1998, 0, 1);
+                1975, 0, 1);
     }
 }

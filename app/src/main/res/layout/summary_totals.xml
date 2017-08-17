@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/session_summary_details"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:columnCount="2"
+    android:columnCount="3"
     android:useDefaultMargins="false">
 
     <TextView
@@ -22,6 +22,7 @@
         style="@android:style/TextAppearance.Material.Subhead"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/content_area_padding"
+        android:layout_columnSpan="2"
         android:textColor="@color/colorBlueAccent"
         android:textStyle="bold"
         tools:text="12"/>
@@ -39,6 +40,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/content_area_padding"
         android:textColor="@color/colorBlueAccent"
+        android:layout_columnSpan="2"
         android:textStyle="bold"
         tools:text="4"/>
 
@@ -55,6 +57,15 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/content_area_padding"
         android:textColor="@color/colorBlueAccent"
+        android:textStyle="bold"
+        tools:text="8"/>
+
+    <TextView
+        android:id="@+id/summary_dln_percentage"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
         android:textStyle="bold"
         tools:text="8"/>
 
@@ -76,6 +87,16 @@
         tools:text="1"/>
 
     <TextView
+        android:id="@+id/summary_ssn_percentage"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="1"/>
+
+    <TextView
         style="@android:style/TextAppearance.Material.Subhead"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/content_area_padding"
@@ -92,6 +113,15 @@
         tools:text="1"/>
 
     <TextView
+        android:id="@+id/summary_email_opt_in_percentage"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:textColor="@color/colorSecondaryText"
+        android:textStyle="bold"
+        tools:text="1"/>
+
+    <TextView
         style="@android:style/TextAppearance.Material.Subhead"
         android:layout_marginBottom="32dp"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -104,6 +134,15 @@
         android:layout_marginBottom="32dp"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:textColor="@color/colorBlueAccent"
+        android:textStyle="bold"
+        tools:text="1"/>
+
+    <TextView
+        android:id="@+id/summary_sms_opt_in_percentage"
+        style="@android:style/TextAppearance.Material.Subhead"
+        android:layout_marginBottom="32dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:textColor="@color/colorSecondaryText"
         android:textStyle="bold"
         tools:text="1"/>
 
