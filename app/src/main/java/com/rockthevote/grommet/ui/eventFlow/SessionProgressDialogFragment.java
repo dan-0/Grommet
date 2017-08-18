@@ -63,13 +63,17 @@ public class SessionProgressDialogFragment extends DialogFragment {
         View view;
         if (getShowsDialog()) {
             view = inflater.inflate(R.layout.session_progress_dialog_fragment, container, false);
-            getDialog().setTitle(R.string.shift_progress);
         } else {
             view = inflater.inflate(R.layout.summary_totals, container, false);
         }
+
         ButterKnife.bind(this, view);
+        updateView();
 
+        return view;
+    }
 
+    public void updateView() {
         // update count totals
         Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
         if (cursor.moveToNext()) {
@@ -105,8 +109,6 @@ public class SessionProgressDialogFragment extends DialogFragment {
             }
         }
         cursor.close();
-
-        return view;
     }
 
     @Optional

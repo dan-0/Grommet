@@ -4,6 +4,8 @@ package com.rockthevote.grommet.ui.eventFlow;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -148,6 +150,12 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         }
 
         cursor.close();
+
+        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
+        SessionProgressDialogFragment fragment =
+                (SessionProgressDialogFragment) fm.findFragmentById(R.id.summary_fragment);
+        fragment.updateView();
+
     }
 
     @OnClick(R.id.session_summary_clear)
