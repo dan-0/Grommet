@@ -8,9 +8,18 @@
     android:orientation="vertical"
     >
 
+    <TextView
+        style="@android:style/TextAppearance.DialogWindowTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/shift_progress"/>
+
     <View
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="1dp"
+        android:layout_gravity="fill_horizontal"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@color/divider"/>
