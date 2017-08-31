@@ -177,7 +177,8 @@ public abstract class Name implements Parcelable, BaseColumns {
     }
 
     public enum Suffix {
-        EMPTY(""), JR("Jr"), SR("Sr"), SECOND("II"), THIRD("III"), FOURTH("IV");
+        EMPTY(""), JR("Jr"), SR("Sr"), SECOND("II"), THIRD("III"), FOURTH("IV"),
+        FIFTH("V"), SIXTH("VI"), SEVENTH("VII");
 
         private final String suffix;
 

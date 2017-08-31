@@ -28,6 +28,7 @@ import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.EmailOrEmpty;
 import com.rockthevote.grommet.util.Phone;
+import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.concurrent.TimeUnit;
@@ -38,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -376,6 +378,26 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @Override
     public Observable<Boolean> verify() {
-        return validator.validate();
+        Observable<Boolean> emailOptInVerification = Observable.just(
+                !emailOptIn.isChecked() || !Strings.isBlank(textInputEmail.getEditText().getText()));
+
+        Observable<Boolean> phoneOptInVerification = Observable.just(
+                !phoneOptIn.isChecked() || !Strings.isBlank(phoneNumber.getEditText().getText()));
+
+        return Observable.zip(emailOptInVerification, phoneOptInVerification, validator.validate(),
+                new Func3<Boolean, Boolean, Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean emailRes, Boolean phoneRes, Boolean validatorRes) {
+                        if(!emailRes){
+                            textInputEmail.setError(getString(R.string.email_error));
+                        }
+
+                        if(!phoneRes){
+                            phoneNumber.setError(getString(R.string.phone_format_error));
+                        }
+
+                        return emailRes && phoneRes && validatorRes;
+                    }
+                });
     }
 }
