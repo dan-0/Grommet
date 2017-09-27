@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class EventDetailFlowAdapter extends PagerAdapter {
     private Context context;
-    private ArrayList<EventFlowPage> pages = new ArrayList<>();
+    private ArrayMap<Integer, EventFlowPage> pages = new ArrayMap<>();
 
     public EventDetailFlowAdapter(Context context) {
         this.context = context;
@@ -38,7 +39,7 @@ public class EventDetailFlowAdapter extends PagerAdapter {
         }
 
         collection.addView(view);
-        pages.add((EventFlowPage) view);
+        pages.put(position,(EventFlowPage) view);
         return view;
     }
 
