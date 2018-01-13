@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.data.api.model;
 
 import com.google.auto.value.AutoValue;
+import com.rockthevote.grommet.data.api.Normalize;
 import com.rockthevote.grommet.data.db.model.VoterId;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
@@ -11,6 +12,7 @@ public abstract class ApiVoterId {
 
     abstract String type();
 
+    @Normalize
     @Json(name = "string_value")
     abstract String stringValue();
 

@@ -123,4 +123,36 @@
         <item>WI</item>
         <item>WY</item>
     </string-array>
+
+    <string-array name="unit_types">
+        <item>APARTMENT</item>
+        <item>BASEMENT</item>
+        <item>BOX#</item>
+        <item>BUILDING</item>
+        <item>DEPARTMENT</item>
+        <item>FLOOR</item>
+        <item>FRONT</item>
+        <item>HANGER</item>
+        <item>LOBBY</item>
+        <item>LOT</item>
+        <item>LOWER</item>
+        <item>OFFICE</item>
+        <item>PENTHOUSE</item>
+        <item>PIER</item>
+        <item>POLL</item>
+        <item>REAR</item>
+        <item>ROOM</item>
+        <item>SIDE</item>
+        <item>SLIP</item>
+        <item>SPACE</item>
+        <item>STOP</item>
+        <item>SUITE</item>
+        <item>TRAILER</item>
+        <item>UNIT</item>
+        <item>UPPER</item>
+        <item>CABIN</item>
+        <item>HUB</item>
+        <item>STUDENT</item>
+        <item>TOWNHOUSE</item>
+    </string-array>
 </resources>

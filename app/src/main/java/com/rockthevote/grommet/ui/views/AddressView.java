@@ -52,6 +52,7 @@ public class AddressView extends FrameLayout {
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
     @BindView(R.id.street) EditText streetEditText;
 
+    @BindView(R.id.til_unit) TextInputLayout unitTIL;
     @BindView(R.id.unit) EditText unitEditText;
 
     @NotEmpty
@@ -62,6 +63,7 @@ public class AddressView extends FrameLayout {
     @BindView(R.id.city) EditText cityEditText;
 
     @BindView(R.id.spinner_state) BetterSpinner stateSpinner;
+    @BindView(R.id.spinner_unit_type) BetterSpinner unitTypeSpinner;
 
     @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
     @BindView(R.id.til_zip_code) TextInputLayout zipTIL;
@@ -79,6 +81,7 @@ public class AddressView extends FrameLayout {
 
     private ArrayAdapter<CharSequence> countyAdapter;
     private ArrayAdapter<CharSequence> stateAdapter;
+    private ArrayAdapter<CharSequence> unitTypeAdapter;
 
     private Address.Type type;
     private CompositeSubscription subscriptions;
@@ -153,7 +156,6 @@ public class AddressView extends FrameLayout {
 
             countyAdapter = ArrayAdapter.createFromResource(getContext(),
                     R.array.pa_counties, android.R.layout.simple_list_item_1);
-            countyAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 
             countySpinner.setAdapter(countyAdapter);
             countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
@@ -164,7 +166,6 @@ public class AddressView extends FrameLayout {
 
             stateAdapter = ArrayAdapter.createFromResource(getContext(),
                     R.array.states, android.R.layout.simple_list_item_1);
-            stateAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 
             stateSpinner.setAdapter(stateAdapter);
             stateSpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
@@ -184,6 +185,14 @@ public class AddressView extends FrameLayout {
                 stateSpinner.getEditText().setText(stateAdapter.getItem(stateAdapter.getPosition(PA_ABREV)));
             }
 
+            unitTypeAdapter = ArrayAdapter.createFromResource(getContext(),
+                    R.array.unit_types, android.R.layout.simple_list_item_1);
+            unitTypeSpinner.setAdapter(unitTypeAdapter);
+            unitTypeSpinner.setOnItemClickListener((parent, view, position, id) -> {
+                unitTypeSpinner.getEditText().setText(unitTypeAdapter.getItem(position));
+                unitTypeSpinner.dismiss();
+            });
+
         }
     }
 
@@ -194,19 +203,22 @@ public class AddressView extends FrameLayout {
             zipEditText.addTextChangedListener(zipTextWatcher);
 
             subscriptions = new CompositeSubscription();
-            subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(streetEditText),
+            subscriptions.add(Observable.combineLatest(
+                    RxTextView.afterTextChangeEvents(streetEditText),
                     RxTextView.afterTextChangeEvents(unitEditText),
                     RxTextView.afterTextChangeEvents(cityEditText),
                     RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
                     RxTextView.afterTextChangeEvents(zipEditText),
                     RxTextView.afterTextChangeEvents(countySpinner.getEditText()),
-                    (street, unit, city, state, zip, county) -> new Address.Builder()
+                    RxTextView.afterTextChangeEvents(unitTypeSpinner.getEditText()),
+                    (street, unit, city, state, zip, county, unitType) -> new Address.Builder()
                             .streetName(street.editable().toString())
                             .subAddress(unit.editable().toString())
                             .municipalJurisdiction(city.editable().toString())
                             .state(state.editable().toString())
                             .zip(zip.editable().toString())
                             .county(county.editable().toString())
+                            .subAddressType(unitType.editable().toString())
                             .build())
                     .observeOn(Schedulers.io())
                     .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
@@ -257,6 +269,24 @@ public class AddressView extends FrameLayout {
     }
 
     public Observable<Boolean> verify() {
-        return validator.validate();
+
+        unitTypeSpinner.setError(null);
+        unitTIL.setError(null);
+
+        String unit = unitEditText.getText().toString();
+        String type = unitTypeSpinner.getEditText().getText().toString();
+
+        boolean typeValidation = (Strings.isBlank(unit) || !Strings.isBlank(type));
+        if (!typeValidation) {
+            unitTypeSpinner.setError(getContext().getString(R.string.required_field));
+        }
+
+        boolean unitValidation = (!Strings.isBlank(unit) || Strings.isBlank(type));
+        if (!unitValidation) {
+            unitTIL.setError(getContext().getString(R.string.required_field));
+        }
+
+        return validator.validate()
+                .map(valid -> valid && (typeValidation && unitValidation));
     }
 }

@@ -21,6 +21,7 @@ public abstract class Address implements Parcelable, BaseColumns {
     public static final String TYPE = "type";
     public static final String STREET_NAME = "street_name";
     public static final String SUB_ADDRESS = "sub_address";
+    public static final String SUB_ADDRESS_TYPE = "sub_address_type";
     public static final String MUNICIPAL_JURISDICTION = "municipal_jurisdiction";
     public static final String COUNTY = "county";
     public static final String STATE = "state";
@@ -54,6 +55,9 @@ public abstract class Address implements Parcelable, BaseColumns {
     public abstract String subAddress();
 
     @Nullable
+    public abstract String subAddressType();
+
+    @Nullable
     public abstract String municipalJurisdiction();
 
     @Nullable
@@ -73,13 +77,14 @@ public abstract class Address implements Parcelable, BaseColumns {
             Type type = Type.fromString(Db.getString(cursor, TYPE));
             String streetName = Db.getString(cursor, STREET_NAME);
             String subAddress = Db.getString(cursor, SUB_ADDRESS);
+            String subAddressType = Db.getString(cursor, SUB_ADDRESS_TYPE);
             String munJurisdiction = Db.getString(cursor, MUNICIPAL_JURISDICTION);
             String county = Db.getString(cursor, COUNTY);
             String state = Db.getString(cursor, STATE);
             String zip = Db.getString(cursor, ZIP);
 
             return new AutoValue_Address(id, rockyRequestId, type, streetName, subAddress,
-                    munJurisdiction, county, state, zip);
+                    subAddressType, munJurisdiction, county, state, zip);
         }
     };
 
@@ -129,6 +134,11 @@ public abstract class Address implements Parcelable, BaseColumns {
 
         public Builder subAddress(String subAdd) {
             values.put(SUB_ADDRESS, subAdd);
+            return this;
+        }
+
+        public Builder subAddressType(String subAddType) {
+            values.put(SUB_ADDRESS_TYPE, subAddType);
             return this;
         }
 
