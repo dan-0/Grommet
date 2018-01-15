@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.Session;
@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.disposables.CompositeDisposable;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -63,7 +64,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
     @BindView(R.id.summary_clock_out_time) TextView clockOutTime;
     @BindView(R.id.summary_total_time) TextView totalTime;
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     private EventFlowCallback listener;
 
@@ -91,16 +92,16 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         if (!isInEditMode()) {
             ButterKnife.bind(this);
 
-            subscriptions.add(canvasserNamePref.asObservable()
+            disposables.add(canvasserNamePref.asObservable()
                     .subscribe(name -> edCanvasserName.setText(name)));
 
-            subscriptions.add(eventNamePref.asObservable()
+            disposables.add(eventNamePref.asObservable()
                     .subscribe(name -> edEventName.setText(name)));
 
-            subscriptions.add(eventZipPref.asObservable()
+            disposables.add(eventZipPref.asObservable()
                     .subscribe(name -> edEventZip.setText(name)));
 
-            subscriptions.add(partnerNamePref.asObservable()
+            disposables.add(partnerNamePref.asObservable()
                     .subscribe(name -> edPartnerName.setText(name)));
 
         }
@@ -110,7 +111,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (!isInEditMode()) {
-            subscriptions.unsubscribe();
+            disposables.dispose();
         }
     }
 

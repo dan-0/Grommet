@@ -18,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences2.Preference;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.jakewharton.rxbinding.widget.RxAdapterView;
 import com.rockthevote.grommet.BuildConfig;
@@ -33,10 +33,6 @@ import com.rockthevote.grommet.data.LumberYard;
 import com.rockthevote.grommet.data.NetworkDelay;
 import com.rockthevote.grommet.data.NetworkFailurePercent;
 import com.rockthevote.grommet.data.NetworkVariancePercent;
-import com.rockthevote.grommet.data.PixelGridEnabled;
-import com.rockthevote.grommet.data.PixelRatioEnabled;
-import com.rockthevote.grommet.data.ScalpelEnabled;
-import com.rockthevote.grommet.data.ScalpelWireframeEnabled;
 import com.rockthevote.grommet.data.api.MockRockyService;
 import com.rockthevote.grommet.data.prefs.InetSocketAddressPreferenceAdapter;
 import com.rockthevote.grommet.ui.debug.ContextualDebugActions.DebugAction;
@@ -88,10 +84,6 @@ public final class DebugView extends FrameLayout {
     @BindView(R.id.debug_registration_response) Spinner registrationResponseView;
 
     @BindView(R.id.debug_ui_animation_speed) Spinner uiAnimationSpeedView;
-    @BindView(R.id.debug_ui_pixel_grid) Switch uiPixelGridView;
-    @BindView(R.id.debug_ui_pixel_ratio) Switch uiPixelRatioView;
-    @BindView(R.id.debug_ui_scalpel) Switch uiScalpelView;
-    @BindView(R.id.debug_ui_scalpel_wireframe) Switch uiScalpelWireframeView;
 
     @BindView(R.id.debug_build_name) TextView buildNameView;
     @BindView(R.id.debug_build_code) TextView buildCodeView;
@@ -123,14 +115,6 @@ public final class DebugView extends FrameLayout {
     Preference<Boolean> captureIntents;
     @Inject @AnimationSpeed
     Preference<Integer> animationSpeed;
-    @Inject @PixelGridEnabled
-    Preference<Boolean> pixelGridEnabled;
-    @Inject @PixelRatioEnabled
-    Preference<Boolean> pixelRatioEnabled;
-    @Inject @ScalpelEnabled
-    Preference<Boolean> scalpelEnabled;
-    @Inject @ScalpelWireframeEnabled
-    Preference<Boolean> scalpelWireframeEnabled;
     @Inject NetworkBehavior behavior;
     @Inject @NetworkDelay
     Preference<Long> networkDelay;
@@ -338,35 +322,6 @@ public final class DebugView extends FrameLayout {
                 });
         // Ensure the animation speed value is always applied across app restarts.
         post(() -> applyAnimationSpeed(animationSpeedValue));
-
-        boolean gridEnabled = pixelGridEnabled.get();
-        uiPixelGridView.setChecked(gridEnabled);
-        uiPixelRatioView.setEnabled(gridEnabled);
-        uiPixelGridView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Timber.d("Setting pixel grid overlay enabled to %b", isChecked);
-            pixelGridEnabled.set(isChecked);
-            uiPixelRatioView.setEnabled(isChecked);
-        });
-
-        uiPixelRatioView.setChecked(pixelRatioEnabled.get());
-        uiPixelRatioView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Timber.d("Setting pixel scale overlay enabled to %b", isChecked);
-            pixelRatioEnabled.set(isChecked);
-        });
-
-        uiScalpelView.setChecked(scalpelEnabled.get());
-        uiScalpelWireframeView.setEnabled(scalpelEnabled.get());
-        uiScalpelView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Timber.d("Setting scalpel interaction enabled to %b", isChecked);
-            scalpelEnabled.set(isChecked);
-            uiScalpelWireframeView.setEnabled(isChecked);
-        });
-
-        uiScalpelWireframeView.setChecked(scalpelWireframeEnabled.get());
-        uiScalpelWireframeView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Timber.d("Setting scalpel wireframe enabled to %b", isChecked);
-            scalpelWireframeEnabled.set(isChecked);
-        });
     }
 
     @OnClick(R.id.debug_logs_show)

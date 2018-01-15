@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences2.Preference;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.Validator;

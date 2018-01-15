@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.ui.misc.BindableAdapter;
 
 import java.net.InetSocketAddress;

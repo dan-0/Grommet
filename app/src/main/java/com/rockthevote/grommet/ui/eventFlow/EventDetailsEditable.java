@@ -11,13 +11,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
-import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences2.Preference;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
+import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
@@ -25,10 +26,13 @@ import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
+import com.rockthevote.grommet.data.prefs.RegistrationText;
 import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -73,6 +77,9 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
     @Inject @EventZip Preference<String> eventZipPref;
     @Inject @PartnerId Preference<String> partnerIdPref;
     @Inject @PartnerName Preference<String> partnerNamePref;
+
+    @Inject @RegistrationDeadline Preference<Date> registrationDeadlinePref;
+    @Inject @RegistrationText Preference<RegistrationNotificationText> registrationTextPref;
 
     @Inject RockyService rockyService;
 
@@ -128,7 +135,8 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
         // allow the user to not set a partner ID
         if (validator.validate().toBlocking().single()) {
             if (edePartnerId.getText().toString().equals(partnerIdPref.get())) {
-                updateSessionData(partnerNamePref.get(), false, 0);
+                updateSessionData(partnerNamePref.get(), false,
+                        0, null, null);
             } else {
                 rockyService.getPartnerName(edePartnerId.getText().toString())
                         .subscribeOn(Schedulers.io())
@@ -148,7 +156,9 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
                                 if (partnerNameResponse.isValid()) {
                                     updateSessionData(partnerNameResponse.partnerName(),
                                             true,
-                                            partnerNameResponse.sessionTimeoutLength());
+                                            partnerNameResponse.sessionTimeoutLength(),
+                                            partnerNameResponse.registrationDeadlineDate(),
+                                            partnerNameResponse.registrationNotificationText());
                                 } else {
                                     edePartnerIdTIL.setError(
                                             getContext().getString(R.string.error_partner_id));
@@ -162,7 +172,9 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
         }
     }
 
-    private void updateSessionData(String name, boolean updateTimeout, long timeout) {
+    private void updateSessionData(String name, boolean updatePartnerData, long timeout,
+                                   Date registrationDeadline,
+                                   RegistrationNotificationText registrationText) {
 
         canvasserNamePref.set(edeCanvasserName.getText().toString());
         eventNamePref.set(edeEventName.getText().toString());
@@ -176,8 +188,10 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
                 .canvasserName(edeCanvasserName.getText().toString())
                 .sessionStatus(DETAILS_ENTERED);
 
-        if (updateTimeout) {
+        if (updatePartnerData) {
             builder.sessionTimeout(timeout);
+            registrationTextPref.set(registrationText);
+            registrationDeadlinePref.set(registrationDeadline);
         }
 
         db.update(Session.TABLE,

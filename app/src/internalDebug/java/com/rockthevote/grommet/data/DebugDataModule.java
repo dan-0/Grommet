@@ -3,8 +3,8 @@ package com.rockthevote.grommet.data;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.f2prateek.rx.preferences.Preference;
-import com.f2prateek.rx.preferences.RxSharedPreferences;
+import com.f2prateek.rx.preferences2.Preference;
+import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.rockthevote.grommet.IsInstrumentationTest;
 import com.rockthevote.grommet.data.api.DebugApiModule;
 import com.rockthevote.grommet.data.prefs.InetSocketAddressPreferenceAdapter;
@@ -96,8 +96,11 @@ public final class DebugDataModule {
     @Provides
     @Singleton
     Preference<InetSocketAddress> provideNetworkProxyAddress(RxSharedPreferences preferences) {
-        return preferences.getObject("debug_network_proxy",
-                InetSocketAddressPreferenceAdapter.INSTANCE);
+
+        return preferences.getObject(
+                "debug_network_proxy",
+                InetSocketAddressPreferenceAdapter.parse("default:0"),
+                new InetSocketAddressPreferenceAdapter());
     }
 
     @Provides
@@ -114,40 +117,12 @@ public final class DebugDataModule {
         return preferences.getInteger("debug_animation_speed", DEFAULT_ANIMATION_SPEED);
     }
 
-    @Provides
-    @Singleton
-    @PixelGridEnabled
-    Preference<Boolean> providePixelGridEnabled(RxSharedPreferences preferences) {
-        return preferences.getBoolean("debug_pixel_grid_enabled", DEFAULT_PIXEL_GRID_ENABLED);
-    }
-
-    @Provides
-    @Singleton
-    @PixelRatioEnabled
-    Preference<Boolean> providePixelRatioEnabled(RxSharedPreferences preferences) {
-        return preferences.getBoolean("debug_pixel_ratio_enabled", DEFAULT_PIXEL_RATIO_ENABLED);
-    }
 
     @Provides
     @Singleton
     @SeenDebugDrawer
     Preference<Boolean> provideSeenDebugDrawer(RxSharedPreferences preferences) {
         return preferences.getBoolean("debug_seen_debug_drawer", DEFAULT_SEEN_DEBUG_DRAWER);
-    }
-
-    @Provides
-    @Singleton
-    @ScalpelEnabled
-    Preference<Boolean> provideScalpelEnabled(RxSharedPreferences preferences) {
-        return preferences.getBoolean("debug_scalpel_enabled", DEFAULT_SCALPEL_ENABLED);
-    }
-
-    @Provides
-    @Singleton
-    @ScalpelWireframeEnabled
-    Preference<Boolean> provideScalpelWireframeEnabled(RxSharedPreferences preferences) {
-        return preferences.getBoolean("debug_scalpel_wireframe_drawer",
-                DEFAULT_SCALPEL_WIREFRAME_ENABLED);
     }
 
     private static SSLSocketFactory createBadSslSocketFactory() {
