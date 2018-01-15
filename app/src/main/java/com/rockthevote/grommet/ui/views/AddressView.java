@@ -139,6 +139,7 @@ public class AddressView extends FrameLayout {
             switch (type) {
                 case REGISTRATION_ADDRESS:
                     sectionTitle.setText(R.string.section_label_registration_address);
+                    stateSpinner.setEnabled(false);
                     break;
                 case MAILING_ADDRESS:
                     sectionTitle.setText(R.string.section_label_mailing_address);
