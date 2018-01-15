@@ -186,4 +186,5 @@ Presentar una solicitud con datos falsos también puede estar sujeto a otras san
     <string name="action_ok">Okay</string>
     <string name="action_accept">Aceptar</string>
     <string name="action_decline">Rechazar</string>
+    <string name="political_party_change">He cambiado mi partido político</string>
 </resources>

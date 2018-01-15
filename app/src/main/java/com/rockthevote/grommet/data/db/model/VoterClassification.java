@@ -108,7 +108,8 @@ public abstract class VoterClassification implements Parcelable, BaseColumns {
         EIGHTEEN("eighteen_on_election_day"),
         CITIZEN("united_states_citizen"),
         SEND_COPY_IN_MAIL("send_copy_in_mail"),
-        DECLARATION_AGREE("agree_to_declaration");
+        DECLARATION_AGREE("agree_to_declaration"),
+        POLITICAL_PARTY_CHANGE("political_party_change");
 
         private final String type;
 

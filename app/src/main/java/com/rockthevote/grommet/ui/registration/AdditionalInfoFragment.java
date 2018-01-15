@@ -20,6 +20,7 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.db.model.VoterId;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
@@ -51,6 +52,7 @@ import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Party;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Party.OTHER_PARTY;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Race;
+import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.POLITICAL_PARTY_CHANGE;
 import static com.rockthevote.grommet.data.db.model.VoterId.Type.DRIVERS_LICENSE;
 import static com.rockthevote.grommet.data.db.model.VoterId.Type.SSN_LAST_FOUR;
 
@@ -61,6 +63,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @NotEmpty
     @BindView(R.id.spinner_party) BetterSpinner partySpinner;
+    @BindView(R.id.political_party_change_textbox) CheckBox partyChangeCheckbox;
 
     @NotEmpty
     @BindView(R.id.til_other_party) TextInputLayout otherPartyTIL;
@@ -68,14 +71,10 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.preferred_language) EditText preferredLanguage;
 
-    @BindView(R.id.does_not_have_penn_dot_checkbox) CheckBox noPennDOTCheckbox;
-
     @Length(min = 8, max = 8, messageResId = R.string.error_penn_dot)
     @BindView(R.id.til_penn_dot) TextInputLayout pennDOTTIL;
 
     @BindView(R.id.penn_dot_edit_text) EditText pennDOTEditText;
-
-    @BindView(R.id.ssn_last_four_checkbox) CheckBox noSSNCheckBox;
     
     @Length(min = 4, max = 4, messageResId = R.string.error_ssn)
     @BindView(R.id.til_ssn_last_four) TextInputLayout ssnTIL;
@@ -330,6 +329,17 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                                     .partnerOptInSMS(checked)
                                     .build(),
                             RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
+                }));
+
+        subscriptions.add(RxCompoundButton.checkedChanges(partyChangeCheckbox)
+                .observeOn(Schedulers.io())
+                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
+                .skip(1)
+                .subscribe(checked -> {
+                    VoterClassification.insertOrUpdate(db, rockyRequestRowId.get(), POLITICAL_PARTY_CHANGE,
+                            new VoterClassification.Builder()
+                                    .assertion(checked)
+                                    .build());
                 }));
 
     }
