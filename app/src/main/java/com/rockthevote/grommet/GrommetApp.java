@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences2.Preference;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.LumberYard;

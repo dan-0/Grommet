@@ -1,6 +1,6 @@
 package com.rockthevote.grommet.data.api;
 
-import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.data.ApiEndpoint;
 import com.rockthevote.grommet.data.IsMockMode;
 import com.rockthevote.grommet.data.NetworkDelay;

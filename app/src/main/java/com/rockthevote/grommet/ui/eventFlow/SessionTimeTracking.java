@@ -17,10 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences.Preference;
+import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RegistrationService;
@@ -42,8 +41,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.disposables.CompositeDisposable;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_IN;
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_OUT;
@@ -69,7 +68,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Inject @PartnerId Preference<String> partnerIdPref;
     @Inject @PartnerName Preference<String> partnerNamePref;
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     private EventFlowCallback listener;
 
@@ -97,16 +96,16 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         if (!isInEditMode()) {
             ButterKnife.bind(this);
 
-            subscriptions.add(canvasserNamePref.asObservable()
+            disposables.add(canvasserNamePref.asObservable()
                     .subscribe(name -> edCanvasserName.setText(name)));
 
-            subscriptions.add(eventNamePref.asObservable()
+            disposables.add(eventNamePref.asObservable()
                     .subscribe(name -> edEventName.setText(name)));
 
-            subscriptions.add(eventZipPref.asObservable()
+            disposables.add(eventZipPref.asObservable()
                     .subscribe(name -> edEventZip.setText(name)));
 
-            subscriptions.add(partnerNamePref.asObservable()
+            disposables.add(partnerNamePref.asObservable()
                     .subscribe(name -> edPartnerName.setText(name)));
         }
     }
@@ -115,7 +114,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (!isInEditMode()) {
-            subscriptions.unsubscribe();
+            disposables.dispose();
         }
     }
 

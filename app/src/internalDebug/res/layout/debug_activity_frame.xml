@@ -8,39 +8,38 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     >
-  <com.mattprecious.telescope.TelescopeLayout
-    android:id="@+id/telescope_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:telescope_progressColor="@color/bugreport_frame"
-    app:telescope_screenshotMode="system"
-    >
-    <com.jakewharton.madge.MadgeFrameLayout
-        android:id="@+id/madge_container"
+
+    <com.mattprecious.telescope.TelescopeLayout
+        android:id="@+id/telescope_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:telescope_progressColor="@color/bugreport_frame"
+        app:telescope_screenshotMode="system"
         >
-      <com.jakewharton.scalpel.ScalpelFrameLayout
-          android:id="@+id/debug_content"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          />
-    </com.jakewharton.madge.MadgeFrameLayout>
-  </com.mattprecious.telescope.TelescopeLayout>
-  <com.rockthevote.grommet.ui.debug.NonConsumingScrimInsetsFrameLayout
-      android:layout_width="290dp"
-      android:layout_height="match_parent"
-      android:layout_gravity="end"
-      android:background="#e222"
-      android:fitsSystemWindows="true"
-      app:insetForeground="#4000"
-      >
-    <ScrollView
-        android:id="@+id/debug_drawer"
-        android:layout_width="match_parent"
+
+        <FrameLayout
+            android:id="@+id/debug_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </com.mattprecious.telescope.TelescopeLayout>
+
+    <com.rockthevote.grommet.ui.debug.NonConsumingScrimInsetsFrameLayout
+        android:layout_width="290dp"
         android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="#e222"
         android:fitsSystemWindows="true"
-        android:clipToPadding="false"
-        />
-  </com.rockthevote.grommet.ui.debug.NonConsumingScrimInsetsFrameLayout>
+        app:insetForeground="#4000"
+        >
+
+        <ScrollView
+            android:id="@+id/debug_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fitsSystemWindows="true"
+            />
+    </com.rockthevote.grommet.ui.debug.NonConsumingScrimInsetsFrameLayout>
 </com.rockthevote.grommet.ui.debug.DebugDrawerLayout>

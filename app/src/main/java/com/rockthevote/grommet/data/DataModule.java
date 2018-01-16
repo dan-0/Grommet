@@ -4,13 +4,15 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
-import com.f2prateek.rx.preferences.Preference;
-import com.f2prateek.rx.preferences.RxSharedPreferences;
+import com.f2prateek.rx.preferences2.Preference;
+import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
 import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.api.RockyAdapterFactory;
 import com.rockthevote.grommet.data.api.StringNormalizerFactory;
+import com.rockthevote.grommet.data.api.model.DateAdapter;
+import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
 import com.rockthevote.grommet.data.db.DbModule;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -19,10 +21,16 @@ import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
+import com.rockthevote.grommet.data.prefs.RegistrationDeadlinePreferenceConverter;
+import com.rockthevote.grommet.data.prefs.RegistrationText;
+import com.rockthevote.grommet.data.prefs.RegistrationTextPreferenceConverter;
 import com.rockthevote.grommet.ui.MainActivity;
 import com.squareup.moshi.Moshi;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Singleton;
 
@@ -67,6 +75,33 @@ public final class DataModule {
     @Singleton
     RxSharedPreferences provideRxSharedPreferences(SharedPreferences prefs) {
         return RxSharedPreferences.create(prefs);
+    }
+
+    @Provides
+    @Singleton
+    @RegistrationDeadline
+    Preference<Date> provideRegistrationDeadline(RxSharedPreferences prefs, Application app) {
+        return prefs.getObject(
+                app.getResources().getString(R.string.pref_key_registration_deadline),
+                Calendar.getInstance().getTime(),
+                new RegistrationDeadlinePreferenceConverter());
+    }
+
+    @Provides
+    @Singleton
+    @RegistrationText
+    Preference<RegistrationNotificationText> provideRegistrationText(RxSharedPreferences prefs, Application app,
+                                                                     Moshi moshi) {
+
+        RegistrationNotificationText defaultValue = RegistrationNotificationText.builder()
+                .english("")
+                .spanish("")
+                .build();
+
+        return prefs.getObject(
+                app.getResources().getString(R.string.pref_key_registration_text),
+                defaultValue,
+                new RegistrationTextPreferenceConverter(RegistrationNotificationText.jsonAdapter(moshi)));
     }
 
     @Provides
@@ -124,6 +159,7 @@ public final class DataModule {
         return new Moshi.Builder()
                 .add(new StringNormalizerFactory())
                 .add(RockyAdapterFactory.create())
+                .add(new DateAdapter())
                 .build();
     }
 
