@@ -124,6 +124,7 @@
     <string name="label_drivers_license_id">PennDOT number</string>
     <string name="label_other_party">Other Political Party</string>
     <string name="label_does_not_have_penn_dot">I do not know my PennDOT number</string>
+    <string name="political_party_change">I have changed my political party</string>
     <string name="label_ssn_last_four">Last Four Digitals of social security number</string>
     <string name="label_does_not_have_ssn">I do not know the last four of my social security number</string>
     <string name="preferred_language_label">Preferred Language to Receive Election Materials</string>

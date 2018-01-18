@@ -69,6 +69,15 @@
         android:paddingBottom="@dimen/content_area_padding"
         app:errorEnabled="false"/>
 
+    <CheckBox
+        android:id="@+id/political_party_change_textbox"
+        android:layout_width="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_marginStart="@dimen/content_margin"
+        android:gravity="bottom"
+        android:paddingBottom="@dimen/content_area_padding"
+        android:text="@string/political_party_change"/>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_other_party"
         android:layout_width="0dip"
