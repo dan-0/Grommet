@@ -14,16 +14,21 @@ import android.widget.DatePicker;
 import com.f2prateek.rx.preferences2.Preference;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.mobsandgeeks.saripaar.annotation.Checked;
-import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.temporal.ChronoUnit;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
@@ -49,9 +54,8 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     @BindView(R.id.previous_name_divider) View previousNameDivider;
     @BindView(R.id.previous_name) NameView previousName;
 
-    @NotEmpty
     @BindView(R.id.til_birthday) TextInputLayout tilBirthday;
-    @BindView(R.id.edittext_birthday) TextInputEditText birthday;
+    @BindView(R.id.edittext_birthday) TextInputEditText birthdayEditText;
 
     @Checked(messageResId = R.string.eighteen_or_older_err)
     @BindView(R.id.checkbox_is_eighteen)
@@ -63,6 +67,7 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
 
     @Inject BriteDatabase db;
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
+    @Inject @RegistrationDeadline Preference<Date> registrationDeadline;
 
     private ObservableValidator validator;
 
@@ -118,7 +123,9 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
 
     @OnClick(R.id.edittext_birthday)
     public void onClickBirthday(View v) {
-        DatePickerDialogFragment.newInstance(this).show(getFragmentManager(), "datepicker");
+        Date startDate = Dates.parseISO8601_ShortDate(birthdayEditText.getText().toString());
+        DatePickerDialogFragment.newInstance(this, startDate)
+                .show(getFragmentManager(), "datepicker");
     }
 
     @OnCheckedChanged(R.id.name_changed)
@@ -136,7 +143,7 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-        birthday.setText(Dates.formatAsISO8601_ShortDate(date.getTime()));
+        birthdayEditText.setText(Dates.formatAsISO8601_ShortDate(date.getTime()));
 
         db.update(
                 RockyRequest.TABLE,
@@ -144,6 +151,50 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
                         .dateOfBirth(date.getTime())
                         .build(),
                 RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
+
+        validateBirthday();
+    }
+
+    private boolean validateBirthday() {
+        boolean valid = isEighteenByDeadline();
+        if (!valid) {
+            tilBirthday.setError(String.format(getString(R.string.birthday_error),
+                    Dates.formatAsISO8601_ShortDate(registrationDeadline.get())));
+        } else {
+            tilBirthday.setError(null);
+        }
+
+        return valid;
+    }
+
+    private boolean isEighteenByDeadline() {
+        /*
+            check if registrant will be 18 by the election date.
+            Calendar uses 0 as the first month but LocalDate does not, so make sure and add 1 to it
+         */
+
+        Date birthDate = Dates.parseISO8601_ShortDate(birthdayEditText.getText().toString());
+        if (birthDate == null) {
+            return false;
+        }
+
+        Calendar birthCal = Calendar.getInstance();
+        birthCal.setTime(birthDate);
+
+        Calendar regCal = Calendar.getInstance();
+        regCal.setTime(registrationDeadline.get());
+
+        LocalDate regDate = LocalDate.of(
+                regCal.get(Calendar.YEAR),
+                regCal.get(Calendar.MONTH) + 1,
+                regCal.get(Calendar.DAY_OF_MONTH));
+
+        LocalDate birthday = LocalDate.of(
+                birthCal.get(Calendar.YEAR),
+                birthCal.get(Calendar.MONTH) + 1,
+                birthCal.get(Calendar.DAY_OF_MONTH));
+
+        return ChronoUnit.YEARS.between(birthday, regDate) >= 18;
     }
 
     @Override
@@ -152,17 +203,7 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
         Observable<Boolean> previousNameObs = previousName.verify()
                 .flatMap(val -> Observable.just(nameChanged.isChecked() ? val : true));
 
-        return validator.validate()
-                .concatWith(name.verify())
-                .concatWith(previousNameObs)
-                .toList()
-                .flatMap(list -> {
-                    Boolean ret = true;
-                    for (Boolean val : list) {
-                        ret = ret && val;
-                    }
-
-                    return Observable.just(ret);
-                });
+        return Observable.zip(validator.validate(), previousNameObs, Observable.just(isEighteenByDeadline()),
+                (validator, prevName, birthday) -> validator && prevName && birthday);
     }
 }

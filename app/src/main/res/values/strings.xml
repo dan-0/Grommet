@@ -76,6 +76,7 @@
     <string name="eighteen_or_older_err">You must be 18 or older to vote</string>
     <string name="us_citizen_err">You must be a U.S. citizen</string>
     <string name="email_error">Invalid email</string>
+    <string name="birthday_error">Must be 18 by %s</string>
 
 
     <!--Personal Information Strings-->
