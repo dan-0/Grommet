@@ -13,7 +13,7 @@ public final class MockPartnerNames {
             .sessionTimeoutLength(10)
             .registrationDeadlineDate(Dates.parseISO8601_ShortDate("2018-09-01"))
             .registrationNotificationText(RegistrationNotificationText.builder()
-                    .english("enlish text")
+                    .english("english text")
                     .spanish("spanish text")
                     .build())
             .build();

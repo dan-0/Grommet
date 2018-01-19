@@ -11,6 +11,7 @@ import com.rockthevote.grommet.ui.registration.AssistantInfoFragment;
 import com.rockthevote.grommet.ui.registration.NewRegistrantFragment;
 import com.rockthevote.grommet.ui.registration.PersonalInfoFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
+import com.rockthevote.grommet.ui.registration.RegistrationCompleteDialogFragment;
 import com.rockthevote.grommet.ui.registration.ReviewAndConfirmFragment;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.rockthevote.grommet.ui.views.NameView;
@@ -39,7 +40,8 @@ import dagger.Provides;
                 SessionTimeTracking.class,
                 EventFlowWizard.class,
                 SessionSummary.class,
-                SessionProgressDialogFragment.class
+                SessionProgressDialogFragment.class,
+                RegistrationCompleteDialogFragment.class
         },
         complete = false,
         library = true

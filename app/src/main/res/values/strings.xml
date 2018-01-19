@@ -177,7 +177,7 @@ In doing so:
     <string name="action_cancel_reg">Cancel Registration</string>
     <string name="registration_complete">Registration Complete</string>
     <string name="disclosure_agreement_title">Voter Declaration / Penalty</string>
-    <string name="registration_complete_dialog_text">
+    <string name="registration_complete_dialog_text" translatable="false">
 \n
 \u2022 Your application has been sent to your county voter registration office.
 \n
