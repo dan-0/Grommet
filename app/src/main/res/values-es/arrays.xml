@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="unit_types">
+        <item>APARTAMENTO</item>
+        <item>SÓTANO</item>
+        <item># DE APARTADO</item>
+        <item>EDIFICIO</item>
+        <item>DEPARTAMENTO</item>
+        <item>PISO</item>
+        <item>FRENTE</item>
+        <item>HANGAR</item>
+        <item>RECIBIDOR</item>
+        <item>LOTE</item>
+        <item>INFERIOR</item>
+        <item>OFICINA</item>
+        <item>ATICO</item>
+        <item>EMBARCADERO</item>
+        <item>ELECCIONES</item>
+        <item>TRASERO</item>
+        <item>CUARTO</item>
+        <item>LADO</item>
+        <item>ATRACADERO</item>
+        <item>SITIO</item>
+        <item>ALTO</item>
+        <item>SUITE</item>
+        <item>TRAILÉR</item>
+        <item>UNIDAD DE VIVIENDA</item>
+        <item>SUPERIOR</item>
+        <item>CABAÑA</item>
+        <item>CENTRO</item>
+        <item>CENTRO DE CORREO ESTUDIANTIL</item>
+        <item>CASA ADOSADA</item>
+    </string-array>
+</resources>

@@ -92,7 +92,8 @@
     <string name="label_city">City</string>
     <string name="label_zip_code">Zip Code</string>
     <string name="label_state">State</string>
-    <string name="label_unit_num">Unit Type &amp; Number</string>
+    <string name="label_unit_num">Unit Number</string>
+    <string name="unit_type">Unit Type</string>
     <string name="label_county">County</string>
     <string name="checkbox_mailing_address_is_different"> I get my mail from a different address from the one above</string>
     <string name="checkbox_address_changed">I have changed my address</string>
@@ -276,6 +277,7 @@ Submitting an application containing false information may also subject a person
     <string name="upload_notification_content_client_failure" translatable="false">Bad registration data</string>
     <string name="upload_notification_content_connection_failure" translatable="false">Unable to contact server</string>
     <string name="percent_format" translatable="false">%d%%</string>
+    <string name="required_field">This field is required</string>
 
     <string name="about_activity_text" translatable="false">
 <![CDATA[

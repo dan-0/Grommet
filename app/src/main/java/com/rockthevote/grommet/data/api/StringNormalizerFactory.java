@@ -20,12 +20,9 @@ import java.util.regex.Pattern;
 
 public class StringNormalizerFactory implements JsonAdapter.Factory {
 
-    private static final String regex = Pattern.quote("[\\p{InCombiningDiacriticalMarks}\\p{IsLm}\\p{IsSk}]+");
-    private static final Pattern DIACRITICS_AND_FRIENDS = Pattern.compile(regex);
-
-    private static String stripDiacritics(String str) {
-        str = Normalizer.normalize(str, Normalizer.Form.NFD);
-        str = DIACRITICS_AND_FRIENDS.matcher(str).replaceAll("");
+    public static String stripDiacritics(String str) {
+        str = Normalizer.normalize(str, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
         return str;
     }
 

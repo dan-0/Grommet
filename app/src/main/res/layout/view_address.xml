@@ -41,9 +41,11 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_unit"
         android:layout_width="0dp"
         android:layout_gravity="fill_horizontal"
         android:layout_marginStart="@dimen/content_margin"
+        android:layout_columnWeight=".4"
         app:errorEnabled="false"
         >
 
@@ -59,9 +61,17 @@
     </android.support.design.widget.TextInputLayout>
 
     <com.rockthevote.grommet.ui.misc.BetterSpinner
+        android:id="@+id/spinner_unit_type"
+        android:layout_columnWeight=".3"
+        android:layout_width="0dp"
+        android:layout_gravity="fill_horizontal"
+        android:hint="@string/unit_type"
+        app:errorEnabled="false"/>
+
+    <com.rockthevote.grommet.ui.misc.BetterSpinner
         android:id="@+id/spinner_county"
         android:layout_width="0dp"
-        android:layout_columnSpan="2"
+        android:layout_columnWeight=".3"
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
         android:hint="@string/label_county"
@@ -71,7 +81,6 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_city"
         android:layout_width="0dp"
-        android:layout_columnWeight=".5"
         android:layout_gravity="fill_horizontal"
         android:layout_marginStart="@dimen/content_margin"
         app:errorEnabled="false"
@@ -91,7 +100,6 @@
     <com.rockthevote.grommet.ui.misc.BetterSpinner
         android:id="@+id/spinner_state"
         android:layout_width="0dp"
-        android:layout_columnWeight=".2"
         android:layout_gravity="fill_horizontal"
         android:hint="@string/label_state"
         app:errorEnabled="false"/>
@@ -99,7 +107,6 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_zip_code"
         android:layout_width="0dp"
-        android:layout_columnWeight=".3"
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
         app:errorEnabled="false"
