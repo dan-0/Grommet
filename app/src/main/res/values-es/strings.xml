@@ -129,6 +129,7 @@ Al hacerlo:
     <string name="action_cancel_reg">Cancelar la Inscripción</string>
     <string name="registration_complete">Su inscripción estará completa</string>
     <string name="disclosure_agreement_title">Declaración / Sancaón</string>
+    <string name="registration_complete_dialog_text">"\n\n\n• Su solicitud se ha enviado a la oficina de registro de votantes del condado.\n\n\n\n\n• Su inscripción no estará completa hasta que sea procesada y aceptada por la oficina de inscripción de su condado.\n\n\n\n\n• Si acepta, recibirá su Tarjeta de Inscripción de Votante por correo.\n\n\n\n\n• Si en 14 días no ha recibido su Tarjeta de Inscripción de Votante, llame a su oficina de inscripción de votantes.\n\n\n\n\n %s"</string>
     <string name="disclosure_agreement">
 <![CDATA[
 
