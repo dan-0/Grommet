@@ -45,15 +45,18 @@ public class RegistrationCompleteDialogFragment extends DialogFragment {
         ButterKnife.bind(this, v);
 
         getDialog().setTitle(getString(R.string.registration_complete));
-        RegistrationNotificationText regText = registrationTextPref.get();
+        RegistrationNotificationText deadlineText = registrationTextPref.get();
+
+        String regCompleteText = getResources()
+                .getString(R.string.registration_complete_dialog_text);
 
         Locale curLocale = getResources().getConfiguration().locale;
         switch (curLocale.getLanguage()) {
             case "es":
-                content.setText(regText.spanish());
+                content.setText(String.format(regCompleteText, deadlineText.spanish()));
                 break;
             default: // use english for default
-                content.setText(regText.english());
+                content.setText(String.format(regCompleteText, deadlineText.english()));
                 break;
         }
         return v;
