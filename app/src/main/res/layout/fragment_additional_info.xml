@@ -101,16 +101,6 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:layout_marginEnd="@dimen/content_margin"
-        android:layout_marginStart="@dimen/content_margin"
-        android:paddingTop="@dimen/content_area_padding"
-        android:text="@string/penn_dot_enforcer_text"/>
-
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_penn_dot"
         android:layout_width="0dip"
@@ -133,6 +123,16 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginEnd="@dimen/content_margin"
+        android:layout_marginStart="@dimen/content_margin"
+        android:paddingTop="@dimen/content_area_padding"
+        android:text="@string/penn_dot_enforcer_text"/>
+
     <CheckBox
         android:id="@+id/does_not_have_penn_dot_checkbox"
         android:layout_width="wrap_content"
@@ -142,16 +142,6 @@
         android:paddingBottom="@dimen/content_area_padding"
         android:text="@string/label_does_not_have_penn_dot"/>
 
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:layout_marginEnd="@dimen/content_margin"
-        android:layout_marginStart="@dimen/content_margin"
-        android:paddingTop="@dimen/content_area_padding"
-        android:text="@string/ssn_enforcer_text"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_ssn_last_four"
@@ -174,6 +164,16 @@
             android:maxLines="1"/>
 
     </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginEnd="@dimen/content_margin"
+        android:layout_marginStart="@dimen/content_margin"
+        android:paddingTop="@dimen/content_area_padding"
+        android:text="@string/ssn_enforcer_text"/>
 
     <CheckBox
         android:id="@+id/ssn_last_four_checkbox"
