@@ -18,14 +18,6 @@
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 
-    <style name="OvalMaterialButton" parent="Base.Widget.AppCompat.Button.Colored">
-        <item name="android:background">@drawable/oval_button</item>
-    </style>
-
-    <style name="GrommetDatePicker" parent="android:Widget.Material.Light.DatePicker">
-        <item name="android:datePickerMode">spinner</item>
-    </style>
-
     <style name="GrommetDivider" parent="None">
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_width">0dp</item>
@@ -40,20 +32,6 @@
         <item name="android:layout_gravity">start|fill_horizontal</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginStart">@dimen/content_margin</item>
-        <item name="android:layout_marginEnd">@dimen/content_margin</item>
-    </style>
-
-    <style name="GrommetContentAreaLeft" parent="None">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_gravity">start|fill_horizontal</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:layout_marginStart">@dimen/content_margin</item>
-    </style>
-
-    <style name="GrommetContentAreaRight" parent="None">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_gravity">start|fill_horizontal</item>
-        <item name="android:gravity">center_vertical</item>
         <item name="android:layout_marginEnd">@dimen/content_margin</item>
     </style>
 

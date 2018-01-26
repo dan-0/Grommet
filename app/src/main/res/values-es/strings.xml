@@ -2,8 +2,6 @@
 <resources>
 
     <!--Main Activity Strings-->
-    <string name="label_registered_event">Registered</string>
-    <string name="label_partner_name_spinner">Validating Partner ID</string>
 
     <!--Registration Activity Strings-->
     <string name="cancel_dialog_message">¿Cancelar esta registración?</string>
@@ -16,19 +14,14 @@
     <string name="fragment_title_new_registrant">Nombre</string>
     <string name="label_us_citizen">Soy ciudadano de los Estados Unidos.</string>
     <string name="label_eighteen_or_older">Tendré por lo menos 18 años en la fecha de las siguientes elecciones.</string>
-    <string name="label_has_id">Tengo una licencia de conducir de Pennsylvania.</string>
-    <string name="label_first_time_voter">Si es la primera vez que se inscribe para votar.</string>
     <string name="label_name_prefix">Titulo</string>
     <string name="label_first_name">Nombre</string>
     <string name="label_middle_name">Segundo nombr</string>
     <string name="label_last_name">Apellido</string>
     <string name="label_name_suffix">Sufijo</string>
-    <string name="label_suffix">Sufijo</string>
 
     <string name="label_birthday">Fecha de nacimiento</string>
     <string name="section_label_eligibility">Elegibilidad</string>
-    <string name="section_label_basic_info">Información Básica</string>
-    <string name="section_label_new_registrant">Nueva Inscripción</string>
     <string name="eighteen_or_older_err">Tendré por lo menos 18 años en la fecha de las siguientes elecciones.</string>
     <string name="us_citizen_err">Soy ciudadano de los Estados Unidos.</string>
     <string name="email_error">Dirección de email no es correcto</string>
@@ -53,7 +46,6 @@
     <string name="checkbox_address_changed">He cambiado mi dirección.</string>
     <string name="checkbox_name_changed">He cambiado mi nombre.</string>
     <string name="label_receive_text">Estoy de acuerdo que puede llamar a %s/Pennsylvania Voice/State Voices y texto con actualizaciones importantes y recordatorios.</string>
-    <string name="county_empty_error">Condado donde vive es obligatorio</string>
     <string name="label_no_address">No tengo dirección normal ni dirección permanente</string>
     <string name="error_no_address">Completa registro mediante formulario en papel</string>
     <string name="zip_code_error">código postal no válido</string>
@@ -61,21 +53,12 @@
     <!--Register Fragment Strings-->
     <string name="fragment_title_additional_info">Personal</string>
     <string name="fragment_title_assistant_info">Asistencia</string>
-    <string name="section_label_gender">Sexo</string>
     <string name="section_label_race">Raza</string>
     <string name="section_label_party">Partido Político</string>
-    <string name="section_label_verification">La Verificación</string>
-    <string name="label_male">Masculino</string>
-    <string name="label_female">Femenino</string>
     <string name="signature_description">Firme aquí</string>
     <string name="label_button_register">Registrar</string>
-    <string name="label_agreement_prefix">He leido la \u0020</string>
-    <string name="label_agreement_link">Voter Registration Agreement</string>
-    <string name="agreement_neutral_button">Terminado</string>
-    <string name="voter_registration_agreement_title">Inscripción de Votantes Acuerdo</string>
 
     <!--Additional Info Strings-->
-    <string name="label_preferred_language">Idioma de Preferencia</string>
     <string name="label_drivers_license_id">Número de Licencia de Conducir de PA</string>
     <string name="label_other_party">Otro Partido Político</string>
     <string name="label_does_not_have_penn_dot">No sé mi número de PennDOT</string>
@@ -85,7 +68,6 @@
     <string name="section_label_election_info">Información de las Elecciones</string>
     <string name="penn_dot_enforcer_text">Ingrese el número de licencia de conducir de PA o de identificación PennDOT, los últimos cuatro dígitos de su número de seguro social.</string>
     <string name="error_penn_dot">Marque \"no sé\" si no sabes su de identificación PennDOT</string>
-    <string name="ssn_enforcer_text">Si no cuenta con un número PennDOT, ingrese los últimos 4 dígitos de su número de seguro social. </string>
     <string name="error_ssn">Marque \"no sé\" si no sabes los últimos cuatro dígitos de su número de seguro social.</string>
     <string name="label_has_assistant">¿Alguien se ayudó con este formulario?</string>
     <string name="section_label_assistant_name">Ayudante Nombre</string>
@@ -120,7 +102,6 @@ Al hacerlo:
     <!--Review and Confirm Fragment Strings-->
     <string name="fragment_title_review">Revisar</string>
     <string name="voter_agreement_text">He revisado la información anterior, y es verdad y exacta a lo mejor de mi conocimiento.</string>
-    <string name="title_activity_settings">La Configuración</string>
     <string name="section_label_contact_info">Información de Contacto</string>
     <string name="review_confirm_instructions">Por favor revise la siguiente información y confirmar su exactitud.</string>
     <string name="section_label_signature">Su Firma</string>
