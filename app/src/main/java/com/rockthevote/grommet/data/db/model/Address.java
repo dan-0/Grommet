@@ -198,6 +198,7 @@ public abstract class Address implements Parcelable, BaseColumns {
     @Override
     public String toString() {
         return Strings.valueOrDefault(streetName() + "\n","")
+                + Strings.valueOrDefault(subAddressType() + " ", "")
                 + Strings.valueOrDefault(subAddress() + "\n", "")
                 + Strings.valueOrDefault(municipalJurisdiction() + ", ", "")
                 + Strings.valueOrDefault(state() + " ", "")

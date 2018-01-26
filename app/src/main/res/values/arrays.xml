@@ -125,34 +125,36 @@
     </string-array>
 
     <string-array name="unit_types">
-        <item>APARTMENT</item>
-        <item>BASEMENT</item>
-        <item>BOX#</item>
-        <item>BUILDING</item>
-        <item>DEPARTMENT</item>
-        <item>FLOOR</item>
-        <item>FRONT</item>
-        <item>HANGER</item>
-        <item>LOBBY</item>
-        <item>LOT</item>
-        <item>LOWER</item>
-        <item>OFFICE</item>
-        <item>PENTHOUSE</item>
-        <item>PIER</item>
-        <item>POLL</item>
-        <item>REAR</item>
-        <item>ROOM</item>
-        <item>SIDE</item>
-        <item>SLIP</item>
-        <item>SPACE</item>
-        <item>STOP</item>
-        <item>SUITE</item>
-        <item>TRAILER</item>
-        <item>UNIT</item>
-        <item>UPPER</item>
-        <item>CABIN</item>
+        <item> </item>
+        <item>APT</item>
+        <item>BLD</item>
+        <item>BOX</item>
+        <item>BSM</item>
+        <item>CBN</item>
+        <item>DEP</item>
+        <item>FL</item>
+        <item>FRN</item>
+        <item>HNG</item>
         <item>HUB</item>
-        <item>STUDENT</item>
-        <item>TOWNHOUSE</item>
+        <item>LBB</item>
+        <item>LOT</item>
+        <item>LOW</item>
+        <item>OFC</item>
+        <item>PH</item>
+        <item>PIE</item>
+        <item>POL</item>
+        <item>REA</item>
+        <item>RM</item>
+        <item>SID</item>
+        <item>SLI</item>
+        <item>SMC</item>
+        <item>SPC</item>
+        <item>STE</item>
+        <item>STO</item>
+        <item>TH</item>
+        <item>TRL</item>
+        <item>TRLR</item>
+        <item>UNI</item>
+        <item>UPP</item>
     </string-array>
 </resources>

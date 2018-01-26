@@ -203,7 +203,9 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
         Observable<Boolean> previousNameObs = previousName.verify()
                 .flatMap(val -> Observable.just(nameChanged.isChecked() ? val : true));
 
-        return Observable.zip(validator.validate(), previousNameObs, Observable.just(isEighteenByDeadline()),
-                (validator, prevName, birthday) -> validator && prevName && birthday);
+        return Observable.zip(validator.validate(), name.verify(),
+                previousNameObs, Observable.just(isEighteenByDeadline()),
+                (validator, name, prevName, birthday)
+                        -> validator && name && prevName && birthday);
     }
 }
