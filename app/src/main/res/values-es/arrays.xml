@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="unit_types">
-        <item>APARTAMENTO</item>
-        <item>SÓTANO</item>
-        <item># DE APARTADO</item>
-        <item>EDIFICIO</item>
-        <item>DEPARTAMENTO</item>
-        <item>PISO</item>
-        <item>FRENTE</item>
-        <item>HANGAR</item>
-        <item>RECIBIDOR</item>
-        <item>LOTE</item>
-        <item>INFERIOR</item>
-        <item>OFICINA</item>
-        <item>ATICO</item>
-        <item>EMBARCADERO</item>
-        <item>ELECCIONES</item>
-        <item>TRASERO</item>
-        <item>CUARTO</item>
-        <item>LADO</item>
-        <item>ATRACADERO</item>
-        <item>SITIO</item>
-        <item>ALTO</item>
-        <item>SUITE</item>
-        <item>TRAILÉR</item>
-        <item>UNIDAD DE VIVIENDA</item>
-        <item>SUPERIOR</item>
-        <item>CABAÑA</item>
-        <item>CENTRO</item>
-        <item>CENTRO DE CORREO ESTUDIANTIL</item>
-        <item>CASA ADOSADA</item>
+        <item> </item>
+        <item>APT</item>
+        <item>BLD</item>
+        <item>BOX</item>
+        <item>BSM</item>
+        <item>CBN</item>
+        <item>DEP</item>
+        <item>FL</item>
+        <item>FRN</item>
+        <item>HNG</item>
+        <item>HUB</item>
+        <item>LBB</item>
+        <item>LOT</item>
+        <item>LOW</item>
+        <item>OFC</item>
+        <item>PH</item>
+        <item>PIE</item>
+        <item>POL</item>
+        <item>REA</item>
+        <item>RM</item>
+        <item>SID</item>
+        <item>SLI</item>
+        <item>SMC</item>
+        <item>SPC</item>
+        <item>STE</item>
+        <item>STO</item>
+        <item>TH</item>
+        <item>TRL</item>
+        <item>TRLR</item>
+        <item>UNI</item>
+        <item>UPP</item>
     </string-array>
 </resources>
