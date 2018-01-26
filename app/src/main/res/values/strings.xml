@@ -13,29 +13,19 @@
     <string name="nav_title_about" translatable="false">About</string>
     <string name="nav_title_data_usage" translatable="false">Data Usage</string>
     <string name="nav_title_help" translatable="false">Help</string>
-    <string name="incomplete_profile_alert" translatable="false">Some of your canvasser information is incomplete. You must enter your name, Partner ID, Event ID and Zip and Clock-In before registering voters</string>
     <string name="clock_in_alert_title" translatable="false">Not Clocked In</string>
     <string name="clock_in_alert_message" translatable="false">You must clock in before registering voters.</string>
-    <string name="dialog_no_thanks" translatable="false">No Thanks</string>
-    <string name="dialog_enter_info" translatable="false">Enter Info</string>
 
     <!--Main Activity Strings-->
-    <string name="label_registered_event">Registered</string>
-    <string name="button_label_new_voter" translatable="false">New Voter</string>
-    <string name="shift_details" translatable="false">Shift Details</string>
     <string name="error_partner_id" translatable="false">Invalid Partner ID</string>
-    <string name="label_partner_name_spinner">Validating Partner ID</string>
     <string name="clock_in_text" translatable="false">Clock In</string>
     <string name="clock_out_text" translatable="false">Clock Out</string>
-    <string name="label_event_total_reg" translatable="false">Registrations</string>
     <string name="label_event_total_abandoned" translatable="false">Cancelled</string>
     <string name="label_event_total_dln" translatable="false">DLN</string>
     <string name="label_event_total_ssn" translatable="false">SSN</string>
     <string name="label_event_total_email_opt_in" translatable="false">Email Opt In</string>
     <string name="label_event_total_sms_opt_in" translatable="false">SMS Opt In</string>
-    <string name="label_event_total_hours_worked" translatable="false">Hours Worked</string>
     <string name="label_event_clock_in_time" translatable="false">Clock In</string>
-    <string name="label_event_clock_out_time" translatable="false">Clock Out</string>
     <string name="title_event_details" translatable="false">Shift Location</string>
     <string name="title_time_tracking" translatable="false">Time Tracking</string>
     <string name="title_shift_summary" translatable="false">Shift Report</string>
@@ -60,19 +50,14 @@
     <string name="fragment_title_new_registrant">Name</string>
     <string name="label_us_citizen">I am a U.S. Citizen</string>
     <string name="label_eighteen_or_older">I will be 18 or older by the next election</string>
-    <string name="label_has_id">I have a driver\'s license or state ID card.</string>
-    <string name="label_first_time_voter">I am registering to vote for the first time</string>
     <string name="label_name_prefix">Title</string>
     <string name="label_first_name">First Name</string>
     <string name="label_middle_name">Middle Name</string>
     <string name="label_last_name">Last Name</string>
     <string name="label_name_suffix">Suffix</string>
-    <string name="label_suffix">Suffix</string>
 
     <string name="label_birthday">Birthday</string>
     <string name="section_label_eligibility">Eligibility</string>
-    <string name="section_label_basic_info">Basic Info</string>
-    <string name="section_label_new_registrant">New Registrant</string>
     <string name="eighteen_or_older_err">You must be 18 or older to vote</string>
     <string name="us_citizen_err">You must be a U.S. citizen</string>
     <string name="email_error">Invalid email</string>
@@ -99,7 +84,6 @@
     <string name="checkbox_address_changed">I have changed my address</string>
     <string name="checkbox_name_changed">I have changed my name</string>
     <string name="label_receive_text">I agree that %s/Pennsylvania Voice/State Voices may call and text me with important updates and reminders</string>
-    <string name="county_empty_error">County Required</string>
     <string name="label_no_address">I have no permanent or mailing address</string>
     <string name="error_no_address">Complete registration using paper form</string>
     <string name="zip_code_error">Invalid zip–code</string>
@@ -107,21 +91,12 @@
     <!--Register Fragment Strings-->
     <string name="fragment_title_additional_info">Personal</string>
     <string name="fragment_title_assistant_info">Assistance</string>
-    <string name="section_label_gender">Gender</string>
     <string name="section_label_race">Race</string>
     <string name="section_label_party">Political Party</string>
-    <string name="section_label_verification">Verification</string>
-    <string name="label_male">male</string>
-    <string name="label_female">female</string>
     <string name="signature_description">sign here</string>
     <string name="label_button_register">Register</string>
-    <string name="label_agreement_prefix">I have read the \u0020</string>
-    <string name="label_agreement_link">Voter Registration Agreement</string>
-    <string name="agreement_neutral_button">done</string>
-    <string name="voter_registration_agreement_title">Voter Registration Agreement</string>
 
     <!--Additional Info Strings-->
-    <string name="label_preferred_language">Preferred Language</string>
     <string name="label_drivers_license_id">PennDOT number</string>
     <string name="label_other_party">Other Political Party</string>
     <string name="label_does_not_have_penn_dot">I do not know my PennDOT number</string>
@@ -132,7 +107,6 @@
     <string name="section_label_election_info">Personal Info</string>
     <string name="penn_dot_enforcer_text">If you have a PA driver\'s license or PennDOT ID card number, you must use it.  Your PennDOT is the 8 digit number found on the top right of a PA driver\'s license OR non-driver\'s state ID card</string>
     <string name="error_penn_dot">Check \"I do not know\" if you don\'t know your PennDOT number</string>
-    <string name="ssn_enforcer_text">If you do not have a PennDOT number please enter the last 4 digits of your Social Security number </string>
     <string name="error_ssn">Check \"I do not know\" if you don\'t know your SSN last four</string>
     <string name="label_has_assistant">Did someone help you with this form?</string>
     <string name="section_label_assistant_name">Helper Name</string>
@@ -168,7 +142,6 @@ In doing so:
     <!--Review and Confirm Fragment Strings-->
     <string name="fragment_title_review">Review</string>
     <string name="voter_agreement_text">I have reviewed the above information, and it is true and accurate to the best of my knowledge.</string>
-    <string name="title_activity_settings">Settings</string>
     <string name="section_label_contact_info">Contact Info</string>
     <string name="review_confirm_instructions">Please review the following information and confirm its accuracy.</string>
     <string name="section_label_signature">Signature</string>
@@ -252,8 +225,6 @@ Submitting an application containing false information may also subject a person
     <string name="pref_key_canvasser_name" translatable="false">canvasser_name</string>
     <string name="pref_key_event_zip_code" translatable="false">event_zip</string>
     <string name="pref_key_event_name" translatable="false">event_name</string>
-    <string name="pref_key_event_reg_total" translatable="false">event_reg_total</string>
-    <string name="pref_key_app_reg_total" translatable="false">app_reg_total</string>
 
     <string name="pref_title_partner_name" translatable="false">Organization</string>
     <string name="pref_title_partner_id" translatable="false">Partner ID</string>
@@ -262,13 +233,11 @@ Submitting an application containing false information may also subject a person
     <string name="pref_title_event_name" translatable="false">Location</string>
 
     <!--Multi use strings-->
-    <string name="action_cancel" translatable="false">Cancel</string>
     <string name="action_dismiss" translatable="false">Dismiss</string>
     <string name="action_save" translatable="false">Save</string>
     <string name="action_ok">OK</string>
     <string name="action_accept">Accept</string>
     <string name="action_decline">Decline</string>
-    <string name="action_back" translatable="false">Back</string>
     <string name="action_edit" translatable="false">Edit</string>
     <string name="action_clear" translatable="false">clear</string>
     <string name="upload_notification_title_success" translatable="false">PA Registration Success</string>
@@ -276,7 +245,6 @@ Submitting an application containing false information may also subject a person
     <string name="upload_notification_content_success" translatable="false">Registration submitted</string>
     <string name="upload_notification_content_client_failure" translatable="false">Bad registration data</string>
     <string name="upload_notification_content_connection_failure" translatable="false">Unable to contact server</string>
-    <string name="percent_format" translatable="false">%d%%</string>
     <string name="required_field">This field is required</string>
 
     <string name="about_activity_text" translatable="false">
