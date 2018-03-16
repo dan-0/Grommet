@@ -37,6 +37,7 @@
     <string name="section_label_previous_address">Dirección Anterior</string>
     <string name="section_label_phone">Número de teléfono</string>
     <string name="label_street">Dirección</string>
+    <string name="label_street_2">Dirección 2</string>
     <string name="label_city">Ciudad</string>
     <string name="label_zip_code">Código postal</string>
     <string name="label_state">Estado</string>

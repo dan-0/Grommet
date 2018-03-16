@@ -52,6 +52,9 @@ public class AddressView extends FrameLayout {
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
     @BindView(R.id.street) EditText streetEditText;
 
+    @BindView(R.id.til_street_address_2) TextInputLayout streetTIL2;
+    @BindView(R.id.street_2) EditText streetEditText2;
+
     @BindView(R.id.til_unit) TextInputLayout unitTIL;
     @BindView(R.id.unit) EditText unitEditText;
 
@@ -205,14 +208,16 @@ public class AddressView extends FrameLayout {
             subscriptions = new CompositeSubscription();
             subscriptions.add(Observable.combineLatest(
                     RxTextView.afterTextChangeEvents(streetEditText),
+                    RxTextView.afterTextChangeEvents(streetEditText2),
                     RxTextView.afterTextChangeEvents(unitEditText),
                     RxTextView.afterTextChangeEvents(cityEditText),
                     RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
                     RxTextView.afterTextChangeEvents(zipEditText),
                     RxTextView.afterTextChangeEvents(countySpinner.getEditText()),
                     RxTextView.afterTextChangeEvents(unitTypeSpinner.getEditText()),
-                    (street, unit, city, state, zip, county, unitType) -> new Address.Builder()
+                    (street, street2, unit, city, state, zip, county, unitType) -> new Address.Builder()
                             .streetName(street.editable().toString())
+                            .streetName2(street2.editable().toString())
                             .subAddress(unit.editable().toString())
                             .municipalJurisdiction(city.editable().toString())
                             .state(state.editable().toString())

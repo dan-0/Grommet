@@ -340,7 +340,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         REPUBLICAN("Republican", "Republicano"),
         GREEN("Green", "Verde"),
         LIBERTARIAN("Libertarian","Libertario"),
-        NO_PARTY("None", "Ninguno"),
+        NO_PARTY("None (No Affiliation)", "Ninguno (Sin afiliación)"),
         OTHER_PARTY("Other", "Otro");
 
         private final String enParty;
