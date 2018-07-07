@@ -20,6 +20,7 @@ public abstract class Address implements Parcelable, BaseColumns {
     public static final String ROCKY_REQUEST_ID = "rocky_request_id";
     public static final String TYPE = "type";
     public static final String STREET_NAME = "street_name";
+    public static final String STREET_NAME_2 = "street_name_2";
     public static final String SUB_ADDRESS = "sub_address";
     public static final String SUB_ADDRESS_TYPE = "sub_address_type";
     public static final String MUNICIPAL_JURISDICTION = "municipal_jurisdiction";
@@ -52,6 +53,9 @@ public abstract class Address implements Parcelable, BaseColumns {
     public abstract String streetName();
 
     @Nullable
+    public abstract String streetName2();
+
+    @Nullable
     public abstract String subAddress();
 
     @Nullable
@@ -76,6 +80,7 @@ public abstract class Address implements Parcelable, BaseColumns {
             long rockyRequestId = Db.getLong(cursor, ROCKY_REQUEST_ID);
             Type type = Type.fromString(Db.getString(cursor, TYPE));
             String streetName = Db.getString(cursor, STREET_NAME);
+            String streetName2 = Db.getString(cursor, STREET_NAME_2);
             String subAddress = Db.getString(cursor, SUB_ADDRESS);
             String subAddressType = Db.getString(cursor, SUB_ADDRESS_TYPE);
             String munJurisdiction = Db.getString(cursor, MUNICIPAL_JURISDICTION);
@@ -83,8 +88,8 @@ public abstract class Address implements Parcelable, BaseColumns {
             String state = Db.getString(cursor, STATE);
             String zip = Db.getString(cursor, ZIP);
 
-            return new AutoValue_Address(id, rockyRequestId, type, streetName, subAddress,
-                    subAddressType, munJurisdiction, county, state, zip);
+            return new AutoValue_Address(id, rockyRequestId, type, streetName, streetName2,
+                    subAddress, subAddressType, munJurisdiction, county, state, zip);
         }
     };
 
@@ -129,6 +134,11 @@ public abstract class Address implements Parcelable, BaseColumns {
 
         public Builder streetName(String streetName) {
             values.put(STREET_NAME, streetName);
+            return this;
+        }
+
+        public Builder streetName2(String streetName2) {
+            values.put(STREET_NAME_2, streetName2);
             return this;
         }
 
@@ -198,6 +208,7 @@ public abstract class Address implements Parcelable, BaseColumns {
     @Override
     public String toString() {
         return Strings.valueOrDefault(streetName() + "\n","")
+                + Strings.valueOrDefault(streetName2() + " \n", "")
                 + Strings.valueOrDefault(subAddressType() + " ", "")
                 + Strings.valueOrDefault(subAddress() + "\n", "")
                 + Strings.valueOrDefault(municipalJurisdiction() + ", ", "")

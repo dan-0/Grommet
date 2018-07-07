@@ -74,6 +74,7 @@
     <string name="section_label_previous_address">Previous Address</string>
     <string name="section_label_phone">Phone</string>
     <string name="label_street">Street Address</string>
+    <string name="label_street_2">Street Address 2</string>
     <string name="label_city">City</string>
     <string name="label_zip_code">Zip Code</string>
     <string name="label_state">State</string>

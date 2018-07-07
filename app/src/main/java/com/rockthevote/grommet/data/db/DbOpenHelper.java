@@ -20,8 +20,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static final int INITIAL_VERSION = 1;
     private static final int VER_JULY_2017_RELEASE_A = 200;
     private static final int VER_JANUARY_2018_RELEASE_A = 300;
+    private static final int VER_MARCH_2018_RELEASE_A = 400;
 
-    private static final int CUR_DATABASE_VERSION = VER_JANUARY_2018_RELEASE_A;
+    private static final int CUR_DATABASE_VERSION = VER_MARCH_2018_RELEASE_A;
 
     /**
      * Only model the relations, not the objects
@@ -156,6 +157,10 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + "ALTER TABLE " + Address.TABLE + " "
             + "ADD COLUMN " + Address.SUB_ADDRESS_TYPE + " TEXT";
 
+    private static final String ADD_STREET_NAME_2_TO_ADDRESS = ""
+            + "ALTER TABLE " + Address.TABLE + " "
+            + "ADD COLUMN " + Address.STREET_NAME_2 + " TEXT";
+
     public DbOpenHelper(Context context) {
         super(context, "grommet.db", null, CUR_DATABASE_VERSION);
     }
@@ -172,6 +177,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
         upgradeFromInitialVersionToJuly2017A(db);
         upgradeFromJuly2017AToJanuary2018A(db);
+        upgradeFromJanuary2018AToMarch2018A(db);
     }
 
     @Override
@@ -196,6 +202,12 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             version = VER_JANUARY_2018_RELEASE_A;
         }
 
+        if (version == VER_JANUARY_2018_RELEASE_A) {
+            Timber.d("upgrading from %d to %d", oldVersion, newVersion);
+            upgradeFromJanuary2018AToMarch2018A(db);
+            version = VER_MARCH_2018_RELEASE_A;
+        }
+
     }
 
     private static void upgradeFromInitialVersionToJuly2017A(SQLiteDatabase db) {
@@ -207,4 +219,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static void upgradeFromJuly2017AToJanuary2018A(SQLiteDatabase db) {
         db.execSQL(ADD_UNIT_TYPE_TO_ADDRESS);
     }
+
+    private static void upgradeFromJanuary2018AToMarch2018A(SQLiteDatabase db) {
+        db.execSQL(ADD_STREET_NAME_2_TO_ADDRESS);
+    }
 }
+

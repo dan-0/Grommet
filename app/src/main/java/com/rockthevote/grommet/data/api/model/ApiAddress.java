@@ -7,7 +7,6 @@ import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.api.Normalize;
 import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.db.model.Address;
-import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
@@ -20,6 +19,9 @@ public abstract class ApiAddress {
 
     @Normalize
     abstract String streetName();
+
+    @Normalize
+    abstract String streetName2();
 
     @Normalize
     abstract String subAddress();
@@ -48,6 +50,8 @@ public abstract class ApiAddress {
     abstract static class Builder {
         abstract Builder streetName(String value);
 
+        abstract Builder streetName2(String value);
+
         abstract Builder subAddress(String value);
 
         abstract Builder subAddressType(String value);
@@ -64,28 +68,17 @@ public abstract class ApiAddress {
     }
 
     public static final class ApiAddressMoshiAdapter extends JsonAdapter<ApiAddress> {
-        private final JsonAdapter<String> streetNameAdapter;
-        private final JsonAdapter<String> subAddressAdapter;
-        private final JsonAdapter<String> subAddressTypeAdapter;
-        private final JsonAdapter<String> municipalJurisdictionAdapter;
-        private final JsonAdapter<String> countyAdapter;
-        private final JsonAdapter<String> stateAdapter;
-        private final JsonAdapter<String> zipAdapter;
+        private final JsonAdapter<String> stringAdapter;
 
         public ApiAddressMoshiAdapter(Moshi moshi) {
-            this.streetNameAdapter = moshi.adapter(String.class);
-            this.subAddressAdapter = moshi.adapter(String.class);
-            this.subAddressTypeAdapter = moshi.adapter(String.class);
-            this.municipalJurisdictionAdapter = moshi.adapter(String.class);
-            this.countyAdapter = moshi.adapter(String.class);
-            this.stateAdapter = moshi.adapter(String.class);
-            this.zipAdapter = moshi.adapter(String.class);
+            this.stringAdapter = moshi.adapter(String.class);
         }
 
         @Override
         public ApiAddress fromJson(JsonReader reader) throws IOException {
             reader.beginObject();
             String streetName = null;
+            String streetName2 = null;
             String subAddress = null;
             String subAddressType = null;
             String municipalJurisdiction = null;
@@ -100,31 +93,31 @@ public abstract class ApiAddress {
                 }
                 switch (name) {
                     case "streetName": {
-                        streetName = streetNameAdapter.fromJson(reader);
+                        streetName = stringAdapter.fromJson(reader);
                         break;
                     }
                     case "subAddress": {
-                        subAddress = subAddressAdapter.fromJson(reader);
+                        subAddress = stringAdapter.fromJson(reader);
                         break;
                     }
                     case "subAddressType": {
-                        subAddressType = subAddressTypeAdapter.fromJson(reader);
+                        subAddressType = stringAdapter.fromJson(reader);
                         break;
                     }
                     case "municipalJurisdiction": {
-                        municipalJurisdiction = municipalJurisdictionAdapter.fromJson(reader);
+                        municipalJurisdiction = stringAdapter.fromJson(reader);
                         break;
                     }
                     case "county": {
-                        county = countyAdapter.fromJson(reader);
+                        county = stringAdapter.fromJson(reader);
                         break;
                     }
                     case "state": {
-                        state = stateAdapter.fromJson(reader);
+                        state = stringAdapter.fromJson(reader);
                         break;
                     }
                     case "zip": {
-                        zip = zipAdapter.fromJson(reader);
+                        zip = stringAdapter.fromJson(reader);
                         break;
                     }
                     default: {
@@ -133,7 +126,7 @@ public abstract class ApiAddress {
                 }
             }
             reader.endObject();
-            return new AutoValue_ApiAddress(streetName, subAddress, subAddressType,
+            return new AutoValue_ApiAddress(streetName, streetName2, subAddress, subAddressType,
                     municipalJurisdiction, county, state, zip);
         }
 
@@ -147,18 +140,27 @@ public abstract class ApiAddress {
             writer.name("complete_address_number");
             writer.nullValue();
             writer.name("complete_street_name");
-            streetNameAdapter.toJson(writer,
+            stringAdapter.toJson(writer,
                     StringNormalizerFactory.stripDiacritics(value.streetName()));
 
             writer.name("complete_sub_address");
+            writer.beginArray();
             writer.beginObject();
             writer.name("sub_address_type");
-            subAddressTypeAdapter.toJson(writer,
+            stringAdapter.toJson(writer,
                     StringNormalizerFactory.stripDiacritics(value.subAddressType()));
             writer.name("sub_address");
-            subAddressAdapter.toJson(writer,
+            stringAdapter.toJson(writer,
                     StringNormalizerFactory.stripDiacritics(value.subAddress()));
             writer.endObject();
+            writer.beginObject();
+            writer.name("sub_address_type");
+            stringAdapter.toJson(writer, "LINE2");
+            writer.name("sub_address");
+            stringAdapter.toJson(writer,
+                    StringNormalizerFactory.stripDiacritics(value.streetName2()));
+            writer.endObject();
+            writer.endArray();
 
             writer.name("complete_place_names");
             writer.beginArray();
@@ -167,7 +169,7 @@ public abstract class ApiAddress {
             writer.name("place_name_type");
             writer.value("MunicipalJurisdiction");
             writer.name("place_name_value");
-            municipalJurisdictionAdapter.toJson(writer,
+            stringAdapter.toJson(writer,
                     StringNormalizerFactory.stripDiacritics(value.municipalJurisdiction()));
             writer.endObject();
 
@@ -175,15 +177,15 @@ public abstract class ApiAddress {
             writer.name("place_name_type");
             writer.value("County");
             writer.name("place_name_value");
-            countyAdapter.toJson(writer, value.county());
+            stringAdapter.toJson(writer, value.county());
             writer.endObject();
 
             writer.endArray();
 
             writer.name("state");
-            stateAdapter.toJson(writer, value.state());
+            stringAdapter.toJson(writer, value.state());
             writer.name("zip_code");
-            zipAdapter.toJson(writer, value.zipCode());
+            stringAdapter.toJson(writer, value.zipCode());
 
             writer.endObject();
             writer.endObject();
@@ -201,6 +203,7 @@ public abstract class ApiAddress {
                 .municipalJurisdiction(address.municipalJurisdiction())
                 .county(address.county())
                 .streetName(address.streetName())
+                .streetName2(address.streetName2())
                 .subAddress(address.subAddress())
                 .subAddressType(address.subAddressType())
                 .zipCode(address.zip())
