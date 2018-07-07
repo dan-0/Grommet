@@ -12,55 +12,29 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.f2prateek.rx.preferences2.Preference;
-import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
-import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
-import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
-import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
-import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
-import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
-import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
-import com.rockthevote.grommet.data.prefs.RegistrationText;
-import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
-import com.squareup.sqlbrite.BriteDatabase;
-
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.DETAILS_ENTERED;
+import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.PARTNER_UPDATE;
 
 
 public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
-    static final ButterKnife.Setter<View, Boolean> ENABLED =
-            (view, value, index) -> view.setEnabled(value);
-    @Inject BriteDatabase db;
-    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
-
-    @BindViews({R.id.ede_til_canvasser_name, R.id.ede_til_event_name,
-                       R.id.ede_til_event_zip, R.id.ede_til_partner_id})
-    List<TextInputLayout> editableViews;
-
-    @BindView(R.id.save_view_animator) BetterViewAnimator viewAnimator;
     @BindView(R.id.ede_canvasser_name) EditText edeCanvasserName;
     @BindView(R.id.ede_event_name) EditText edeEventName;
 
@@ -68,18 +42,10 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
     @BindView(R.id.ede_til_event_zip) TextInputLayout edeEventZipTIL;
     @BindView(R.id.ede_event_zip) EditText edeEventZip;
 
-    @NotEmpty
-    @BindView(R.id.ede_til_partner_id) TextInputLayout edePartnerIdTIL;
-    @BindView(R.id.ede_partner_id) EditText edePartnerId;
-
     @Inject @CanvasserName Preference<String> canvasserNamePref;
     @Inject @EventName Preference<String> eventNamePref;
     @Inject @EventZip Preference<String> eventZipPref;
-    @Inject @PartnerId Preference<String> partnerIdPref;
     @Inject @PartnerName Preference<String> partnerNamePref;
-
-    @Inject @RegistrationDeadline Preference<Date> registrationDeadlinePref;
-    @Inject @RegistrationText Preference<RegistrationNotificationText> registrationTextPref;
 
     @Inject RockyService rockyService;
 
@@ -121,8 +87,12 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
         edeCanvasserName.setText(canvasserNamePref.get());
         edeEventName.setText(eventNamePref.get());
         edeEventZip.setText(eventZipPref.get());
-        edePartnerId.setText(partnerIdPref.get());
         edeCanvasserName.requestFocus();
+    }
+
+    @OnClick(R.id.event_update_partner_id)
+    public void onClickUpdatePartner(View v) {
+        listener.setState(PARTNER_UPDATE, true);
     }
 
     @OnClick(R.id.event_details_save)
@@ -134,69 +104,15 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
 
         // allow the user to not set a partner ID
         if (validator.validate().toBlocking().single()) {
-            if (edePartnerId.getText().toString().equals(partnerIdPref.get())) {
-                updateSessionData(partnerNamePref.get(), false,
-                        0, null, null);
-            } else {
-                rockyService.getPartnerName(edePartnerId.getText().toString())
-                        .subscribeOn(Schedulers.io())
-                        .delay(500, TimeUnit.MILLISECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(() -> {
-                            viewAnimator.setDisplayedChildId(R.id.save_progress_bar);
-                            ButterKnife.apply(editableViews, ENABLED, false);
-                        })
-                        .doOnCompleted(() -> {
-                            viewAnimator.setDisplayedChildId(R.id.event_details_save);
-                            ButterKnife.apply(editableViews, ENABLED, true);
-                        })
-                        .subscribe(result -> {
-                            if (!result.isError() && result.response().isSuccessful()) {
-                                PartnerNameResponse partnerNameResponse = result.response().body();
-                                if (partnerNameResponse.isValid()) {
-                                    updateSessionData(partnerNameResponse.partnerName(),
-                                            true,
-                                            partnerNameResponse.sessionTimeoutLength(),
-                                            partnerNameResponse.registrationDeadlineDate(),
-                                            partnerNameResponse.registrationNotificationText());
-                                } else {
-                                    edePartnerIdTIL.setError(
-                                            getContext().getString(R.string.error_partner_id));
-                                }
-                            } else {
-                                edePartnerIdTIL.setError(
-                                        getContext().getString(R.string.error_partner_id));
-                            }
-                        });
-            }
+            updateSessionData();
         }
     }
 
-    private void updateSessionData(String name, boolean updatePartnerData, long timeout,
-                                   Date registrationDeadline,
-                                   RegistrationNotificationText registrationText) {
+    private void updateSessionData() {
 
         canvasserNamePref.set(edeCanvasserName.getText().toString());
         eventNamePref.set(edeEventName.getText().toString());
         eventZipPref.set(edeEventZip.getText().toString());
-        partnerIdPref.set(edePartnerId.getText().toString());
-        partnerNamePref.set(name);
-
-        Session.Builder builder = new Session.Builder()
-                .openTrackingId(edeEventName.getText().toString())
-                .partnerTrackingId(edeEventZip.getText().toString())
-                .canvasserName(edeCanvasserName.getText().toString())
-                .sessionStatus(DETAILS_ENTERED);
-
-        if (updatePartnerData) {
-            builder.sessionTimeout(timeout);
-            registrationTextPref.set(registrationText);
-            registrationDeadlinePref.set(registrationDeadline);
-        }
-
-        db.update(Session.TABLE,
-                builder.build(),
-                Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
 
         listener.setState(DETAILS_ENTERED, true);
 

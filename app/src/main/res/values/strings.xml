@@ -27,6 +27,7 @@
     <string name="label_event_total_sms_opt_in" translatable="false">SMS Opt In</string>
     <string name="label_event_clock_in_time" translatable="false">Clock In</string>
     <string name="title_event_details" translatable="false">Shift Location</string>
+    <string name="title_event_partner_login" translatable="false">Partner Login</string>
     <string name="title_time_tracking" translatable="false">Time Tracking</string>
     <string name="title_shift_summary" translatable="false">Shift Report</string>
     <string name="label_canvasser" translatable="false">Canvasser</string>
@@ -220,6 +221,7 @@ Submitting an application containing false information may also subject a person
 
     <!-- Preference Strings -->
     <string name="pref_key_partner_id" translatable="false">partner_id</string>
+    <string name="pref_key_partner_timeout" translatable="false">partner_timeout</string>
     <string name="pref_key_registration_text" translatable="false">registration_text</string>
     <string name="pref_key_registration_deadline" translatable="false">registration_deadline</string>
     <string name="pref_key_partner_name" translatable="false">partner_name</string>
@@ -235,11 +237,13 @@ Submitting an application containing false information may also subject a person
 
     <!--Multi use strings-->
     <string name="action_dismiss" translatable="false">Dismiss</string>
-    <string name="action_save" translatable="false">Save</string>
+    <string name="action_next" translatable="false">Next</string>
+    <string name="action_update_partner" translatable="false">Update Partner</string>
     <string name="action_ok">OK</string>
     <string name="action_accept">Accept</string>
     <string name="action_decline">Decline</string>
     <string name="action_edit" translatable="false">Edit</string>
+    <string name="action_back" translatable="false">Back</string>
     <string name="action_clear" translatable="false">clear</string>
     <string name="upload_notification_title_success" translatable="false">PA Registration Success</string>
     <string name="upload_notification_title_failure" translatable="false">PA Registration Failed</string>

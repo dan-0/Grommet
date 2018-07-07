@@ -20,14 +20,12 @@ import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
-import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -36,7 +34,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.CompositeDisposable;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.NEW_SESSION;
@@ -50,7 +47,6 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
     @Inject @CanvasserName Preference<String> canvasserNamePref;
     @Inject @EventName Preference<String> eventNamePref;
     @Inject @EventZip Preference<String> eventZipPref;
-    @Inject @PartnerId Preference<String> partnerIdPref;
     @Inject @PartnerName Preference<String> partnerNamePref;
 
     // Session Details
@@ -165,10 +161,9 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         canvasserNamePref.delete();
         eventNamePref.delete();
         eventZipPref.delete();
-        partnerIdPref.delete();
-        partnerNamePref.delete();
 
         // update session status
+        //TODO do we really need to update this session data, shouldn't we just check to make sure it's clocked-out?
         Session.Builder updateBuilder = new Session.Builder()
                 .clockInTime(new GregorianCalendar().getTime())
                 .sessionStatus(NEW_SESSION);
@@ -176,14 +171,6 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         db.update(Session.TABLE,
                 updateBuilder.build(),
                 Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
-
-        // create a new blank session
-        Session.Builder newSessionBuilder = new Session.Builder()
-                .sessionStatus(NEW_SESSION)
-                .sessionId(UUID.randomUUID().toString());
-
-        long rowId = db.insert(Session.TABLE, newSessionBuilder.build());
-        currentSessionRowId.set(rowId);
 
         // delete sessions that have already been reported
         int rowsDeleted = db.delete(Session.TABLE, Session.DELETE_REPORTED_ROWS_WHERE_CLAUSE);

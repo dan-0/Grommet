@@ -21,6 +21,7 @@ import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.data.prefs.PartnerTimeout;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadlinePreferenceConverter;
 import com.rockthevote.grommet.data.prefs.RegistrationText;
@@ -109,6 +110,13 @@ public final class DataModule {
     @PartnerId
     Preference<String> providePartnerId(RxSharedPreferences prefs, Application app) {
         return prefs.getString(app.getResources().getString(R.string.pref_key_partner_id));
+    }
+
+    @Provides
+    @Singleton
+    @PartnerTimeout
+    Preference<Long> providePartnerTimeout(RxSharedPreferences prefs, Application app) {
+        return prefs.getLong(app.getResources().getString(R.string.pref_key_partner_timeout));
     }
 
     @Provides
