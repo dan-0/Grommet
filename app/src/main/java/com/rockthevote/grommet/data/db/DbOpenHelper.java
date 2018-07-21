@@ -21,8 +21,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static final int VER_JULY_2017_RELEASE_A = 200;
     private static final int VER_JANUARY_2018_RELEASE_A = 300;
     private static final int VER_MARCH_2018_RELEASE_A = 400;
+    private static final int VER_JULY_2018_RELEASE_A = 500;
 
-    private static final int CUR_DATABASE_VERSION = VER_MARCH_2018_RELEASE_A;
+    private static final int CUR_DATABASE_VERSION = VER_JULY_2018_RELEASE_A;
 
     /**
      * Only model the relations, not the objects
@@ -129,8 +130,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_SESSION_TABLE = ""
             + "CREATE TABLE " + Session.TABLE + "("
             + Session._ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + Session.SESSION_ID + " STRING NOT NULL,"
-            + Session.SESSION_STATUS + " STRING DEFAULT " + Session.SessionStatus.SESSION_CLEARED + ","
+            + Session.SESSION_ID + " TEXT NOT NULL,"
+            + Session.SESSION_STATUS + " TEXT DEFAULT " + Session.SessionStatus.SESSION_CLEARED + ","
             + Session.CLOCK_IN_TIME + " TEXT,"
             + Session.CLOCK_OUT_TIME + " TEXT,"
             + Session.CLOCK_IN_REPORTED + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE + ","
@@ -161,6 +162,10 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + "ALTER TABLE " + Address.TABLE + " "
             + "ADD COLUMN " + Address.STREET_NAME_2 + " TEXT";
 
+    private static final String ADD_DEVICE_ID_TO_SESSION = ""
+            + "ALTER TABLE " + Session.TABLE + " "
+            + "ADD COLUMN " + Session.DEVICE_ID + " TEXT";
+
     public DbOpenHelper(Context context) {
         super(context, "grommet.db", null, CUR_DATABASE_VERSION);
     }
@@ -178,6 +183,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         upgradeFromInitialVersionToJuly2017A(db);
         upgradeFromJuly2017AToJanuary2018A(db);
         upgradeFromJanuary2018AToMarch2018A(db);
+        upgradeFromMarch2018AToJuly2018A(db);
     }
 
     @Override
@@ -208,6 +214,12 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             version = VER_MARCH_2018_RELEASE_A;
         }
 
+        if (version == VER_MARCH_2018_RELEASE_A) {
+            Timber.d("upgrading from %d to %d", oldVersion, newVersion);
+            upgradeFromMarch2018AToJuly2018A(db);
+            version = VER_JULY_2018_RELEASE_A;
+        }
+
     }
 
     private static void upgradeFromInitialVersionToJuly2017A(SQLiteDatabase db) {
@@ -222,6 +234,10 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
     private static void upgradeFromJanuary2018AToMarch2018A(SQLiteDatabase db) {
         db.execSQL(ADD_STREET_NAME_2_TO_ADDRESS);
+    }
+
+    private static void upgradeFromMarch2018AToJuly2018A(SQLiteDatabase db) {
+        db.execSQL(ADD_DEVICE_ID_TO_SESSION);
     }
 }
 

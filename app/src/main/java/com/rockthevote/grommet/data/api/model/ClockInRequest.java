@@ -4,6 +4,8 @@ package com.rockthevote.grommet.data.api.model;
  * Created by Mechanical Man, LLC on 7/13/17. Grommet
  */
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
@@ -33,6 +35,10 @@ public abstract class ClockInRequest {
     @Json(name = "session_timeout_length")
     public abstract long sessionTimeoutLength();
 
+    @Json(name = "device_id")
+    @Nullable
+    public abstract String deviceId();
+
     public static JsonAdapter<ClockInRequest> jsonAdapter(Moshi moshi) {
         return new AutoValue_ClockInRequest.MoshiJsonAdapter(moshi);
     }
@@ -57,6 +63,8 @@ public abstract class ClockInRequest {
         public abstract Builder clockInDatetime(String clockInDatetime);
 
         public abstract Builder sessionTimeoutLength(long sessionTimeoutLength);
+
+        public abstract Builder deviceId(String deviceId);
 
         public abstract ClockInRequest build();
 

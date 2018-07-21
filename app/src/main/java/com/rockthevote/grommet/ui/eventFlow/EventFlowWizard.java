@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -10,15 +11,20 @@ import android.widget.FrameLayout;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.db.model.Session.SessionStatus;
-import com.rockthevote.grommet.data.db.model.SessionHelper;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
+import com.rockthevote.grommet.data.prefs.PartnerId;
+import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.NEW_SESSION;
+import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.PARTNER_UPDATE;
 
 /**
  * Created by Mechanical Man, LLC on 7/19/17. Grommet
@@ -28,6 +34,7 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
     @Inject BriteDatabase db;
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
+    @Inject @PartnerId Preference<String> partnerIdPref;
 
     @BindView(R.id.viewpager) ViewPager viewPager;
 
@@ -64,7 +71,30 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
             //disable scrolling on the view pager
             viewPager.setOnTouchListener((v, event) -> true);
 
-            new Handler().post(() -> setState(SessionHelper.getStatus(db), false));
+            new Handler().post(() -> setState(getStatus(db), false));
+        }
+    }
+
+    private Session.SessionStatus getStatus(BriteDatabase db) {
+
+        Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
+        int rows = cursor.getCount();
+        cursor.close();
+
+        if (rows == 0) {
+            if (Strings.isBlank(partnerIdPref.get())) {
+                return PARTNER_UPDATE;
+            } else {
+                return NEW_SESSION;
+            }
+        } else {
+
+            cursor = db.query(Session.SELECT_CURRENT_SESSION);
+            cursor.moveToNext();
+            Session session = Session.MAPPER.call(cursor);
+            cursor.close();
+
+            return session.sessionStatus();
         }
     }
 
@@ -93,7 +123,7 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
                 // show the event details static page along with the clock-out option
                 // add location data
                 viewPager.setCurrentItem(2, smoothScroll);
-                ((SessionTimeTracking) adapter.getPageAtPosition(2)).updateUI(SessionHelper.getStatus(db));
+                ((SessionTimeTracking) adapter.getPageAtPosition(2)).updateUI(getStatus(db));
                 break;
             case TIMED_OUT:
                 new android.app.AlertDialog.Builder(getContext())

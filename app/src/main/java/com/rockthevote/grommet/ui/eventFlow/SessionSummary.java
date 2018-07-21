@@ -18,6 +18,7 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
+import com.rockthevote.grommet.data.prefs.DeviceID;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerName;
@@ -48,12 +49,14 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
     @Inject @EventName Preference<String> eventNamePref;
     @Inject @EventZip Preference<String> eventZipPref;
     @Inject @PartnerName Preference<String> partnerNamePref;
+    @Inject @DeviceID Preference<String> deviceIdPref;
 
     // Session Details
     @BindView(R.id.summary_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.summary_event_name) TextView edEventName;
     @BindView(R.id.summary_event_zip) TextView edEventZip;
     @BindView(R.id.summary_partner_name) TextView edPartnerName;
+    @BindView(R.id.summary_device_id) TextView edDeviceId;
 
     // Time Tracking
     @BindView(R.id.summary_clock_in_time) TextView clockInTime;
@@ -99,6 +102,9 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
 
             disposables.add(partnerNamePref.asObservable()
                     .subscribe(name -> edPartnerName.setText(name)));
+
+            disposables.add(deviceIdPref.asObservable()
+                    .subscribe(name -> edDeviceId.setText(name)));
 
         }
     }
@@ -161,6 +167,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         canvasserNamePref.delete();
         eventNamePref.delete();
         eventZipPref.delete();
+        deviceIdPref.delete();
 
         // update session status
         //TODO do we really need to update this session data, shouldn't we just check to make sure it's clocked-out?
