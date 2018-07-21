@@ -13,11 +13,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
+import com.rockthevote.grommet.data.prefs.DeviceID;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerName;
@@ -28,7 +30,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.DETAILS_ENTERED;
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.PARTNER_UPDATE;
@@ -36,22 +38,29 @@ import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.PARTNE
 
 public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
 
+    @Inject RockyService rockyService;
+
+    @Inject @CanvasserName Preference<String> canvasserNamePref;
+    @Inject @EventName Preference<String> eventNamePref;
+    @Inject @EventZip Preference<String> eventZipPref;
+    @Inject @PartnerName Preference<String> partnerNamePref;
+    @Inject @DeviceID Preference<String> deviceIdPref;
+
     @BindView(R.id.ede_canvasser_name) EditText edeCanvasserName;
     @BindView(R.id.ede_event_name) EditText edeEventName;
 
     @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
     @BindView(R.id.ede_til_event_zip) TextInputLayout edeEventZipTIL;
     @BindView(R.id.ede_event_zip) EditText edeEventZip;
-    @BindView(R.id.ed_partner_name) TextView partnerName;
+    @BindView(R.id.ede_partner_name) TextView edePartnerName;
 
-    @Inject @CanvasserName Preference<String> canvasserNamePref;
-    @Inject @EventName Preference<String> eventNamePref;
-    @Inject @EventZip Preference<String> eventZipPref;
-    @Inject @PartnerName Preference<String> partnerNamePref;
+    @NotEmpty
+    @BindView(R.id.ede_til_device_id) TextInputLayout edeDeviceIdTIL;
+    @BindView(R.id.ede_device_id) TextView edeDeviceId;
 
-    @Inject RockyService rockyService;
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private CompositeDisposable disposables = new CompositeDisposable();
+
     private ObservableValidator validator;
 
     private EventFlowCallback listener;
@@ -80,16 +89,21 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
         if (!isInEditMode()) {
             ButterKnife.bind(this);
             validator = new ObservableValidator(this, getContext());
+
+            disposables.add(partnerNamePref.asObservable()
+                    .subscribe(name -> edePartnerName.setText(name)));
+
             resetForm();
         }
     }
 
     void resetForm() {
-        partnerName.setText(partnerNamePref.get());
+        //TODO can these be disposables?
         edeCanvasserName.setText(canvasserNamePref.get());
         edeEventName.setText(eventNamePref.get());
         edeEventZip.setText(eventZipPref.get());
         edeCanvasserName.requestFocus();
+        edeDeviceId.setText(deviceIdPref.get());
     }
 
     @OnClick(R.id.event_update_partner_id)
@@ -115,6 +129,7 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
         canvasserNamePref.set(edeCanvasserName.getText().toString());
         eventNamePref.set(edeEventName.getText().toString());
         eventZipPref.set(edeEventZip.getText().toString());
+        deviceIdPref.set(edeDeviceId.getText().toString());
 
         listener.setState(DETAILS_ENTERED, true);
 
@@ -124,7 +139,7 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         if (!isInEditMode()) {
-            subscriptions.unsubscribe();
+            disposables.dispose();
         }
     }
 

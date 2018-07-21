@@ -222,6 +222,7 @@ Submitting an application containing false information may also subject a person
     <!-- Preference Strings -->
     <string name="pref_key_partner_id" translatable="false">partner_id</string>
     <string name="pref_key_partner_timeout" translatable="false">partner_timeout</string>
+    <string name="pref_key_device_id" translatable="false">device_id</string>
     <string name="pref_key_registration_text" translatable="false">registration_text</string>
     <string name="pref_key_registration_deadline" translatable="false">registration_deadline</string>
     <string name="pref_key_partner_name" translatable="false">partner_name</string>
@@ -234,6 +235,7 @@ Submitting an application containing false information may also subject a person
     <string name="pref_title_canvaser_name" translatable="false">Canvaser Name</string>
     <string name="pref_title_event_zip_code" translatable="false">Zip Code</string>
     <string name="pref_title_event_name" translatable="false">Location</string>
+    <string name="pref_title_device_id" translatable="false">Tablet Number</string>
 
     <!--Multi use strings-->
     <string name="action_dismiss" translatable="false">Dismiss</string>

@@ -33,6 +33,7 @@ public abstract class Session implements Parcelable, BaseColumns {
     public static final String CANVASSER_NAME = "canvasser_name";
     public static final String OPEN_TRACKING_ID = "open_tracking_id";
     public static final String PARTNER_TRACKING_ID = "partner_tracking_id";
+    public static final String DEVICE_ID = "device_id";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
     public static final String SESSION_TIMEOUT = "session_timeout";
@@ -101,6 +102,9 @@ public abstract class Session implements Parcelable, BaseColumns {
     @Nullable
     public abstract String partnerTrackingId();
 
+    @Nullable
+    public abstract String deviceId();
+
     public abstract long latitude();
 
     public abstract long longitude();
@@ -136,6 +140,7 @@ public abstract class Session implements Parcelable, BaseColumns {
             String sourceTrackingId = canvasserName + "::" + sessionId;
             String openTrackingId = Db.getString(cursor, OPEN_TRACKING_ID);
             String partnerTrackingId = Db.getString(cursor, PARTNER_TRACKING_ID);
+            String deviceId = Db.getString(cursor, DEVICE_ID);
             long latitude = Db.getLong(cursor, LATITUDE);
             long longitude = Db.getLong(cursor, LONGITUDE);
             long sessionTimeout = Db.getLong(cursor, SESSION_TIMEOUT);
@@ -147,7 +152,7 @@ public abstract class Session implements Parcelable, BaseColumns {
             int totalIncludeSSN = Db.getInt(cursor, TOTAL_INCLUDE_SSN);
 
             return new AutoValue_Session(id, sessionId, sessionStatus, clockInTime, clockOutTime, clockInReported,
-                    clockOutReported, canvasserName, sourceTrackingId, openTrackingId, partnerTrackingId, latitude,
+                    clockOutReported, canvasserName, sourceTrackingId, openTrackingId, partnerTrackingId, deviceId, latitude,
                     longitude, sessionTimeout, totalRegistrations, totalAbandoned, totalEmailOptIn,
                     totalSMSOptIn, totalIncludeDLN, totalIncludeSSN);
         }
@@ -204,6 +209,11 @@ public abstract class Session implements Parcelable, BaseColumns {
 
         public Builder partnerTrackingId(String val) {
             values.put(PARTNER_TRACKING_ID, val);
+            return this;
+        }
+
+        public Builder deviceId(String val) {
+            values.put(DEVICE_ID, val);
             return this;
         }
 

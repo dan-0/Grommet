@@ -145,7 +145,32 @@
             android:paddingTop="@dimen/content_area_padding"
             android:textColor="@color/colorSecondaryText"
             android:textStyle="bold"
-            tools:text="12345"/>
+            tools:text="OSET"/>
+
+        <TextView
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/content_margin"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="@string/pref_title_device_id"
+            android:textColor="@color/colorSecondaryText"/>
+
+        <TextView
+            android:id="@+id/ed_device_id"
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill_horizontal"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:textColor="@color/colorSecondaryText"
+            android:textStyle="bold"
+            tools:text="abc123"/>
 
         <TextView
             style="@android:style/TextAppearance.Material.Subhead"

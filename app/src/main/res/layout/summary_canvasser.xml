@@ -96,5 +96,23 @@
             android:textStyle="bold"
             tools:text="12345"/>
 
+        <TextView
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:text="@string/pref_title_device_id"
+            android:textColor="@color/colorSecondaryText"/>
+
+        <TextView
+            android:id="@+id/summary_device_id"
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:textColor="@color/colorSecondaryText"
+            android:textStyle="bold"
+            tools:text="abc123"/>
+
     </GridLayout>
 </LinearLayout>

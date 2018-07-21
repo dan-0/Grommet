@@ -17,6 +17,7 @@ import com.rockthevote.grommet.data.db.DbModule;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
+import com.rockthevote.grommet.data.prefs.DeviceID;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
@@ -117,6 +118,13 @@ public final class DataModule {
     @PartnerTimeout
     Preference<Long> providePartnerTimeout(RxSharedPreferences prefs, Application app) {
         return prefs.getLong(app.getResources().getString(R.string.pref_key_partner_timeout));
+    }
+
+    @Provides
+    @Singleton
+    @DeviceID
+    Preference<String> provideDeviceId(RxSharedPreferences prefs, Application app) {
+        return prefs.getString(app.getResources().getString(R.string.pref_key_device_id));
     }
 
     @Provides

@@ -26,6 +26,7 @@ import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
+import com.rockthevote.grommet.data.prefs.DeviceID;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
@@ -52,6 +53,7 @@ import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.NEW_SE
 public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Inject BriteDatabase db;
     @Inject ReactiveLocationProvider locationProvider;
+
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
@@ -62,12 +64,14 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @BindView(R.id.event_details_static_edit) Button editButton;
     @BindView(R.id.ed_clock_in_time) TextView clockInTime;
     @BindView(R.id.session_progress_button) Button sessionProgressButton;
+    @BindView(R.id.ed_device_id) TextView edDeviceId;
 
     @Inject @CanvasserName Preference<String> canvasserNamePref;
     @Inject @EventName Preference<String> eventNamePref;
     @Inject @EventZip Preference<String> eventZipPref;
     @Inject @PartnerId Preference<String> partnerIdPref;
     @Inject @PartnerName Preference<String> partnerNamePref;
+    @Inject @DeviceID Preference<String> deviceIdPref;
 
     private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -108,6 +112,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
             disposables.add(partnerNamePref.asObservable()
                     .subscribe(name -> edPartnerName.setText(name)));
+
+            disposables.add(deviceIdPref.asObservable()
+                    .subscribe(name -> edDeviceId.setText(name)));
         }
     }
 
@@ -241,6 +248,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 .partnerTrackingId(eventZipPref.get())
                 .canvasserName(canvasserNamePref.get())
                 .clockInTime(new Date())
+                .deviceId(deviceIdPref.get())
                 .sessionStatus(CLOCKED_IN);
 
         long rowId = db.insert(Session.TABLE, builder.build());
