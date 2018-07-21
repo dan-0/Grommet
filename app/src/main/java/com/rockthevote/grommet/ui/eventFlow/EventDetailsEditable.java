@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
@@ -41,6 +42,7 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
     @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
     @BindView(R.id.ede_til_event_zip) TextInputLayout edeEventZipTIL;
     @BindView(R.id.ede_event_zip) EditText edeEventZip;
+    @BindView(R.id.ed_partner_name) TextView partnerName;
 
     @Inject @CanvasserName Preference<String> canvasserNamePref;
     @Inject @EventName Preference<String> eventNamePref;
@@ -83,7 +85,7 @@ public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
     }
 
     void resetForm() {
-
+        partnerName.setText(partnerNamePref.get());
         edeCanvasserName.setText(canvasserNamePref.get());
         edeEventName.setText(eventNamePref.get());
         edeEventZip.setText(eventZipPref.get());
