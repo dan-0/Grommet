@@ -25,12 +25,15 @@ public class EventDetailFlowAdapter extends PagerAdapter {
         View view;
         switch (position) {
             case 0:
-                view = new EventDetailsEditable(context);
+                view = new EventPartnerLogin(context);
                 break;
             case 1:
-                view = new SessionTimeTracking(context);
+                view = new EventDetailsEditable(context);
                 break;
             case 2:
+                view = new SessionTimeTracking(context);
+                break;
+            case 3:
                 view = new SessionSummary(context);
                 break;
             default:
@@ -46,7 +49,7 @@ public class EventDetailFlowAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup collection, int position, Object view) {
         collection.removeView((View) view);
-        pages.remove((EventFlowPage) view);
+        pages.remove(view);
     }
 
     public EventFlowPage getPageAtPosition(int position) {
@@ -55,7 +58,7 @@ public class EventDetailFlowAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override

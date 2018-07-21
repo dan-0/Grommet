@@ -35,6 +35,7 @@ import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -130,11 +131,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     void updateUI(Session.SessionStatus status) {
 
+        // we can check for this via the DB and if there are no rows, it's fine
+
         switch (status) {
-            case DETAILS_ENTERED:
-                clockInButton.setSelected(false);
-                clockInTime.setText(R.string.time_tracking_default_value);
-                break;
             case CLOCKED_IN:
                 clockInButton.setSelected(true);
                 Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
@@ -144,7 +143,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 clockInTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockInTime()));
                 break;
             default:
-                throw new UnsupportedOperationException(status.toString() + " not a valid status");
+                clockInButton.setSelected(false);
+                clockInTime.setText(R.string.time_tracking_default_value);
+                break;
         }
 
         editButton.setEnabled(!clockInButton.isSelected());
@@ -190,14 +191,11 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
             ValueAnimator shrinkAnim = ValueAnimator.ofInt(button.getMeasuredWidth(), width);
 
-            shrinkAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    int val = (Integer) valueAnimator.getAnimatedValue();
-                    ViewGroup.LayoutParams layoutParams = button.getLayoutParams();
-                    layoutParams.width = val;
-                    button.requestLayout();
-                }
+            shrinkAnim.addUpdateListener(valueAnimator -> {
+                int val = (Integer) valueAnimator.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = button.getLayoutParams();
+                layoutParams.width = val;
+                button.requestLayout();
             });
 
             shrinkAnim.addListener(new AnimatorListenerHelper() {
@@ -236,13 +234,17 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     private void clockIn() {
 
+        // create and update session info
         Session.Builder builder = new Session.Builder()
+                .sessionId(UUID.randomUUID().toString())
+                .openTrackingId(eventNamePref.get())
+                .partnerTrackingId(eventZipPref.get())
+                .canvasserName(canvasserNamePref.get())
                 .clockInTime(new Date())
                 .sessionStatus(CLOCKED_IN);
 
-        db.update(Session.TABLE,
-                builder.build(),
-                Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
+        long rowId = db.insert(Session.TABLE, builder.build());
+        currentSessionRowId.set(rowId);
 
         locationProvider.getLastKnownLocation()
                 .singleOrDefault(null)
@@ -260,11 +262,13 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                     }
                 });
 
-        listener.setState(CLOCKED_IN, false);
+        updateUI(CLOCKED_IN);
 
         // try to register the clock in
         Intent regService = new Intent(getContext(), RegistrationService.class);
         getContext().startService(regService);
+
+
     }
 
     private void clockOut() {

@@ -259,6 +259,7 @@ public abstract class Session implements Parcelable, BaseColumns {
 
     public enum SessionStatus {
         NEW_SESSION("new"),
+        PARTNER_UPDATE("partner_update"),
         SESSION_CLEARED("session_cleared"),
         DETAILS_ENTERED("details_entered"),
         CLOCKED_IN("clocked_in"),
