@@ -3,6 +3,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -21,14 +22,44 @@
         android:alpha="0.12"
         android:background="@android:color/black"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp">
+
+        <TextView
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginStart="@dimen/content_margin"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingTop="@dimen/content_area_padding"
+            android:text="@string/pref_title_partner_name"
+            android:textColor="@color/colorSecondaryText"/>
+
+        <TextView
+            android:id="@+id/ed_partner_name"
+            style="@android:style/TextAppearance.Material.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:paddingBottom="@dimen/content_area_padding"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/content_area_padding"
+            android:textColor="@color/colorSecondaryText"
+            android:textStyle="bold"
+            tools:text="Grommet"/>
+    </LinearLayout>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/ede_til_canvasser_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/content_margin"
-        android:layout_marginTop="@dimen/content_area_padding"
         android:hint="@string/pref_title_canvaser_name"
-        android:paddingTop="@dimen/content_area_padding"
         app:errorEnabled="true"
         >
 
@@ -87,9 +118,9 @@
     <RelativeLayout
         android:id="@+id/save_view_animator"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
         android:gravity="bottom"
-        android:layout_height="match_parent">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/event_update_partner_id"
