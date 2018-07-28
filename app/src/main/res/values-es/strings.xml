@@ -170,4 +170,5 @@ Presentar una solicitud con datos falsos también puede estar sujeto a otras san
     <string name="action_decline">Rechazar</string>
     <string name="political_party_change">He cambiado mi partido político</string>
     <string name="unit_type">Tipo</string>
+    <string name="required_field">Requerido</string>
 </resources>
