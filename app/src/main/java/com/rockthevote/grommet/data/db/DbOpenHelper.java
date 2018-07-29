@@ -166,6 +166,10 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             + "ALTER TABLE " + Session.TABLE + " "
             + "ADD COLUMN " + Session.DEVICE_ID + " TEXT";
 
+    private static final String ADD_PARTNER_OPT_IN_VOLUNTEER_TO_ROCKY_REQUEST = ""
+            + "ALTER TABLE " + RockyRequest.TABLE + " "
+            + "ADD COLUMN " + RockyRequest.PARTNER_OPT_IN_VOLUNTEER + " INTEGER DEFAULT " + Db.BOOLEAN_FALSE;
+
     public DbOpenHelper(Context context) {
         super(context, "grommet.db", null, CUR_DATABASE_VERSION);
     }
@@ -238,6 +242,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
     private static void upgradeFromMarch2018AToJuly2018A(SQLiteDatabase db) {
         db.execSQL(ADD_DEVICE_ID_TO_SESSION);
+        db.execSQL(ADD_PARTNER_OPT_IN_VOLUNTEER_TO_ROCKY_REQUEST);
     }
 }
 

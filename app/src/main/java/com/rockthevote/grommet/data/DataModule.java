@@ -12,6 +12,7 @@ import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.api.RockyAdapterFactory;
 import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.api.model.DateAdapter;
+import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
 import com.rockthevote.grommet.data.db.DbModule;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
@@ -23,6 +24,8 @@ import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.data.prefs.PartnerTimeout;
+import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
+import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPreferenceConverter;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadlinePreferenceConverter;
 import com.rockthevote.grommet.data.prefs.RegistrationText;
@@ -160,6 +163,22 @@ public final class DataModule {
     @CurrentRockyRequestId
     Preference<Long> provideCurrentRockyRequestId(RxSharedPreferences prefs) {
         return prefs.getLong("cur_rocky_request_id");
+    }
+
+    @Provides
+    @Singleton
+    @PartnerVolunteerTextPref
+    Preference<PartnerVolunteerText> providePartnerVolunteerText(RxSharedPreferences prefs, Application app,
+                                                                 Moshi moshi) {
+        PartnerVolunteerText defaultValue = PartnerVolunteerText.builder()
+                .english("")
+                .spanish("")
+                .build();
+
+        return prefs.getObject(
+                app.getResources().getString(R.string.pref_key_partner_volunteer_text),
+                defaultValue,
+                new PartnerVolunteerTextPreferenceConverter(PartnerVolunteerText.jsonAdapter(moshi)));
     }
 
     @Provides

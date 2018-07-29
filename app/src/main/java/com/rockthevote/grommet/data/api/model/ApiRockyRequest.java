@@ -124,6 +124,7 @@ public abstract class ApiRockyRequest {
                 .partnerOptInEmail(rockyRequest.partnerOptInEmail())
                 .partnerOptInSms(rockyRequest.partnerOptInSMS())
                 .optInVolunteer(rockyRequest.optInVolunteer())
+                .partnerOptInVolunteer(rockyRequest.partnerOptInVolunteer())
                 .sourceTrackingId(rockyRequest.sourceTrackingId())
                 .partnerTrackingId(rockyRequest.partnerTrackingId())
                 .geoLocation(geoLocation)

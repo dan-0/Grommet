@@ -16,10 +16,12 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
+import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.data.prefs.PartnerTimeout;
+import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.data.prefs.RegistrationText;
 import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
@@ -53,6 +55,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
     @Inject @RegistrationDeadline Preference<Date> registrationDeadlinePref;
     @Inject @RegistrationText Preference<RegistrationNotificationText> registrationTextPref;
     @Inject @PartnerTimeout Preference<Long> partnerTimeoutPref;
+    @Inject @PartnerVolunteerTextPref Preference<PartnerVolunteerText> partnerVolunteerTextPref;
 
     @NotEmpty
     @BindView(R.id.ede_til_partner_id) TextInputLayout edePartnerIdTIL;
@@ -102,8 +105,8 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
         // allow the user to not set a partner ID
         if (validator.validate().toBlocking().single()) {
             if (edePartnerId.getText().toString().equals(partnerIdPref.get())) {
-                updateSessionData(false, null, 0,
-                        null, null);
+                // update the event flow listener
+                listener.setState(NEW_SESSION, true);
             } else {
                 rockyService.getPartnerName(edePartnerId.getText().toString())
                         .subscribeOn(Schedulers.io())
@@ -121,11 +124,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                             if (!result.isError() && result.response().isSuccessful()) {
                                 PartnerNameResponse partnerNameResponse = result.response().body();
                                 if (partnerNameResponse.isValid()) {
-                                    updateSessionData(true,
-                                            partnerNameResponse.partnerName(),
-                                            partnerNameResponse.sessionTimeoutLength(),
-                                            partnerNameResponse.registrationNotificationText(),
-                                            partnerNameResponse.registrationDeadlineDate());
+                                    updateSessionData(partnerNameResponse);
                                 } else {
                                     edePartnerIdTIL.setError(
                                             getContext().getString(R.string.error_partner_id));
@@ -145,18 +144,15 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
         edePartnerId.setText(partnerIdPref.get());
     }
 
-    private void updateSessionData(boolean updatePartnerInfo, String partnerName, long timeout,
-                                   RegistrationNotificationText registrationText,
-                                   Date registrationDeadline) {
+    private void updateSessionData(PartnerNameResponse response) {
 
-        if (updatePartnerInfo) {
-            // update preferences
-            partnerIdPref.set(edePartnerId.getText().toString());
-            partnerNamePref.set(partnerName);
-            registrationTextPref.set(registrationText);
-            registrationDeadlinePref.set(registrationDeadline);
-            partnerTimeoutPref.set(timeout);
-        }
+        // update preferences
+        partnerIdPref.set(edePartnerId.getText().toString());
+        partnerNamePref.set(response.partnerName());
+        registrationTextPref.set(response.registrationNotificationText());
+        registrationDeadlinePref.set(response.registrationDeadlineDate());
+        partnerTimeoutPref.set((long) response.sessionTimeoutLength());
+        partnerVolunteerTextPref.set(response.partnerVolunteerText());
 
         // update the event flow listener
         listener.setState(NEW_SESSION, true);
