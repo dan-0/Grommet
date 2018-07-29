@@ -11,14 +11,6 @@
     android:paddingBottom="@dimen/detail_vertical_padding"
     android:useDefaultMargins="false">
 
-    <CheckBox
-        android:id="@+id/no_address_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/list_item_height"
-        android:layout_columnSpan="2"
-        android:layout_marginStart="@dimen/content_margin"
-        android:text="@string/label_no_address"/>
-
     <com.rockthevote.grommet.ui.views.AddressView
         android:id="@+id/home_address"
         android:layout_width="match_parent"

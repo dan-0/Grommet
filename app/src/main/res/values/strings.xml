@@ -86,7 +86,6 @@
     <string name="checkbox_address_changed">I have changed my address</string>
     <string name="checkbox_name_changed">I have changed my name</string>
     <string name="label_receive_text">I agree that %s/Pennsylvania Voice/State Voices may call and text me with important updates and reminders</string>
-    <string name="label_no_address">I have no permanent or mailing address</string>
     <string name="error_no_address">Complete registration using paper form</string>
     <string name="zip_code_error">Invalid zip–code</string>
 
