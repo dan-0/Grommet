@@ -260,6 +260,8 @@ public class RegistrationService extends Service {
                 .sourceTrackingId(session.sourceTrackingId())
                 .openTrackingId(session.openTrackingId())
                 .sessionTimeoutLength(session.sessionTimeout())
+                .abandonedRegistrations(session.totalAbandoned())
+                .completedRegistrations(session.totalRegistrations())
                 .build();
 
         rockyService.clockOut(request)
