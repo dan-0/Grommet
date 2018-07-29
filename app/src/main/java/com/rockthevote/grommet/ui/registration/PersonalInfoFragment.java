@@ -8,11 +8,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.f2prateek.rx.preferences2.Preference;
-import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
-import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.squareup.sqlbrite.BriteDatabase;
 
@@ -25,9 +23,6 @@ import rx.Observable;
 
 
 public class PersonalInfoFragment extends BaseRegistrationFragment {
-
-    @Checked(value = false, messageResId = R.string.error_no_address)
-    @BindView(R.id.no_address_checkbox) CheckBox noAddress;
 
     @BindView(R.id.home_address) AddressView homeAddress;
 
@@ -47,7 +42,6 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
 
     @Inject BriteDatabase db;
 
-    private ObservableValidator validator;
 
     @Nullable
     @Override
@@ -60,7 +54,6 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        validator = new ObservableValidator(this, getActivity());
     }
 
     @OnCheckedChanged(R.id.mailing_address_is_different)
@@ -96,9 +89,8 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
         Observable<Boolean> changedAddObs = previousAddress.verify()
                 .flatMap(val -> Observable.just(addressChanged.isChecked() ? val : true));
 
-        return Observable.zip(homeAddress.verify(), mailingAddressObs,
-                changedAddObs, validator.validate(),
-                (home, mail, change, other) -> home && mail && change && other);
+        return Observable.zip(homeAddress.verify(), mailingAddressObs, changedAddObs,
+                (home, mail, change) -> home && mail && change);
 
     }
 }
