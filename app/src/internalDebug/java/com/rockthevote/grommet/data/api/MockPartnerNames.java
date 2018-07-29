@@ -1,10 +1,9 @@
 package com.rockthevote.grommet.data.api;
 
 import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
+import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
 import com.rockthevote.grommet.util.Dates;
-
-import java.util.Calendar;
 
 public final class MockPartnerNames {
     static final PartnerNameResponse SUCCESS = PartnerNameResponse.builder()
@@ -15,6 +14,10 @@ public final class MockPartnerNames {
             .registrationNotificationText(RegistrationNotificationText.builder()
                     .english("english text")
                     .spanish("spanish text")
+                    .build())
+            .partnerVolunteerText(PartnerVolunteerText.builder()
+                    .english("english volunteer text")
+                    .spanish("spanish volunteer text")
                     .build())
             .build();
 }

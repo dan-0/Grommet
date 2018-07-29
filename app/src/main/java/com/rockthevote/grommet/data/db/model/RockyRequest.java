@@ -28,6 +28,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public static final String OPT_IN_EMAIL = "opt_in_email";
     public static final String OPT_IN_SMS = "opt_in_sms";
     public static final String OPT_IN_VOLUNTEER = "opt_in_volunteer";
+    public static final String PARTNER_OPT_IN_VOLUNTEER = "partner_opt_in_volunteer";
     public static final String PARTNER_OPT_IN_SMS = "partner_opt_in_sms";
     public static final String PARTNER_OPT_IN_EMAIL = "partner_opt_in_email";
     public static final String SOURCE_TRACKING_ID = "source_tracking_id";
@@ -78,6 +79,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
 
     public abstract boolean optInVolunteer();
 
+    public abstract boolean partnerOptInVolunteer();
+
     public abstract boolean partnerOptInSMS();
 
     public abstract boolean partnerOptInEmail();
@@ -126,6 +129,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         boolean optInEmail = Db.getBoolean(cursor, OPT_IN_EMAIL);
         boolean optInSMS = Db.getBoolean(cursor, OPT_IN_SMS);
         boolean optInVolunteer = Db.getBoolean(cursor, OPT_IN_VOLUNTEER);
+        boolean partnerOptInVolunteer = Db.getBoolean(cursor, PARTNER_OPT_IN_VOLUNTEER);
         boolean partnerOptInSMS = Db.getBoolean(cursor, PARTNER_OPT_IN_SMS);
         boolean partnerOptInEmail = Db.getBoolean(cursor, PARTNER_OPT_IN_EMAIL);
         String sourceTrackingId = Db.getString(cursor, SOURCE_TRACKING_ID);
@@ -146,7 +150,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
         long sessionId = Db.getLong(cursor, SESSION_ID);
 
         return new AutoValue_RockyRequest(id, status, language, phoneType, partnerId, optInEmail, optInSMS,
-                optInVolunteer, partnerOptInSMS, partnerOptInEmail,
+                optInVolunteer, partnerOptInVolunteer, partnerOptInSMS, partnerOptInEmail,
                 sourceTrackingId, partnerTrackingId, openTrackingId,
                 generatedDate, dateOfBirth, hasMailingAddress, race, party, signature,
                 latitude, longitude, hasPreviousName, hasPreviousAddress, hasAssistant, otherParty,
@@ -193,6 +197,11 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
 
         public Builder optInVolunteer(boolean optIn) {
             values.put(OPT_IN_VOLUNTEER, optIn);
+            return this;
+        }
+
+        public Builder partnerOptInVolunteer(boolean optIn) {
+            values.put(PARTNER_OPT_IN_VOLUNTEER, optIn);
             return this;
         }
 

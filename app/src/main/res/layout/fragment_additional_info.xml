@@ -270,8 +270,17 @@
         android:layout_width="wrap_content"
         android:layout_columnSpan="2"
         android:checked="true"
-        android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
         android:text="@string/label_receive_text"/>
+
+    <CheckBox
+        android:id="@+id/checkbox_partner_volunteer_opt_in"
+        style="@style/GrommetContentArea"
+        android:layout_width="wrap_content"
+        android:layout_columnSpan="2"
+        android:checked="false"
+        android:paddingBottom="16dp"
+        android:paddingTop="@dimen/content_area_padding"
+        tools:text="are you willing to volunteer for OSET?"/>
 
 </GridLayout>

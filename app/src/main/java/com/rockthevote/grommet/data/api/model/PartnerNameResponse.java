@@ -24,6 +24,10 @@ public abstract class PartnerNameResponse {
     @Json(name = "registration_notification_text")
     public abstract RegistrationNotificationText registrationNotificationText();
 
+    @Json(name = "volunteer_text")
+    public abstract PartnerVolunteerText partnerVolunteerText();
+
+
     public static JsonAdapter<PartnerNameResponse> jsonAdapter(Moshi moshi) {
         return new AutoValue_PartnerNameResponse.MoshiJsonAdapter(moshi);
     }
@@ -44,6 +48,8 @@ public abstract class PartnerNameResponse {
         public abstract Builder registrationDeadlineDate(Date registrationDeadlineDate);
 
         public abstract Builder registrationNotificationText(RegistrationNotificationText registrationNotificationText);
+
+        public abstract Builder partnerVolunteerText(PartnerVolunteerText partnerVolunteerText);
 
         public abstract PartnerNameResponse build();
     }
