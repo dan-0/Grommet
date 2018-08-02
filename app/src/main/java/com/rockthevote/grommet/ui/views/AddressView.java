@@ -48,7 +48,7 @@ public class AddressView extends FrameLayout {
     private String childrenStateKey;
     private String superStateKey;
 
-    @NotEmpty
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
     @BindView(R.id.street) EditText streetEditText;
 
@@ -58,10 +58,10 @@ public class AddressView extends FrameLayout {
     @BindView(R.id.til_unit) TextInputLayout unitTIL;
     @BindView(R.id.unit) EditText unitEditText;
 
-    @NotEmpty
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.spinner_county) BetterSpinner countySpinner;
 
-    @NotEmpty
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_city) TextInputLayout cityTIL;
     @BindView(R.id.city) EditText cityEditText;
 

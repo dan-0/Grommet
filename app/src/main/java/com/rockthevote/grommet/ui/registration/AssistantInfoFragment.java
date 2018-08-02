@@ -56,7 +56,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.checkbox_has_assistant) CheckBox hasAssistant;
 
-    @Checked
+    @Checked(messageResId = R.string.must_be_checked)
     @BindView(R.id.checkbox_assistant_affirmation) CheckBox assistantAffirmation;
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;

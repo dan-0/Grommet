@@ -68,11 +68,11 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Inject @PartnerVolunteerTextPref Preference<PartnerVolunteerText> partnerVolunteerText;
     @BindView(R.id.spinner_race) BetterSpinner raceSpinner;
 
-    @NotEmpty
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.spinner_party) BetterSpinner partySpinner;
     @BindView(R.id.political_party_change_textbox) CheckBox partyChangeCheckbox;
 
-    @NotEmpty
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_other_party) TextInputLayout otherPartyTIL;
     @BindView(R.id.other_party_edit_text) EditText otherPartyEditText;
 
