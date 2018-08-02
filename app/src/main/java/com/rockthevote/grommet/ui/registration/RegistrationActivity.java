@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -26,6 +27,7 @@ import com.rockthevote.grommet.ui.ViewContainer;
 import com.rockthevote.grommet.ui.misc.StepperTabLayout;
 import com.rockthevote.grommet.util.KeyboardUtil;
 import com.rockthevote.grommet.util.LocaleUtils;
+import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.Locale;
@@ -160,6 +162,7 @@ public class RegistrationActivity extends BaseActivity {
         new AlertDialog.Builder(this)
                 .setMessage(R.string.cancel_dialog_message)
                 .setPositiveButton(R.string.dialog_yes, ((dialog, i) -> {
+                    // set the application to abandoned so it gets cleaned up
                     db.update(
                             RockyRequest.TABLE,
                             new RockyRequest.Builder()
@@ -168,19 +171,29 @@ public class RegistrationActivity extends BaseActivity {
                             RockyRequest._ID + " = ? ",
                             String.valueOf(rockyRequestRowId.get()));
 
-                    // update abandoned count
-                    Cursor sessionCursor =
-                            db.query(Session.SELECT_CURRENT_SESSION);
+                    // update abandoned count for the session, only if the voter entered some data
+                    Cursor nameCursor = db.query(Name.SELECT_BY_TYPE,
+                            String.valueOf(rockyRequestRowId.get()),
+                            Name.Type.CURRENT_NAME.toString());
 
-                    if (sessionCursor.moveToNext()) {
-                        Session session = Session.MAPPER.call(sessionCursor);
-                        db.update(Session.TABLE,
-                                new Session.Builder()
-                                        .totalAbandond(session.totalAbandoned() + 1)
-                                        .build(), Session._ID + " = ? ",
-                                String.valueOf(currentSessionRowId.get()));
+                    if (nameCursor.moveToNext()) {
+                        Name name = Name.MAPPER.call(nameCursor);
+                        if (!Strings.isBlank(name.firstName())) {
+                            nameCursor.close();
+                            Cursor sessionCursor =
+                                    db.query(Session.SELECT_CURRENT_SESSION);
+
+                            if (sessionCursor.moveToNext()) {
+                                Session session = Session.MAPPER.call(sessionCursor);
+                                db.update(Session.TABLE,
+                                        new Session.Builder()
+                                                .totalAbandond(session.totalAbandoned() + 1)
+                                                .build(), Session._ID + " = ? ",
+                                        String.valueOf(currentSessionRowId.get()));
+                            }
+                            sessionCursor.close();
+                        }
                     }
-                    sessionCursor.close();
 
                     LocaleUtils.setLocale(new Locale("en"));
                     finish();
