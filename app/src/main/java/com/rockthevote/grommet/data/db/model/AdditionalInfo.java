@@ -9,6 +9,8 @@ import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.db.Db;
 import com.squareup.sqlbrite.BriteDatabase;
 
+import java.util.Locale;
+
 import rx.functions.Func1;
 
 @AutoValue
@@ -125,6 +127,39 @@ public abstract class AdditionalInfo implements Parcelable, BaseColumns {
                 }
             }
             return LANGUAGE_PREF;
+        }
+    }
+
+    public enum PreferredLanguage {
+        ENGLISH("English", "Inglés"),
+        SPANISH("Spanish", "Español");
+
+        private final String enPref;
+        private final String esPref;
+
+        PreferredLanguage(String enPref, String esPref) {
+            this.enPref = enPref;
+            this.esPref = esPref;
+        }
+
+        @Override
+        public String toString() {
+            if ("es".equals(Locale.getDefault().getLanguage())) {
+                return esPref;
+            } else {
+                // default to english
+                return enPref;
+            }
+        }
+
+        public static PreferredLanguage fromString(String language) {
+            for (PreferredLanguage val : values()) {
+                if (val.enPref.equals(language) ||
+                        val.esPref.equals(language)) {
+                    return val;
+                }
+            }
+            return ENGLISH;
         }
     }
 
