@@ -306,15 +306,15 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     }
 
     public enum Race {
-        OTHER("OTHER", "OTRO"),
-        AM_IND_AK_NATIVE("NATIVE AMERICAN OR ALASKAN NATIVE", "NATIVOAMERICANO"),
-        NATIVE_HAWAIIAN("NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER","NATIVO DE HAWAI U OTRA ISLA DEL PACÍFICO"),
-        ASIAN_PACIFIC_ISLANDER("ASIAN", "ASIÁTICO"),
+        DECLINE("DECLINE TO STATE", "RECHAZAR"),
+        ASIAN("ASIAN", "ASIÁTICO"),
         BLACK("BLACK OR AFRICAN AMERICAN", "AFROAMERICANO"),
-        HISPANIC("HISPANIC OR LATINO", "HISPANO"),
-        MULTI_RACIAL("TWO OR MORE RACES", "MULTI"),
-        WHITE("WHITE", "ANGLOSAJÓN"),
-        DECLINE("DECLINE TO STATE", "RECHAZAR");
+        HISPANIC_OR_LATINO("HISPANIC OR LATINO", "HISPÁNO/A O LATINO/A"),
+        AM_IND_AK_NATIVE("NATIVE AMERICAN OR ALASKAN NATIVE", "NATIVO AMERICANO/A O NATIVO/A DE ALASKA"),
+        NATIVE_HAWAIIAN("NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER","HAWAIANO/A O ISLEÑO/A DEL PACÍFICO"),
+        OTHER("OTHER", "OTRA RAZA"),
+        MULTI_RACIAL("TWO OR MORE RACES", "DOS O MÁS RAZAS"),
+        WHITE("WHITE", "ANGLOSAJÓN");
 
         private final String enRace;
         private final String esRace;
@@ -341,7 +341,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
                     return val;
                 }
             }
-            return OTHER;
+            return DECLINE;
         }
     }
 
