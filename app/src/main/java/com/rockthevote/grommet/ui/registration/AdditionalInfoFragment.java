@@ -30,6 +30,7 @@ import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.EmailOrEmpty;
+import com.rockthevote.grommet.util.KeyboardUtil;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -43,7 +44,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
-import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -76,7 +76,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @BindView(R.id.til_other_party) TextInputLayout otherPartyTIL;
     @BindView(R.id.other_party_edit_text) EditText otherPartyEditText;
 
-    @BindView(R.id.preferred_language) EditText preferredLanguage;
+    @BindView(R.id.spinner_preferred_language) BetterSpinner langPrefSpinner;
 
     @Length(min = 8, max = 8, messageResId = R.string.error_penn_dot)
     @BindView(R.id.til_penn_dot) TextInputLayout pennDOTTIL;
@@ -107,6 +107,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private EnumAdapter<Race> raceEnumAdapter;
     private EnumAdapter<Party> partyEnumAdapter;
 
+    private EnumAdapter<AdditionalInfo.PreferredLanguage> preferredLanguageEnumAdapter;
     private EnumAdapter<RockyRequest.PhoneType> phoneTypeEnumAdapter;
     private PhoneNumberFormattingTextWatcher phoneFormatter;
 
@@ -173,6 +174,14 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                     View.VISIBLE : View.GONE);
         }
 
+        // set up preferred language spinner
+        preferredLanguageEnumAdapter = new EnumAdapter<>(getActivity(), AdditionalInfo.PreferredLanguage.class);
+        langPrefSpinner.setAdapter(preferredLanguageEnumAdapter);
+        langPrefSpinner.setOnItemClickListener((adapterView, view1, i, l) -> {
+            langPrefSpinner.getEditText().setText(preferredLanguageEnumAdapter.getItem(i).toString());
+            langPrefSpinner.dismiss();
+        });
+
     }
 
     @Override
@@ -202,6 +211,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onResume() {
         super.onResume();
+
         subscriptions = new CompositeSubscription();
 
         phoneFormatter = new PhoneNumberFormattingTextWatcher("US");
@@ -235,7 +245,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                                 .build(),
                         RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()))));
 
-        subscriptions.add(RxTextView.afterTextChangeEvents(preferredLanguage)
+        subscriptions.add(RxTextView.afterTextChangeEvents(langPrefSpinner.getEditText())
                 .observeOn(Schedulers.io())
                 .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
                 .subscribe(event -> AdditionalInfo.insertOrUpdate(db, rockyRequestRowId.get(),

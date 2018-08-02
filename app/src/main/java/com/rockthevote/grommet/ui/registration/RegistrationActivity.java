@@ -121,6 +121,7 @@ public class RegistrationActivity extends BaseActivity {
     private void updateNavigation(int pagePosition) {
         previousButton.setEnabled(pagePosition != 0);
         nextButton.setEnabled(pagePosition != adapter.getCount() - 1);
+        KeyboardUtil.hideKeyboard(this);
     }
 
     @Override

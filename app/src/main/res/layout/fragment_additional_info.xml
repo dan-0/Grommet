@@ -10,6 +10,7 @@
     android:animateLayoutChanges="true"
     android:columnCount="2"
     android:useDefaultMargins="true"
+    android:focusableInTouchMode="true"
     >
 
     <TextView
@@ -22,29 +23,16 @@
         android:text="@string/section_label_election_info"
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_preferred_language"
-        android:layout_width="0dip"
+    <com.rockthevote.grommet.ui.misc.BetterSpinner
+        android:id="@+id/spinner_preferred_language"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:layout_marginEnd="@dimen/content_margin"
         android:layout_marginStart="@dimen/content_margin"
-        android:paddingBottom="@dimen/content_area_padding"
-        android:paddingTop="@dimen/content_area_padding"
-        app:errorEnabled="false"
-        >
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/preferred_language"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/preferred_language_label"
-            android:inputType="text"
-            android:maxLength="50"
-            android:maxLines="1"
-            android:text="@string/preferred_language_default"/>
-
-    </android.support.design.widget.TextInputLayout>
+        android:hint="@string/preferred_language_label"
+        app:errorEnabled="false"/>
 
     <com.rockthevote.grommet.ui.misc.BetterSpinner
         android:id="@+id/spinner_race"
