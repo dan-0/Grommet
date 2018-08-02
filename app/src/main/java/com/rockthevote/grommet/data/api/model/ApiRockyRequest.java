@@ -119,6 +119,7 @@ public abstract class ApiRockyRequest {
                                          ApiGeoLocation geoLocation) {
 
         return builder()
+                .lang(rockyRequest.language().toString())
                 .phoneType(rockyRequest.phoneType().toString())
                 .partnerId(rockyRequest.partnerId())
                 .partnerOptInEmail(rockyRequest.partnerOptInEmail())

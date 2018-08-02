@@ -20,6 +20,7 @@ import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.RockyRequest.Language;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.db.model.VoterId;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -236,8 +237,14 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     public void onRegisterClick(View v) {
         if (!signaturePad.isEmpty()) {
             signaturePadError.setVisibility(View.GONE);
+
+            // get language the form was completed in
+            Language lang = "es".equals(Locale.getDefault().getLanguage()) ?
+                    Language.SPANISH : Language.ENGLISH;
+
             db.update(RockyRequest.TABLE,
                     new RockyRequest.Builder()
+                            .language(lang)
                             .status(RockyRequest.Status.FORM_COMPLETE)
                             .build(),
                     RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));

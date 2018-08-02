@@ -66,7 +66,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public abstract Status status();
 
     @Nullable
-    public abstract String language();
+    public abstract Language language();
 
     @Nullable
     public abstract PhoneType phoneType();
@@ -123,7 +123,7 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
     public static final Func1<Cursor, RockyRequest> MAPPER = cursor -> {
         long id = Db.getLong(cursor, _ID);
         Status status = Status.fromString(Db.getString(cursor, STATUS));
-        String language = Db.getString(cursor, LANGUAGE);
+        Language language = Language.fromString(Db.getString(cursor, LANGUAGE));
         PhoneType phoneType = PhoneType.fromString(Db.getString(cursor, PHONE_TYPE));
         String partnerId = Db.getString(cursor, PARTNER_ID);
         boolean optInEmail = Db.getBoolean(cursor, OPT_IN_EMAIL);
@@ -170,8 +170,8 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
             return this;
         }
 
-        public Builder language(String lang) {
-            values.put(LANGUAGE, lang);
+        public Builder language(Language lang) {
+            values.put(LANGUAGE, lang.toString());
             return this;
         }
 
@@ -444,6 +444,31 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
             }
             //use mobile as default
             return MOBILE;
+        }
+    }
+
+    public enum Language {
+        ENGLISH("en"),
+        SPANISH("es");
+
+        private final String language;
+
+        Language(String language) {
+            this.language = language;
+        }
+
+        @Override
+        public String toString() {
+            return language;
+        }
+
+        public static Language fromString(String language) {
+            for (Language val : values()) {
+                if (val.toString().equals(language)) {
+                    return val;
+                }
+            }
+            return ENGLISH;
         }
     }
 }
