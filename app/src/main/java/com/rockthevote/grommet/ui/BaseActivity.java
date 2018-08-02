@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
@@ -20,12 +21,22 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.EventName;
+import com.squareup.sqlbrite.BriteDatabase;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
+
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
 
 
 public class BaseActivity extends AppCompatActivity {
@@ -37,12 +48,14 @@ public class BaseActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView drawer;
     private ViewGroup content;
+    private TextView pendingRegistrations;
 
     private ObjectGraph appGraph;
     private Handler handler;
 
     private ViewGroup container;
     @Inject ViewContainer viewContainer;
+    @Inject BriteDatabase db;
 
 
     @Inject
@@ -52,6 +65,7 @@ public class BaseActivity extends AppCompatActivity {
     @Inject
     @EventName
     Preference<String> eventNamePref;
+    private Subscription pendingSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +78,12 @@ public class BaseActivity extends AppCompatActivity {
         container = viewContainer.forActivity(this);
 
         if (getSelfNavDrawerItem() != NAVDRAWER_INVALID) {
+
             inflater.inflate(R.layout.activity_base, container);
             drawerLayout = (DrawerLayout) findViewById(R.id.base_drawer_layout);
             drawer = (NavigationView) findViewById(R.id.base_navigation);
             content = (ViewGroup) findViewById(R.id.base_content);
+
             handler = new Handler();
         }
 
@@ -77,6 +93,10 @@ public class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (getSelfNavDrawerItem() != NAVDRAWER_INVALID) {
+            pendingRegistrations = (TextView) drawer.getMenu()
+                    .findItem(R.id.pending_registrations_item)
+                    .getActionView()
+                    .findViewById(R.id.pending_registrations);
             setUpNavDrawer();
         }
     }
@@ -86,6 +106,7 @@ public class BaseActivity extends AppCompatActivity {
         super.onPause();
         if (getSelfNavDrawerItem() != NAVDRAWER_INVALID) {
 //            unsubscribe from subscriptions here
+            pendingSubscription.unsubscribe();
         }
     }
 
@@ -112,6 +133,16 @@ public class BaseActivity extends AppCompatActivity {
 
         TextView version = (TextView) drawer.getHeaderView(0).findViewById(R.id.version);
         version.setText("Version " + BuildConfig.VERSION_NAME);
+
+        // check for registrations to upload
+        pendingSubscription = db.createQuery(Session.TABLE, RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(query -> {
+                    Cursor cursor = query.run();
+                    if (cursor != null) {
+                        pendingRegistrations.setText(String.valueOf(cursor.getCount()));
+                    }
+                });
     }
 
     private void goToNavDrawerItem(MenuItem item) {

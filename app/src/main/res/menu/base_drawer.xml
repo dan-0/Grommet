@@ -1,5 +1,7 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single"
+        android:id="@+id/group_1">
         <item
             android:id="@+id/nav_home"
             android:checked="true"
@@ -21,5 +23,12 @@
             android:icon="@drawable/ic_help_outline_black_24dp"
             android:title="@string/nav_title_help"
             />
+    </group>
+
+    <group android:id="@+id/group_2">
+        <item
+            android:id="@+id/pending_registrations_item"
+            android:title="Pending Registration"
+            app:actionLayout="@layout/pending_registrations_menu_item"/>
     </group>
 </menu>
