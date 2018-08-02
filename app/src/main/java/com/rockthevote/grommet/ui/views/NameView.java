@@ -46,18 +46,18 @@ public class NameView extends FrameLayout {
 
     @BindView(R.id.name_section_title) TextView sectionTitle;
 
-    @NotEmpty
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.spinner_title) BetterSpinner titleSpinner;
 
     @BindView(R.id.spinner_suffix) BetterSpinner suffixSpinner;
 
-    @NotEmpty
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_first_name) TextInputLayout firstNameTIL;
     @BindView(R.id.first_name) EditText firstNameEditText;
 
     @BindView(R.id.middle_name) EditText middleNameEditText;
 
-    @NotEmpty
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_last_name) TextInputLayout lastNameTIL;
     @BindView(R.id.last_name) EditText lastNameEditText;
 

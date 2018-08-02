@@ -47,7 +47,6 @@
     <string name="checkbox_address_changed">He cambiado mi dirección.</string>
     <string name="checkbox_name_changed">He cambiado mi nombre.</string>
     <string name="label_receive_text">Estoy de acuerdo que puede llamar a %s/Pennsylvania Voice/State Voices y texto con actualizaciones importantes y recordatorios.</string>
-    <string name="label_no_address">No tengo dirección normal ni dirección permanente</string>
     <string name="error_no_address">Completa registro mediante formulario en papel</string>
     <string name="zip_code_error">código postal no válido</string>
 
@@ -171,4 +170,6 @@ Presentar una solicitud con datos falsos también puede estar sujeto a otras san
     <string name="political_party_change">He cambiado mi partido político</string>
     <string name="unit_type">Tipo</string>
     <string name="required_field">Requerido</string>
+    <string name="must_be_checked">Debe ser revisado</string>
+    <string name="birthday_error">Debe ser 18 por %s</string>
 </resources>

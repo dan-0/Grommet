@@ -253,6 +253,7 @@ Submitting an application containing false information may also subject a person
     <string name="upload_notification_content_client_failure" translatable="false">Bad registration data</string>
     <string name="upload_notification_content_connection_failure" translatable="false">Unable to contact server</string>
     <string name="required_field">This field is required</string>
+    <string name="must_be_checked">Must Be Checked</string>
 
     <string name="about_activity_text" translatable="false">
 <![CDATA[
