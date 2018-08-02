@@ -181,7 +181,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         // set up defaults
         if (null == savedInstanceState) {
-            raceSpinner.getEditText().setText(Race.OTHER.toString());
             phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(0).toString());
         }
 
