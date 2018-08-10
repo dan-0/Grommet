@@ -2,6 +2,7 @@ package com.rockthevote.grommet.ui;
 
 import android.Manifest;
 import android.app.ActivityOptions;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -20,6 +21,7 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
+import com.rockthevote.grommet.data.NetworkChangeReceiver;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
@@ -89,7 +91,6 @@ public final class MainActivity extends BaseActivity {
                 .subscribe(query -> {
                     Cursor cursor = query.run();
                     if (cursor != null) {
-                        Timber.d("pending subscription" + String.valueOf(cursor.getCount()));
                         pendingRegistrations.setText(String.valueOf(cursor.getCount()));
                     }
                 });

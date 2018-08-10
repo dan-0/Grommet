@@ -2,10 +2,8 @@ package com.rockthevote.grommet.data.api;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,7 +11,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.NetworkChangeReceiver;
 import com.rockthevote.grommet.data.api.model.ApiAdditionalInfo;
 import com.rockthevote.grommet.data.api.model.ApiAddress;
 import com.rockthevote.grommet.data.api.model.ApiContactMethod;
@@ -113,16 +110,6 @@ public class RegistrationService extends Service {
 
         } else {
             Timber.d("RegistrationService stopping: no wifi");
-
-            // if we don't have connectivity start a receiver to listen for connectivity change
-            // and restart this service
-            Context context = getApplicationContext();
-            ComponentName receiver = new ComponentName(context, NetworkChangeReceiver.class);
-            PackageManager pm = context.getPackageManager();
-
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-
             stopSelf();
         }
     }

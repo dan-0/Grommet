@@ -1,14 +1,18 @@
 package com.rockthevote.grommet;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.LumberYard;
+import com.rockthevote.grommet.data.NetworkChangeReceiver;
 import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
@@ -36,6 +40,8 @@ public final class GrommetApp extends Application {
 
     @Inject BriteDatabase db;
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
+
+    BroadcastReceiver br = new NetworkChangeReceiver();
 
     @Override
     public void onCreate() {
@@ -87,6 +93,10 @@ public final class GrommetApp extends Application {
             }
         }
         cursor.close();
+
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        this.registerReceiver(br, filter);
 
     }
 
