@@ -14,6 +14,7 @@ import android.widget.DatePicker;
 import com.f2prateek.rx.preferences2.Preference;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.mobsandgeeks.saripaar.annotation.Checked;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
@@ -54,6 +55,7 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     @BindView(R.id.previous_name_divider) View previousNameDivider;
     @BindView(R.id.previous_name) NameView previousName;
 
+    @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_birthday) TextInputLayout tilBirthday;
     @BindView(R.id.edittext_birthday) TextInputEditText birthdayEditText;
 
