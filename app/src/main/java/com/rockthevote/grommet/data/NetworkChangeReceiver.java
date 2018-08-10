@@ -27,12 +27,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         if (isConnected) {
             Intent regIntent = new Intent(context, RegistrationService.class);
             context.startService(regIntent);
-
-            ComponentName receiver = new ComponentName(context, NetworkChangeReceiver.class);
-            PackageManager pm = context.getPackageManager();
-
-            pm.setComponentEnabledSetting(receiver,
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER, 0);
         }
     }
 }
