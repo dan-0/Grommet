@@ -25,10 +25,4 @@
             />
     </group>
 
-    <group android:id="@+id/group_2">
-        <item
-            android:id="@+id/pending_registrations_item"
-            android:title="Pending Registration"
-            app:actionLayout="@layout/pending_registrations_menu_item"/>
-    </group>
 </menu>

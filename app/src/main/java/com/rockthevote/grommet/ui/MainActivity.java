@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -13,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.BuildConfig;
@@ -34,10 +36,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_IN;
 
@@ -47,6 +52,7 @@ public final class MainActivity extends BaseActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.viewpager) ViewPager viewPager;
     @BindView(R.id.main_content) CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.pending_registrations) TextView pendingRegistrations;
 
     @Inject @PartnerId Preference<String> partnerIdPref;
 
@@ -66,6 +72,8 @@ public final class MainActivity extends BaseActivity {
 
     @Inject HockeyAppHelper hockeyAppHelper;
 
+    private Subscription pendingSubscription;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +82,17 @@ public final class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         requestGPSPermission();
         hockeyAppHelper.checkForUpdates(this);
+
+        // check for registrations to upload
+        pendingSubscription = db.createQuery(Session.TABLE, RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(query -> {
+                    Cursor cursor = query.run();
+                    if (cursor != null) {
+                        Timber.d("pending subscription" + String.valueOf(cursor.getCount()));
+                        pendingRegistrations.setText(String.valueOf(cursor.getCount()));
+                    }
+                });
     }
 
     @Override
@@ -92,6 +111,7 @@ public final class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         hockeyAppHelper.unRegister();
+        pendingSubscription.unsubscribe();
     }
 
     private void requestGPSPermission() {

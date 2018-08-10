@@ -48,7 +48,6 @@ public class BaseActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView drawer;
     private ViewGroup content;
-    private TextView pendingRegistrations;
 
     private ObjectGraph appGraph;
     private Handler handler;
@@ -65,7 +64,6 @@ public class BaseActivity extends AppCompatActivity {
     @Inject
     @EventName
     Preference<String> eventNamePref;
-    private Subscription pendingSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +91,6 @@ public class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (getSelfNavDrawerItem() != NAVDRAWER_INVALID) {
-            pendingRegistrations = (TextView) drawer.getMenu()
-                    .findItem(R.id.pending_registrations_item)
-                    .getActionView()
-                    .findViewById(R.id.pending_registrations);
             setUpNavDrawer();
         }
     }
@@ -106,7 +100,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onPause();
         if (getSelfNavDrawerItem() != NAVDRAWER_INVALID) {
 //            unsubscribe from subscriptions here
-            pendingSubscription.unsubscribe();
         }
     }
 
@@ -134,15 +127,7 @@ public class BaseActivity extends AppCompatActivity {
         TextView version = (TextView) drawer.getHeaderView(0).findViewById(R.id.version);
         version.setText("Version " + BuildConfig.VERSION_NAME);
 
-        // check for registrations to upload
-        pendingSubscription = db.createQuery(Session.TABLE, RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(query -> {
-                    Cursor cursor = query.run();
-                    if (cursor != null) {
-                        pendingRegistrations.setText(String.valueOf(cursor.getCount()));
-                    }
-                });
+
     }
 
     private void goToNavDrawerItem(MenuItem item) {
