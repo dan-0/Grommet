@@ -131,8 +131,35 @@ public abstract class AdditionalInfo implements Parcelable, BaseColumns {
     }
 
     public enum PreferredLanguage {
-        ENGLISH("English", "Inglés"),
-        SPANISH("Spanish", "Español");
+        ENGLISH("English", "Ingles"),
+        SPANISH("Spanish", "Español"),
+        CHINESE("Chinese", "Chino"),
+        GERMAN("German", "Aleman"),
+        ITALIAN("Italian", "Italiano"),
+        FRENCH("French", "Francés"),
+        ARABIC("Arabic", "Arabe"),
+        ARMENIAN("Armenian", "Armenio"),
+        CREOLE("Creole", "Criollo"),
+        CROATION("Croation", "Croata"),
+        GREEK("Greek", "Griego"),
+        GUJARATI("Gujarati", "Gujarati"),
+        HEBREW("Hebrew", "Hebreo"),
+        HINDI("Hindi", "Hindi"),
+        HMOUNG("Hmoung", "Hmong"),
+        HUNGARIAN("Hungarian", "Húngaro"),
+        JAPANESE("Japanese", "Japonés"),
+        KOREAN("Korean", "Coreano"),
+        LAOTIAN("Laotian", "Laosiano"),
+        KHMER("Khmer", "Khmer"),
+        NAVAJO("Navajo", "Navajo"),
+        PERSIAN("Persian", "Persa"),
+        POLISH("Polish", "Polaco"),
+        PORTUGUESE("Portuguese", "Portugués"),
+        RUSSIAN("Russian", "Ruso"),
+        TAGALOG("Tagalog", "Tagalo"),
+        THAI("Thai", "Tailandés"),
+        URDU("Urdu", "Urdu"),
+        VIETNAMESE("Vietnamese", "Vietnamita");
 
         private final String enPref;
         private final String esPref;
