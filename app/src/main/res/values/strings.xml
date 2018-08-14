@@ -41,7 +41,7 @@
     <string name="shift_timeout_message" translatable="false">Your canvassing shift has timed out. Please start a new shift to continue.</string>
     <string name="validating_partner_id" translatable="false">Validating Partner ID</string>
     <string name="shift_progress" translatable="false">Shift Progress</string>
-    <string name="pending_registrations"> Pending Registrations</string>
+    <string name="pending_registrations">Applications Pending Upload</string>
 
     <!--Registration Activity Strings-->
     <string name="cancel_dialog_message">Cancel current registration?</string>
