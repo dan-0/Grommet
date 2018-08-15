@@ -94,6 +94,10 @@ android {
             dimension "default"
             applicationId 'com.rockethevote.grommet'
         }
+        practice {
+            dimension "default"
+            applicationId 'com.rockthevote.grommet.practice'
+        }
     }
 
     lintOptions {
@@ -117,6 +121,7 @@ android {
     }
 
     sourceSets {
+
         internalDebug {
             assets.srcDirs = ['src/internalDebug/assets', 'src/internalDebug/assets/']
             res.srcDirs = ['src/internalDebug/res', 'src/internalDebug/res/']
@@ -129,15 +134,23 @@ android {
             manifest.srcFile
             'src/internalDebug/AndroidManifest.xml'
         }
+
         internalRelease {
             res.srcDirs = ['src/internalRelease/res', 'src/internalRelease/res/']
             manifest.srcFile 'src/internalRelease/AndroidManifest.xml'
         }
-        productionDebug { res.srcDirs = ['src/productionDebug/res', 'src/productionDebug/res/'] }
+
+        productionDebug {
+            res.srcDirs = ['src/productionDebug/res', 'src/productionDebug/res/']
+        }
+
         productionRelease {
             res.srcDirs = ['src/productionRelease/res', 'src/productionRelease/res/']
         }
-        internal { res.srcDirs = ['src/internal/res', 'src/internal/res/'] }
+
+        internal {
+            res.srcDirs = ['src/internal/res', 'src/internal/res/']
+        }
     }
 
     packagingOptions {
