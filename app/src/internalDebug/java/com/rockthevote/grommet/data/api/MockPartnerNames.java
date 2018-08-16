@@ -9,7 +9,7 @@ public final class MockPartnerNames {
     static final PartnerNameResponse SUCCESS = PartnerNameResponse.builder()
             .isValid(true)
             .partnerName("OSET Org")
-            .sessionTimeoutLength(10)
+            .sessionTimeoutLength(2)
             .registrationDeadlineDate(Dates.parseISO8601_ShortDate("2018-09-01"))
             .registrationNotificationText(RegistrationNotificationText.builder()
                     .english("english text")
