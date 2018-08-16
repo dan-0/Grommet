@@ -167,7 +167,7 @@ public class RegistrationService extends Service {
 
     private void reportClockOutIfNeeded() {
         // check to see if there are any clock out reports to send
-        Cursor cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_IN);
+        Cursor cursor = db.query(Session.SELECT_UNREPORTED_CLOCK_OUT);
         int rows = cursor.getCount();
         cursor.close();
         outTotalCount.set(rows);
