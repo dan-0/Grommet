@@ -167,6 +167,7 @@ configurations {
     internalDebugImplementation
     internalReleaseImplementation
     productionReleaseImplementation
+    practiceReleaseImplementation
 }
 
 dependencies {
@@ -198,6 +199,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.4'
     internalReleaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
     productionReleaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
+    practiceReleaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
 
     internalImplementation 'com.mattprecious.telescope:telescope:2.1.0'
 
