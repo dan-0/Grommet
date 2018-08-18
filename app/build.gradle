@@ -1,6 +1,6 @@
 // Manifest version information!
 def versionMajor = 2
-def versionMinor = 4
+def versionMinor = 5
 def versionPatch = 0
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
@@ -38,7 +38,7 @@ def gitTimestamp() {
 }
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
 
     signingConfigs {
         grommet {
@@ -58,7 +58,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
 //        multiDexEnabled true
 
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
