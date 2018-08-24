@@ -2,7 +2,6 @@ package com.rockthevote.grommet.ui;
 
 import android.Manifest;
 import android.app.ActivityOptions;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,10 +17,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
-import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
-import com.rockthevote.grommet.data.NetworkChangeReceiver;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
@@ -40,7 +37,6 @@ import butterknife.OnClick;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -147,18 +143,20 @@ public final class MainActivity extends BaseActivity {
                 })
                 .create();
 
-        db.createQuery(Session.TABLE,
-                Session.SELECT_CURRENT_SESSION)
-                .mapToOne(Session.MAPPER)
-                .first()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(session -> {
-                    if (CLOCKED_IN == session.sessionStatus()) {
-                        createNewVoterRecord(session);
-                    } else {
-                        dialog.show();
-                    }
-                });
+        Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
+        int rows = cursor.getCount();
+        if (rows == 0) {
+            dialog.show();
+        } else {
+            cursor.moveToNext();
+            Session session = Session.MAPPER.call(cursor);
+            if(session.sessionStatus() == CLOCKED_IN){
+                createNewVoterRecord(session);
+            } else {
+                dialog.show();
+            }
+        }
+        cursor.close();
     }
 
     private void createNewVoterRecord(Session session) {

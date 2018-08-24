@@ -46,8 +46,9 @@ public final class DebugApiModule {
     @Singleton
     @Named("Api")
     OkHttpClient provideApiClient(OkHttpClient client,
-                                  HttpLoggingInterceptor loggingInterceptor) {
+                                  HttpLoggingInterceptor loggingInterceptor, HeaderInterceptor headerInterceptor) {
         return ApiModule.createApiClient(client)
+                .addInterceptor(headerInterceptor)
                 .addInterceptor(loggingInterceptor)
                 .build();
     }
