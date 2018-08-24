@@ -31,6 +31,7 @@ import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.data.prefs.PartnerTimeout;
 import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
 import com.rockthevote.grommet.util.Dates;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -72,6 +73,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Inject @PartnerId Preference<String> partnerIdPref;
     @Inject @PartnerName Preference<String> partnerNamePref;
     @Inject @DeviceID Preference<String> deviceIdPref;
+    @Inject @PartnerTimeout Preference<Long> partnerTimeoutPref;
 
     private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -247,6 +249,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 .openTrackingId(eventNamePref.get())
                 .partnerTrackingId(eventZipPref.get())
                 .canvasserName(canvasserNamePref.get())
+                .sessionTimeout(partnerTimeoutPref.get())
                 .clockInTime(new Date())
                 .deviceId(deviceIdPref.get())
                 .sessionStatus(CLOCKED_IN);
