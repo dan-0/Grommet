@@ -81,12 +81,8 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
         int rows = cursor.getCount();
         cursor.close();
 
-        if (rows == 0) {
-            if (Strings.isBlank(partnerIdPref.get())) {
-                return PARTNER_UPDATE;
-            } else {
-                return NEW_SESSION;
-            }
+        if (Strings.isBlank(partnerIdPref.get()) || rows == 0) {
+            return PARTNER_UPDATE;
         } else {
 
             cursor = db.query(Session.SELECT_CURRENT_SESSION);
