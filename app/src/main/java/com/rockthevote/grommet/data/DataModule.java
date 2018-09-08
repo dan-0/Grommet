@@ -15,6 +15,7 @@ import com.rockthevote.grommet.data.api.model.DateAdapter;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
 import com.rockthevote.grommet.data.db.DbModule;
+import com.rockthevote.grommet.data.prefs.AppVersion;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
@@ -90,6 +91,14 @@ public final class DataModule {
                 app.getResources().getString(R.string.pref_key_registration_deadline),
                 Calendar.getInstance().getTime(),
                 new RegistrationDeadlinePreferenceConverter());
+    }
+
+    @Provides
+    @Singleton
+    @AppVersion
+    Preference<Integer> provideAppVersion(RxSharedPreferences prefs, Application app) {
+        return prefs.getInteger(
+                app.getResources().getString(R.string.pref_key_app_version), 0);
     }
 
     @Provides

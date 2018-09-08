@@ -225,6 +225,7 @@ Submitting an application containing false information may also subject a person
     <string name="pref_key_device_id" translatable="false">device_id</string>
     <string name="pref_key_registration_text" translatable="false">registration_text</string>
     <string name="pref_key_registration_deadline" translatable="false">registration_deadline</string>
+    <string name="pref_key_app_version" translatable="false">app_version</string>
     <string name="pref_key_partner_name" translatable="false">partner_name</string>
     <string name="pref_key_canvasser_name" translatable="false">canvasser_name</string>
     <string name="pref_key_event_zip_code" translatable="false">event_zip</string>
