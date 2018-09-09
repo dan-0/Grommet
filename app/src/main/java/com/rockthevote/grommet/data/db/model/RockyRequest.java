@@ -61,6 +61,12 @@ public abstract class RockyRequest implements Parcelable, BaseColumns {
             + " WHERE "
             + STATUS + " = ? ";
 
+    public static final String COUNT_BY_STATUS = ""
+            + "SELECT COUNT(*) FROM "
+            + TABLE
+            + " WHERE "
+            + STATUS + " = ? ";
+
     public abstract long id();
 
     public abstract Status status();

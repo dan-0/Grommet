@@ -54,16 +54,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private ViewGroup container;
     @Inject ViewContainer viewContainer;
-    @Inject BriteDatabase db;
 
-
-    @Inject
-    @CanvasserName
-    Preference<String> canvasserNamePref;
-
-    @Inject
-    @EventName
-    Preference<String> eventNamePref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

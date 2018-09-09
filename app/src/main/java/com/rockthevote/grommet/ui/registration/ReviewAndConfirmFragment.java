@@ -118,7 +118,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         signaturePad.setOnSignedListener(this);
 
         subscriptions.add(db.createQuery(Name.TABLE, Name.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), CURRENT_NAME.toString()})
+                String.valueOf(rockyRequestRowId.get()), CURRENT_NAME.toString())
                 .mapToOne(Name.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(name -> {
@@ -126,7 +126,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(Address.TABLE, Address.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), REGISTRATION_ADDRESS.toString()})
+                String.valueOf(rockyRequestRowId.get()), REGISTRATION_ADDRESS.toString())
                 .mapToOne(Address.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(address -> {
@@ -157,7 +157,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(Address.TABLE, Address.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), MAILING_ADDRESS.toString()})
+                String.valueOf(rockyRequestRowId.get()), MAILING_ADDRESS.toString())
                 .mapToOne(Address.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(address -> {
@@ -165,7 +165,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(ContactMethod.TABLE, ContactMethod.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), EMAIL.toString()})
+                String.valueOf(rockyRequestRowId.get()), EMAIL.toString())
                 .mapToOne(ContactMethod.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(contactMethod -> {
@@ -173,7 +173,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(ContactMethod.TABLE, ContactMethod.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), PHONE.toString()})
+                String.valueOf(rockyRequestRowId.get()), PHONE.toString())
                 .mapToOne(ContactMethod.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(contactMethod -> {

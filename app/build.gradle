@@ -228,8 +228,10 @@ dependencies {
     implementation 'pl.charmas.android:android-reactive-location:0.9@aar'
     implementation 'com.squareup.sqlbrite:sqlbrite:0.6.3'
     implementation 'io.reactivex:rxjava:1.1.8'
+    implementation 'io.reactivex:rxandroid:1.0.1'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.3'
     implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3'
+
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 }
 
