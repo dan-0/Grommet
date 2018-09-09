@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences2.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
@@ -179,6 +180,12 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 .subscribe(contactMethod -> {
                     phone.setText(contactMethod.value());
                 }));
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Injector.obtain(getActivity()).inject(this);
     }
 
     @Override

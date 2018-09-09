@@ -38,7 +38,6 @@ import butterknife.OnClick;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -88,53 +87,15 @@ public final class MainActivity extends BaseActivity {
 
     }
 
-    @OnClick(R.id.test_button)
-    public void onClickTest(View v) {
-
-        db.createQuery(Session.TABLE, RockyRequest.COUNT_BY_STATUS, FORM_COMPLETE.toString())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(query -> {
-                    Cursor cursor = query.run();
-                    try {
-                        if (cursor.moveToNext()) {
-                            this.pendingRegistrations.setText(String.valueOf(cursor.getInt(0)));
-                        }
-                    } finally {
-                        cursor.close();
-                    }
-                });
-
-        long id = 0;
-        Cursor cursor = db.query(RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString());
-        if (cursor.moveToNext()) {
-            id = RockyRequest.MAPPER.call(cursor).id();
-        }
-        cursor.close();
-
-        int rows = db.update(RockyRequest.TABLE,
-                new RockyRequest.Builder()
-                        .status(RockyRequest.Status.REGISTER_SUCCESS)
-                        .build(),
-                RockyRequest._ID + " = ? ", String.valueOf(id));
-
-        Timber.d("foo updated %s rows", rows);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         hockeyAppHelper.checkForCrashes(this);
 
         subscriptions = new CompositeSubscription();
+//
         // check for registrations to upload
-//        subscriptions.add(db.createQuery(Session.TABLE, RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
-//                .mapToList(RockyRequest.MAPPER)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(requests -> {
-//                    this.pendingRegistrations.setText(String.valueOf(requests.size()));
-//                }));
-
-        subscriptions.add(db.createQuery(Session.TABLE, RockyRequest.COUNT_BY_STATUS, FORM_COMPLETE.toString())
+        subscriptions.add(db.createQuery(RockyRequest.TABLE, RockyRequest.COUNT_BY_STATUS, FORM_COMPLETE.toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(query -> {
                     Cursor cursor = query.run();

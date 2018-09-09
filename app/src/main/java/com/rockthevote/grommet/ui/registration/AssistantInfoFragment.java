@@ -16,6 +16,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
@@ -84,6 +85,12 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
         Validator.registerAnnotation(Phone.class);
         validator = new ObservableValidator(this, getActivity());
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Injector.obtain(getActivity()).inject(this);
     }
 
     @Override
