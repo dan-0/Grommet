@@ -17,6 +17,7 @@ import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
@@ -187,6 +188,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Injector.obtain(getActivity()).inject(this);
 
         // set up defaults
         if (null == savedInstanceState) {

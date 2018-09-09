@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
@@ -76,6 +77,7 @@ public class RegistrationActivity extends BaseActivity {
         getWindow().setEnterTransition(new Slide());
 
         super.onCreate(savedInstanceState);
+        Injector.obtain(this).inject(this);
 
         ViewGroup contentView = getContentView();
         getLayoutInflater().inflate(R.layout.activity_registration, contentView);

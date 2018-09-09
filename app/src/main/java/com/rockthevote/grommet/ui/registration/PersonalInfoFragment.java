@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.views.AddressView;
@@ -54,6 +55,12 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Injector.obtain(getActivity()).inject(this);
     }
 
     @OnCheckedChanged(R.id.mailing_address_is_different)

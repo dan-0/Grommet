@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
+import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
@@ -35,8 +36,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -70,45 +71,56 @@ public final class MainActivity extends BaseActivity {
 
     @Inject HockeyAppHelper hockeyAppHelper;
 
-    private Subscription pendingSubscription;
+    private CompositeSubscription subscriptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injector.obtain(this).inject(this);
+
         View view = getLayoutInflater().inflate(R.layout.activity_main, getContentView());
         ButterKnife.bind(this, view);
         setSupportActionBar(toolbar);
         requestGPSPermission();
         hockeyAppHelper.checkForUpdates(this);
 
-        // check for registrations to upload
-        pendingSubscription = db.createQuery(Session.TABLE, RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(query -> {
-                    Cursor cursor = query.run();
-                    if (cursor != null) {
-                        pendingRegistrations.setText(String.valueOf(cursor.getCount()));
-                    }
-                });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         hockeyAppHelper.checkForCrashes(this);
+
+        subscriptions = new CompositeSubscription();
+//
+        // check for registrations to upload
+        subscriptions.add(db.createQuery(RockyRequest.TABLE, RockyRequest.COUNT_BY_STATUS, FORM_COMPLETE.toString())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(query -> {
+                    Cursor cursor = query.run();
+                    try {
+                        if (cursor.moveToNext()) {
+                            this.pendingRegistrations.setText(String.valueOf(cursor.getInt(0)));
+                        }
+                    } finally {
+                        cursor.close();
+                    }
+                }));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         hockeyAppHelper.unRegister();
+        subscriptions.unsubscribe();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         hockeyAppHelper.unRegister();
-        pendingSubscription.unsubscribe();
     }
 
     private void requestGPSPermission() {

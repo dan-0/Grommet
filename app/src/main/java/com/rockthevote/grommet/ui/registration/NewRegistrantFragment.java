@@ -16,6 +16,7 @@ import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -87,6 +88,12 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         validator = new ObservableValidator(this, getActivity());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Injector.obtain(getActivity()).inject(this);
     }
 
     @Override

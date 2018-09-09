@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences2.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
@@ -118,7 +119,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         signaturePad.setOnSignedListener(this);
 
         subscriptions.add(db.createQuery(Name.TABLE, Name.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), CURRENT_NAME.toString()})
+                String.valueOf(rockyRequestRowId.get()), CURRENT_NAME.toString())
                 .mapToOne(Name.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(name -> {
@@ -126,7 +127,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(Address.TABLE, Address.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), REGISTRATION_ADDRESS.toString()})
+                String.valueOf(rockyRequestRowId.get()), REGISTRATION_ADDRESS.toString())
                 .mapToOne(Address.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(address -> {
@@ -157,7 +158,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(Address.TABLE, Address.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), MAILING_ADDRESS.toString()})
+                String.valueOf(rockyRequestRowId.get()), MAILING_ADDRESS.toString())
                 .mapToOne(Address.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(address -> {
@@ -165,7 +166,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(ContactMethod.TABLE, ContactMethod.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), EMAIL.toString()})
+                String.valueOf(rockyRequestRowId.get()), EMAIL.toString())
                 .mapToOne(ContactMethod.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(contactMethod -> {
@@ -173,12 +174,18 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                 }));
 
         subscriptions.add(db.createQuery(ContactMethod.TABLE, ContactMethod.SELECT_BY_TYPE,
-                new String[]{String.valueOf(rockyRequestRowId.get()), PHONE.toString()})
+                String.valueOf(rockyRequestRowId.get()), PHONE.toString())
                 .mapToOne(ContactMethod.MAPPER)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(contactMethod -> {
                     phone.setText(contactMethod.value());
                 }));
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Injector.obtain(getActivity()).inject(this);
     }
 
     @Override
