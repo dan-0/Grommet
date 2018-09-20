@@ -42,6 +42,10 @@
     <string name="validating_partner_id" translatable="false">Validating Partner ID</string>
     <string name="shift_progress" translatable="false">Shift Progress</string>
     <string name="pending_registrations">Applications Pending Upload</string>
+    <string name="upload">upload</string>
+    <string name="check_wifi">Bad Network Connection</string>
+    <string name="login_no_wifi_error">Cannot login. Please check network connection</string>
+    <string name="no_wifi_upload_message">Cannot upload registrations. Please check network connection</string>
 
     <!--Registration Activity Strings-->
     <string name="cancel_dialog_message">Cancel current registration?</string>

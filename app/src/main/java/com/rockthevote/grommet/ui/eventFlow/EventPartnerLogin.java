@@ -3,6 +3,7 @@ package com.rockthevote.grommet.ui.eventFlow;
 import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,6 +133,17 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                             } else {
                                 edePartnerIdTIL.setError(
                                         getContext().getString(R.string.error_partner_id));
+
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle(R.string.check_wifi)
+                                        .setIcon(R.drawable.ic_warning_24dp)
+                                        .setMessage(R.string.login_no_wifi_error)
+                                        .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> dialogInterface.dismiss())
+                                        .create()
+                                        .show();
+
+
+
                             }
                         });
             }
