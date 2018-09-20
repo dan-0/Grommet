@@ -2,9 +2,12 @@ package com.rockthevote.grommet.ui;
 
 import android.Manifest;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -14,12 +17,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
@@ -52,6 +57,7 @@ public final class MainActivity extends BaseActivity {
     @BindView(R.id.viewpager) ViewPager viewPager;
     @BindView(R.id.main_content) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.pending_registrations) TextView pendingRegistrations;
+    @BindView(R.id.upload) Button upploadButton;
 
     @Inject @PartnerId Preference<String> partnerIdPref;
 
@@ -101,7 +107,10 @@ public final class MainActivity extends BaseActivity {
                     Cursor cursor = query.run();
                     try {
                         if (cursor.moveToNext()) {
-                            this.pendingRegistrations.setText(String.valueOf(cursor.getInt(0)));
+                            int count = cursor.getInt((0));
+                            this.pendingRegistrations.setText(String.valueOf(count));
+
+                            upploadButton.setEnabled(count > 0);
                         }
                     } finally {
                         cursor.close();
@@ -170,6 +179,38 @@ public final class MainActivity extends BaseActivity {
         }
         cursor.close();
     }
+
+    /**
+     * starts the upload process if wifi is available, else notifies the user there is no wifi.
+     * The button is enabled/disabled by the presense of pending applications
+     *
+     * @param v
+     */
+    @OnClick(R.id.upload)
+    public void onClickUpload(View v) {
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (activeNetwork != null && activeNetwork.isConnected()) {
+            Intent regService = new Intent(this, RegistrationService.class);
+            startService(regService);
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.check_wifi)
+                    .setIcon(R.drawable.ic_warning_24dp)
+                    .setMessage(R.string.no_wifi_upload_message)
+                    .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
+                        dialogInterface.dismiss();
+                    })
+                    .create()
+                    .show();
+
+
+        }
+
+    }
+
 
     private void createNewVoterRecord(Session session) {
         locationProvider.getLastKnownLocation()
