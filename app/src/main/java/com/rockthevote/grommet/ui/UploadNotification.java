@@ -72,6 +72,8 @@ public class UploadNotification {
         switch (status) {
             case REGISTER_SUCCESS:
                 return R.string.upload_notification_title_success;
+            case REGISTER_CLIENT_FAILURE:
+                return R.string.upload_notification_content_client_failure;
             case REGISTER_SERVER_FAILURE:
             default:
                 return R.string.upload_notification_title_failure;

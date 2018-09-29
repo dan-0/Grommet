@@ -132,8 +132,19 @@ public class RegistrationService extends Service {
 
         if (rows > 0) {
             // check for registrations to upload
+
+            String registrations = ""
+                    + "SELECT * FROM "
+                    + RockyRequest.TABLE
+                    + " WHERE "
+                    + STATUS + " IN ("
+                    + "'" + REGISTER_CLIENT_FAILURE.toString() + "', "
+                    + "'" + REGISTER_SERVER_FAILURE.toString() + "', "
+                    + "'" + FORM_COMPLETE.toString() + "'"
+                    + ")";
+
             db.createQuery(RockyRequest.TABLE,
-                    RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
+                    registrations)
                     .mapToList(RockyRequest.MAPPER)
                     .flatMap(Observable::from)
                     .take(rows)
@@ -302,19 +313,15 @@ public class RegistrationService extends Service {
                                 UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
                             } else {
 
-                                RockyRequest.Status status;
-
-                                if (regResponse.response().isSuccessful()) {
-                                    status = REGISTER_SUCCESS;
+                                int code = regResponse.response().code();
+                                // Rocky still keeps requests in the 400 range so we're safe to delete them
+                                if (code < 500) {
+                                    updateRegistrationStatus(REGISTER_SUCCESS, rockyRequest.id());
                                 } else {
-                                    int code = regResponse.response().code();
-                                    if (code < 500) {
-                                        status = REGISTER_CLIENT_FAILURE;
-                                    } else {
-                                        status = REGISTER_SERVER_FAILURE;
-                                    }
+                                    // Rocky does not keep requests in teh 500 range,
+                                    // so we do nothing and reprocess the registration
+                                    UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
                                 }
-                                updateRegistrationStatus(status, rockyRequest.id());
                             }
                         },
                         throwable -> {
@@ -347,8 +354,6 @@ public class RegistrationService extends Service {
         String completedRows = ""
                 + STATUS + " IN ("
                 + "'" + ABANDONED + "', "
-                + "'" + REGISTER_SERVER_FAILURE + "',"
-                + "'" + REGISTER_CLIENT_FAILURE + "',"
                 + "'" + REGISTER_SUCCESS + "'"
                 + ")";
 
