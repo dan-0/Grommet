@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
 import com.rockthevote.grommet.data.api.RegistrationService;
@@ -211,6 +212,12 @@ public final class DataModule {
     @Singleton
     OkHttpClient provideOkHttpClient(Application app) {
         return createOkHttpClient(app).build();
+    }
+
+    @Provides
+    @Singleton
+    FirebaseAnalytics provideFirebase(Application app) {
+        return FirebaseAnalytics.getInstance(app);
     }
 
     @Provides
