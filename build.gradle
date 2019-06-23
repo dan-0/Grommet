@@ -13,6 +13,7 @@ buildscript {
             // Workaround for https://github.com/stanfy/spoon-gradle-plugin/issues/33
             exclude module: 'guava'
         }
+        classpath 'com.google.gms:google-services:3.1.1'
     }
 
     // Exclude the lombok version that the android plugin depends on.

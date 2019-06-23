@@ -2,8 +2,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Disabled state. -->
     <item android:state_enabled="false"
-          android:color="?attr/colorButtonNormal"
-          android:alpha="?android:attr/disabledAlpha"/>
+          android:color="@color/divider"
+          android:alpha="0.25"/>
 
     <!-- Enabled state. -->
     <item android:color="@color/colorBlueAccent"/>

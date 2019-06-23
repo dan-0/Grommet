@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.model.ApiAdditionalInfo;
 import com.rockthevote.grommet.data.api.model.ApiAddress;
@@ -77,6 +79,8 @@ public class RegistrationService extends Service {
     @SuppressWarnings("WeakerAccess")
     @Inject RockyService rockyService;
 
+    @Inject FirebaseAnalytics firebase;
+
     private final AtomicInteger regRefCount = new AtomicInteger(0);
     private final AtomicInteger regTotalCount = new AtomicInteger(0);
 
@@ -132,8 +136,19 @@ public class RegistrationService extends Service {
 
         if (rows > 0) {
             // check for registrations to upload
+
+            String registrations = ""
+                    + "SELECT * FROM "
+                    + RockyRequest.TABLE
+                    + " WHERE "
+                    + STATUS + " IN ("
+                    + "'" + REGISTER_CLIENT_FAILURE.toString() + "', "
+                    + "'" + REGISTER_SERVER_FAILURE.toString() + "', "
+                    + "'" + FORM_COMPLETE.toString() + "'"
+                    + ")";
+
             db.createQuery(RockyRequest.TABLE,
-                    RockyRequest.SELECT_BY_STATUS, FORM_COMPLETE.toString())
+                    registrations)
                     .mapToList(RockyRequest.MAPPER)
                     .flatMap(Observable::from)
                     .take(rows)
@@ -300,27 +315,40 @@ public class RegistrationService extends Service {
                             if (regResponse.isError()) {
                                 // there was an error contacting the server, don't delete the row
                                 UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "REGISTRATION_REQUEST_FAILURE");
+                                bundle.putString(FirebaseAnalytics.Param.VALUE, REGISTER_SERVER_FAILURE.toString());
+                                firebase.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                             } else {
 
-                                RockyRequest.Status status;
 
-                                if (regResponse.response().isSuccessful()) {
-                                    status = REGISTER_SUCCESS;
+                                int code = regResponse.response().code();
+                                // Rocky still keeps requests in the 400 range so we're safe to delete them
+                                if (code < 500) {
+                                    updateRegistrationStatus(REGISTER_SUCCESS, rockyRequest.id());
                                 } else {
-                                    int code = regResponse.response().code();
-                                    if (code < 500) {
-                                        status = REGISTER_CLIENT_FAILURE;
-                                    } else {
-                                        status = REGISTER_SERVER_FAILURE;
-                                    }
+                                    // Rocky does not keep requests in teh 500 range,
+                                    // so we do nothing and reprocess the registration
+                                    UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
                                 }
-                                updateRegistrationStatus(status, rockyRequest.id());
+
+                                Bundle bundle = new Bundle();
+                                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "REGISTRATION_REQUEST_RESPONSE_CODE");
+                                bundle.putString(FirebaseAnalytics.Param.VALUE, String.valueOf(code));
+                                firebase.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
                             }
                         },
                         throwable -> {
                             // mark the row for removal if the data is corrupt
                             // this is a client error, meaning the network request was never made
                             updateRegistrationStatus(REGISTER_CLIENT_FAILURE, rockyRequest.id());
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "REGISTRATION_REQUEST_FAILURE");
+                            bundle.putString(FirebaseAnalytics.Param.VALUE, REGISTER_CLIENT_FAILURE.toString());
+                            firebase.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                         }
                 );
     }
@@ -347,8 +375,6 @@ public class RegistrationService extends Service {
         String completedRows = ""
                 + STATUS + " IN ("
                 + "'" + ABANDONED + "', "
-                + "'" + REGISTER_SERVER_FAILURE + "',"
-                + "'" + REGISTER_CLIENT_FAILURE + "',"
                 + "'" + REGISTER_SUCCESS + "'"
                 + ")";
 
