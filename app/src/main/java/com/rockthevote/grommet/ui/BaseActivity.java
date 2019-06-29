@@ -139,6 +139,10 @@ public class BaseActivity extends AppCompatActivity {
                 intent = new Intent(this, InfoActivity.class);
                 intent.putExtra(InfoActivity.STRING_RES_PARAM, R.string.help_activity_text);
                 break;
+            case R.id.nav_privacy:
+                intent = new Intent(this, InfoActivity.class);
+                intent.putExtra(InfoActivity.STRING_RES_PARAM, R.string.privacy_activity_text);
+                break;
             default:
                 throw new IllegalStateException("Unknown navigation item: " + item.getTitle());
         }

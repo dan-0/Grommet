@@ -13,6 +13,7 @@
     <string name="nav_title_about" translatable="false">About</string>
     <string name="nav_title_data_usage" translatable="false">Data Usage</string>
     <string name="nav_title_help" translatable="false">Help</string>
+    <string name="nav_title_privacy" translatable="false">Privacy Policy</string>
     <string name="clock_in_alert_title" translatable="false">Not Clocked In</string>
     <string name="clock_in_alert_message" translatable="false">You must clock in before registering voters.</string>
 
@@ -361,6 +362,44 @@ ensure its security on our systems.
 <a href="https://vr.rockthevote.com/partner/register">Rock the Vote partner</a>.
 Any interested partners must be approved to use the canvasser app.
 </p>
+]]>
+    </string>
+    <string name="privacy_activity_text" translatable="false">
+<![CDATA[
+<p>
+Rock the Vote is committed to preserving your privacy and safeguarding your sensitive information.
+The following statement describes the general information-gathering and usage practices of the online
+voter registration platform powered by Rock the Vote.
+</p>
+<ol>
+<li>
+All personal information and other unique identifiers submitted in the process of registering to
+vote are used to produce the voter registration form for you to send to your local or state election
+officials. If you provide a state-issued identification number or Social Security number, it will be
+used solely for the production of your voter registration form.
+</li>
+<li>
+Once you mail in or electronically submit your voter registration application form to your local or
+state election officials, it becomes a matter of public record and is available for inspection and
+use by those who satisfy the requirements of the State law governing its use.
+</li>
+<li>
+By using the online voter registration platform, you grant Rock the Vote and its online voter
+registration partners permission to use your personal contact information to send you
+communications. Rock the Vote is bound by its <a href="https://www.rockthevote.org/privacy-policy/">Privacy Policy</a>.
+All entities using the Rock the Vote online voter registration tool are bound to act in accordance
+with their privacy policies. You can unsubscribe at any time by following the unsubscribe instructions
+on the communication itself.Rock the Vote may track information on where its online voter registration
+platform is being visited and used so we can make decisions about the design and usage of the online
+voter registration tool.
+</li>
+<li>
+Whenever Rock the Vote handles information that you enter on the online voter registration platform, regardless of where this occurs, we take steps to ensure that your information is treated securely and in accordance with this Privacy Policy. Unfortunately, no data transmission over the Internet can be guaranteed to be 100% secure. As a result, while we strive to protect your personal information, Rock the Vote cannot ensure or warrant the security of any information you transmit to us and you do so at your own risk. Once we receive your transmission, we make our best effort to ensure its security on our systems.
+</li>
+<li>
+If you have any questions about this privacy statement, please contact info@rockthevote.org.
+</li>
+</ol>
 ]]>
     </string>
 
