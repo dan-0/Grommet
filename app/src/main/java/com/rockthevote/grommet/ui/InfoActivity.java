@@ -56,6 +56,9 @@ public class InfoActivity extends BaseActivity {
             case R.string.data_usage_activity_text:
                 return R.string.nav_title_data_usage;
             case R.string.help_activity_text:
+                return R.string.nav_title_help;
+            case R.string.privacy_activity_text:
+                return R.string.nav_title_privacy;
             default:
                 return R.string.nav_title_help;
         }
@@ -74,6 +77,9 @@ public class InfoActivity extends BaseActivity {
             case R.string.data_usage_activity_text:
                 return R.id.nav_data_usage;
             case R.string.help_activity_text:
+                return R.id.nav_help;
+            case R.string.privacy_activity_text:
+                return R.id.nav_privacy;
             default:
                 return R.id.nav_help;
         }
