@@ -59,7 +59,7 @@ public abstract class ApiRockyRequest {
     abstract String openTrackingId();
 
     @Json(name = "voter_records_request")
-    abstract ApiVoterRecordsRequest voterRecordsRequest();
+    public abstract ApiVoterRecordsRequest voterRecordsRequest();
 
     public static JsonAdapter<ApiRockyRequest> jsonAdapter(Moshi moshi) {
         return new AutoValue_ApiRockyRequest.MoshiJsonAdapter(moshi);

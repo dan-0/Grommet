@@ -16,7 +16,7 @@ public abstract class ApiVoterRecordsRequest {
     abstract String generatedDate();
 
     @Json(name = "voter_registration")
-    abstract ApiVoterRegistration voterRegistration();
+    public abstract ApiVoterRegistration voterRegistration();
 
     public static JsonAdapter<ApiVoterRecordsRequest> jsonAdapter(Moshi moshi) {
         return new AutoValue_ApiVoterRecordsRequest.MoshiJsonAdapter(moshi);
