@@ -12,7 +12,7 @@ import com.squareup.moshi.Moshi;
 public abstract class ApiRockyRequestWrapper {
 
     @Json(name = "rocky_request")
-    abstract ApiRockyRequest apiRockyRequest();
+    public abstract ApiRockyRequest apiRockyRequest();
 
     public static JsonAdapter<ApiRockyRequestWrapper> jsonAdapter(Moshi moshi) {
         return new AutoValue_ApiRockyRequestWrapper.MoshiJsonAdapter(moshi);

@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rockthevote.grommet.data.Injector;
@@ -28,6 +29,7 @@ import com.rockthevote.grommet.data.api.model.ApiVoterRecordsRequest;
 import com.rockthevote.grommet.data.api.model.ApiVoterRegistration;
 import com.rockthevote.grommet.data.api.model.ClockInRequest;
 import com.rockthevote.grommet.data.api.model.ClockOutRequest;
+import com.rockthevote.grommet.data.api.model.RegistrationResponse;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
@@ -38,6 +40,7 @@ import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.db.model.VoterId;
 import com.rockthevote.grommet.ui.UploadNotification;
 import com.rockthevote.grommet.util.Dates;
+import com.squareup.moshi.Moshi;
 import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.AbstractMap;
@@ -47,6 +50,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
+import javax.xml.transform.Result;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -79,7 +83,10 @@ public class RegistrationService extends Service {
     @SuppressWarnings("WeakerAccess")
     @Inject RockyService rockyService;
 
+    @Inject Moshi moshi;
+
     @Inject FirebaseAnalytics firebase;
+    private static String REGISTRATION_EVENT = "registration_event";
 
     private final AtomicInteger regRefCount = new AtomicInteger(0);
     private final AtomicInteger regTotalCount = new AtomicInteger(0);
@@ -296,9 +303,22 @@ public class RegistrationService extends Service {
         if (null == rockyRequest) {
             return;
         }
+        getApiRockyRequest(rockyRequest) // returns Observable<ApiRockyRequestWrapper>
+                .flatMap(apiRockyRequestWrapper -> {
+                    ApiName registrant = apiRockyRequestWrapper.apiRockyRequest()
+                            .voterRecordsRequest()
+                            .voterRegistration().name();
 
-        getApiRockyRequest(rockyRequest) // returns Observable<ApiRockyRequest>
-                .flatMap(apiRockyRequestWrapper -> rockyService.register(apiRockyRequestWrapper))
+                    String requestUUID = registrant.firstName() + "_" + registrant.lastName() +
+                            rockyRequest.sourceTrackingId();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "REGISTRATION_REQUEST_RAW");
+                    bundle.putString("request_uuid", requestUUID );
+                    bundle.putString(FirebaseAnalytics.Param.VALUE, ApiRockyRequestWrapper.jsonAdapter(moshi).toJson(apiRockyRequestWrapper));
+                    firebase.logEvent(REGISTRATION_EVENT, bundle);
+
+                    return Observable.zip(rockyService.register(apiRockyRequestWrapper), Observable.just(requestUUID), Pair::new);
+                })
                 .subscribeOn(Schedulers.io())
                 .doOnCompleted(() -> {
                     /*
@@ -310,33 +330,40 @@ public class RegistrationService extends Service {
                         shouldStop();
                     }
                 })
-                .subscribe(regResponse ->
+                .subscribe(pair ->
                         {
+                            String requestUUID = pair.second;
+                            retrofit2.adapter.rxjava.Result<RegistrationResponse> regResponse = pair.first;
                             if (regResponse.isError()) {
                                 // there was an error contacting the server, don't delete the row
                                 UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
 
                                 Bundle bundle = new Bundle();
                                 bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "REGISTRATION_REQUEST_FAILURE");
+                                bundle.putString("request_uuid", requestUUID );
                                 bundle.putString(FirebaseAnalytics.Param.VALUE, REGISTER_SERVER_FAILURE.toString());
-                                firebase.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+                                bundle.putString("rocky_message", regResponse.response().message());
+                                firebase.logEvent(REGISTRATION_EVENT, bundle);
                             } else {
 
 
                                 int code = regResponse.response().code();
-                                // Rocky still keeps requests in the 400 range so we're safe to delete them
-                                if (code < 500) {
+                                // We only remove a response once it's successful
+                                if (regResponse.response().isSuccessful()) {
                                     updateRegistrationStatus(REGISTER_SUCCESS, rockyRequest.id());
                                 } else {
-                                    // Rocky does not keep requests in teh 500 range,
+                                    // Rocky does not keep requests in the 500 range and
+                                    // 400 may still work on the second try
                                     // so we do nothing and reprocess the registration
                                     UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
                                 }
 
                                 Bundle bundle = new Bundle();
                                 bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "REGISTRATION_REQUEST_RESPONSE_CODE");
+                                bundle.putString("request_uuid", requestUUID );
                                 bundle.putString(FirebaseAnalytics.Param.VALUE, String.valueOf(code));
-                                firebase.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+                                bundle.putString("rocky_message", regResponse.response().message());
+                                firebase.logEvent(REGISTRATION_EVENT, bundle);
 
                             }
                         },
@@ -348,7 +375,7 @@ public class RegistrationService extends Service {
                             Bundle bundle = new Bundle();
                             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "REGISTRATION_REQUEST_FAILURE");
                             bundle.putString(FirebaseAnalytics.Param.VALUE, REGISTER_CLIENT_FAILURE.toString());
-                            firebase.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+                            firebase.logEvent(REGISTRATION_EVENT, bundle);
                         }
                 );
     }

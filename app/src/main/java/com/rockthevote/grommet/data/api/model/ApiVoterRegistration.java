@@ -39,7 +39,7 @@ public abstract class ApiVoterRegistration {
     @Json(name = "registration_address_is_mailing_address")
     abstract boolean regIsMail();
 
-    abstract ApiName name();
+    public abstract ApiName name();
 
     @Json(name = "previous_name")
     @Nullable

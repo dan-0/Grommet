@@ -15,11 +15,11 @@ public abstract class ApiName {
 
     @Normalize
     @Json(name = "first_name")
-    abstract String firstName();
+    public abstract String firstName();
 
     @Normalize
     @Json(name = "last_name")
-    abstract String lastName();
+    public abstract String lastName();
 
     @Normalize
     @Json(name = "middle_name")
