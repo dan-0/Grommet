@@ -5,6 +5,8 @@ def versionPatch = 0
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 repositories {
     mavenCentral()
@@ -235,6 +237,7 @@ dependencies {
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
     implementation 'com.google.firebase:firebase-core:11.8.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
