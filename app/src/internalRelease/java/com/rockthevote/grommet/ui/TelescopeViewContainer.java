@@ -2,7 +2,7 @@ package com.rockthevote.grommet.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;

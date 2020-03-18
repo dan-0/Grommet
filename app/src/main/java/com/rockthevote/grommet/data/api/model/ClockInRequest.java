@@ -4,7 +4,7 @@ package com.rockthevote.grommet.data.api.model;
  * Created by Mechanical Man, LLC on 7/13/17. Grommet
  */
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.squareup.moshi.Json;

@@ -54,7 +54,7 @@
             tools:text="Grommet"/>
     </LinearLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ede_til_canvasser_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         app:errorEnabled="true"
         >
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ede_canvasser_name"
             style="@android:style/TextAppearance.Material.Subhead"
             android:layout_width="match_parent"
@@ -72,9 +72,9 @@
             android:maxLines="1"
             />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ede_til_event_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
         app:errorEnabled="true"
         >
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ede_event_name"
             style="@android:style/TextAppearance.Material.Subhead"
             android:layout_width="match_parent"
@@ -92,9 +92,9 @@
             android:maxLines="1"
             />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ede_til_event_zip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
         app:errorEnabled="true"
         >
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ede_event_zip"
             style="@android:style/TextAppearance.Material.Subhead"
             android:layout_width="match_parent"
@@ -113,9 +113,9 @@
             android:maxLines="1"
             />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ede_til_device_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
         app:errorEnabled="true"
         >
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ede_device_id"
             style="@android:style/TextAppearance.Material.Subhead"
             android:layout_width="match_parent"
@@ -135,7 +135,7 @@
             android:maxLines="1"
             />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <RelativeLayout
         android:id="@+id/save_view_animator"

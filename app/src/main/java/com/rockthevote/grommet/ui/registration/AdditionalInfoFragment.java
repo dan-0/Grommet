@@ -1,8 +1,8 @@
 package com.rockthevote.grommet.ui.registration;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +31,6 @@ import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.EmailOrEmpty;
-import com.rockthevote.grommet.util.KeyboardUtil;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;
 import com.squareup.sqlbrite.BriteDatabase;

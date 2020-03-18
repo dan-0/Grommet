@@ -4,14 +4,14 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="GrommetTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="GrommetTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
 
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="textColorError">@android:color/holo_red_dark</item>
+<!--        <item name="textColorError">@android:color/holo_red_dark</item>-->
     </style>
 
     <style name="RegistrationTheme" parent="GrommetTheme">

@@ -9,8 +9,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rockthevote.grommet.data.Injector;
@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
-import javax.xml.transform.Result;
 
 import rx.Observable;
 import rx.functions.Func1;

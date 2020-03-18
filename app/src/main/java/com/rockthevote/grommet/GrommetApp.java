@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.jakewharton.threetenabp.AndroidThreeTen;

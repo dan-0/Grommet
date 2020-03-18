@@ -3,9 +3,9 @@ package com.rockthevote.grommet.ui.registration;
 import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static android.support.v4.view.ViewPager.OnPageChangeListener;
+import static androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
 
 
