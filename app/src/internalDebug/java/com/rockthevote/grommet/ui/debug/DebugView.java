@@ -63,7 +63,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.mock.NetworkBehavior;
 import timber.log.Timber;
 
-import static butterknife.ButterKnife.findById;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public final class DebugView extends FrameLayout {
@@ -417,7 +416,7 @@ public final class DebugView extends FrameLayout {
         final int originalSelection = networkProxyAddress.isSet() ? ProxyAdapter.PROXY : ProxyAdapter.NONE;
 
         View view = LayoutInflater.from(app).inflate(R.layout.debug_drawer_network_proxy, null);
-        final EditText hostView = findById(view, R.id.debug_drawer_network_proxy_host);
+        final EditText hostView = view.findViewById(R.id.debug_drawer_network_proxy_host);
 
         if (networkProxyAddress.isSet()) {
             String host = networkProxyAddress.get().getHostName();
