@@ -1,7 +1,6 @@
 package com.rockthevote.grommet.ui.registration;
 
 import android.app.AlertDialog;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewPager;
@@ -18,9 +17,6 @@ import android.widget.LinearLayout;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.Name;
-import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.ui.BaseActivity;
@@ -28,8 +24,6 @@ import com.rockthevote.grommet.ui.ViewContainer;
 import com.rockthevote.grommet.ui.misc.StepperTabLayout;
 import com.rockthevote.grommet.util.KeyboardUtil;
 import com.rockthevote.grommet.util.LocaleUtils;
-import com.rockthevote.grommet.util.Strings;
-import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.Locale;
 
@@ -41,7 +35,6 @@ import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static android.support.v4.view.ViewPager.OnPageChangeListener;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.ABANDONED;
 
 
 public class RegistrationActivity extends BaseActivity {

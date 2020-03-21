@@ -31,10 +31,4 @@ public abstract class ApiGeoLocation {
         public abstract ApiGeoLocation build();
     }
 
-    public static ApiGeoLocation fromDb(RockyRequest rockyRequest) {
-        return builder()
-                .latitude(rockyRequest.latitude())
-                .longitude(rockyRequest.longitude())
-                .build();
-    }
 }

@@ -4,16 +4,11 @@ package com.rockthevote.grommet.data.api.model;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.util.Dates;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.util.List;
-
-import static com.rockthevote.grommet.data.db.model.Name.Gender;
-import static com.rockthevote.grommet.data.db.model.Name.Prefix;
 
 @AutoValue
 public abstract class ApiVoterRegistration {
@@ -111,52 +106,17 @@ public abstract class ApiVoterRegistration {
         abstract ApiVoterRegistration build();
     }
 
-    public static ApiVoterRegistration fromDb(RockyRequest rockyRequest,
-                                              ApiAddress mailingAddress,
-                                              ApiAddress previousRegistrationAddress,
-                                              ApiAddress registrationAddress,
-                                              ApiName name,
-                                              ApiName previousName,
-                                              List<ApiVoterClassification> voterClassifications,
-                                              ApiSignature signature,
-                                              List<ApiVoterId> voterIds,
-                                              List<ApiContactMethod> contactMethods,
-                                              List<ApiAdditionalInfo> additionalInfo,
-                                              ApiRegistrationHelper registrationHelper) {
 
-        String party;
-        switch (rockyRequest.party()) {
-            case OTHER_PARTY:
-                party = rockyRequest.otherParty();
-                break;
-            default:
-                party = rockyRequest.party().toString();
-                break;
-        }
+//        String party;
+//        switch (rockyRequest.party()) {
+//            case OTHER_PARTY:
+//                party = rockyRequest.otherParty();
+//                break;
+//            default:
+//                party = rockyRequest.party().toString();
+//                break;
+//        }
 
-        Builder builder = builder();
 
-        builder
-                .dateOfBirth(Dates.formatAsISO8601_ShortDate(rockyRequest.dateOfBirth()))
-                .mailingAddress(mailingAddress)
-                .previousRegistrationAddress(previousRegistrationAddress)
-                .registrationAddress(registrationAddress)
-                .regIsMail(!rockyRequest.hasMailingAddress())
-                .name(name)
-                .previousName(previousName)
-                .gender(Gender.fromPrefix(Prefix.fromString(name.titlePrefix())).toString())
-                .party(party)
-                .voterClassifications(voterClassifications)
-                .signature(signature)
-                .voterIds(voterIds)
-                .contactMethods(contactMethods)
-                .additionalInfo(additionalInfo)
-                .registrationHelper(registrationHelper)
-        ;
 
-        if (null != rockyRequest.race()) {
-            builder.race(rockyRequest.race().toString());
-        }
-        return builder.build();
-    }
 }

@@ -1,7 +1,6 @@
 package com.rockthevote.grommet.ui;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IdRes;
@@ -17,26 +16,13 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.data.db.model.Session;
-import com.rockthevote.grommet.data.prefs.CanvasserName;
-import com.rockthevote.grommet.data.prefs.EventName;
-import com.squareup.sqlbrite.BriteDatabase;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
-
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
 
 
 public class BaseActivity extends AppCompatActivity {
