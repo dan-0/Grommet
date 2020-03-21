@@ -13,7 +13,7 @@
         android:layout_marginStart="@dimen/content_margin"
         android:gravity="center_vertical"
         android:text="@string/title_event_partner_login"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"/>
 
     <View
         android:layout_width="match_parent"
