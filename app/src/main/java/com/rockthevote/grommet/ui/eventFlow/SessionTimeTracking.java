@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
@@ -275,11 +274,6 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
         updateUI(CLOCKED_IN);
 
-        // try to register the clock in
-        Intent regService = new Intent(getContext(), RegistrationService.class);
-        getContext().startService(regService);
-
-
     }
 
     private void clockOut() {
@@ -292,9 +286,5 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
 
         listener.setState(CLOCKED_OUT, true);
-
-        // try to register the clock out
-        Intent regService = new Intent(getContext(), RegistrationService.class);
-        getContext().startService(regService);
     }
 }
