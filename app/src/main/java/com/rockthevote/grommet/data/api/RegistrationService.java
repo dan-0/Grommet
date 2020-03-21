@@ -38,7 +38,6 @@ import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.db.model.VoterId;
-import com.rockthevote.grommet.ui.UploadNotification;
 import com.rockthevote.grommet.util.Dates;
 import com.squareup.moshi.Moshi;
 import com.squareup.sqlbrite.BriteDatabase;
@@ -50,7 +49,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
-import javax.xml.transform.Result;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -336,7 +334,6 @@ public class RegistrationService extends Service {
                             retrofit2.adapter.rxjava.Result<RegistrationResponse> regResponse = pair.first;
                             if (regResponse.isError()) {
                                 // there was an error contacting the server, don't delete the row
-                                UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
 
                                 Bundle bundle = new Bundle();
                                 bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "REGISTRATION_REQUEST_FAILURE");
@@ -355,7 +352,6 @@ public class RegistrationService extends Service {
                                     // Rocky does not keep requests in the 500 range and
                                     // 400 may still work on the second try
                                     // so we do nothing and reprocess the registration
-                                    UploadNotification.notify(getApplicationContext(), REGISTER_SERVER_FAILURE);
                                 }
 
                                 Bundle bundle = new Bundle();
@@ -381,7 +377,6 @@ public class RegistrationService extends Service {
     }
 
     private void updateRegistrationStatus(RockyRequest.Status status, long rowId) {
-        UploadNotification.notify(getApplicationContext(), status);
         db.update(RockyRequest.TABLE,
                 new RockyRequest.Builder()
                         .status(status)
