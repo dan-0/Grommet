@@ -16,7 +16,6 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.Address;
 import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.Name;
@@ -257,9 +256,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
                     RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
 
             updateSessionTotals();
-
-            Intent regService = new Intent(getContext(), RegistrationService.class);
-            getActivity().startService(regService);
 
             RegistrationCompleteDialogFragment dialog = new RegistrationCompleteDialogFragment();
             dialog.setCancelable(false);
