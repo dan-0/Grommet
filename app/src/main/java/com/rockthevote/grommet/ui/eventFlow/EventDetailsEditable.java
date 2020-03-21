@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
@@ -36,7 +37,7 @@ import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.DETAIL
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.PARTNER_UPDATE;
 
 
-public class EventDetailsEditable extends FrameLayout implements EventFlowPage {
+public class EventDetailsEditable extends LinearLayout implements EventFlowPage {
 
     @Inject RockyService rockyService;
 
