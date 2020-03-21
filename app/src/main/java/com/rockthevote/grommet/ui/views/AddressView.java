@@ -14,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
@@ -26,19 +25,14 @@ import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.Strings;
 import com.rockthevote.grommet.util.ZipTextWatcher;
-import com.squareup.sqlbrite.BriteDatabase;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
 
 public class AddressView extends FrameLayout {
     private static final String PA_ABREV = "PA";
@@ -77,8 +71,6 @@ public class AddressView extends FrameLayout {
     @Inject
     @CurrentRockyRequestId
     Preference<Long> rockyRequestRowId;
-
-    @Inject BriteDatabase db;
 
     private ObservableValidator validator;
 
@@ -206,30 +198,7 @@ public class AddressView extends FrameLayout {
             zipEditText.addTextChangedListener(zipTextWatcher);
 
             subscriptions = new CompositeSubscription();
-            subscriptions.add(Observable.combineLatest(
-                    RxTextView.afterTextChangeEvents(streetEditText),
-                    RxTextView.afterTextChangeEvents(streetEditText2),
-                    RxTextView.afterTextChangeEvents(unitEditText),
-                    RxTextView.afterTextChangeEvents(cityEditText),
-                    RxTextView.afterTextChangeEvents(stateSpinner.getEditText()),
-                    RxTextView.afterTextChangeEvents(zipEditText),
-                    RxTextView.afterTextChangeEvents(countySpinner.getEditText()),
-                    RxTextView.afterTextChangeEvents(unitTypeSpinner.getEditText()),
-                    (street, street2, unit, city, state, zip, county, unitType) -> new Address.Builder()
-                            .streetName(street.editable().toString())
-                            .streetName2(street2.editable().toString())
-                            .subAddress(unit.editable().toString())
-                            .municipalJurisdiction(city.editable().toString())
-                            .state(state.editable().toString())
-                            .zip(zip.editable().toString())
-                            .county(county.editable().toString())
-                            .subAddressType(unitType.editable().toString())
-                            .build())
-                    .observeOn(Schedulers.io())
-                    .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                    .subscribe(contentValues -> {
-                        Address.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
-                    }));
+
         }
     }
 

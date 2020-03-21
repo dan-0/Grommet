@@ -12,19 +12,15 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 
 import com.f2prateek.rx.preferences2.Preference;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Dates;
-import com.squareup.sqlbrite.BriteDatabase;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.temporal.ChronoUnit;
@@ -32,7 +28,6 @@ import org.threeten.bp.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -41,12 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
-import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.CITIZEN;
-import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.EIGHTEEN;
 
 public class NewRegistrantFragment extends BaseRegistrationFragment implements
         DatePickerDialog.OnDateSetListener {
@@ -68,7 +58,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     @BindView(R.id.checkbox_is_us_citizen)
     CheckBox checkBoxIsUSCitizen;
 
-    @Inject BriteDatabase db;
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
     @Inject @RegistrationDeadline Preference<Date> registrationDeadline;
 
@@ -101,27 +90,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
         super.onResume();
         subscriptions = new CompositeSubscription();
 
-        subscriptions.add(RxCompoundButton.checkedChanges(checkBoxIsUSCitizen)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(checked -> {
-                    VoterClassification.insertOrUpdate(db, rockyRequestRowId.get(), CITIZEN,
-                            new VoterClassification.Builder()
-                                    .assertion(checked)
-                                    .build());
-                }));
-
-        subscriptions.add(RxCompoundButton.checkedChanges(checkBoxIsEighteen)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(checked -> {
-                    VoterClassification.insertOrUpdate(db, rockyRequestRowId.get(), EIGHTEEN,
-                            new VoterClassification.Builder()
-                                    .assertion(checked)
-                                    .build());
-                }));
     }
 
     @Override
@@ -142,24 +110,12 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
         previousName.setVisibility(checked ? View.VISIBLE : View.GONE);
         previousNameDivider.setVisibility(checked ? View.VISIBLE : View.GONE);
 
-        db.update(RockyRequest.TABLE,
-                new RockyRequest.Builder()
-                        .hasPreviousName(checked)
-                        .build(),
-                RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
         birthdayEditText.setText(Dates.formatAsISO8601_ShortDate(date.getTime()));
-
-        db.update(
-                RockyRequest.TABLE,
-                new RockyRequest.Builder()
-                        .dateOfBirth(date.getTime())
-                        .build(),
-                RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()));
 
         validateBirthday();
     }

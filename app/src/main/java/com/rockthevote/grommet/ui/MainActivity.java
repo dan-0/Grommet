@@ -2,19 +2,14 @@ package com.rockthevote.grommet.ui;
 
 import android.Manifest;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -24,15 +19,12 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
-import com.squareup.sqlbrite.BriteDatabase;
 
 import javax.inject.Inject;
 
@@ -40,14 +32,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.FORM_COMPLETE;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Status.IN_PROGRESS;
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_IN;
 
 public final class MainActivity extends BaseActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
@@ -69,8 +57,6 @@ public final class MainActivity extends BaseActivity {
     @Inject @CurrentRockyRequestId Preference<Long> currentRockyRequestId;
 
     @Inject ViewContainer viewContainer;
-
-    @Inject BriteDatabase db;
 
     @Inject ReactiveLocationProvider locationProvider;
 
@@ -98,23 +84,6 @@ public final class MainActivity extends BaseActivity {
         hockeyAppHelper.checkForCrashes(this);
 
         subscriptions = new CompositeSubscription();
-//
-        // check for registrations to upload
-        subscriptions.add(db.createQuery(RockyRequest.TABLE, RockyRequest.COUNT_BY_STATUS, FORM_COMPLETE.toString())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(query -> {
-                    Cursor cursor = query.run();
-                    try {
-                        if (cursor.moveToNext()) {
-                            int count = cursor.getInt((0));
-                            this.pendingRegistrations.setText(String.valueOf(count));
-
-                            upploadButton.setEnabled(count > 0);
-                        }
-                    } finally {
-                        cursor.close();
-                    }
-                }));
     }
 
     @Override
@@ -154,29 +123,11 @@ public final class MainActivity extends BaseActivity {
 
     @OnClick(R.id.fab)
     public void onClick(View v) {
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.clock_in_alert_title)
-                .setIcon(R.drawable.ic_timer_black_24dp)
-                .setMessage(R.string.clock_in_alert_message)
-                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                })
-                .create();
-
-        Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
-        int rows = cursor.getCount();
-        if (rows == 0) {
-            dialog.show();
-        } else {
-            cursor.moveToNext();
-            Session session = Session.MAPPER.call(cursor);
-            if(session.sessionStatus() == CLOCKED_IN){
-                createNewVoterRecord(session);
-            } else {
-                dialog.show();
-            }
-        }
-        cursor.close();
+        //TODO add back in the checks to make sure the user is clocked-in and has no pending registraitons to upload
+        // Also make sure and grab the location data for the specific registration
+        // then create a new voter registration record (or not, still not sure how this is gonna work)
+        startActivity(new Intent(this, RegistrationActivity.class),
+                ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
     }
 
     /**
@@ -189,33 +140,6 @@ public final class MainActivity extends BaseActivity {
     public void onClickUpload(View v) {
 
 
-    }
-
-
-    private void createNewVoterRecord(Session session) {
-        locationProvider.getLastKnownLocation()
-                .singleOrDefault(null)
-                .subscribe(location -> {
-                    RockyRequest.Builder builder = new RockyRequest.Builder()
-                            .status(IN_PROGRESS)
-                            .partnerId(partnerIdPref.get())
-                            .partnerTrackingId(eventZipPref.get())
-                            .sourceTrackingId(session.sourceTrackingId())
-                            .openTrackingId(eventNamePref.get())
-                            .partnerOptInSMS(true) // override database default so we don't have to perform a migration
-                            .generateDate();
-
-                    if (null != location) {
-                        builder
-                                .latitude((long) location.getLatitude())
-                                .longitude((long) location.getLongitude());
-                    }
-
-                    long rockyRequestRowId = db.insert(RockyRequest.TABLE, builder.build());
-                    currentRockyRequestId.set(rockyRequestRowId);
-                    startActivity(new Intent(this, RegistrationActivity.class),
-                            ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                });
     }
 
     @Override

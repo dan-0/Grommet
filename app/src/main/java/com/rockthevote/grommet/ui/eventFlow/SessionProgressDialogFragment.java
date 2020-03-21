@@ -1,6 +1,5 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -12,10 +11,7 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
-import com.rockthevote.grommet.util.Strings;
-import com.squareup.sqlbrite.BriteDatabase;
 
 import javax.inject.Inject;
 
@@ -30,7 +26,6 @@ import butterknife.Optional;
 
 public class SessionProgressDialogFragment extends DialogFragment {
 
-    @Inject BriteDatabase db;
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
     // Total Counts
@@ -75,40 +70,7 @@ public class SessionProgressDialogFragment extends DialogFragment {
 
     public void updateView() {
         // update count totals
-        Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
-        if (cursor.moveToNext()) {
-            Session session = Session.MAPPER.call(cursor);
 
-            totalRegistrations.setText(String.valueOf(session.totalRegistrations()));
-            totalAbandoned.setText(String.valueOf(session.totalAbandoned()));
-            totalDLN.setText(String.valueOf(session.totalIncludeDLN()));
-            totalSSN.setText(String.valueOf(session.totalIncludeSSN()));
-            totalEmailOptIn.setText(String.valueOf(session.totalEmailOptIn()));
-            totalSMSOptIn.setText(String.valueOf(session.totalSMSOptIn()));
-
-            // update count totals
-            totalRegistrations.setText(String.valueOf(session.totalRegistrations()));
-            totalAbandoned.setText(String.valueOf(session.totalAbandoned()));
-            totalDLN.setText(String.valueOf(session.totalIncludeDLN()));
-            totalSSN.setText(String.valueOf(session.totalIncludeSSN()));
-            totalEmailOptIn.setText(String.valueOf(session.totalEmailOptIn()));
-            totalSMSOptIn.setText(String.valueOf(session.totalSMSOptIn()));
-
-            // update percentages
-            double totalReg = session.totalRegistrations() * 1.0;
-
-            if (totalReg > 0) {
-                percentDLN.setText(
-                        Strings.formatNumberAsPercentage(session.totalIncludeDLN() / totalReg));
-                percentSSN.setText(
-                        Strings.formatNumberAsPercentage(session.totalIncludeSSN() / totalReg));
-                percentEmailOptIn.setText(
-                        Strings.formatNumberAsPercentage(session.totalEmailOptIn() / totalReg));
-                percentSMSOptIn.setText(
-                        Strings.formatNumberAsPercentage(session.totalSMSOptIn() / totalReg));
-            }
-        }
-        cursor.close();
     }
 
     @Optional

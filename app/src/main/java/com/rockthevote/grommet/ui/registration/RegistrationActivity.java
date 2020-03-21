@@ -48,7 +48,6 @@ public class RegistrationActivity extends BaseActivity {
 
     @Inject ViewContainer viewContainer;
 
-    @Inject BriteDatabase db;
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
@@ -166,37 +165,7 @@ public class RegistrationActivity extends BaseActivity {
                 .setMessage(R.string.cancel_dialog_message)
                 .setPositiveButton(R.string.dialog_yes, ((dialog, i) -> {
                     // set the application to abandoned so it gets cleaned up
-                    db.update(
-                            RockyRequest.TABLE,
-                            new RockyRequest.Builder()
-                                    .status(ABANDONED)
-                                    .build(),
-                            RockyRequest._ID + " = ? ",
-                            String.valueOf(rockyRequestRowId.get()));
 
-                    // update abandoned count for the session, only if the voter entered some data
-                    Cursor nameCursor = db.query(Name.SELECT_BY_TYPE,
-                            String.valueOf(rockyRequestRowId.get()),
-                            Name.Type.CURRENT_NAME.toString());
-
-                    if (nameCursor.moveToNext()) {
-                        Name name = Name.MAPPER.call(nameCursor);
-                        if (!Strings.isBlank(name.firstName())) {
-                            nameCursor.close();
-                            Cursor sessionCursor =
-                                    db.query(Session.SELECT_CURRENT_SESSION);
-
-                            if (sessionCursor.moveToNext()) {
-                                Session session = Session.MAPPER.call(sessionCursor);
-                                db.update(Session.TABLE,
-                                        new Session.Builder()
-                                                .totalAbandond(session.totalAbandoned() + 1)
-                                                .build(), Session._ID + " = ? ",
-                                        String.valueOf(currentSessionRowId.get()));
-                            }
-                            sessionCursor.close();
-                        }
-                    }
 
                     LocaleUtils.setLocale(new Locale("en"));
                     finish();
