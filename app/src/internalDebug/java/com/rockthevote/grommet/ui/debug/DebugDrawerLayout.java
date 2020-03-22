@@ -752,7 +752,7 @@ public class DebugDrawerLayout extends ViewGroup implements DrawerLayoutImpl {
    * @param gravity Absolute gravity value
    * @return LEFT or RIGHT as appropriate, or a hex string
    */
-  static String gravityToString(int gravity) {
+  static String gravityToString(@EdgeGravity int gravity) {
     if ((gravity & Gravity.LEFT) == Gravity.LEFT) {
       return "LEFT";
     }
@@ -840,7 +840,7 @@ public class DebugDrawerLayout extends ViewGroup implements DrawerLayoutImpl {
             heightSize - lp.topMargin - lp.bottomMargin, MeasureSpec.EXACTLY);
         child.measure(contentWidthSpec, contentHeightSpec);
       } else if (isDrawerView(child)) {
-        final int childGravity =
+        @SuppressLint("WrongConstant") final int childGravity =
             getDrawerViewAbsoluteGravity(child) & Gravity.HORIZONTAL_GRAVITY_MASK;
         if ((foundDrawers & childGravity) != 0) {
           throw new IllegalStateException("Child drawer has absolute gravity " +

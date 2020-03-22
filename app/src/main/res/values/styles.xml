@@ -14,8 +14,8 @@
         <item name="colorSecondary">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/white</item>
 
+        <!-- Material Styles-->
         <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
-
         <item name="materialButtonStyle">@style/Widget.App.Button.MaterialButton</item>
     </style>
 
