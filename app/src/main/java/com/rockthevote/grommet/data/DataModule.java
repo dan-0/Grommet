@@ -9,7 +9,6 @@ import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
-import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.api.RockyAdapterFactory;
 import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.api.model.DateAdapter;
@@ -57,7 +56,6 @@ import static com.jakewharton.byteunits.DecimalByteUnit.MEGABYTES;
                 DbModule.class
         },
         injects = {
-                RegistrationService.class,
                 MainActivity.class
         },
         complete = false,

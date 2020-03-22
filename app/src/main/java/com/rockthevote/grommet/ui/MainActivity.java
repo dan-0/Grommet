@@ -24,7 +24,6 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.api.RegistrationService;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
@@ -188,26 +187,7 @@ public final class MainActivity extends BaseActivity {
      */
     @OnClick(R.id.upload)
     public void onClickUpload(View v) {
-        ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
-        if (activeNetwork != null && activeNetwork.isConnected()) {
-            Intent regService = new Intent(this, RegistrationService.class);
-            startService(regService);
-        } else {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.check_wifi)
-                    .setIcon(R.drawable.ic_warning_24dp)
-                    .setMessage(R.string.no_wifi_upload_message)
-                    .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
-                        dialogInterface.dismiss();
-                    })
-                    .create()
-                    .show();
-
-
-        }
 
     }
 
