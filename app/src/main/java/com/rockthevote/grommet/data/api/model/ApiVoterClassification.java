@@ -1,7 +1,6 @@
 package com.rockthevote.grommet.data.api.model;
 
 import com.google.auto.value.AutoValue;
-import com.rockthevote.grommet.data.db.model.VoterClassification;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -30,10 +29,4 @@ public abstract class ApiVoterClassification {
         abstract ApiVoterClassification build();
     }
 
-    public static ApiVoterClassification fromVoterClassification(VoterClassification classification) {
-        return builder()
-                .type(classification.type().toString())
-                .assertion(classification.assertion())
-                .build();
-    }
 }

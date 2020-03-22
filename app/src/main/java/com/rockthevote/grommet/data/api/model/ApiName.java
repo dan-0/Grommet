@@ -53,17 +53,4 @@ public abstract class ApiName {
         abstract ApiName build();
     }
 
-    @Nullable
-    public static ApiName fromName(Name name) {
-        if (null == name) {
-            return null;
-        }
-        return builder()
-                .firstName(name.firstName())
-                .lastName(name.lastName())
-                .middleName(name.middleName())
-                .titlePrefix(name.titlePrefix().toString())
-                .titleSuffix(name.titleSuffix().toString())
-                .build();
-    }
 }

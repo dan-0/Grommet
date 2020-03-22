@@ -2,7 +2,6 @@ package com.rockthevote.grommet.data.api.model;
 
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.api.Normalize;
-import com.rockthevote.grommet.data.db.model.VoterId;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -38,12 +37,5 @@ public abstract class ApiVoterId {
         abstract ApiVoterId build();
     }
 
-    public static ApiVoterId fromVoterId(VoterId voterId) {
-        return builder()
-                .type(voterId.type().toString())
-                .stringValue(voterId.value())
-                .attestNoSuchId(voterId.attestNoSuchId())
-                .build();
-    }
 
 }

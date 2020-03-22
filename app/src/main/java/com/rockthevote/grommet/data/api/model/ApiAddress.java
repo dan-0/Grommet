@@ -1,12 +1,9 @@
 package com.rockthevote.grommet.data.api.model;
 
 
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.api.Normalize;
 import com.rockthevote.grommet.data.api.StringNormalizerFactory;
-import com.rockthevote.grommet.data.db.model.Address;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
@@ -192,21 +189,4 @@ public abstract class ApiAddress {
         }
     }
 
-    @Nullable
-    public static ApiAddress fromAddress(Address address) {
-        if(null == address){
-            return null;
-        }
-
-        return builder()
-                .state(address.state())
-                .municipalJurisdiction(address.municipalJurisdiction())
-                .county(address.county())
-                .streetName(address.streetName())
-                .streetName2(address.streetName2())
-                .subAddress(address.subAddress())
-                .subAddressType(address.subAddressType())
-                .zipCode(address.zip())
-                .build();
-    }
 }

@@ -7,8 +7,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -32,11 +30,6 @@ import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.data.prefs.PartnerTimeout;
 import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
-import com.rockthevote.grommet.util.Dates;
-import com.squareup.sqlbrite.BriteDatabase;
-
-import java.util.Date;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -51,7 +44,6 @@ import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKE
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.NEW_SESSION;
 
 public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
-    @Inject BriteDatabase db;
     @Inject ReactiveLocationProvider locationProvider;
 
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
@@ -144,11 +136,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         switch (status) {
             case CLOCKED_IN:
                 clockInButton.setSelected(true);
-                Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
-                cursor.moveToNext();
-                Session session = Session.MAPPER.call(cursor);
-                cursor.close();
-                clockInTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockInTime()));
+
                 break;
             default:
                 clockInButton.setSelected(false);
@@ -242,48 +230,11 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     private void clockIn() {
 
-        // create and update session info
-        Session.Builder builder = new Session.Builder()
-                .sessionId(UUID.randomUUID().toString())
-                .openTrackingId(eventNamePref.get())
-                .partnerTrackingId(eventZipPref.get())
-                .canvasserName(canvasserNamePref.get())
-                .sessionTimeout(partnerTimeoutPref.get())
-                .clockInTime(new Date())
-                .deviceId(deviceIdPref.get())
-                .sessionStatus(CLOCKED_IN);
-
-        long rowId = db.insert(Session.TABLE, builder.build());
-        currentSessionRowId.set(rowId);
-
-        locationProvider.getLastKnownLocation()
-                .singleOrDefault(null)
-                .subscribe(location -> {
-                    Session.Builder locBuilder = new Session.Builder();
-
-                    if (null != location) {
-                        locBuilder
-                                .latitude((long) location.getLatitude())
-                                .longitude((long) location.getLongitude());
-
-                        db.update(Session.TABLE,
-                                locBuilder.build(),
-                                Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
-                    }
-                });
-
         updateUI(CLOCKED_IN);
 
     }
 
     private void clockOut() {
-        Session.Builder builder = new Session.Builder()
-                .clockOutTime(new Date())
-                .sessionStatus(CLOCKED_OUT);
-
-        db.update(Session.TABLE,
-                builder.build(),
-                Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
 
         listener.setState(CLOCKED_OUT, true);
     }

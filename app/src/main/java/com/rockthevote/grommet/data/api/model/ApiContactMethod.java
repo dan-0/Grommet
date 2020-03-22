@@ -37,43 +37,33 @@ public abstract class ApiContactMethod {
         abstract ApiContactMethod build();
     }
 
-    @Nullable
-    public static ApiContactMethod fromContactMethod(ContactMethod contactMethod, PhoneType phoneType) {
-        if (null == contactMethod) {
-            return null;
-        }
 
-        List<String> capabilities = new ArrayList<>();
-        // right now we only support phone (no fax)
-        if (contactMethod.type() == PHONE ||
-                contactMethod.type() == ContactMethod.Type.ASSISTANT_PHONE) {
-            capabilities.add(ContactMethod.Capability.VOICE.toString());
-            if(phoneType == PhoneType.MOBILE){
-                capabilities.add(ContactMethod.Capability.SMS.toString());
-            }
-        }
+//        List<String> capabilities = new ArrayList<>();
+//        // right now we only support phone (no fax)
+//        if (contactMethod.type() == PHONE ||
+//                contactMethod.type() == ContactMethod.Type.ASSISTANT_PHONE) {
+//            capabilities.add(ContactMethod.Capability.VOICE.toString());
+//            if(phoneType == PhoneType.MOBILE){
+//                capabilities.add(ContactMethod.Capability.SMS.toString());
+//            }
+//        }
+//
+//        /*
+//        special replacement for assistant_phone. We need to just use "phone" as the string value
+//        for this enum but we cannot change the enum since both voter and helper phone numbers
+//        are stored in the same table, hence we need different types to differentiate.
+//         */
+//
+//        String type;
+//        switch (contactMethod.type()) {
+//            case ASSISTANT_PHONE:
+//            case PHONE:
+//                type = PHONE.toString();
+//                break;
+//            default:
+//                type = contactMethod.type().toString();
+//                break;
+//        }
 
-        /*
-        special replacement for assistant_phone. We need to just use "phone" as the string value
-        for this enum but we cannot change the enum since both voter and helper phone numbers
-        are stored in the same table, hence we need different types to differentiate.
-         */
 
-        String type;
-        switch (contactMethod.type()) {
-            case ASSISTANT_PHONE:
-            case PHONE:
-                type = PHONE.toString();
-                break;
-            default:
-                type = contactMethod.type().toString();
-                break;
-        }
-
-        return builder()
-                .type(type)
-                .value(contactMethod.value())
-                .capabilities(capabilities)
-                .build();
-    }
 }

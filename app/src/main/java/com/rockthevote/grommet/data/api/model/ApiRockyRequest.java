@@ -1,7 +1,6 @@
 package com.rockthevote.grommet.data.api.model;
 
 import com.google.auto.value.AutoValue;
-import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -114,24 +113,4 @@ public abstract class ApiRockyRequest {
         abstract ApiRockyRequest build();
     }
 
-    public static ApiRockyRequest fromDb(RockyRequest rockyRequest,
-                                         ApiVoterRecordsRequest voterRecordsRequest,
-                                         ApiGeoLocation geoLocation) {
-
-        return builder()
-                .lang(rockyRequest.language().toString())
-                .phoneType(rockyRequest.phoneType().toString())
-                .partnerId(rockyRequest.partnerId())
-                .partnerOptInEmail(rockyRequest.partnerOptInEmail())
-                .partnerOptInSms(rockyRequest.partnerOptInSMS())
-                .optInVolunteer(rockyRequest.optInVolunteer())
-                .partnerOptInVolunteer(rockyRequest.partnerOptInVolunteer())
-                .sourceTrackingId(rockyRequest.sourceTrackingId())
-                .partnerTrackingId(rockyRequest.partnerTrackingId())
-                .geoLocation(geoLocation)
-                .openTrackingId(rockyRequest.openTrackingId())
-                .voterRecordsRequest(voterRecordsRequest)
-                .build();
-
-    }
 }

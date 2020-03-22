@@ -15,19 +15,12 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.data.prefs.DeviceID;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerName;
-import com.rockthevote.grommet.util.Dates;
-import com.squareup.sqlbrite.BriteDatabase;
-
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -35,14 +28,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.CompositeDisposable;
-import timber.log.Timber;
 
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.NEW_SESSION;
 import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.SESSION_CLEARED;
 
 public class SessionSummary extends FrameLayout implements EventFlowPage {
 
-    @Inject BriteDatabase db;
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
     @Inject @CanvasserName Preference<String> canvasserNamePref;
@@ -129,36 +119,11 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
 
     @SuppressLint("DefaultLocale")
     void updateUI() {
-        Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
-        if (cursor.moveToNext()) {
-            Session session = Session.MAPPER.call(cursor);
 
-            clockInTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockInTime()));
-            clockOutTime.setText(Dates.formatAs_LocalTimeOfDay(session.clockOutTime()));
-
-            Date in = session.clockInTime();
-            Date out = session.clockOutTime();
-            if (null != out && null != in) {
-                long elapsedMilliseconds = out.getTime() - in.getTime();
-
-                String elapsedTime = String.format("%d hours, %d min",
-                        TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
-                        TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
-                                TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
-                );
-
-                totalTime.setText(elapsedTime);
-            }
-
-        }
-
-        cursor.close();
-
-        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
-        SessionProgressDialogFragment fragment =
-                (SessionProgressDialogFragment) fm.findFragmentById(R.id.summary_fragment);
-        fragment.updateView();
-
+//        String elapsedTime = String.format("%d hours, %d min",
+//                TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
+//                TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
+//                        TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
     }
 
     @OnClick(R.id.session_summary_clear)
@@ -169,20 +134,6 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         eventZipPref.delete();
         deviceIdPref.delete();
 
-        // update session status
-        //TODO do we really need to update this session data, shouldn't we just check to make sure it's clocked-out?
-        Session.Builder updateBuilder = new Session.Builder()
-                .clockInTime(new GregorianCalendar().getTime())
-                .sessionStatus(NEW_SESSION);
-
-        db.update(Session.TABLE,
-                updateBuilder.build(),
-                Session._ID + " = ? ", String.valueOf(currentSessionRowId.get()));
-
-        // delete sessions that have already been reported
-        int rowsDeleted = db.delete(Session.TABLE, Session.DELETE_REPORTED_ROWS_WHERE_CLAUSE);
-
-        Timber.d("deleted %d session rows", rowsDeleted);
 
         // update wizard view pager to SESSION_CLEARED to tell the first page to reset
         listener.setState(SESSION_CLEARED, false);

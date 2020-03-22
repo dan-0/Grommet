@@ -14,7 +14,6 @@ import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.api.model.DateAdapter;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
-import com.rockthevote.grommet.data.db.DbModule;
 import com.rockthevote.grommet.data.prefs.AppVersion;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -53,7 +52,6 @@ import static com.jakewharton.byteunits.DecimalByteUnit.MEGABYTES;
 @Module(
         includes = {
                 ApiModule.class,
-                DbModule.class
         },
         injects = {
                 MainActivity.class
