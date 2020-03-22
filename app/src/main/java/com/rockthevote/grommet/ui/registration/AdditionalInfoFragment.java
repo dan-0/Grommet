@@ -17,8 +17,8 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
-import com.rockthevote.grommet.data.db.model.AdditionalInfo;
-import com.rockthevote.grommet.data.db.model.RockyRequest;
+import com.rockthevote.grommet.data.db.model.PhoneType;
+import com.rockthevote.grommet.data.db.model.PreferredLanguage;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
@@ -40,9 +40,10 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Party;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Party.OTHER_PARTY;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Race;
+import com.rockthevote.grommet.data.db.model.Party;
+import static com.rockthevote.grommet.data.db.model.Party.OTHER_PARTY;
+
+import com.rockthevote.grommet.data.db.model.Race;
 
 public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private static final String OTHER_PARTY_VISIBILITY_KEY = "other_party_visibility_key";
@@ -91,8 +92,8 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private EnumAdapter<Race> raceEnumAdapter;
     private EnumAdapter<Party> partyEnumAdapter;
 
-    private EnumAdapter<AdditionalInfo.PreferredLanguage> preferredLanguageEnumAdapter;
-    private EnumAdapter<RockyRequest.PhoneType> phoneTypeEnumAdapter;
+    private EnumAdapter<PreferredLanguage> preferredLanguageEnumAdapter;
+    private EnumAdapter<PhoneType> phoneTypeEnumAdapter;
     private PhoneNumberFormattingTextWatcher phoneFormatter;
 
     // must be initialized to true to trigger the observable default, unchecked, state (it's reversed)
@@ -146,7 +147,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
 
         // Setup Phone Type Spinner
-        phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), RockyRequest.PhoneType.class);
+        phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), PhoneType.class);
         phoneTypeSpinner.setAdapter(phoneTypeEnumAdapter);
         phoneTypeSpinner.setOnItemClickListener((adapterView, view1, i, l) -> {
             phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(i).toString());
@@ -159,7 +160,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         }
 
         // set up preferred language spinner
-        preferredLanguageEnumAdapter = new EnumAdapter<>(getActivity(), AdditionalInfo.PreferredLanguage.class);
+        preferredLanguageEnumAdapter = new EnumAdapter<>(getActivity(), PreferredLanguage.class);
         langPrefSpinner.setAdapter(preferredLanguageEnumAdapter);
         langPrefSpinner.setOnItemClickListener((adapterView, view1, i, l) -> {
             langPrefSpinner.getEditText().setText(preferredLanguageEnumAdapter.getItem(i).toString());

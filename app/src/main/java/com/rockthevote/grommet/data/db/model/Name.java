@@ -4,8 +4,6 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 import androidx.annotation.NonNull;
 
-import com.rockthevote.grommet.util.Strings;
-
 import java.util.Locale;
 
 public abstract class Name implements Parcelable, BaseColumns {
