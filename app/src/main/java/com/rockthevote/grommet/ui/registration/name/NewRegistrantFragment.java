@@ -1,4 +1,4 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui.registration.name;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -19,6 +19,8 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.DatePickerDialogFragment;
 import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Dates;
 

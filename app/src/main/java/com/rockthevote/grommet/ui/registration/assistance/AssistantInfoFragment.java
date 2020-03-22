@@ -1,4 +1,4 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui.registration.assistance;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -17,6 +17,7 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Phone;

@@ -1,4 +1,4 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui.registration.address;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -11,6 +11,7 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.views.AddressView;
 
 import javax.inject.Inject;

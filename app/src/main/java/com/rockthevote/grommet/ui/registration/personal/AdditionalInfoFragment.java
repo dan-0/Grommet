@@ -1,4 +1,4 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui.registration.personal;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -25,6 +25,7 @@ import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.util.EmailOrEmpty;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;

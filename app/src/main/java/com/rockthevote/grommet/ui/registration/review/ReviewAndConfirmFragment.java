@@ -1,4 +1,4 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui.registration.review;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -17,6 +17,9 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.RockyRequest.Language;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
+import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.DisclosureAgreementDialogFragment;
+import com.rockthevote.grommet.ui.registration.RegistrationCompleteDialogFragment;
 import com.rockthevote.grommet.util.Images;
 import com.rockthevote.grommet.util.LocaleUtils;
 
