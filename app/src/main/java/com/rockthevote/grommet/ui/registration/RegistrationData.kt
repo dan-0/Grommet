@@ -7,9 +7,9 @@ import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoRegistrati
 import com.rockthevote.grommet.ui.registration.review.ReviewRegistrationData
 
 data class RegistrationData(
-    val nameRegistrationData: NameRegistrationData?,
-    val addressRegistrationData: AddressRegistrationData?,
-    val additionalInfoRegistrationData: AdditionalInfoRegistrationData?,
-    val assistanceRegistrationData: AssistanceRegistrationData?,
-    val reviewRegistrationData: ReviewRegistrationData?
+    val nameRegistrationData: NameRegistrationData? = null,
+    val addressRegistrationData: AddressRegistrationData? = null,
+    val additionalInfoRegistrationData: AdditionalInfoRegistrationData? = null,
+    val assistanceRegistrationData: AssistanceRegistrationData? = null,
+    val reviewRegistrationData: ReviewRegistrationData? = null
 )
