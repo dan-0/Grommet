@@ -1,12 +1,12 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
-import android.support.v4.view.PagerAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.collection.ArrayMap;
+import androidx.viewpager.widget.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.ArrayList;
 
 /**
  * Created by Mechanical Man, LLC on 7/17/17. Grommet
@@ -21,7 +21,8 @@ public class EventDetailFlowAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup collection, int position) {
+    @NonNull
+    public Object instantiateItem(@NonNull ViewGroup collection, int position) {
         View view;
         switch (position) {
             case 0:
