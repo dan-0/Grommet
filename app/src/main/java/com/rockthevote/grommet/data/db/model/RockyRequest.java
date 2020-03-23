@@ -2,7 +2,8 @@ package com.rockthevote.grommet.data.db.model;
 
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Locale;
 

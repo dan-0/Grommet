@@ -1,7 +1,7 @@
 package com.rockthevote.grommet;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.jakewharton.threetenabp.AndroidThreeTen;

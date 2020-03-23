@@ -2,7 +2,7 @@ package com.rockthevote.grommet.data.db.model;
 
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public abstract class VoterId implements Parcelable, BaseColumns {
     public enum Type {

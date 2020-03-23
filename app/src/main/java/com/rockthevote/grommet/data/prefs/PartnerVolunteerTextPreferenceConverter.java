@@ -1,6 +1,6 @@
 package com.rockthevote.grommet.data.prefs;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;

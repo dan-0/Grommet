@@ -1,10 +1,9 @@
 package com.rockthevote.grommet.data.api.model;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.api.Normalize;
-import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.db.model.Name;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
