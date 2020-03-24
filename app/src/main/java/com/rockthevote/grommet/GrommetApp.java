@@ -1,7 +1,6 @@
 package com.rockthevote.grommet;
 
 import android.app.Application;
-import android.database.Cursor;
 import androidx.annotation.NonNull;
 
 import com.f2prateek.rx.preferences2.Preference;
@@ -10,7 +9,6 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.LumberYard;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
-import com.rockthevote.grommet.data.db.model.Session;
 import com.rockthevote.grommet.data.prefs.AppVersion;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
@@ -25,7 +23,6 @@ import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.data.prefs.RegistrationText;
 import com.rockthevote.grommet.ui.ActivityHierarchyServer;
 import com.squareup.leakcanary.LeakCanary;
-import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.Date;
 
@@ -34,7 +31,6 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 import timber.log.Timber;
 
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_OUT;
 import static timber.log.Timber.DebugTree;
 
 public final class GrommetApp extends Application {
@@ -45,7 +41,6 @@ public final class GrommetApp extends Application {
     @Inject @PartnerTimeout Preference<Long> partnerTimeoutPref;
     @Inject @AppVersion Preference<Integer> appVersionPref;
 
-    @Inject BriteDatabase db;
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
     // preferences
@@ -109,21 +104,6 @@ public final class GrommetApp extends Application {
             eventNamePref.delete();
             eventZipPref.delete();
             deviceIdPref.delete();
-
-            // clock out any current sessions
-            Session.Builder builder = new Session.Builder()
-                    .clockOutTime(new Date())
-                    .sessionStatus(CLOCKED_OUT);
-
-            Cursor cursor = db.query(Session.SELECT_CURRENT_SESSION);
-            if (cursor.moveToNext()) {
-                Session curSession = Session.MAPPER.call(cursor);
-                db.update(Session.TABLE,
-                        builder.build(),
-                        Session._ID + " = ? ", String.valueOf(curSession.id()));
-
-            }
-            cursor.close();
 
             // update current version
             appVersionPref.set(BuildConfig.VERSION_CODE);

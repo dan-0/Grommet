@@ -11,8 +11,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.f2prateek.rx.preferences2.Preference;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -20,10 +18,7 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.db.model.AdditionalInfo;
-import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.data.db.model.VoterClassification;
-import com.rockthevote.grommet.data.db.model.VoterId;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
@@ -33,10 +28,8 @@ import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.EmailOrEmpty;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;
-import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -44,27 +37,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
-import static com.rockthevote.grommet.data.db.model.AdditionalInfo.Type.LANGUAGE_PREF;
-import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.EMAIL;
-import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Party;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Party.OTHER_PARTY;
 import static com.rockthevote.grommet.data.db.model.RockyRequest.Race;
-import static com.rockthevote.grommet.data.db.model.VoterClassification.Type.POLITICAL_PARTY_CHANGE;
-import static com.rockthevote.grommet.data.db.model.VoterId.Type.DRIVERS_LICENSE;
-import static com.rockthevote.grommet.data.db.model.VoterId.Type.SSN_LAST_FOUR;
 
 public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private static final String OTHER_PARTY_VISIBILITY_KEY = "other_party_visibility_key";
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
     @Inject @PartnerName Preference<String> partnerNamePref;
-    @Inject BriteDatabase db;
     @Inject @PartnerVolunteerTextPref Preference<PartnerVolunteerText> partnerVolunteerText;
     @BindView(R.id.spinner_race) BetterSpinner raceSpinner;
 
@@ -217,135 +201,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
         phoneFormatter = new PhoneNumberFormattingTextWatcher("US");
         phone.addTextChangedListener(phoneFormatter);
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(raceSpinner.getEditText())
-                .observeOn(Schedulers.io())
-                .skip(1)
-                .subscribe(race -> db.update(RockyRequest.TABLE,
-                        new RockyRequest.Builder()
-                                .race(Race.fromString(race.editable().toString()))
-                                .build(),
-                        RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()))));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(otherPartyEditText)
-                .observeOn(Schedulers.io())
-                .skip(1)
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .subscribe(otherParty -> db.update(RockyRequest.TABLE,
-                        new RockyRequest.Builder()
-                                .otherParty(otherParty.editable().toString())
-                                .build(),
-                        RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()))));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(partySpinner.getEditText())
-                .observeOn(Schedulers.io())
-                .skip(1)
-                .subscribe(party -> db.update(RockyRequest.TABLE,
-                        new RockyRequest.Builder()
-                                .party(Party.fromString(party.editable().toString()))
-                                .build(),
-                        RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()))));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(langPrefSpinner.getEditText())
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .subscribe(event -> AdditionalInfo.insertOrUpdate(db, rockyRequestRowId.get(),
-                        LANGUAGE_PREF, new AdditionalInfo.Builder()
-                                .type(LANGUAGE_PREF)
-                                .stringValue(event.editable().toString())
-                                .build())));
-
-        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(pennDOTEditText),
-                doesNotHavePennDOT,
-                (driversLicense, doesNotHave) -> new VoterId.Builder()
-                        .type(DRIVERS_LICENSE)
-                        .value(doesNotHave ? "" : driversLicense.editable().toString())
-                        .attestNoSuchId(doesNotHave)
-                        .build())
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .subscribe(contentValues -> VoterId.insertOrUpdate(db, rockyRequestRowId.get(), DRIVERS_LICENSE, contentValues)));
-
-        subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(ssnEditText),
-                doesNotHaveSSN,
-                (ssn, doesNotHave) -> new VoterId.Builder()
-                        .type(SSN_LAST_FOUR)
-                        .value(doesNotHave ? "" : ssn.editable().toString())
-                        .attestNoSuchId(doesNotHave)
-                        .build())
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .subscribe(contentValues -> VoterId.insertOrUpdate(db, rockyRequestRowId.get(), SSN_LAST_FOUR, contentValues)));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(email)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> ContactMethod.insertOrUpdate(db, rockyRequestRowId.get(), EMAIL,
-                        new ContactMethod.Builder()
-                                .value(event.editable().toString())
-                                .build())));
-
-        subscriptions.add(RxCompoundButton.checkedChanges(emailOptIn)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(checked -> db.update(
-                        RockyRequest.TABLE,
-                        new RockyRequest.Builder()
-                                .partnerOptInEmail(checked)
-                                .build(),
-                        RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()))));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(phone)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(event -> ContactMethod.insertOrUpdate(db, rockyRequestRowId.get(), PHONE,
-                        new ContactMethod.Builder()
-                                .value(event.editable().toString())
-                                .build()
-                )));
-
-        subscriptions.add(RxTextView.afterTextChangeEvents(phoneTypeSpinner.getEditText())
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .subscribe(phoneType -> db.update(RockyRequest.TABLE,
-                        new RockyRequest.Builder()
-                                .phoneType(RockyRequest.PhoneType.fromString(phoneType.editable().toString()))
-                                .build(),
-                        RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()))));
-
-        subscriptions.add(RxCompoundButton.checkedChanges(phoneOptIn)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(checked -> db.update(
-                        RockyRequest.TABLE,
-                        new RockyRequest.Builder()
-                                .partnerOptInSMS(checked)
-                                .build(),
-                        RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()))));
-
-        subscriptions.add(RxCompoundButton.checkedChanges(partyChangeCheckbox)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(checked -> VoterClassification.insertOrUpdate(db, rockyRequestRowId.get(), POLITICAL_PARTY_CHANGE,
-                        new VoterClassification.Builder()
-                                .assertion(checked)
-                                .build())));
-
-        subscriptions.add(RxCompoundButton.checkedChanges(partnerVolunteerCheckBox)
-                .observeOn(Schedulers.io())
-                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                .skip(1)
-                .subscribe(checked -> db.update(
-                        RockyRequest.TABLE,
-                        new RockyRequest.Builder()
-                                .partnerOptInVolunteer(checked)
-                                .build(),
-                        RockyRequest._ID + " = ? ", String.valueOf(rockyRequestRowId.get()))));
 
     }
 

@@ -27,7 +27,6 @@ import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.data.prefs.RegistrationText;
 import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
-import com.squareup.sqlbrite.BriteDatabase;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +47,6 @@ import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.NEW_SE
 public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
 
     @Inject RockyService rockyService;
-    @Inject BriteDatabase db;
 
     // preferences
     @Inject @PartnerId Preference<String> partnerIdPref;

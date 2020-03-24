@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
@@ -23,21 +22,13 @@ import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
-import com.squareup.sqlbrite.BriteDatabase;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.rockthevote.grommet.data.db.Db.DEBOUNCE;
-import static com.rockthevote.grommet.data.db.model.Name.Prefix;
-import static com.rockthevote.grommet.data.db.model.Name.Suffix;
 
 public class NameView extends FrameLayout {
 
@@ -62,8 +53,6 @@ public class NameView extends FrameLayout {
     @BindView(R.id.last_name) EditText lastNameEditText;
 
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
-
-    @Inject BriteDatabase db;
 
     private ObservableValidator validator;
 
@@ -157,24 +146,6 @@ public class NameView extends FrameLayout {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
             subscriptions = new CompositeSubscription();
-            subscriptions.add(Observable.combineLatest(RxTextView.afterTextChangeEvents(firstNameEditText),
-                    RxTextView.afterTextChangeEvents(middleNameEditText),
-                    RxTextView.afterTextChangeEvents(lastNameEditText),
-                    RxTextView.afterTextChangeEvents(titleSpinner.getEditText()),
-                    RxTextView.afterTextChangeEvents(suffixSpinner.getEditText()),
-                    (firstName, middleName, lastName, title, suffix) -> new Name.Builder()
-                            .firstName(firstName.editable().toString())
-                            .middleName(middleName.editable().toString())
-                            .lastName(lastName.editable().toString())
-                            .prefix(Prefix.fromString(title.editable().toString()))
-                            .suffix(Suffix.fromString(suffix.editable().toString()))
-                            .build())
-                    .observeOn(Schedulers.io())
-                    .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
-                    .skip(1)
-                    .subscribe(contentValues -> {
-                        Name.insertOrUpdate(db, rockyRequestRowId.get(), type, contentValues);
-                    }));
         }
     }
 
