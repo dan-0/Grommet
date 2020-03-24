@@ -2,12 +2,6 @@ package com.rockthevote.grommet.data.db.model;
 
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-import com.rockthevote.grommet.data.db.Db;
-import com.rockthevote.grommet.util.Strings;
-import com.squareup.sqlbrite.BriteDatabase;
 
 public abstract class Address implements Parcelable, BaseColumns {
 
