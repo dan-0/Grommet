@@ -269,4 +269,9 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
                     return emailRes && phoneRes && validatorRes;
                 });
     }
+
+    @Override
+    public void storeState() {
+
+    }
 }

@@ -1,10 +1,13 @@
 package com.rockthevote.grommet.ui.registration.name;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputEditText;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.textfield.TextInputLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +21,12 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
+import com.rockthevote.grommet.databinding.FragmentNewRegistrantBinding;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DatePickerDialogFragment;
-import com.rockthevote.grommet.ui.views.NameView;
+import com.rockthevote.grommet.ui.registration.RegistrationData;
+import com.rockthevote.grommet.ui.registration.RegistrationViewModel;
 import com.rockthevote.grommet.util.Dates;
 
 import org.threeten.bp.LocalDate;
@@ -35,22 +40,15 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
-public class NewRegistrantFragment extends BaseRegistrationFragment implements
-        DatePickerDialog.OnDateSetListener {
-
-    @BindView(R.id.name) NameView name;
-    @BindView(R.id.name_changed) CheckBox nameChanged;
-    @BindView(R.id.previous_name_divider) View previousNameDivider;
-    @BindView(R.id.previous_name) NameView previousName;
+public class NewRegistrantFragment extends BaseRegistrationFragment {
 
     @NotEmpty(messageResId = R.string.required_field)
-    @BindView(R.id.til_birthday) TextInputLayout tilBirthday;
-    @BindView(R.id.edittext_birthday) TextInputEditText birthdayEditText;
+    @BindView(R.id.til_birthday)
+    TextInputLayout tilBirthday;
 
     @Checked(messageResId = R.string.eighteen_or_older_err)
     @BindView(R.id.checkbox_is_eighteen)
@@ -60,18 +58,26 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     @BindView(R.id.checkbox_is_us_citizen)
     CheckBox checkBoxIsUSCitizen;
 
-    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
-    @Inject @RegistrationDeadline Preference<Date> registrationDeadline;
+    @Inject
+    @CurrentRockyRequestId
+    Preference<Long> rockyRequestRowId;
+    @Inject
+    @RegistrationDeadline
+    Preference<Date> registrationDeadline;
 
     private ObservableValidator validator;
 
     private CompositeSubscription subscriptions;
 
+    private FragmentNewRegistrantBinding binding;
+
+    private RegistrationViewModel viewModel;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setContentView(R.layout.fragment_new_registrant);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        binding = FragmentNewRegistrantBinding.inflate(inflater, container, false);
+        return wrapBinding(binding.getRoot(), inflater, container);
     }
 
     @Override
@@ -79,6 +85,22 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         validator = new ObservableValidator(this, getActivity());
+        binding.edittextBirthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date startDate = Dates.parseISO8601_ShortDate(binding.edittextBirthday.getText().toString());
+                DatePickerDialogFragment.newInstance(NewRegistrantFragment.this::onDateSet, startDate)
+                        .show(getFragmentManager(), "datepicker");
+            }
+        });
+
+        binding.nameChanged.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            binding.previousName.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            binding.previousNameDivider.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
+
+        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
     }
 
     @Override
@@ -91,7 +113,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     public void onResume() {
         super.onResume();
         subscriptions = new CompositeSubscription();
-
     }
 
     @Override
@@ -100,24 +121,9 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
         subscriptions.unsubscribe();
     }
 
-    @OnClick(R.id.edittext_birthday)
-    public void onClickBirthday(View v) {
-        Date startDate = Dates.parseISO8601_ShortDate(birthdayEditText.getText().toString());
-        DatePickerDialogFragment.newInstance(this, startDate)
-                .show(getFragmentManager(), "datepicker");
-    }
-
-    @OnCheckedChanged(R.id.name_changed)
-    public void onNameChangedChecked(boolean checked) {
-        previousName.setVisibility(checked ? View.VISIBLE : View.GONE);
-        previousNameDivider.setVisibility(checked ? View.VISIBLE : View.GONE);
-
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+    private void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-        birthdayEditText.setText(Dates.formatAsISO8601_ShortDate(date.getTime()));
+        binding.edittextBirthday.setText(Dates.formatAsISO8601_ShortDate(date.getTime()));
 
         validateBirthday();
     }
@@ -125,10 +131,10 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     private boolean validateBirthday() {
         boolean valid = isEighteenByDeadline();
         if (!valid) {
-            tilBirthday.setError(String.format(getString(R.string.birthday_error),
+            binding.tilBirthday.setError(String.format(getString(R.string.birthday_error),
                     Dates.formatAsISO8601_ShortDate(registrationDeadline.get())));
         } else {
-            tilBirthday.setError(null);
+            binding.tilBirthday.setError(null);
         }
 
         return valid;
@@ -140,7 +146,7 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
             Calendar uses 0 as the first month but LocalDate does not, so make sure and add 1 to it
          */
 
-        Date birthDate = Dates.parseISO8601_ShortDate(birthdayEditText.getText().toString());
+        Date birthDate = Dates.parseISO8601_ShortDate(binding.edittextBirthday.getText().toString());
         if (birthDate == null) {
             return false;
         }
@@ -167,15 +173,40 @@ public class NewRegistrantFragment extends BaseRegistrationFragment implements
     @Override
     public Observable<Boolean> verify() {
 
-        Observable<Boolean> previousNameObs = previousName.verify()
-                .flatMap(val -> Observable.just(nameChanged.isChecked() ? val : true));
+        Observable<Boolean> previousNameObs = binding.previousName.verify()
+                .flatMap(val -> Observable.just(binding.nameChanged.isChecked() ? val : true));
 
+//        NameRegistrationData data = NewRegistrationExtKt.toNameRegistrationData(binding);
+//        Timber.d("DATA: %s", data);
         return Observable.zip(
                 validator.validate(),
-                name.verify(),
+                binding.name.verify(),
                 previousNameObs,
                 Observable.just(isEighteenByDeadline()),
                 (validator, name, prevName, birthday)
                         -> validator && name && prevName && birthday);
+    }
+
+    @Override
+    public void storeState() {
+        NewRegistrantData data = NewRegistrationExtKt.toNameRegistrationData(binding);
+        viewModel.storeNewRegistrantData(data);
+    }
+
+    private Observer<RegistrationData> registrationDataObserver = registrationData -> {
+        if (registrationData.getNewRegistrantData() != null) {
+            Timber.d("Binding new registrant data: %s", registrationData);
+
+            NewRegistrationExtKt.toFragmentNewRegistratntBinding(
+                    registrationData.getNewRegistrantData(),
+                    binding)
+            ;
+        }
+    };
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

@@ -74,6 +74,11 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     }
 
     @Override
+    public void storeState() {
+
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);

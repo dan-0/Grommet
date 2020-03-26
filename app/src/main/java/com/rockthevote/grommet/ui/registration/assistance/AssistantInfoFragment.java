@@ -113,4 +113,9 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
         return Observable.zip(nameView.verify(), addressView.verify(), validator.validate(),
                 (name, address, other) -> name && address && other);
     }
+
+    @Override
+    public void storeState() {
+
+    }
 }

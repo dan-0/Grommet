@@ -85,4 +85,9 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
                 (home, mail, change) -> home && mail && change);
 
     }
+
+    @Override
+    public void storeState() {
+
+    }
 }

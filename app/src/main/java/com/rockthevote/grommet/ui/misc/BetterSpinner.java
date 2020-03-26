@@ -118,4 +118,8 @@ public class BetterSpinner extends TextInputLayout {
     public TextInputEditText getEditText() {
         return editText;
     }
+
+    public void setEditText(@NonNull CharSequence text) {
+        editText.setText(text);
+    }
 }

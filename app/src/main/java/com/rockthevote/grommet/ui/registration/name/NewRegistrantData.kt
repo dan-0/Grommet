@@ -2,7 +2,7 @@ package com.rockthevote.grommet.ui.registration.name
 
 import java.util.*
 
-data class NameRegistrationData(
+data class NewRegistrantData(
     // Required Fields
     val name: PersonName,
     val birthday: Date,
