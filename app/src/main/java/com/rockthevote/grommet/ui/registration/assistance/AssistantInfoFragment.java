@@ -135,7 +135,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
     private Observer<RegistrationData> registrationDataObserver = registrationData -> {
         if (registrationData.getAssistanceData() != null) {
-            Timber.d("Binding new registrant data: %s", registrationData);
+            Timber.d("Binding new assistance info data: %s", registrationData);
 
             AssistanceExtKt.toFragmentAssistantInfoBinding(
                     registrationData.getAssistanceData(),

@@ -3,6 +3,8 @@ package com.rockthevote.grommet.ui.registration.review;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +19,12 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.RockyRequest.Language;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
+import com.rockthevote.grommet.databinding.FragmentReviewAndConfirmBinding;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DisclosureAgreementDialogFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationCompleteDialogFragment;
+import com.rockthevote.grommet.ui.registration.RegistrationData;
+import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 import com.rockthevote.grommet.util.Images;
 import com.rockthevote.grommet.util.LocaleUtils;
 
@@ -35,6 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class ReviewAndConfirmFragment extends BaseRegistrationFragment implements SignaturePad.OnSignedListener {
 
@@ -66,16 +72,19 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     private CompositeSubscription subscriptions;
     private DisclosureAgreementDialogFragment dialog;
 
+    private FragmentReviewAndConfirmBinding binding;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setContentView(R.layout.fragment_review_and_confirm);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        binding = FragmentReviewAndConfirmBinding.inflate(inflater, container, false);
+        return wrapBinding(binding.getRoot(), inflater, container);
     }
 
     @Override
     public void storeState() {
-
+        ReviewData data = ReviewExtKt.toReviewData(binding);
+        viewModel.storeReviewData(data);
     }
 
     @Override
@@ -120,6 +129,12 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         subscriptions.unsubscribe();
         signaturePad.setOnSignedListener(null);
         dialog.setListener(null);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @OnClick(R.id.clear_signature)

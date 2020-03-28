@@ -2,6 +2,7 @@ package com.rockthevote.grommet.ui.registration;
 
 import android.os.Bundle;
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.cardview.widget.CardView;
@@ -25,10 +26,15 @@ public abstract class BaseRegistrationFragment extends Fragment {
     protected RegistrationViewModel viewModel;
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
-        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
     }
 
     @Nullable

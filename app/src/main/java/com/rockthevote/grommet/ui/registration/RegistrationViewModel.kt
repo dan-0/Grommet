@@ -7,6 +7,8 @@ import com.rockthevote.grommet.ui.registration.address.PersonalInfoData
 import com.rockthevote.grommet.ui.registration.assistance.AssistanceData
 import com.rockthevote.grommet.ui.registration.name.NewRegistrantData
 import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData
+import com.rockthevote.grommet.ui.registration.review.ReviewData
+import timber.log.Timber
 
 class RegistrationViewModel : ViewModel() {
     private val _registrationData = MutableLiveData(RegistrationData())
@@ -44,7 +46,16 @@ class RegistrationViewModel : ViewModel() {
         updateData(newData)
     }
 
+    fun storeReviewData(data: ReviewData) {
+        val newData = _registrationData.value?.copy(
+            reviewData = data
+        )
+
+        updateData(newData)
+    }
+
     private fun updateData(data: RegistrationData?) {
+        Timber.d("Updating registration data: %s", data)
         data ?: return
         _registrationData.postValue(data)
     }

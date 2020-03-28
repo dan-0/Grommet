@@ -112,8 +112,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     private FragmentAdditionalInfoBinding binding;
 
-    private RegistrationViewModel viewModel;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -299,7 +297,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     private Observer<RegistrationData> registrationDataObserver = registrationData -> {
         if (registrationData.getAdditionalInfoData() != null) {
-            Timber.d("Binding new registrant data: %s", registrationData);
+            Timber.d("Binding new additional info data: %s", registrationData);
 
             AdditionalInfoExtKt.toFragmentAdditionalInfoBinding(
                     registrationData.getAdditionalInfoData(),

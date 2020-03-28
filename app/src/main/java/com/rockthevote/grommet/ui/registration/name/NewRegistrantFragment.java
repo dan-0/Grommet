@@ -194,8 +194,8 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
 
             NewRegistrantExtKt.toFragmentNewRegistratntBinding(
                     registrationData.getNewRegistrantData(),
-                    binding)
-            ;
+                    binding
+            );
         }
     };
 

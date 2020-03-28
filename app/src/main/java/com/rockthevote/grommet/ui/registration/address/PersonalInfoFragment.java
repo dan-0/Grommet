@@ -14,7 +14,6 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.databinding.FragmentPersonalInfoBinding;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationData;
-import com.rockthevote.grommet.ui.registration.RegistrationViewModel;
 
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -25,8 +24,6 @@ import timber.log.Timber;
 public class PersonalInfoFragment extends BaseRegistrationFragment {
 
     private FragmentPersonalInfoBinding binding;
-
-    private RegistrationViewModel viewModel;
 
     @Nullable
     @Override
@@ -39,15 +36,13 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         Injector.obtain(getActivity()).inject(this);
-
-        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
     }
 
     @Override
@@ -91,7 +86,7 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     private Observer<RegistrationData> registrationDataObserver = registrationData -> {
         PersonalInfoData addressData = registrationData.getAddressData();
         if (addressData != null) {
-            Timber.d("Binding address data: %s", registrationData);
+            Timber.d("Binding new personal data: %s", registrationData);
 
             PersonalInfoExtKt.toFragmentPersonalInfoBinding(addressData, binding);
         }
