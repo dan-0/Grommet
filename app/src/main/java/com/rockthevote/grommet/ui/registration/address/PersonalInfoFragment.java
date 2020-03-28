@@ -16,6 +16,7 @@ import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationData;
 import com.rockthevote.grommet.ui.registration.RegistrationViewModel;
 
+import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
 import timber.log.Timber;
@@ -32,6 +33,12 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentPersonalInfoBinding.inflate(inflater, container, false);
         return wrapBinding(binding.getRoot(), inflater, container);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
     }
 
     @Override
