@@ -2,9 +2,6 @@ package com.rockthevote.grommet.data.db.model;
 
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import androidx.annotation.NonNull;
-
-import java.util.Locale;
 
 
 public abstract class RockyRequest implements Parcelable, BaseColumns {
