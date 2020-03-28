@@ -37,12 +37,12 @@ fun AddressView.toAddress(): Address? {
     with (addressBinding) {
         val streetAddress = street.text?.toString() ?: return null
         val city = city.text?.toString() ?: return null
-        val state = spinnerState.editText.text?.toString() ?: return null
+        val state = spinnerState.spinnerText ?: return null
         val zipCode = zip.text?.toString() ?: return null
-        val county = spinnerCounty.editText.text?.toString() ?: return null
+        val county = spinnerCounty.spinnerText ?: return null
 
         val streetAddressTwo = street2.text?.toString()
-        val unitType = spinnerUnitType.editText.text?.toString()
+        val unitType = spinnerUnitType.spinnerText
         val unitNumber = unit.text?.toString()
 
         return Address(

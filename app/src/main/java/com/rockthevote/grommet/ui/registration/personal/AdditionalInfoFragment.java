@@ -1,8 +1,13 @@
 package com.rockthevote.grommet.ui.registration.personal;
 
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.textfield.TextInputLayout;
+
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +31,9 @@ import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.RegistrationData;
+import com.rockthevote.grommet.ui.registration.RegistrationViewModel;
+import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 import com.rockthevote.grommet.util.EmailOrEmpty;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;
@@ -40,8 +48,10 @@ import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import com.rockthevote.grommet.data.db.model.Party;
+
 import static com.rockthevote.grommet.data.db.model.Party.OTHER_PARTY;
 
 import com.rockthevote.grommet.data.db.model.Race;
@@ -102,6 +112,8 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     private FragmentAdditionalInfoBinding binding;
 
+    private RegistrationViewModel viewModel;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -113,6 +125,9 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
 
         Validator.registerAnnotation(Phone.class);
         Validator.registerAnnotation(EmailOrEmpty.class);
@@ -279,6 +294,17 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @Override
     public void storeState() {
-
+        AdditionalInfoData data = AdditionalInfoExtKt.toAdditionalInfoData(binding);
+        viewModel.storeAdditionalInfoData(data);
     }
+
+    private Observer<RegistrationData> registrationDataObserver = registrationData -> {
+        if (registrationData.getAdditionalInfoData() != null) {
+            Timber.d("Binding new registrant data: %s", registrationData);
+
+            AdditionalInfoExtKt.toFragmentAdditionalInfoBinding(
+                    registrationData.getAdditionalInfoData(),
+                    binding);
+        }
+    };
 }
