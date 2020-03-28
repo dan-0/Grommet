@@ -44,7 +44,6 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
 
         Injector.obtain(getActivity()).inject(this);
 

@@ -10,5 +10,5 @@ data class AssistanceData(
     val helperName: PersonName?,
     val helperAddress: Address?,
     val helperPhone: String?,
-    val hasConfirmedTerms: Boolean?
+    val hasConfirmedTerms: Boolean
 )

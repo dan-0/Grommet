@@ -126,7 +126,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
         viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
 
         Validator.registerAnnotation(Phone.class);

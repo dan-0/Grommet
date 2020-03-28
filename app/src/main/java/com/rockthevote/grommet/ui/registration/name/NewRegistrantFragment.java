@@ -71,8 +71,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
 
     private FragmentNewRegistrantBinding binding;
 
-    private RegistrationViewModel viewModel;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -99,7 +97,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
             binding.previousNameDivider.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
         viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
     }
 

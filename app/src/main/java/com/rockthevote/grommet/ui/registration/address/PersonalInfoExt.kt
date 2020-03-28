@@ -23,12 +23,12 @@ fun FragmentPersonalInfoBinding.toAddressData(): PersonalInfoData {
 }
 
 fun PersonalInfoData.toFragmentPersonalInfoBinding(binding: FragmentPersonalInfoBinding) {
-    homeAddress.toAddressView(binding.homeAddress)
+    homeAddress.bindToAddressView(binding.homeAddress)
     binding.mailingAddressIsDifferent.isChecked = isMailingAddressDifferent
     binding.addressChanged.isChecked = hasPreviousAddress
 
-    mailingAddress?.toAddressView(binding.mailingAddress)
-    previousAddress?.toAddressView(binding.previousAddress)
+    mailingAddress?.bindToAddressView(binding.mailingAddress)
+    previousAddress?.bindToAddressView(binding.previousAddress)
 }
 
 fun AddressView.toAddress(): Address? {
@@ -58,11 +58,11 @@ fun AddressView.toAddress(): Address? {
     }
 }
 
-fun Address.toAddressView(view: AddressView) {
+fun Address.bindToAddressView(view: AddressView) {
     val binding = ViewAddressBinding.bind(view)
     with (binding) {
         street.text = streetAddress.toEditable()
-        city.text = this@toAddressView.city.toEditable()
+        city.text = this@bindToAddressView.city.toEditable()
         spinnerState.setEditText(state)
         zip.text = zipCode.toEditable()
         spinnerCounty.setEditText(county)

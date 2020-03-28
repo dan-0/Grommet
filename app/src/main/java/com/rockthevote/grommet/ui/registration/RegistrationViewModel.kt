@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rockthevote.grommet.ui.registration.address.PersonalInfoData
+import com.rockthevote.grommet.ui.registration.assistance.AssistanceData
 import com.rockthevote.grommet.ui.registration.name.NewRegistrantData
 import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData
 
@@ -30,6 +31,14 @@ class RegistrationViewModel : ViewModel() {
     fun storeAdditionalInfoData(data: AdditionalInfoData) {
         val newData = _registrationData.value?.copy(
             additionalInfoData = data
+        )
+
+        updateData(newData)
+    }
+
+    fun storeAssistanceData(data: AssistanceData) {
+        val newData = _registrationData.value?.copy(
+            assistanceData = data
         )
 
         updateData(newData)

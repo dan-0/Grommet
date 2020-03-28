@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +22,13 @@ public abstract class BaseRegistrationFragment extends Fragment {
 
     private @LayoutRes int contentView;
 
+    protected RegistrationViewModel viewModel;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
+        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
     }
 
     @Nullable
