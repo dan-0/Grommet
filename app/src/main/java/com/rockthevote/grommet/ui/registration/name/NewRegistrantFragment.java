@@ -83,13 +83,11 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         validator = new ObservableValidator(this, getActivity());
-        binding.edittextBirthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Date startDate = Dates.parseISO8601_ShortDate(binding.edittextBirthday.getText().toString());
-                DatePickerDialogFragment.newInstance(NewRegistrantFragment.this::onDateSet, startDate)
-                        .show(getFragmentManager(), "datepicker");
-            }
+
+        binding.edittextBirthday.setOnClickListener(v -> {
+            Date startDate = Dates.parseISO8601_ShortDate(binding.edittextBirthday.getText().toString());
+            DatePickerDialogFragment.newInstance(NewRegistrantFragment.this::onDateSet, startDate)
+                    .show(getFragmentManager(), "datepicker");
         });
 
         binding.nameChanged.setOnCheckedChangeListener((buttonView, isChecked) -> {

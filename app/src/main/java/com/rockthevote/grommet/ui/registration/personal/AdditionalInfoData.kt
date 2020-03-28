@@ -22,6 +22,9 @@ data class AdditionalInfoData(
     // checkbox_partner_volunteer_opt_in
     val hasOptedForVolunteerText: Boolean,
     // Optional
+    val otherPoliticalParty: String?,
+    val pennDotNumber: String?,
+    val ssnLastFour: String?,
     val preferredLanguage: PreferredLanguage?,
     val race: Race?
 )

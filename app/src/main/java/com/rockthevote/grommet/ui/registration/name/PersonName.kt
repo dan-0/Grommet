@@ -26,7 +26,7 @@ fun NameView.toPersonName(): PersonName? {
 
     return with(nameBinding) {
         val title = Prefix.fromString(spinnerTitle.spinnerText!!)
-        if (title == Prefix.NONE) throw IllegalArgumentException("Title should not be NONE")
+        if (title == Prefix.NONE) return null
 
         val suffix = spinnerSuffix.editText.text?.toString()?.let {
             Suffix.fromString(it)

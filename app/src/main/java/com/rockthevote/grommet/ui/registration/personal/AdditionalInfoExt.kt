@@ -29,19 +29,26 @@ fun FragmentAdditionalInfoBinding.toAdditionalInfoData(): AdditionalInfoData {
     }
     val race = spinnerRace.spinnerText?.let { Race.fromString(it) }
 
+    val otherPoliticalParty = if (party == Party.OTHER_PARTY) otherPartyEditText.text?.toString() else null
+    val pennDotNumber = if (knowsPennDotNumber) pennDotEditText.text?.toString() else null
+    val ssnLastFour = if (knowsSsnLastFour )ssnLastFourEditText.text?.toString() else null
+
     return AdditionalInfoData(
-        party,
-        emailAddress,
-        phoneNumber,
-        phoneType,
-        hasChangedPoliticalParty,
-        knowsPennDotNumber,
-        knowsSsnLastFour,
-        hasOptedIntoNewsUpdates,
-        hasOptedIntoNewsCallAndText,
-        hasOptedForVolunteerText,
-        preferredLanguage,
-        race
+        party = party,
+        emailAddress = emailAddress,
+        phoneNumber = phoneNumber,
+        phoneType = phoneType,
+        hasChangedPoliticalParty = hasChangedPoliticalParty,
+        knowsPennDotNumber = knowsPennDotNumber,
+        knowsSsnLastFour = knowsSsnLastFour,
+        hasOptedIntoNewsUpdates = hasOptedIntoNewsUpdates,
+        hasOptedIntoNewsCallAndText = hasOptedIntoNewsCallAndText,
+        hasOptedForVolunteerText = hasOptedForVolunteerText,
+        otherPoliticalParty = otherPoliticalParty,
+        pennDotNumber = pennDotNumber,
+        ssnLastFour = ssnLastFour,
+        preferredLanguage = preferredLanguage,
+        race = race
     )
 }
 
