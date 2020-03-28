@@ -78,16 +78,16 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
 
     @Override
     public void storeState() {
-        AddressData data = AddressExtKt.toAddressData(binding);
+        PersonalInfoData data = PersonalInfoExtKt.toAddressData(binding);
         viewModel.storeAddressData(data);
     }
 
     private Observer<RegistrationData> registrationDataObserver = registrationData -> {
-        AddressData addressData = registrationData.getAddressData();
+        PersonalInfoData addressData = registrationData.getAddressData();
         if (addressData != null) {
             Timber.d("Binding address data: %s", registrationData);
 
-            AddressExtKt.toFragmentPersonalInfoBinding(addressData, binding);
+            PersonalInfoExtKt.toFragmentPersonalInfoBinding(addressData, binding);
         }
     };
 }

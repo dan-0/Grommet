@@ -5,7 +5,7 @@ import com.rockthevote.grommet.databinding.ViewAddressBinding
 import com.rockthevote.grommet.ui.registration.name.toEditable
 import com.rockthevote.grommet.ui.views.AddressView
 
-fun FragmentPersonalInfoBinding.toAddressData(): AddressData {
+fun FragmentPersonalInfoBinding.toAddressData(): PersonalInfoData {
     val homeAddress = homeAddress.toAddress()!!
     val isMailingAddressDifferent = mailingAddressIsDifferent.isChecked
     val hasPreviousAddressChanged = addressChanged.isChecked
@@ -13,7 +13,7 @@ fun FragmentPersonalInfoBinding.toAddressData(): AddressData {
     val mailingAddress = mailingAddress.toAddress()
     val previousAddress = previousAddress.toAddress()
 
-    return AddressData(
+    return PersonalInfoData(
         homeAddress,
         isMailingAddressDifferent,
         hasPreviousAddressChanged,
@@ -22,7 +22,7 @@ fun FragmentPersonalInfoBinding.toAddressData(): AddressData {
     )
 }
 
-fun AddressData.toFragmentPersonalInfoBinding(binding: FragmentPersonalInfoBinding) {
+fun PersonalInfoData.toFragmentPersonalInfoBinding(binding: FragmentPersonalInfoBinding) {
     homeAddress.toAddressView(binding.homeAddress)
     binding.mailingAddressIsDifferent.isChecked = isMailingAddressDifferent
     binding.addressChanged.isChecked = hasPreviousAddress
