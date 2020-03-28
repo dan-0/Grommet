@@ -187,7 +187,7 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
 
     @Override
     public void storeState() {
-        NewRegistrantData data = NewRegistrationExtKt.toNameRegistrationData(binding);
+        NewRegistrantData data = NewRegistrantExtKt.toNameRegistrationData(binding);
         viewModel.storeNewRegistrantData(data);
     }
 
@@ -195,7 +195,7 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
         if (registrationData.getNewRegistrantData() != null) {
             Timber.d("Binding new registrant data: %s", registrationData);
 
-            NewRegistrationExtKt.toFragmentNewRegistratntBinding(
+            NewRegistrantExtKt.toFragmentNewRegistratntBinding(
                     registrationData.getNewRegistrantData(),
                     binding)
             ;

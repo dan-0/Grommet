@@ -6,7 +6,7 @@ import com.rockthevote.grommet.data.db.model.PreferredLanguage
 import com.rockthevote.grommet.data.db.model.Race
 
 
-data class AdditionalInfoRegistrationData(
+data class AdditionalInfoData(
     // Mandatory
     val party: Party,
     val emailAddress: String,

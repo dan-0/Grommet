@@ -1,6 +1,6 @@
 package com.rockthevote.grommet.ui.registration.review
 
-data class ReviewRegistrationData(
+data class ReviewData(
     val hasReviewedAndConfirmedInfo: Boolean,
     val signature: ByteArray
 ) {
@@ -8,7 +8,7 @@ data class ReviewRegistrationData(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ReviewRegistrationData
+        other as ReviewData
 
         if (hasReviewedAndConfirmedInfo != other.hasReviewedAndConfirmedInfo) return false
         if (!signature.contentEquals(other.signature)) return false

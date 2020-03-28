@@ -1,15 +1,15 @@
 package com.rockthevote.grommet.ui.registration
 
-import com.rockthevote.grommet.ui.registration.address.AddressRegistrationData
-import com.rockthevote.grommet.ui.registration.assistance.AssistanceRegistrationData
+import com.rockthevote.grommet.ui.registration.address.AddressData
+import com.rockthevote.grommet.ui.registration.assistance.AssistanceData
 import com.rockthevote.grommet.ui.registration.name.NewRegistrantData
-import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoRegistrationData
-import com.rockthevote.grommet.ui.registration.review.ReviewRegistrationData
+import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData
+import com.rockthevote.grommet.ui.registration.review.ReviewData
 
 data class RegistrationData(
     val newRegistrantData: NewRegistrantData? = null,
-    val addressRegistrationData: AddressRegistrationData? = null,
-    val additionalInfoRegistrationData: AdditionalInfoRegistrationData? = null,
-    val assistanceRegistrationData: AssistanceRegistrationData? = null,
-    val reviewRegistrationData: ReviewRegistrationData? = null
+    val addressData: AddressData? = null,
+    val additionalInfoData: AdditionalInfoData? = null,
+    val assistanceData: AssistanceData? = null,
+    val reviewData: ReviewData? = null
 )

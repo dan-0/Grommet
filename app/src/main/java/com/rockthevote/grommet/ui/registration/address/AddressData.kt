@@ -1,8 +1,8 @@
 package com.rockthevote.grommet.ui.registration.address
 
-data class AddressRegistrationData(
+data class AddressData(
     // Mandatory
-    val registrationAddress: Address,
+    val homeAddress: Address,
     val isMailingAddressDifferent: Boolean,
     val hasPreviousAddress: Boolean,
     // Optional

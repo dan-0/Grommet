@@ -22,10 +22,12 @@ import com.rockthevote.grommet.data.db.model.PreferredLanguage;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
+import com.rockthevote.grommet.databinding.FragmentAdditionalInfoBinding;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.address.AddressExtKt;
 import com.rockthevote.grommet.util.EmailOrEmpty;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;
@@ -49,7 +51,6 @@ import com.rockthevote.grommet.data.db.model.Race;
 public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private static final String OTHER_PARTY_VISIBILITY_KEY = "other_party_visibility_key";
 
-    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
     @Inject @PartnerName Preference<String> partnerNamePref;
     @Inject @PartnerVolunteerTextPref Preference<PartnerVolunteerText> partnerVolunteerText;
     @BindView(R.id.spinner_race) BetterSpinner raceSpinner;
@@ -101,11 +102,13 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private final BehaviorSubject<Boolean> doesNotHavePennDOT = BehaviorSubject.create(false);
     private final BehaviorSubject<Boolean> doesNotHaveSSN = BehaviorSubject.create(false);
 
+    private FragmentAdditionalInfoBinding binding;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setContentView(R.layout.fragment_additional_info);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        binding = FragmentAdditionalInfoBinding.inflate(inflater, container, false);
+        return wrapBinding(binding.getRoot(), inflater, container);
     }
 
     @Override
@@ -246,6 +249,12 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(OTHER_PARTY_VISIBILITY_KEY, View.VISIBLE == otherPartyTIL.getVisibility());
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override
