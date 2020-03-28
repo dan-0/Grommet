@@ -176,8 +176,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
         Observable<Boolean> previousNameObs = binding.previousName.verify()
                 .flatMap(val -> Observable.just(binding.nameChanged.isChecked() ? val : true));
 
-//        NameRegistrationData data = NewRegistrationExtKt.toNameRegistrationData(binding);
-//        Timber.d("DATA: %s", data);
         return Observable.zip(
                 validator.validate(),
                 binding.name.verify(),
