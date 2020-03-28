@@ -96,8 +96,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
             binding.previousName.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             binding.previousNameDivider.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
-
-        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
     }
 
     @Override
@@ -187,17 +185,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
         NewRegistrantData data = NewRegistrantExtKt.toNameRegistrationData(binding);
         viewModel.storeNewRegistrantData(data);
     }
-
-    private Observer<RegistrationData> registrationDataObserver = registrationData -> {
-        if (registrationData.getNewRegistrantData() != null) {
-            Timber.d("Binding new registrant data: %s", registrationData);
-
-            NewRegistrantExtKt.toFragmentNewRegistratntBinding(
-                    registrationData.getNewRegistrantData(),
-                    binding
-            );
-        }
-    };
 
     @Override
     public void onDestroyView() {

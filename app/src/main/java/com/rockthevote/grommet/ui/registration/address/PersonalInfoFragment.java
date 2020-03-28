@@ -36,7 +36,6 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
     }
 
     @Override
@@ -82,13 +81,4 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
         PersonalInfoData data = PersonalInfoExtKt.toAddressData(binding);
         viewModel.storeAddressData(data);
     }
-
-    private Observer<RegistrationData> registrationDataObserver = registrationData -> {
-        PersonalInfoData addressData = registrationData.getAddressData();
-        if (addressData != null) {
-            Timber.d("Binding new personal data: %s", registrationData);
-
-            PersonalInfoExtKt.toFragmentPersonalInfoBinding(addressData, binding);
-        }
-    };
 }

@@ -124,8 +124,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationDataObserver);
-
         Validator.registerAnnotation(Phone.class);
         Validator.registerAnnotation(EmailOrEmpty.class);
         Validator.registerAnnotation(NotEmpty.class);
@@ -294,14 +292,4 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         AdditionalInfoData data = AdditionalInfoExtKt.toAdditionalInfoData(binding);
         viewModel.storeAdditionalInfoData(data);
     }
-
-    private Observer<RegistrationData> registrationDataObserver = registrationData -> {
-        if (registrationData.getAdditionalInfoData() != null) {
-            Timber.d("Binding new additional info data: %s", registrationData);
-
-            AdditionalInfoExtKt.toFragmentAdditionalInfoBinding(
-                    registrationData.getAdditionalInfoData(),
-                    binding);
-        }
-    };
 }
