@@ -28,8 +28,8 @@ fun NameView.toPersonName(): PersonName? {
         val title = Prefix.fromString(spinnerTitle.editText.text!!.toString())
         if (title == Prefix.NONE) throw IllegalArgumentException("Title should not be NONE")
 
-        val suffix = Suffix.fromString(spinnerSuffix.editText.text.toString()).let {
-            if (it == Suffix.EMPTY) null else it
+        val suffix = spinnerSuffix.editText.text?.toString()?.let {
+            Suffix.fromString(it)
         }
 
         PersonName(
@@ -47,8 +47,9 @@ fun PersonName.bindToNameView(view: NameView) {
         it.firstName.text = firstName.toEditable()
         it.spinnerTitle.setEditText(title.toString())
         it.lastName.text = lastName.toEditable()
+
         it.middleName.text = middleName?.toEditable()
-        it.spinnerSuffix.setEditText(suffix.toString())
+        suffix?.toString()?.let { suffixString -> it.spinnerSuffix.setEditText(suffixString) }
     }
 }
 
