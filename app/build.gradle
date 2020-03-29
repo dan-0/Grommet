@@ -38,7 +38,7 @@ def gitTimestamp() {
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     signingConfigs {
         grommet {
@@ -58,7 +58,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 28
 //        multiDexEnabled true
 
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
