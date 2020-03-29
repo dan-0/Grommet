@@ -185,6 +185,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
             dialog.show(getFragmentManager(), "complete_dialog");
 
             LocaleUtils.setLocale(new Locale("en"));
+            storeState();
         } else {
             signaturePadError.setVisibility(View.VISIBLE);
         }
