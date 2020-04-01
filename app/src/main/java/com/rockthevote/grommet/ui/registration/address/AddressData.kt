@@ -1,6 +1,6 @@
 package com.rockthevote.grommet.ui.registration.address
 
-data class Address(
+data class AddressData(
     // Mandatory
     val streetAddress: String,
     val city: String,

@@ -31,7 +31,7 @@ fun PersonalInfoData.toFragmentPersonalInfoBinding(binding: FragmentPersonalInfo
     previousAddress?.bindToAddressView(binding.previousAddress)
 }
 
-fun AddressView.toAddress(): Address? {
+fun AddressView.toAddress(): AddressData? {
     val addressBinding = ViewAddressBinding.bind(this)
 
     with (addressBinding) {
@@ -45,7 +45,7 @@ fun AddressView.toAddress(): Address? {
         val unitType = spinnerUnitType.spinnerText
         val unitNumber = unit.text?.toString()
 
-        return Address(
+        return AddressData(
             streetAddress,
             city,
             state,
@@ -58,7 +58,7 @@ fun AddressView.toAddress(): Address? {
     }
 }
 
-fun Address.bindToAddressView(view: AddressView) {
+fun AddressData.bindToAddressView(view: AddressView) {
     val binding = ViewAddressBinding.bind(view)
     with (binding) {
         street.text = streetAddress.toEditable()

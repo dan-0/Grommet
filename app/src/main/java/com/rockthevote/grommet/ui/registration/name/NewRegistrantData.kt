@@ -4,11 +4,11 @@ import java.util.*
 
 data class NewRegistrantData(
     // Required Fields
-    val name: PersonName,
+    val name: PersonNameData,
     val birthday: Date,
     val isUsCitizen: Boolean,
     val is18OrOlderByNextElection: Boolean,
     // Optional
     val hasChangedName: Boolean,
-    val previousName: PersonName?
+    val previousName: PersonNameData?
 )

@@ -1,16 +1,12 @@
 package com.rockthevote.grommet.ui.registration.name
 
 import android.text.Editable
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.EditText
-import com.rockthevote.grommet.R
 import com.rockthevote.grommet.data.db.model.Prefix
 import com.rockthevote.grommet.data.db.model.Suffix
 import com.rockthevote.grommet.databinding.ViewNameBinding
 import com.rockthevote.grommet.ui.views.NameView
 
-data class PersonName(
+data class PersonNameData(
     // Required Fields
     val firstName: String,
     val title: Prefix,
@@ -21,7 +17,7 @@ data class PersonName(
 )
 
 @Throws(IllegalArgumentException::class)
-fun NameView.toPersonName(): PersonName? {
+fun NameView.toPersonName(): PersonNameData? {
     val nameBinding = ViewNameBinding.bind(this)
 
     return with(nameBinding) {
@@ -32,7 +28,7 @@ fun NameView.toPersonName(): PersonName? {
             Suffix.fromString(it)
         }
 
-        PersonName(
+        PersonNameData(
             firstName = firstName.text?.toString() ?: return null,
             title = title,
             lastName = lastName.text?.toString() ?: return null,
@@ -42,7 +38,7 @@ fun NameView.toPersonName(): PersonName? {
     }
 }
 
-fun PersonName.bindToNameView(view: NameView) {
+fun PersonNameData.bindToNameView(view: NameView) {
     ViewNameBinding.bind(view)?.let {
         it.firstName.text = firstName.toEditable()
         it.spinnerTitle.setEditText(title.toString())
