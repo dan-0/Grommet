@@ -1,0 +1,237 @@
+package com.rockthevote.grommet.data.db.model
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+
+@JsonClass(generateAdapter = true)
+data class RockyRequest(
+    @Json(name = "rocky_request")
+    val rockyRequest: RockyRequestBody
+)
+
+@JsonClass(generateAdapter = true)
+data class RockyRequestBody(
+    @Json(name = "created_via_api")
+    val createdViaApi: Boolean,
+    @Json(name = "finish_with_state")
+    val finishWithState: Boolean,
+    @Json(name = "geo_location")
+    val geoLocation: GeoLocation,
+    @Json(name = "lang")
+    val lang: String,
+    @Json(name = "open_tracking_id")
+    val openTrackingId: String,
+    @Json(name = "opt_in_email")
+    val optInEmail: Boolean,
+    @Json(name = "opt_in_sms")
+    val optInSms: Boolean,
+    @Json(name = "opt_in_volunteer")
+    val optInVolunteer: Boolean,
+    @Json(name = "partner_id")
+    val partnerId: Int,
+    @Json(name = "partner_opt_in_email")
+    val partnerOptInEmail: Boolean,
+    @Json(name = "partner_opt_in_sms")
+    val partnerOptInSms: Boolean,
+    @Json(name = "partner_opt_in_volunteer")
+    val partnerOptInVolunteer: Boolean,
+    @Json(name = "partner_tracking_id")
+    val partnerTrackingId: String,
+    @Json(name = "source_tracking_id")
+    val sourceTrackingId: String,
+    @Json(name = "voter_records_request")
+    val voterRecordsRequest: VoterRecordsRequest
+)
+
+@JsonClass(generateAdapter = true)
+data class GeoLocation(
+    @Json(name = "lat")
+    val lat: Int,
+    @Json(name = "long")
+    val long: Int
+)
+
+@JsonClass(generateAdapter = true)
+data class VoterRecordsRequest(
+    @Json(name = "canvasser_name")
+    val canvasserName: String,
+    @Json(name = "generated_date")
+    val generatedDate: String,
+    @Json(name = "type")
+    val type: String,
+    @Json(name = "voter_registration")
+    val voterRegistration: VoterRegistration
+)
+
+@JsonClass(generateAdapter = true)
+data class VoterRegistration(
+    @Json(name = "additional_info")
+    val additionalInfo: List<AdditionalInfo>,
+    @Json(name = "contact_methods")
+    val contactMethods: List<ContactMethod>,
+    @Json(name = "date_of_birth")
+    val dateOfBirth: String,
+    @Json(name = "gender")
+    val gender: String,
+    @Json(name = "mailing_address")
+    val mailingAddress: MailingAddress,
+    @Json(name = "name")
+    val name: Name,
+    @Json(name = "party")
+    val party: String,
+    @Json(name = "previous_name")
+    val previousName: PreviousName,
+    @Json(name = "previous_registration_address")
+    val previousRegistrationAddress: PreviousRegistrationAddress,
+    @Json(name = "race")
+    val race: String,
+    @Json(name = "registration_address")
+    val registrationAddress: RegistrationAddress,
+    @Json(name = "registration_address_is_mailing_address")
+    val registrationAddressIsMailingAddress: Boolean,
+    @Json(name = "registration_helper")
+    val registrationHelper: RegistrationHelper,
+    @Json(name = "signature")
+    val signature: Signature,
+    @Json(name = "voter_classifications")
+    val voterClassifications: List<VoterClassification>,
+    @Json(name = "voter_ids")
+    val voterIds: List<VoterId>
+)
+
+@JsonClass(generateAdapter = true)
+data class AdditionalInfo(
+    @Json(name = "name")
+    val name: String,
+    @Json(name = "string_value")
+    val stringValue: String
+)
+
+@JsonClass(generateAdapter = true)
+data class ContactMethod(
+    @Json(name = "capabilities")
+    val capabilities: List<String>,
+    @Json(name = "type")
+    val type: String,
+    @Json(name = "value")
+    val value: String
+)
+
+@JsonClass(generateAdapter = true)
+data class MailingAddress(
+    @Json(name = "numbered_thoroughfare_address")
+    val numberedThoroughfareAddress: NumberedThoroughfareAddress
+)
+
+@JsonClass(generateAdapter = true)
+data class Name(
+    @Json(name = "first_name")
+    val firstName: String,
+    @Json(name = "last_name")
+    val lastName: String,
+    @Json(name = "middle_name")
+    val middleName: String,
+    @Json(name = "title_prefix")
+    val titlePrefix: String
+)
+
+@JsonClass(generateAdapter = true)
+data class PreviousName(
+    @Json(name = "first_name")
+    val firstName: String,
+    @Json(name = "last_name")
+    val lastName: String,
+    @Json(name = "middle_name")
+    val middleName: String,
+    @Json(name = "title_prefix")
+    val titlePrefix: String
+)
+
+@JsonClass(generateAdapter = true)
+data class PreviousRegistrationAddress(
+    @Json(name = "numbered_thoroughfare_address")
+    val numberedThoroughfareAddress: NumberedThoroughfareAddress
+)
+
+@JsonClass(generateAdapter = true)
+data class RegistrationAddress(
+    @Json(name = "numbered_thoroughfare_address")
+    val numberedThoroughfareAddress: NumberedThoroughfareAddress
+)
+
+@JsonClass(generateAdapter = true)
+data class RegistrationHelper(
+    @Json(name = "address")
+    val address: Address,
+    @Json(name = "contact_methods")
+    val contactMethods: List<ContactMethod>,
+    @Json(name = "name")
+    val name: Name,
+    @Json(name = "registration_helper_type")
+    val registrationHelperType: String
+)
+
+@JsonClass(generateAdapter = true)
+data class Signature(
+    @Json(name = "image")
+    val image: String,
+    @Json(name = "mime_type")
+    val mimeType: String
+)
+
+@JsonClass(generateAdapter = true)
+data class VoterClassification(
+    @Json(name = "assertion")
+    val assertion: Boolean,
+    @Json(name = "type")
+    val type: String
+)
+
+@JsonClass(generateAdapter = true)
+data class VoterId(
+    @Json(name = "attest_no_such_id")
+    val attestNoSuchId: Boolean,
+    @Json(name = "string_value")
+    val stringValue: String,
+    @Json(name = "type")
+    val type: String
+)
+
+@JsonClass(generateAdapter = true)
+data class NumberedThoroughfareAddress(
+    @Json(name = "complete_address_number")
+    val completeAddressNumber: String,
+    @Json(name = "complete_place_names")
+    val completePlaceNames: List<CompletePlaceName>,
+    @Json(name = "complete_street_name")
+    val completeStreetName: String,
+    @Json(name = "complete_sub_address")
+    val completeSubAddress: List<CompleteSubAddres>,
+    @Json(name = "state")
+    val state: String,
+    @Json(name = "zip_code")
+    val zipCode: String
+)
+
+@JsonClass(generateAdapter = true)
+data class CompletePlaceName(
+    @Json(name = "place_name_type")
+    val placeNameType: String,
+    @Json(name = "place_name_value")
+    val placeNameValue: String
+)
+
+@JsonClass(generateAdapter = true)
+data class CompleteSubAddres(
+    @Json(name = "sub_address")
+    val subAddress: String,
+    @Json(name = "sub_address_type")
+    val subAddressType: String
+)
+
+@JsonClass(generateAdapter = true)
+data class Address(
+    @Json(name = "numbered_thoroughfare_address")
+    val numberedThoroughfareAddress: NumberedThoroughfareAddress
+)

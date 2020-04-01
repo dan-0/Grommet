@@ -4,7 +4,7 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 
 
-public abstract class RockyRequest implements Parcelable, BaseColumns {
+public abstract class RockyRequestLegacy implements Parcelable, BaseColumns {
 
     public enum Status {
         IN_PROGRESS("in_progress"),
