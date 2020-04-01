@@ -173,7 +173,13 @@ public class RegistrationActivity extends BaseActivity {
     public void onPreviousClick(View v) {
         int curPage = viewPager.getCurrentItem();
         if (curPage > 0) {
-            viewPager.setCurrentItem(curPage - 1);
+            int previousItem = curPage - 1;
+
+            BaseRegistrationFragment currentFragment =
+                    ((BaseRegistrationFragment) adapter.getItem(curPage));
+            currentFragment.storeState();
+
+            viewPager.setCurrentItem(previousItem);
         }
     }
 
@@ -181,13 +187,18 @@ public class RegistrationActivity extends BaseActivity {
     public void onNextClick(View v) {
         int curPage = viewPager.getCurrentItem();
         if (curPage < adapter.getCount() - 1) {
-            ((BaseRegistrationFragment) adapter.getItem(curPage))
+            BaseRegistrationFragment previousFragment =
+                    ((BaseRegistrationFragment) adapter.getItem(curPage));
+
+            previousFragment
                     .verify()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(isValid -> {
                         if (isValid) {
                             tabLayout.enableTabAtPosition(curPage + 1);
                             viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+
+                            previousFragment.storeState();
                         }
                     });
         }
@@ -207,11 +218,15 @@ public class RegistrationActivity extends BaseActivity {
 
             //only check if we're swiping right
             if (position - 1 == prevPage) {
-                ((BaseRegistrationFragment) adapter.getItem(prevPage))
+                BaseRegistrationFragment previousFragment =
+                        ((BaseRegistrationFragment) adapter.getItem(prevPage));
+
+                previousFragment
                         .verify()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(isValid -> {
                             if (isValid) {
+                                previousFragment.storeState();
                                 tabLayout.enableTabAtPosition(position);
                                 prevPage = position;
                             } else {

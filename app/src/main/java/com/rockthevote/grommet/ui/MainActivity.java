@@ -10,7 +10,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.legacy.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;

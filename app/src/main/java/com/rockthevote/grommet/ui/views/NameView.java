@@ -10,6 +10,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
@@ -17,6 +18,8 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.Name;
+import com.rockthevote.grommet.data.db.model.Prefix;
+import com.rockthevote.grommet.data.db.model.Suffix;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
@@ -30,7 +33,7 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
-public class NameView extends FrameLayout {
+public class NameView extends GridLayout {
 
     private String childrenStateKey;
     private String superStateKey;
@@ -56,9 +59,9 @@ public class NameView extends FrameLayout {
 
     private ObservableValidator validator;
 
-    private EnumAdapter<Name.Prefix> titleEnumAdapter;
+    private EnumAdapter<Prefix> titleEnumAdapter;
 
-    private EnumAdapter<Name.Suffix> suffixEnumAdapter;
+    private EnumAdapter<Suffix> suffixEnumAdapter;
 
     private Name.Type type;
 
@@ -125,14 +128,14 @@ public class NameView extends FrameLayout {
                     break;
             }
 
-            titleEnumAdapter = new EnumAdapter<>(getContext(), Name.Prefix.class);
+            titleEnumAdapter = new EnumAdapter<>(getContext(), Prefix.class);
             titleSpinner.setAdapter(titleEnumAdapter);
             titleSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
                 titleSpinner.getEditText().setText(titleEnumAdapter.getItem(i).toString());
                 titleSpinner.dismiss();
             });
 
-            suffixEnumAdapter = new EnumAdapter<>(getContext(), Name.Suffix.class);
+            suffixEnumAdapter = new EnumAdapter<>(getContext(), Suffix.class);
             suffixSpinner.setAdapter(suffixEnumAdapter);
             suffixSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
                 suffixSpinner.getEditText().setText(suffixEnumAdapter.getItem(i).toString());

@@ -1,18 +1,11 @@
 package com.rockthevote.grommet.data.api.model;
 
 
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
-import com.rockthevote.grommet.data.db.model.ContactMethod;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.rockthevote.grommet.data.db.model.ContactMethod.Type.PHONE;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.PhoneType;
 
 @AutoValue
 public abstract class ApiContactMethod {
