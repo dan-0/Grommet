@@ -162,7 +162,7 @@ android {
 }
 
 configurations.all {
-    resolutionStrategy.force "com.android.support:support-annotations:${supportLibVersion}"
+    resolutionStrategy.force "com.android.support:support-annotations:26.0.0"
 }
 
 // TODO remove eventually: http://b.android.com/162285
@@ -190,7 +190,7 @@ dependencies {
     implementation 'androidx.room:room-ktx:2.2.5'
     testImplementation "androidx.room:room-testing:2.2.5"
 
-    annotationProcessor 'com.squareup.dagger:dagger-compiler:1.2.2'
+    kapt 'com.squareup.dagger:dagger-compiler:1.2.5'
 
     internalDebugImplementation 'com.squareup.retrofit2:retrofit-mock:2.2.0'
 
@@ -222,7 +222,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'com.google.truth:truth:0.27'
-    implementation 'com.squareup.dagger:dagger:1.2.2'
+    implementation 'com.squareup.dagger:dagger:1.2.5'
     implementation 'com.squareup.okhttp3:okhttp:3.14.7'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0'
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'

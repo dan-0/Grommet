@@ -42,12 +42,6 @@ public final class DebugDataModule {
     private static final boolean DEFAULT_SEEN_DEBUG_DRAWER = false; // Show debug drawer first time.
     private static final boolean DEFAULT_CAPTURE_INTENTS = true; // Capture external intents.
 
-
-    // Low-tech flag to force certain debug build behaviors when running in an instrumentation test.
-    // This value is used in the creation of singletons so it must be set before the graph is created.
-    // set it in the test runner
-    static boolean instrumentationTest = false;
-
     @Provides
     @Singleton
     RxSharedPreferences provideRxSharedPreferences(SharedPreferences prefs) {
@@ -158,14 +152,6 @@ public final class DebugDataModule {
         } catch (Exception e) {
             throw new AssertionError(e);
         }
-    }
-
-
-    @Provides
-    @Singleton
-    @IsInstrumentationTest
-    boolean provideIsInstrumentationTest() {
-        return instrumentationTest;
     }
 
     @Provides

@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
  * Created by Mechanical Man on 3/24/20.
  */
 
-@Database(entities = arrayOf(), version = 1)
+@Database(entities = [Registration::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     //TODO abstract fun registrationDao(): RegistrationDao
 
