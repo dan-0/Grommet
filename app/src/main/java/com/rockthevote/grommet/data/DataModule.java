@@ -2,7 +2,6 @@ package com.rockthevote.grommet.data;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
@@ -39,6 +38,7 @@ import java.util.Date;
 
 import javax.inject.Singleton;
 
+import androidx.appcompat.app.AppCompatActivity;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
