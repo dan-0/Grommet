@@ -1,7 +1,5 @@
 package com.rockthevote.grommet.data.api.model;
 
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 import com.rockthevote.grommet.data.api.Normalize;
 import com.squareup.moshi.Json;
@@ -33,6 +31,5 @@ public abstract class ApiAdditionalInfo {
 
         abstract ApiAdditionalInfo build();
     }
-
 
 }

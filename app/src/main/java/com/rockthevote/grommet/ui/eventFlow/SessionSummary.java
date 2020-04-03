@@ -124,9 +124,6 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
 //                TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
 //                TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
 //                        TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
-
-
-
     }
 
     @OnClick(R.id.session_summary_clear)

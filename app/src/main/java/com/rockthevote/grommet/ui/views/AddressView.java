@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.f2prateek.rx.preferences2.Preference;
@@ -34,7 +35,7 @@ import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
 
-public class AddressView extends FrameLayout {
+public class AddressView extends GridLayout {
     private static final String PA_ABREV = "PA";
 
     private static final String COUNTY_ENABLED_KEY = "county_enabled_key";

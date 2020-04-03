@@ -1,7 +1,9 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui.registration.assistance;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+
 import com.google.android.material.textfield.TextInputLayout;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
@@ -16,7 +18,11 @@ import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.databinding.FragmentAssistantInfoBinding;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.RegistrationData;
+import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Phone;
@@ -28,6 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class AssistantInfoFragment extends BaseRegistrationFragment {
 
@@ -55,11 +62,13 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
     private CompositeSubscription subscriptions;
 
+    private FragmentAssistantInfoBinding binding;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setContentView(R.layout.fragment_assistant_info);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        binding = FragmentAssistantInfoBinding.inflate(inflater, container, false);
+        return wrapBinding(binding.getRoot(), inflater, container);
     }
 
     @Override
@@ -69,7 +78,6 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
         Validator.registerAnnotation(Phone.class);
         validator = new ObservableValidator(this, getActivity());
-
     }
 
     @Override
@@ -85,8 +93,6 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
         phoneFormatter = new PhoneNumberFormattingTextWatcher("US");
         phoneEditText.addTextChangedListener(phoneFormatter);
-
-
     }
 
     @Override
@@ -94,6 +100,12 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
         super.onPause();
         subscriptions.unsubscribe();
         phoneEditText.removeTextChangedListener(phoneFormatter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @OnCheckedChanged(R.id.checkbox_has_assistant)
@@ -111,5 +123,11 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
         return Observable.zip(nameView.verify(), addressView.verify(), validator.validate(),
                 (name, address, other) -> name && address && other);
+    }
+
+    @Override
+    public void storeState() {
+        AssistanceData data = AssistanceExtKt.toAssistanceData(binding);
+        viewModel.storeAssistanceData(data);
     }
 }

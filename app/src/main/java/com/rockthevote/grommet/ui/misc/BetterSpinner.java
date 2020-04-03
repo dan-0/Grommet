@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.ListPopupWindow;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -117,5 +119,18 @@ public class BetterSpinner extends TextInputLayout {
     @Override
     public TextInputEditText getEditText() {
         return editText;
+    }
+
+    @Nullable
+    public String getSpinnerText() {
+        if (editText.getText() != null) {
+            return editText.getText().toString();
+        }
+
+        return null;
+    }
+
+    public void setEditText(@NonNull CharSequence text) {
+        editText.setText(text);
     }
 }

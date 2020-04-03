@@ -1,8 +1,13 @@
-package com.rockthevote.grommet.ui.registration;
+package com.rockthevote.grommet.ui.registration.personal;
 
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.textfield.TextInputLayout;
+
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,14 +22,18 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
-import com.rockthevote.grommet.data.db.model.AdditionalInfo;
-import com.rockthevote.grommet.data.db.model.RockyRequest;
-import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
+import com.rockthevote.grommet.data.db.model.PhoneType;
+import com.rockthevote.grommet.data.db.model.PreferredLanguage;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
+import com.rockthevote.grommet.databinding.FragmentAdditionalInfoBinding;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.RegistrationData;
+import com.rockthevote.grommet.ui.registration.RegistrationViewModel;
+import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 import com.rockthevote.grommet.util.EmailOrEmpty;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;
@@ -39,15 +48,17 @@ import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Party;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Party.OTHER_PARTY;
-import static com.rockthevote.grommet.data.db.model.RockyRequest.Race;
+import com.rockthevote.grommet.data.db.model.Party;
+
+import static com.rockthevote.grommet.data.db.model.Party.OTHER_PARTY;
+
+import com.rockthevote.grommet.data.db.model.Race;
 
 public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private static final String OTHER_PARTY_VISIBILITY_KEY = "other_party_visibility_key";
 
-    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
     @Inject @PartnerName Preference<String> partnerNamePref;
     @Inject @PartnerVolunteerTextPref Preference<PartnerVolunteerText> partnerVolunteerText;
     @BindView(R.id.spinner_race) BetterSpinner raceSpinner;
@@ -91,19 +102,21 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private EnumAdapter<Race> raceEnumAdapter;
     private EnumAdapter<Party> partyEnumAdapter;
 
-    private EnumAdapter<AdditionalInfo.PreferredLanguage> preferredLanguageEnumAdapter;
-    private EnumAdapter<RockyRequest.PhoneType> phoneTypeEnumAdapter;
+    private EnumAdapter<PreferredLanguage> preferredLanguageEnumAdapter;
+    private EnumAdapter<PhoneType> phoneTypeEnumAdapter;
     private PhoneNumberFormattingTextWatcher phoneFormatter;
 
     // must be initialized to true to trigger the observable default, unchecked, state (it's reversed)
     private final BehaviorSubject<Boolean> doesNotHavePennDOT = BehaviorSubject.create(false);
     private final BehaviorSubject<Boolean> doesNotHaveSSN = BehaviorSubject.create(false);
 
+    private FragmentAdditionalInfoBinding binding;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setContentView(R.layout.fragment_additional_info);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        binding = FragmentAdditionalInfoBinding.inflate(inflater, container, false);
+        return wrapBinding(binding.getRoot(), inflater, container);
     }
 
     @Override
@@ -146,7 +159,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
 
         // Setup Phone Type Spinner
-        phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), RockyRequest.PhoneType.class);
+        phoneTypeEnumAdapter = new EnumAdapter<>(getActivity(), PhoneType.class);
         phoneTypeSpinner.setAdapter(phoneTypeEnumAdapter);
         phoneTypeSpinner.setOnItemClickListener((adapterView, view1, i, l) -> {
             phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(i).toString());
@@ -159,7 +172,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         }
 
         // set up preferred language spinner
-        preferredLanguageEnumAdapter = new EnumAdapter<>(getActivity(), AdditionalInfo.PreferredLanguage.class);
+        preferredLanguageEnumAdapter = new EnumAdapter<>(getActivity(), PreferredLanguage.class);
         langPrefSpinner.setAdapter(preferredLanguageEnumAdapter);
         langPrefSpinner.setOnItemClickListener((adapterView, view1, i, l) -> {
             langPrefSpinner.getEditText().setText(preferredLanguageEnumAdapter.getItem(i).toString());
@@ -247,6 +260,12 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
     public Observable<Boolean> verify() {
         Observable<Boolean> emailOptInVerification = Observable.just(
                 !emailOptIn.isChecked() || !Strings.isBlank(textInputEmail.getEditText().getText()));
@@ -266,5 +285,11 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
                     return emailRes && phoneRes && validatorRes;
                 });
+    }
+
+    @Override
+    public void storeState() {
+        AdditionalInfoData data = AdditionalInfoExtKt.toAdditionalInfoData(binding);
+        viewModel.storeAdditionalInfoData(data);
     }
 }

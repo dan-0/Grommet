@@ -159,6 +159,10 @@ android {
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
     }
+
+    viewBinding {
+        enabled = true
+    }
 }
 
 configurations.all {
@@ -243,6 +247,12 @@ dependencies {
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.2'
     implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3'
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta4"
+
+    // Lifecycle
+    def lifeCycleVersion = "2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:${lifeCycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifeCycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-extensions:${lifeCycleVersion}"
 
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
