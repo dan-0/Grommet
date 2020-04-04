@@ -3,8 +3,6 @@ package com.rockthevote.grommet.ui.registration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rockthevote.grommet.data.db.model.GeoLocation
-import com.rockthevote.grommet.data.db.model.VoterId
 import com.rockthevote.grommet.ui.registration.address.PersonalInfoData
 import com.rockthevote.grommet.ui.registration.assistance.AssistanceData
 import com.rockthevote.grommet.ui.registration.name.NewRegistrantData
@@ -63,24 +61,3 @@ class RegistrationViewModel : ViewModel() {
     }
 }
 
-// TODO Find exactly what we need to provide so a request can be made from the VM
-data class PartnerInformation(
-    val partnerId: Int,
-    val canvasserName: String
-)
-
-/**
- * TODO: I don't know where this data is derived from?
- * 
- * DO NOT MERGE THIS, it is a placeholder while I figure out where data comes from
- * for the API
- */
-data class UnknownDataSource(
-    val partnerOptInEmail: Boolean,
-    val partnerOptInSms: Boolean,
-    val partnerOptInVolunteer: Boolean,
-    val sourceTrackingId: String,
-    val partnerTrackingId: String,
-    val geoLocation: GeoLocation,
-    val openTrackingId: String
-)
