@@ -47,10 +47,10 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         partnerInformation: PartnerInformation,
         unknown: UnknownDataSource
     ): RockyRequest {
-        // TODO [phone_type] is in top level attributes, but isn't present in the example?
 
         val body = RockyRequestBody(
             lang = getLanguageCompletedIn(),
+            phoneType = null, // TODO I can't find where/what is supposed to populate this
             partnerId = partnerInformation.partnerId,
             optInEmail = additionalInfoData.hasOptedIntoNewsUpdates,
             optInSms = additionalInfoData.hasOptedIntoNewsCallAndText,
@@ -85,7 +85,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     ): VoterRecordsRequest {
         return VoterRecordsRequest(
             type = "registration", // TODO is this a default value?
-            generatedDate = Dates.formatAsISO8601_Date(Date()), // TODO is this from somewhere else?
+            generatedDate = Dates.formatAsISO8601_Date(Date()), // TODO is this from somewhere else, I can't find a source?
             canvasserName = partnerInformation.canvasserName,
             voterRegistration = buildVoterRegistration()
         )
@@ -101,7 +101,9 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             null
         }
 
+        // TODO Is this the way that we should be specifying race?
         val race = (additionalInfoData.race ?: Race.DECLINE).toString()
+
         val party = when (additionalInfoData.party) {
             Party.OTHER_PARTY -> additionalInfoData.otherPoliticalParty
                 ?: throw InvalidRegistrationException(
@@ -150,7 +152,11 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             name = assistanceData.helperName?.toApiName(),
             address = assistanceData.helperAddress?.toApiAddressData(),
             contactMethods = listOf(
-                ContactMethod("phone", helperPhone, listOf("voice")) // TODO should capabilties be more here?
+                ContactMethod(
+                    type = "phone",
+                    value = helperPhone,
+                    capabilities = listOf("voice") // TODO should capabilties be more here? IIRC, this is only VOICE from [ApiContactMethod]
+                )
             )
         )
     }
@@ -167,13 +173,13 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         )
 
         val sendCopyInEmail = VoterClassification(
-            type = "send_copy_in_mail",
-            assertion = additionalInfoData.hasOptedIntoNewsUpdates // TODO validate this is the correct field
+            type = "send_copy_in_mail", // TODO Is this "I give permission to OSET Org to send me news and updates?"
+            assertion = additionalInfoData.hasOptedIntoNewsUpdates
         )
 
         val agreedToDeclaration = VoterClassification(
-            type = "agreed_to_declaration",
-            assertion = true // TODO I can't find where this comes from
+            type = "agreed_to_declaration", // TODO I can't find where this comes from, but it's in the API docs
+            assertion = true // TODO Defaulting to this until source is confirmed
         )
 
         return listOf(
@@ -197,7 +203,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             attestNoSuchId = !additionalInfoData.knowsSsnLastFour
         )
 
-        // TODO There's a enum value for state_id, but none in the app that I can find?
+        // TODO There's a enum value for state_id, but none in the app that I can find. What is the source?
 
         return listOf(driversLicense, ssn4)
     }
@@ -271,19 +277,28 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         return Address(base)
     }
 
-    // TODO How is this formatted currently?
+    // TODO How is this formatted correctly per ApiAddress?
     private fun AddressData.buildSubAddress(): List<CompleteSubAddress>? {
-        val subAddres =  CompleteSubAddress(
-            subAddressType = unitType,
-            subAddress = listOfNotNull(unitType, unitNumber).joinToString(" ")
-        )
+        val unitType = unitType?.let {
+            CompleteSubAddress(
+                subAddressType = it,
+                subAddress = listOfNotNull(unitType, unitNumber).joinToString(" ")
+            )
+        }
 
-        return listOf(subAddres)
+        val line2 = streetAddressTwo?.let {
+            CompleteSubAddress(
+                subAddressType = "LINE2",
+                subAddress = it
+            )
+        }
+
+        return listOfNotNull(unitType, line2)
     }
 
     private fun AddressData.buildCompletePlacesNames(): List<CompletePlaceName> {
         val city = CompletePlaceName("MunicipalJurisdiction", city)
-        val county = CompletePlaceName("County", county) // TODO does county need "County" prepended to match docs?
+        val county = CompletePlaceName("County", county) // TODO Does county need "County" appended to match docs, eg ("Allegheny County")?
 
         return listOf(city, county)
     }
