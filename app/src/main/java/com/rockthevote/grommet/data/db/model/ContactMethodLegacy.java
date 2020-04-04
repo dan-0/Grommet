@@ -4,7 +4,7 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 import androidx.annotation.Nullable;
 
-public abstract class ContactMethod implements Parcelable, BaseColumns {
+public abstract class ContactMethodLegacy implements Parcelable, BaseColumns {
 
     public enum Type {
         PHONE("phone"),

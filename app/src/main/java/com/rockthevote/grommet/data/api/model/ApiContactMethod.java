@@ -33,8 +33,7 @@ public abstract class ApiContactMethod {
 
 //        List<String> capabilities = new ArrayList<>();
 //        // right now we only support phone (no fax)
-//        if (contactMethod.type() == PHONE ||
-//                contactMethod.type() == ContactMethod.Type.ASSISTANT_PHONE) {
+//        if (contactMethod.type() == PHONE || contactMethod.type() == ContactMethod.Type.ASSISTANT_PHONE) {
 //            capabilities.add(ContactMethod.Capability.VOICE.toString());
 //            if(phoneType == PhoneType.MOBILE){
 //                capabilities.add(ContactMethod.Capability.SMS.toString());

@@ -2,16 +2,14 @@ package com.rockthevote.grommet.data.db.model;
 
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
-public abstract class VoterClassification implements Parcelable, BaseColumns {
+public abstract class NameLegacy implements Parcelable, BaseColumns {
 
     public enum Type {
-        EIGHTEEN("eighteen_on_election_day"),
-        CITIZEN("united_states_citizen"),
-        SEND_COPY_IN_MAIL("send_copy_in_mail"),
-        DECLARATION_AGREE("agree_to_declaration"),
-        POLITICAL_PARTY_CHANGE("political_party_change");
+        CURRENT_NAME("current_name"),
+        PREVIOUS_NAME("previous_name"),
+        ASSISTANT_NAME("assistant_name");
 
         private final String type;
 
@@ -20,18 +18,19 @@ public abstract class VoterClassification implements Parcelable, BaseColumns {
         }
 
         @Override
+        @NonNull
         public String toString() {
             return type;
         }
 
-        @Nullable
         public static Type fromString(String type) {
             for (Type val : values()) {
                 if (val.toString().equals(type)) {
                     return val;
                 }
             }
-            return null;
+            return CURRENT_NAME;
         }
     }
+
 }

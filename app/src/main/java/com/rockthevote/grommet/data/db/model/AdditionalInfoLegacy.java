@@ -2,12 +2,15 @@ package com.rockthevote.grommet.data.db.model;
 
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-import androidx.annotation.Nullable;
 
-public abstract class VoterId implements Parcelable, BaseColumns {
+import java.util.Locale;
+
+public abstract class AdditionalInfoLegacy implements Parcelable, BaseColumns {
+
+
     public enum Type {
-        DRIVERS_LICENSE("drivers_license"),
-        SSN_LAST_FOUR("ssn4");
+        LANGUAGE_PREF("preferred_language"),
+        ASSISTANT_DECLARATION("assistant_declaration");
 
         private final String type;
 
@@ -20,14 +23,15 @@ public abstract class VoterId implements Parcelable, BaseColumns {
             return type;
         }
 
-        @Nullable
         public static Type fromString(String type) {
             for (Type val : values()) {
                 if (val.toString().equals(type)) {
                     return val;
                 }
             }
-            return null;
+            return LANGUAGE_PREF;
         }
     }
+
+
 }

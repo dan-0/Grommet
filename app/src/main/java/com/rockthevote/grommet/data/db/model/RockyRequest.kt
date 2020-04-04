@@ -14,6 +14,8 @@ data class RockyRequest(
 data class RockyRequestBody(
     @Json(name = "lang")
     val lang: String,
+    @Json(name = "phone_type")
+    val phoneType: String? = null, // TODO this is specified in attributes, but not in the example Json, IDK the source
     @Json(name = "partner_id")
     val partnerId: Int,
     @Json(name = "opt_in_email")
@@ -66,38 +68,38 @@ data class VoterRecordsRequest(
 
 @JsonClass(generateAdapter = true)
 data class VoterRegistration(
-    @Json(name = "additional_info")
-    val additionalInfo: List<AdditionalInfo>,
-    @Json(name = "contact_methods")
-    val contactMethods: List<ContactMethod>,
-    @Json(name = "date_of_birth")
-    val dateOfBirth: String,
-    @Json(name = "gender")
-    val gender: String,
-    @Json(name = "mailing_address")
-    val mailingAddress: MailingAddress,
-    @Json(name = "name")
-    val name: Name,
-    @Json(name = "party")
-    val party: String,
-    @Json(name = "previous_name")
-    val previousName: PreviousName,
-    @Json(name = "previous_registration_address")
-    val previousRegistrationAddress: PreviousRegistrationAddress,
-    @Json(name = "race")
-    val race: String,
-    @Json(name = "registration_address")
-    val registrationAddress: RegistrationAddress,
-    @Json(name = "registration_address_is_mailing_address")
-    val registrationAddressIsMailingAddress: Boolean,
     @Json(name = "registration_helper")
     val registrationHelper: RegistrationHelper?,
-    @Json(name = "signature")
-    val signature: Signature,
+    @Json(name = "date_of_birth")
+    val dateOfBirth: String,
+    @Json(name = "mailing_address")
+    val mailingAddress: Address?,
+    @Json(name = "previous_registration_address")
+    val previousRegistrationAddress: Address?,
+    @Json(name = "registration_address")
+    val registrationAddress: Address,
+    @Json(name = "registration_address_is_mailing_address")
+    val registrationAddressIsMailingAddress: Boolean,
+    @Json(name = "name")
+    val name: Name,
+    @Json(name = "previous_name")
+    val previousName: Name?,
+    @Json(name = "gender")
+    val gender: String,
+    @Json(name = "race")
+    val race: String,
+    @Json(name = "party")
+    val party: String,
     @Json(name = "voter_classifications")
     val voterClassifications: List<VoterClassification>,
+    @Json(name = "signature")
+    val signature: Signature,
     @Json(name = "voter_ids")
-    val voterIds: List<VoterId>
+    val voterIds: List<VoterId>,
+    @Json(name = "contact_methods")
+    val contactMethods: List<ContactMethod>,
+    @Json(name = "additional_info")
+    val additionalInfo: List<AdditionalInfo>
 )
 
 @JsonClass(generateAdapter = true)
@@ -105,23 +107,17 @@ data class AdditionalInfo(
     @Json(name = "name")
     val name: String,
     @Json(name = "string_value")
-    val stringValue: String
+    val stringValue: String?
 )
 
 @JsonClass(generateAdapter = true)
 data class ContactMethod(
-    @Json(name = "capabilities")
-    val capabilities: List<String>,
     @Json(name = "type")
     val type: String,
     @Json(name = "value")
-    val value: String
-)
-
-@JsonClass(generateAdapter = true)
-data class MailingAddress(
-    @Json(name = "numbered_thoroughfare_address")
-    val numberedThoroughfareAddress: NumberedThoroughfareAddress
+    val value: String,
+    @Json(name = "capabilities")
+    val capabilities: List<String>?
 )
 
 @JsonClass(generateAdapter = true)
@@ -149,18 +145,6 @@ data class PreviousName(
 )
 
 @JsonClass(generateAdapter = true)
-data class PreviousRegistrationAddress(
-    @Json(name = "numbered_thoroughfare_address")
-    val numberedThoroughfareAddress: NumberedThoroughfareAddress
-)
-
-@JsonClass(generateAdapter = true)
-data class RegistrationAddress(
-    @Json(name = "numbered_thoroughfare_address")
-    val numberedThoroughfareAddress: NumberedThoroughfareAddress
-)
-
-@JsonClass(generateAdapter = true)
 data class RegistrationHelper(
     @Json(name = "registration_helper_type")
     val registrationHelperType: String,
@@ -174,40 +158,40 @@ data class RegistrationHelper(
 
 @JsonClass(generateAdapter = true)
 data class Signature(
-    @Json(name = "image")
-    val image: String,
     @Json(name = "mime_type")
-    val mimeType: String
+    val mimeType: String,
+    @Json(name = "image")
+    val image: String
 )
 
 @JsonClass(generateAdapter = true)
 data class VoterClassification(
-    @Json(name = "assertion")
-    val assertion: Boolean,
     @Json(name = "type")
-    val type: String
+    val type: String,
+    @Json(name = "assertion")
+    val assertion: Boolean
 )
 
 @JsonClass(generateAdapter = true)
 data class VoterId(
-    @Json(name = "attest_no_such_id")
-    val attestNoSuchId: Boolean,
-    @Json(name = "string_value")
-    val stringValue: String,
     @Json(name = "type")
-    val type: String
+    val type: String,
+    @Json(name = "string_value")
+    val stringValue: String?,
+    @Json(name = "attest_no_such_id")
+    val attestNoSuchId: Boolean
 )
 
 @JsonClass(generateAdapter = true)
 data class NumberedThoroughfareAddress(
     @Json(name = "complete_address_number")
-    val completeAddressNumber: String,
-    @Json(name = "complete_place_names")
-    val completePlaceNames: List<CompletePlaceName>,
+    val completeAddressNumber: String?,
     @Json(name = "complete_street_name")
     val completeStreetName: String,
     @Json(name = "complete_sub_address")
-    val completeSubAddress: List<CompleteSubAddres>,
+    val completeSubAddress: List<CompleteSubAddress>?,
+    @Json(name = "complete_place_names")
+    val completePlaceNames: List<CompletePlaceName>?,
     @Json(name = "state")
     val state: String,
     @Json(name = "zip_code")
@@ -223,11 +207,11 @@ data class CompletePlaceName(
 )
 
 @JsonClass(generateAdapter = true)
-data class CompleteSubAddres(
+data class CompleteSubAddress(
     @Json(name = "sub_address")
-    val subAddress: String,
+    val subAddress: String?,
     @Json(name = "sub_address_type")
-    val subAddressType: String
+    val subAddressType: String?
 )
 
 @JsonClass(generateAdapter = true)
