@@ -3,7 +3,6 @@ package com.rockthevote.grommet.ui.registration.review;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,13 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.RockyRequestLegacy.Language;
+import com.rockthevote.grommet.data.db.model.FormLanguage;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.databinding.FragmentReviewAndConfirmBinding;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DisclosureAgreementDialogFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationCompleteDialogFragment;
-import com.rockthevote.grommet.ui.registration.RegistrationData;
-import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 import com.rockthevote.grommet.util.Images;
 import com.rockthevote.grommet.util.LocaleUtils;
 
@@ -40,7 +37,6 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 public class ReviewAndConfirmFragment extends BaseRegistrationFragment implements SignaturePad.OnSignedListener {
 
@@ -177,8 +173,8 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
             signaturePadError.setVisibility(View.GONE);
 
             // get language the form was completed in
-            Language lang = "es".equals(Locale.getDefault().getLanguage()) ?
-                    Language.SPANISH : Language.ENGLISH;
+            FormLanguage lang = "es".equals(Locale.getDefault().getLanguage()) ?
+                    FormLanguage.SPANISH : FormLanguage.ENGLISH;
 
             RegistrationCompleteDialogFragment dialog = new RegistrationCompleteDialogFragment();
             dialog.setCancelable(false);

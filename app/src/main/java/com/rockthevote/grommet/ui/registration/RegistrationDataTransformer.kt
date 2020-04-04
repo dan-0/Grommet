@@ -59,12 +59,12 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     }
 
     private fun getLanguageCompletedIn(): String {
-        val spanish = RockyRequestLegacy.Language.SPANISH.toString()
+        val spanish = FormLanguage.SPANISH.toString()
 
         return if (Locale.getDefault().language == spanish) {
             spanish
         } else {
-            RockyRequestLegacy.Language.ENGLISH.toString()
+            FormLanguage.ENGLISH.toString()
         }
     }
 
@@ -168,11 +168,18 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             assertion = true // TODO Defaulting to this until source is confirmed
         )
 
-        return listOf(
+        // TODO, this isn't in the docs, but is in the old VoterClassification, should it be?
+        val politicalPartyChanged = VoterClassification(
+            type = "political_party_change",
+            assertion = additionalInfoData.hasChangedPoliticalParty
+        )
+
+        return listOfNotNull(
             is18OnElectionDay,
             isUsCitizen,
             sendCopyInEmail,
-            agreedToDeclaration
+            agreedToDeclaration,
+            politicalPartyChanged
         )
     }
 
@@ -189,7 +196,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             attestNoSuchId = !additionalInfoData.knowsSsnLastFour
         )
 
-        // TODO There's a enum value for state_id, but none in the app that I can find. What is the source?
+        // TODO There's a enum value for state_id, but none in the app that I can find. What is the source? Should it be here? It isn't in the old VoterId type
 
         return listOf(driversLicense, ssn4)
     }

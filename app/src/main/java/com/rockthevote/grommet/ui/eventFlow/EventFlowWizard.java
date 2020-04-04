@@ -9,12 +9,12 @@ import android.widget.FrameLayout;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.Session.SessionStatus;
+import com.rockthevote.grommet.data.db.model.SessionStatus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.DETAILS_ENTERED;
+import static com.rockthevote.grommet.data.db.model.SessionStatus.DETAILS_ENTERED;
 
 /**
  * Created by Mechanical Man, LLC on 7/19/17. Grommet

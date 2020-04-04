@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.Session;
+import com.rockthevote.grommet.data.db.model.SessionStatus;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.data.prefs.DeviceID;
@@ -39,9 +39,9 @@ import butterknife.OnClick;
 import io.reactivex.disposables.CompositeDisposable;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_IN;
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.CLOCKED_OUT;
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.NEW_SESSION;
+import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_IN;
+import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_OUT;
+import static com.rockthevote.grommet.data.db.model.SessionStatus.NEW_SESSION;
 
 public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Inject ReactiveLocationProvider locationProvider;
@@ -129,7 +129,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         listener = null;
     }
 
-    void updateUI(Session.SessionStatus status) {
+    void updateUI(SessionStatus status) {
 
         // we can check for this via the DB and if there are no rows, it's fine
 

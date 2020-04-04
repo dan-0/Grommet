@@ -3,9 +3,6 @@ package com.rockthevote.grommet.ui.eventFlow;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.CompositeDisposable;
 
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.SESSION_CLEARED;
+import static com.rockthevote.grommet.data.db.model.SessionStatus.SESSION_CLEARED;
 
 public class SessionSummary extends FrameLayout implements EventFlowPage {
 

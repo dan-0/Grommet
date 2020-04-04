@@ -16,7 +16,7 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.NameLegacy;
+import com.rockthevote.grommet.data.db.model.NameType;
 import com.rockthevote.grommet.data.db.model.Prefix;
 import com.rockthevote.grommet.data.db.model.Suffix;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -62,7 +62,7 @@ public class NameView extends GridLayout {
 
     private EnumAdapter<Suffix> suffixEnumAdapter;
 
-    private NameLegacy.Type type;
+    private NameType type;
 
     private CompositeSubscription subscriptions;
 
@@ -90,13 +90,13 @@ public class NameView extends GridLayout {
                 int val = typedArray.getInt(R.styleable.NameView_name_type, 0);
                 switch (val) {
                     case 1:
-                        type = NameLegacy.Type.CURRENT_NAME;
+                        type = NameType.CURRENT_NAME;
                         break;
                     case 2:
-                        type = NameLegacy.Type.PREVIOUS_NAME;
+                        type = NameType.PREVIOUS_NAME;
                         break;
                     case 3:
-                        type = NameLegacy.Type.ASSISTANT_NAME;
+                        type = NameType.ASSISTANT_NAME;
                         break;
                 }
             } finally {
