@@ -253,7 +253,8 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             firstName = firstName,
             lastName = lastName,
             middleName = middleName,
-            titlePrefix = title.toString() // TODO should this be localized?
+            titlePrefix = title.toString(), // TODO should this be localized?
+            titleSuffix = suffix?.toString() // TODO should this be localized?
         )
     }
 
