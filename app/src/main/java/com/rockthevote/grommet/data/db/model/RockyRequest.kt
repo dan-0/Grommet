@@ -12,56 +12,56 @@ data class RockyRequest(
 
 @JsonClass(generateAdapter = true)
 data class RockyRequestBody(
-    @Json(name = "created_via_api")
-    val createdViaApi: Boolean,
-    @Json(name = "finish_with_state")
-    val finishWithState: Boolean,
-    @Json(name = "geo_location")
-    val geoLocation: GeoLocation,
     @Json(name = "lang")
     val lang: String,
-    @Json(name = "open_tracking_id")
-    val openTrackingId: String,
-    @Json(name = "opt_in_email")
-    val optInEmail: Boolean,
-    @Json(name = "opt_in_sms")
-    val optInSms: Boolean,
-    @Json(name = "opt_in_volunteer")
-    val optInVolunteer: Boolean,
     @Json(name = "partner_id")
     val partnerId: Int,
-    @Json(name = "partner_opt_in_email")
-    val partnerOptInEmail: Boolean,
+    @Json(name = "opt_in_email")
+    val optInEmail: Boolean?,
+    @Json(name = "opt_in_sms")
+    val optInSms: Boolean?,
+    @Json(name = "opt_in_volunteer")
+    val optInVolunteer: Boolean?,
     @Json(name = "partner_opt_in_sms")
     val partnerOptInSms: Boolean,
+    @Json(name = "partner_opt_in_email")
+    val partnerOptInEmail: Boolean,
     @Json(name = "partner_opt_in_volunteer")
-    val partnerOptInVolunteer: Boolean,
-    @Json(name = "partner_tracking_id")
-    val partnerTrackingId: String,
+    val partnerOptInVolunteer: Boolean?,
+    @Json(name = "finish_with_state")
+    val finishWithState: Boolean?,
+    @Json(name = "created_via_api")
+    val createdViaApi: Boolean?,
     @Json(name = "source_tracking_id")
     val sourceTrackingId: String,
+    @Json(name = "partner_tracking_id")
+    val partnerTrackingId: String,
+    @Json(name = "geo_location")
+    val geoLocation: GeoLocation?,
+    @Json(name = "open_tracking_id")
+    val openTrackingId: String,
     @Json(name = "voter_records_request")
-    val voterRecordsRequest: VoterRecordsRequest
+    val voterRecordsRequest: VoterRecordsRequest?
 )
 
 @JsonClass(generateAdapter = true)
 data class GeoLocation(
     @Json(name = "lat")
-    val lat: Int,
+    val lat: Double,
     @Json(name = "long")
-    val long: Int
+    val long: Double
 )
 
 @JsonClass(generateAdapter = true)
 data class VoterRecordsRequest(
     @Json(name = "canvasser_name")
-    val canvasserName: String,
+    val canvasserName: String?,
     @Json(name = "generated_date")
     val generatedDate: String,
     @Json(name = "type")
-    val type: String,
+    val type: String?,
     @Json(name = "voter_registration")
-    val voterRegistration: VoterRegistration
+    val voterRegistration: VoterRegistration?
 )
 
 @JsonClass(generateAdapter = true)
@@ -91,7 +91,7 @@ data class VoterRegistration(
     @Json(name = "registration_address_is_mailing_address")
     val registrationAddressIsMailingAddress: Boolean,
     @Json(name = "registration_helper")
-    val registrationHelper: RegistrationHelper,
+    val registrationHelper: RegistrationHelper?,
     @Json(name = "signature")
     val signature: Signature,
     @Json(name = "voter_classifications")
@@ -131,7 +131,7 @@ data class Name(
     @Json(name = "last_name")
     val lastName: String,
     @Json(name = "middle_name")
-    val middleName: String,
+    val middleName: String?,
     @Json(name = "title_prefix")
     val titlePrefix: String
 )
@@ -162,14 +162,14 @@ data class RegistrationAddress(
 
 @JsonClass(generateAdapter = true)
 data class RegistrationHelper(
-    @Json(name = "address")
-    val address: Address,
-    @Json(name = "contact_methods")
-    val contactMethods: List<ContactMethod>,
-    @Json(name = "name")
-    val name: Name,
     @Json(name = "registration_helper_type")
-    val registrationHelperType: String
+    val registrationHelperType: String,
+    @Json(name = "name")
+    val name: Name?,
+    @Json(name = "address")
+    val address: Address?,
+    @Json(name = "contact_methods")
+    val contactMethods: List<ContactMethod>?
 )
 
 @JsonClass(generateAdapter = true)

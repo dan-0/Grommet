@@ -16,7 +16,7 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.RockyRequest.Language;
+import com.rockthevote.grommet.data.db.model.RockyRequestLegacy.Language;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.databinding.FragmentReviewAndConfirmBinding;
