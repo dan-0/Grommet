@@ -2,11 +2,11 @@ package com.rockthevote.grommet.data.api;
 
 import android.content.SharedPreferences;
 
-import com.rockthevote.grommet.data.api.model.ApiRockyRequestWrapper;
 import com.rockthevote.grommet.data.api.model.ClockInRequest;
 import com.rockthevote.grommet.data.api.model.ClockOutRequest;
 import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
 import com.rockthevote.grommet.data.api.model.RegistrationResponse;
+import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.util.EnumPreferences;
 
 import java.util.LinkedHashMap;
@@ -61,7 +61,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Observable<Result<RegistrationResponse>> register(@Body ApiRockyRequestWrapper rockyRequestWrapper) {
+    public Observable<Result<RegistrationResponse>> register(@Body RockyRequest rockyRequestWrapper) {
         RegistrationResponse response = getResponse(MockRegistrationResponse.class).response;
 
         return delegate.returning(Calls.response(response)).register(rockyRequestWrapper);

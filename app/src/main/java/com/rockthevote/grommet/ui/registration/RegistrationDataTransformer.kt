@@ -87,7 +87,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             null
         }
 
-        // TODO Is this the way that we should be specifying race?
+        // TODO Is this the way that we should be specifying race? It's required in the API, but not in the app
         val race = (additionalInfoData.race ?: Race.DECLINE).toString()
 
         val party = when (additionalInfoData.party) {
@@ -99,11 +99,12 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             else -> additionalInfoData.party.toString()
         }
 
-        val signature = Base64.encodeToString(reviewData.signature, Base64.DEFAULT)
+        // TODO NO_WRAP was specified in ApiSignature, but probably should be in the API docs as well
+        val signature = Base64.encodeToString(reviewData.signature, Base64.NO_WRAP)
 
         return VoterRegistration(
             registrationHelper = buildRegistrationHelper(),
-            dateOfBirth = Dates.formatAsISO8601_Date(newRegistrationData.birthday),
+            dateOfBirth = Dates.formatAsISO8601_ShortDate(newRegistrationData.birthday), //TODO DateAdapter used short date, is this correct?
             mailingAddress = mailingAddress?.toApiAddressData(),
             previousRegistrationAddress = addressData.previousAddress?.toApiAddressData(),
             registrationAddress = addressData.homeAddress.toApiAddressData(),
@@ -126,7 +127,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     }
 
     private fun buildRegistrationHelper(): RegistrationHelper? {
-        if (!assistanceData.hasSomeoneAssisted) return null
+        if (!assistanceData.hasSomeoneAssisted) return null // TODO is this correct, or should this be based on the canvasser and always non-null?
 
         val helperPhone = assistanceData.helperPhone ?: throw InvalidRegistrationException(
             "helperPhone is null",
@@ -259,7 +260,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
 
     private fun AddressData.toApiAddressData(): Address {
         val base = NumberedThoroughfareAddress(
-            completeAddressNumber = null, // TODO from docs, is this anything different?
+            completeAddressNumber = null,
             completeStreetName = streetAddress,
             completeSubAddress = buildSubAddress(),
             completePlaceNames = buildCompletePlacesNames(),
@@ -270,7 +271,6 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         return Address(base)
     }
 
-    // TODO How is this formatted correctly per ApiAddress?
     private fun AddressData.buildSubAddress(): List<CompleteSubAddress>? {
         val unitType = unitType?.let {
             CompleteSubAddress(

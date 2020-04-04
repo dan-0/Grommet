@@ -85,21 +85,21 @@ data class VoterRegistration(
     @Json(name = "previous_name")
     val previousName: Name?,
     @Json(name = "gender")
-    val gender: String?,
+    val gender: String, // TODO this is non-null in the old API request, but not required per API docs, which is correct?
     @Json(name = "race")
     val race: String,
     @Json(name = "party")
     val party: String,
     @Json(name = "voter_classifications")
-    val voterClassifications: List<VoterClassification>?,
+    val voterClassifications: List<VoterClassification>,
     @Json(name = "signature")
-    val signature: Signature?,
+    val signature: Signature,
     @Json(name = "voter_ids")
-    val voterIds: List<VoterId>?,
+    val voterIds: List<VoterId>,
     @Json(name = "contact_methods")
-    val contactMethods: List<ContactMethod>?,
+    val contactMethods: List<ContactMethod>,
     @Json(name = "additional_info")
-    val additionalInfo: List<AdditionalInfo>?
+    val additionalInfo: List<AdditionalInfo>
 )
 
 @JsonClass(generateAdapter = true)
