@@ -80,7 +80,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @Override
     public void storeState() {
         ReviewData data = ReviewExtKt.toReviewData(binding);
-        viewModel.storeReviewData(data);
+        viewModel.completeRegistration(data);
     }
 
     @Override

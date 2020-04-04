@@ -8,14 +8,26 @@ import com.rockthevote.grommet.ui.registration.assistance.AssistanceData
 import com.rockthevote.grommet.ui.registration.name.NewRegistrantData
 import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData
 import com.rockthevote.grommet.ui.registration.review.ReviewData
+import com.squareup.moshi.Moshi
 import timber.log.Timber
 
-class RegistrationViewModel : ViewModel() {
+class RegistrationViewModel(
+    // TODO Make all params non-null before merge
+    private val partnerInformation: PartnerInformation? = null,
+    // TODO this should not make it into merge, it's a placeholder for data I don't know the origin of yet
+    private val unknownDataSource: UnknownDataSource? = null
+) : ViewModel() {
     private val _registrationData = MutableLiveData(RegistrationData())
     val registrationData: LiveData<RegistrationData> = _registrationData
 
+    private val _registrationState: MutableLiveData<RegistrationState> = MutableLiveData(RegistrationState.Init)
+    private val registrationState: LiveData<RegistrationState> = _registrationState
+
+    private val currentData
+        get() = _registrationData.value ?: RegistrationData()
+
     fun storeNewRegistrantData(data: NewRegistrantData) {
-        val newData = _registrationData.value?.copy(
+        val newData = currentData.copy(
             newRegistrantData = data
         )
 
@@ -23,7 +35,7 @@ class RegistrationViewModel : ViewModel() {
     }
 
     fun storeAddressData(data: PersonalInfoData) {
-        val newData = _registrationData.value?.copy(
+        val newData = currentData.copy(
             addressData = data
         )
 
@@ -31,7 +43,7 @@ class RegistrationViewModel : ViewModel() {
     }
 
     fun storeAdditionalInfoData(data: AdditionalInfoData) {
-        val newData = _registrationData.value?.copy(
+        val newData = currentData.copy(
             additionalInfoData = data
         )
 
@@ -39,25 +51,51 @@ class RegistrationViewModel : ViewModel() {
     }
 
     fun storeAssistanceData(data: AssistanceData) {
-        val newData = _registrationData.value?.copy(
+        val newData = currentData.copy(
             assistanceData = data
         )
 
         updateData(newData)
     }
 
-    fun storeReviewData(data: ReviewData) {
-        val newData = _registrationData.value?.copy(
+    private fun storeReviewData(data: ReviewData) {
+        val newData = currentData.copy(
             reviewData = data
         )
 
         updateData(newData)
     }
 
-    private fun updateData(data: RegistrationData?) {
+    fun completeRegistration(data: ReviewData) {
+        storeReviewData(data)
+
+        runCatching {
+            val transformer = RegistrationDataTransformer(currentData, partnerInformation!!)
+            val requestData = transformer.transform(unknownDataSource!!)
+
+            // TODO Send request data to DB
+        }.onSuccess {
+            _registrationState.postValue(RegistrationState.Complete)
+        }.onFailure {
+            TODO("Handle the failure, send RegistrationError")
+        }
+
+    }
+
+    private fun updateData(data: RegistrationData) {
         Timber.d("Updating registration data: %s", data)
-        data ?: return
+
+        setStateToInProgress()
         _registrationData.postValue(data)
+    }
+
+    /**
+     * Sets the state to InProgress if not already.
+     */
+    private fun setStateToInProgress() {
+        if (_registrationState.value != RegistrationState.InProgress) {
+            _registrationState.postValue(RegistrationState.InProgress)
+        }
     }
 }
 
