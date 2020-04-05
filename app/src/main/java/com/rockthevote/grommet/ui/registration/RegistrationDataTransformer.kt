@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.registration
 
 import android.util.Base64
+import com.rockthevote.grommet.R
 import com.rockthevote.grommet.data.db.model.*
 import com.rockthevote.grommet.ui.registration.address.AddressData
 import com.rockthevote.grommet.ui.registration.name.PersonNameData
@@ -36,7 +37,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     ): RockyRequest {
 
         val body = RockyRequestBody(
-            lang = getLanguageCompletedIn(),
+            lang = reviewData.formLanguage,
             phoneType = null, // TODO I can't find where/what is supposed to populate this
             partnerId = partnerInformation.partnerId,
             optInEmail = additionalInfoData.hasOptedIntoNewsUpdates,
@@ -58,16 +59,6 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         return RockyRequest(body)
     }
 
-    private fun getLanguageCompletedIn(): String {
-        val spanish = FormLanguage.SPANISH.toString()
-
-        return if (Locale.getDefault().language == spanish) {
-            spanish
-        } else {
-            FormLanguage.ENGLISH.toString()
-        }
-    }
-
     private fun buildVoterRecordsRequest(): VoterRecordsRequest {
         return VoterRecordsRequest(
             type = "registration", // TODO is this a default value?
@@ -81,7 +72,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         val mailingAddress = if (addressData.isMailingAddressDifferent) {
             addressData.mailingAddress ?: throw InvalidRegistrationException(
                 "addressData.isMailingAddressDifferent is null",
-                "Mailing address must be filled out if 'I get my mail from a different address from the one above' is checked. "
+                R.string.different_mailing_address_not_filled_out
             )
         } else {
             null
@@ -94,7 +85,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             Party.OTHER_PARTY -> additionalInfoData.otherPoliticalParty
                 ?: throw InvalidRegistrationException(
                     "otherPoliticalParty is null",
-                    "Other Political Party was selected, a write in party is required"
+                    R.string.must_write_in_party
                 )
             else -> additionalInfoData.party.toString()
         }
@@ -131,7 +122,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
 
         val helperPhone = assistanceData.helperPhone ?: throw InvalidRegistrationException(
             "helperPhone is null",
-            "Assistant's phone number must be filled out if 'Did someone help you with this form?' is checked."
+            R.string.assistants_phone_number_is_empty
         )
 
         return RegistrationHelper(
@@ -237,7 +228,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
                 } else {
                     throw InvalidRegistrationException(
                         "assistanceData.hasSomeoneAssisted is true but, did not confirm terms",
-                        "'Did someone help you with this form?' is checked, but the "
+                        R.string.confirm_terms_not_checked
                     )
                 }
             } else {
@@ -297,32 +288,36 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     }
 
     private fun validateRegistrationData(registrationData: RegistrationData) {
-        // TODO localize all of this?
         val errorMsgTemplate = "%s is null"
-        val userMessageTemplate = "Ensure all registrant data under '%s' is filled out completely."
+        val userMessageTemplate = R.string.registration_data_validation_error
         registrationData.newRegistrantData ?: throw InvalidRegistrationException(
             errorMsgTemplate.format("newRegistrantData"),
-            userMessageTemplate.format("Name")
+            userMessageTemplate,
+            R.string.fragment_title_new_registrant
         )
 
         registrationData.addressData ?: throw InvalidRegistrationException(
             errorMsgTemplate.format("addressData"),
-            userMessageTemplate.format("Address")
+            userMessageTemplate,
+            R.string.fragment_title_personal_info
         )
 
         registrationData.additionalInfoData ?: throw InvalidRegistrationException(
             errorMsgTemplate.format("additionalInfoData"),
-            userMessageTemplate.format("Personal")
+            userMessageTemplate,
+            R.string.fragment_title_additional_info
         )
 
         registrationData.assistanceData ?: throw InvalidRegistrationException(
             errorMsgTemplate.format("assistanceData"),
-            userMessageTemplate.format("Assistance")
+            userMessageTemplate,
+            R.string.fragment_title_assistant_info
         )
 
         registrationData.reviewData ?: throw InvalidRegistrationException(
             errorMsgTemplate.format("reviewData"),
-            userMessageTemplate.format("Review")
+            userMessageTemplate,
+            R.string.fragment_title_review
         )
     }
 }

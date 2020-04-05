@@ -7,7 +7,8 @@ sealed class RegistrationState {
     object InProgress : RegistrationState()
     object Complete : RegistrationState()
     class RegistrationError(
+        val isAcknowledged: Boolean = false,
         @StringRes val errorMsg: Int,
-        @StringRes vararg formatVar: Int?
+        @StringRes val formatVar: IntArray?
     ): RegistrationState()
 }

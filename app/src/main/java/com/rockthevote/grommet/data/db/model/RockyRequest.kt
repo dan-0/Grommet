@@ -4,13 +4,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class RockyRequest(
     @Json(name = "rocky_request")
     val rockyRequest: RockyRequestBody
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class RockyRequestBody(
     @Json(name = "lang")
     val lang: String,
@@ -46,7 +46,7 @@ data class RockyRequestBody(
     val voterRecordsRequest: VoterRecordsRequest?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class GeoLocation(
     @Json(name = "lat")
     val lat: Double,
@@ -54,7 +54,7 @@ data class GeoLocation(
     val long: Double
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class VoterRecordsRequest(
     @Json(name = "type")
     val type: String?,
@@ -66,7 +66,7 @@ data class VoterRecordsRequest(
     val voterRegistration: VoterRegistration?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class VoterRegistration(
     @Json(name = "registration_helper")
     val registrationHelper: RegistrationHelper?,
@@ -102,7 +102,7 @@ data class VoterRegistration(
     val additionalInfo: List<AdditionalInfo>
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class AdditionalInfo(
     @Json(name = "name")
     val name: String?,
@@ -110,7 +110,7 @@ data class AdditionalInfo(
     val stringValue: String?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class ContactMethod(
     @Json(name = "type")
     val type: String,
@@ -120,7 +120,7 @@ data class ContactMethod(
     val capabilities: List<String>?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class Name(
     @Json(name = "first_name")
     val firstName: String,
@@ -134,7 +134,7 @@ data class Name(
     val titleSuffix: String? = null
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class RegistrationHelper(
     @Json(name = "registration_helper_type")
     val registrationHelperType: String,
@@ -146,7 +146,7 @@ data class RegistrationHelper(
     val contactMethods: List<ContactMethod>?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class Signature(
     @Json(name = "mime_type")
     val mimeType: String?,
@@ -154,7 +154,7 @@ data class Signature(
     val image: String?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class VoterClassification(
     @Json(name = "type")
     val type: String?,
@@ -162,7 +162,7 @@ data class VoterClassification(
     val assertion: Boolean?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class VoterId(
     @Json(name = "type")
     val type: String,
@@ -172,7 +172,7 @@ data class VoterId(
     val attestNoSuchId: Boolean?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class NumberedThoroughfareAddress(
     @Json(name = "complete_address_number")
     val completeAddressNumber: String?,
@@ -188,7 +188,7 @@ data class NumberedThoroughfareAddress(
     val zipCode: String
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class CompletePlaceName(
     @Json(name = "place_name_type")
     val placeNameType: String?,
@@ -196,7 +196,7 @@ data class CompletePlaceName(
     val placeNameValue: String?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class CompleteSubAddress(
     @Json(name = "sub_address")
     val subAddress: String?,
@@ -204,7 +204,7 @@ data class CompleteSubAddress(
     val subAddressType: String?
 )
 
-@JsonClass(generateAdapter = true)
+@JsonClass(generateAdapter = false)
 data class Address(
     @Json(name = "numbered_thoroughfare_address")
     val numberedThoroughfareAddress: NumberedThoroughfareAddress?

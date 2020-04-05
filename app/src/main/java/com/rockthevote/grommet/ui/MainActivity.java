@@ -74,8 +74,6 @@ public final class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         requestGPSPermission();
         hockeyAppHelper.checkForUpdates(this);
-
-
     }
 
     @Override

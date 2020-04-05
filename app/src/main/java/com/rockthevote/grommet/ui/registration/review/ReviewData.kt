@@ -2,7 +2,8 @@ package com.rockthevote.grommet.ui.registration.review
 
 data class ReviewData(
     val hasReviewedAndConfirmedInfo: Boolean,
-    val signature: ByteArray
+    val signature: ByteArray,
+    val formLanguage: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

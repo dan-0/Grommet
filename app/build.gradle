@@ -199,6 +199,10 @@ dependencies {
     annotationProcessor 'com.ryanharter.auto.value:auto-value-moshi:0.4.0'
     compileOnly 'com.ryanharter.auto.value:auto-value-moshi:0.4.0'
 
+    def moshiVersion = "1.9.2"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
+    implementation "com.squareup.moshi:moshi:$moshiVersion"
+
     internalDebugImplementation 'com.jakewharton:process-phoenix:1.0.2'
 
     def leakCanaryVersion = "1.6.2"

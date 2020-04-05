@@ -1,9 +1,11 @@
 package com.rockthevote.grommet.ui.registration.review
 
 import android.graphics.Bitmap
+import com.rockthevote.grommet.data.db.model.FormLanguage
 import com.rockthevote.grommet.databinding.FragmentReviewAndConfirmBinding
 import com.rockthevote.grommet.util.Images
 import java.io.ByteArrayOutputStream
+import java.util.*
 
 fun FragmentReviewAndConfirmBinding.toReviewData(): ReviewData {
     val hasReviewAndConfirmInfo = checkboxAgreement.isChecked
@@ -18,8 +20,12 @@ fun FragmentReviewAndConfirmBinding.toReviewData(): ReviewData {
         baos.toByteArray()
     }
 
+
+    val lang = if ("es" == Locale.getDefault().language) FormLanguage.SPANISH else FormLanguage.ENGLISH
+
     return ReviewData(
         hasReviewAndConfirmInfo,
-        signature
+        signature,
+        lang.toString()
     )
 }
