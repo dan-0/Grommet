@@ -10,8 +10,9 @@ fun FragmentPersonalInfoBinding.toAddressData(): PersonalInfoData {
     val isMailingAddressDifferent = mailingAddressIsDifferent.isChecked
     val hasPreviousAddressChanged = addressChanged.isChecked
 
-    val mailingAddress = mailingAddress.toAddress()
-    val previousAddress = previousAddress.toAddress()
+    val mailingAddress = if (isMailingAddressDifferent) mailingAddress.toAddress() else null
+
+    val previousAddress = if (hasPreviousAddressChanged) previousAddress.toAddress() else null
 
     return PersonalInfoData(
         homeAddress,
@@ -65,8 +66,8 @@ fun AddressData.bindToAddressView(view: AddressView) {
         city.text = this@bindToAddressView.city.toEditable()
         spinnerState.setEditText(state)
         zip.text = zipCode.toEditable()
-        spinnerCounty.setEditText(county)
 
+        spinnerCounty.setEditText(county ?: "")
         street2.text = streetAddressTwo?.toEditable()
         unitType?.let { spinnerUnitType.setEditText(it) }
         unit.text = unitNumber?.toEditable()

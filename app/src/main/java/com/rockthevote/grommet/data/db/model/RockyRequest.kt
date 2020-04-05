@@ -198,10 +198,10 @@ data class CompletePlaceName(
 
 @JsonClass(generateAdapter = false)
 data class CompleteSubAddress(
-    @Json(name = "sub_address")
-    val subAddress: String?,
     @Json(name = "sub_address_type")
-    val subAddressType: String?
+    val subAddressType: String?,
+    @Json(name = "sub_address")
+    val subAddress: String?
 )
 
 @JsonClass(generateAdapter = false)

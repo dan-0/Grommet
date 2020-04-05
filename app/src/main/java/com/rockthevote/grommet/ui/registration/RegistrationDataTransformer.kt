@@ -62,7 +62,10 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     private fun buildVoterRecordsRequest(): VoterRecordsRequest {
         return VoterRecordsRequest(
             type = "registration", // TODO is this a default value?
-            generatedDate = Dates.formatAsISO8601_Date(Date()), // TODO is this from somewhere else, I can't find a source?
+            // TODO is this from somewhere else, I can't find a source?
+            // TODO Does this _have_ to be a full datetime stamp? It is in the example, but I don't see a formatter anywhere in the project
+            //  Looks like not? From old RockyRequest.java: Date generatedDate = Dates.parseISO8601_Date(Db.getString(cursor, GENERATED_DATE));
+            generatedDate = Dates.formatAsISO8601_Date(Date()),
             canvasserName = partnerInformation.canvasserName,
             voterRegistration = buildVoterRegistration()
         )
@@ -88,7 +91,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
                     R.string.must_write_in_party
                 )
             else -> additionalInfoData.party.toString()
-        }
+        }.toLowerCase() // TODO i
 
         // TODO NO_WRAP was specified in ApiSignature, but probably should be in the API docs as well
         val signature = Base64.encodeToString(reviewData.signature, Base64.NO_WRAP)
@@ -151,7 +154,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         )
 
         val sendCopyInEmail = VoterClassification(
-            type = "send_copy_in_mail", // TODO Is this "I give permission to OSET Org to send me news and updates?"
+            type = "send_copy_in_mail", // TODO Is this "I give permission to OSET Org to send me news and updates?" It's looking like it may not be, that might be "opt_in_email"? Where does this come from?
             assertion = additionalInfoData.hasOptedIntoNewsUpdates
         )
 
@@ -178,6 +181,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     private fun buildVoterIds(): List<VoterId> {
         val driversLicense = VoterId(
             type = "drivers_license",
+            // TODO JSON example has this split with spaces, but app doesn't format it, does that matter? eg 99999999 is 99 999 999 in JSON example
             stringValue = additionalInfoData.pennDotNumber,
             attestNoSuchId = !additionalInfoData.knowsPennDotNumber
         )
@@ -194,6 +198,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     }
 
     private fun buildContactMethods(): List<ContactMethod> {
+        // TODO Do we specify 'fax' anywhere? It's in the API example, but I can't see where we'd derive it from
         val phoneCapabilities = listOfNotNull(
             "voice",
             if (additionalInfoData.phoneType == PhoneType.MOBILE) "sms" else null
@@ -208,7 +213,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         val email = ContactMethod(
             type = "email",
             value = additionalInfoData.emailAddress,
-            capabilities = null
+            capabilities = listOf()
         )
 
         return listOf(phone, email)
@@ -220,6 +225,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             stringValue = additionalInfoData.preferredLanguage?.toString()
         )
 
+        // TODO confirming, is assistant_declaration based on "I CONFIRM THAT I HAVE... in assistant, or just "Did someone help you with this form"?
         val assistantDeclaration = AdditionalInfo(
             name = "assistant_declaration",
             stringValue = if (assistanceData.hasSomeoneAssisted) {
@@ -251,7 +257,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
 
     private fun AddressData.toApiAddressData(): Address {
         val base = NumberedThoroughfareAddress(
-            completeAddressNumber = null,
+            completeAddressNumber = "",
             completeStreetName = streetAddress,
             completeSubAddress = buildSubAddress(),
             completePlaceNames = buildCompletePlacesNames(),
@@ -264,27 +270,43 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
 
     private fun AddressData.buildSubAddress(): List<CompleteSubAddress>? {
         val unitType = unitType?.let {
+            if (it.isEmpty()) return@let null
+
+            val subAddressComponents = listOfNotNull(unitType, unitNumber)
+                .nullIfEmpty() ?: return@let null
+
             CompleteSubAddress(
                 subAddressType = it,
-                subAddress = listOfNotNull(unitType, unitNumber).joinToString(" ")
+                // TODO Do we use the unitNumber as is, or append a transformed unitType like in the JSON example?
+                subAddress = subAddressComponents.joinToString(" ")
             )
         }
 
         val line2 = streetAddressTwo?.let {
+            if (it.isEmpty()) return@let null
             CompleteSubAddress(
                 subAddressType = "LINE2",
                 subAddress = it
             )
         }
 
-        return listOfNotNull(unitType, line2)
+        return listOfNotNull(unitType, line2).nullIfEmpty()
     }
 
-    private fun AddressData.buildCompletePlacesNames(): List<CompletePlaceName> {
+    private fun AddressData.buildCompletePlacesNames(): List<CompletePlaceName>? {
         val city = CompletePlaceName("MunicipalJurisdiction", city)
-        val county = CompletePlaceName("County", county) // TODO Does county need "County" appended to match docs, eg ("Allegheny County")?
 
-        return listOf(city, county)
+        // TODO Does county need "County" appended to match docs, eg ("Allegheny County")?
+        // TODO Is this mandatory if county is empty?
+        val county = county?.let {
+            if (it.isNotEmpty()) {
+                CompletePlaceName("County", it)
+            } else {
+                null
+            }
+        }
+
+        return listOfNotNull(city, county).nullIfEmpty()
     }
 
     private fun validateRegistrationData(registrationData: RegistrationData) {
@@ -319,5 +341,13 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             userMessageTemplate,
             R.string.fragment_title_review
         )
+    }
+
+    private fun <T> List<T>.nullIfEmpty(): List<T>? {
+        return if (isEmpty()) {
+            null
+        } else {
+            this
+        }
     }
 }
