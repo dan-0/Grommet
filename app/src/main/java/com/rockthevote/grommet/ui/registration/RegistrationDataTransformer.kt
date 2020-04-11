@@ -44,7 +44,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             createdViaApi = true,
             partnerOptInSms = additionalInfoData.partnerSmsOptIn,
             partnerOptInEmail = additionalInfoData.partnerEmailOptIn,
-            phoneType = additionalInfoData.phoneType.toString(),
+            phoneType = additionalInfoData.phoneType.toString().toLowerCase(Locale.US),
             partnerId = sessionData.partnerId,
             sourceTrackingId = sessionData.sourceTrackingId,
             partnerTrackingId = sessionData.partnerTrackingId,
