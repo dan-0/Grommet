@@ -16,11 +16,11 @@ fun FragmentAssistantInfoBinding.toAssistanceData(): AssistanceData {
     val hasConfirmedTerms = checkboxAssistantAffirmation.isChecked
 
     return AssistanceData(
-        hasSomeoneAssisted,
-        helperName,
-        helperAddress,
-        helperPhone,
-        hasConfirmedTerms
+        hasSomeoneAssisted = hasSomeoneAssisted,
+        helperName = helperName,
+        helperAddress = helperAddress,
+        helperPhone = helperPhone,
+        hasConfirmedTerms = hasConfirmedTerms
     )
 }
 
