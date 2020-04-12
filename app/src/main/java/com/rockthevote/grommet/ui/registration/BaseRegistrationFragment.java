@@ -28,7 +28,7 @@ public abstract class BaseRegistrationFragment extends Fragment {
 
     protected RegistrationViewModel viewModel;
 
-//    @Inject
+    @Inject
     AppDatabase db;
 
     @Override
