@@ -2,6 +2,7 @@ package com.rockthevote.grommet.data.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 /**
@@ -10,5 +11,15 @@ import androidx.room.PrimaryKey
 @Entity
 data class Registration(
         @PrimaryKey val id: Int,
+
+
+        @ColumnInfo(name = "session_id") val sessionID: Int,
+
+
+//        @ColumnInfo(name = "time_stamp"),
+
+        /**
+         * registration JSON blob
+         */
         @ColumnInfo(name = "registration") val firstName: String?
 )

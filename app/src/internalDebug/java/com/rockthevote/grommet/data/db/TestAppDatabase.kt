@@ -3,6 +3,7 @@ package com.rockthevote.grommet.data.db
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
+import androidx.room.TypeConverters
 import com.rockthevote.grommet.data.db.AppDatabase
 
 /**
@@ -10,6 +11,7 @@ import com.rockthevote.grommet.data.db.AppDatabase
  */
 
 @Database(entities = [Registration::class], version = 1)
+@TypeConverters(Converters::class)
 abstract class TestAppDatabase : AppDatabase() {
 
     companion object {
