@@ -55,7 +55,6 @@ public final class GrommetApp extends Application {
     @Inject @EventZip Preference<String> eventZipPref;
     @Inject @DeviceID Preference<String> deviceIdPref;
 
-
     @Override
     public void onCreate() {
         super.onCreate();

@@ -3,7 +3,6 @@ package com.rockthevote.grommet;
 import android.app.Application;
 
 import com.rockthevote.grommet.data.DataModule;
-import com.rockthevote.grommet.data.DatabaseModule;
 import com.rockthevote.grommet.ui.UiModule;
 
 import javax.inject.Singleton;
@@ -14,8 +13,7 @@ import dagger.Provides;
 @Module(
         includes = {
                 UiModule.class,
-                DataModule.class,
-                DatabaseModule.class
+                DataModule.class
         },
         injects = {
                 GrommetApp.class
