@@ -1,8 +1,8 @@
 package com.rockthevote.grommet.ui.registration
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.rockthevote.grommet.data.db.model.Registration
+import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.model.GeoLocation
 import com.rockthevote.grommet.data.db.model.RockyRequest
 import com.rockthevote.grommet.ui.registration.address.PersonalInfoData
@@ -12,6 +12,9 @@ import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData
 import com.rockthevote.grommet.ui.registration.review.ReviewData
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.threeten.bp.Instant
 import timber.log.Timber
 
 class RegistrationViewModel(
@@ -91,6 +94,30 @@ class RegistrationViewModel(
 
             val rockyRequestJson = adapter.toJson(requestData)
 
+            Timber.d("Storing RockyRequest JSON %s", rockyRequestJson)
+
+            // TODO Clean up everything below this line
+            val registrantName = with(currentData.newRegistrantData!!.name) {
+                listOfNotNull(firstName, middleName, lastName).joinToString(" ")
+            }
+
+            viewModelScope.launch(Dispatchers.IO) {
+                repeat(3) {
+                    val registration = Registration(
+                        registrationDate = Instant.now().toEpochMilli(),
+                        registrantName = it.toString() + registrantName,
+                        registrationData = rockyRequestJson
+                    )
+
+                    registrationDao.insert(registration)
+                }
+
+                val registrations = registrationDao.getAll()
+
+                Timber.d("Temp: $registrations")
+            }
+
+
             // TODO Send request data to DB
         }.onSuccess {
             updateState(RegistrationState.Complete)
@@ -140,3 +167,11 @@ class RegistrationViewModel(
     }
 }
 
+class RegistrationViewModelFactory(
+    private val registrationDao: RegistrationDao
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
+        return RegistrationViewModel(registrationDao = registrationDao) as T
+    }
+}
