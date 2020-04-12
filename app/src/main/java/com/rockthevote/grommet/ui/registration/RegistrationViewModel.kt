@@ -1,9 +1,9 @@
 package com.rockthevote.grommet.ui.registration
 
 import androidx.lifecycle.*
-import com.rockthevote.grommet.data.db.model.Registration
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.model.GeoLocation
+import com.rockthevote.grommet.data.db.model.Registration
 import com.rockthevote.grommet.data.db.model.RockyRequest
 import com.rockthevote.grommet.ui.registration.address.PersonalInfoData
 import com.rockthevote.grommet.ui.registration.assistance.AssistanceData
@@ -14,8 +14,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.threeten.bp.Instant
 import timber.log.Timber
+import java.util.*
 
 class RegistrationViewModel(
     // TODO this is temporary until we can provide this from the session database
@@ -26,7 +26,8 @@ class RegistrationViewModel(
         "temp",
         GeoLocation(1.0, 1.0),
         "temp"
-    )
+    ),
+    private val registrationDao: RegistrationDao
 ) : ViewModel() {
     private val _registrationData = MutableLiveData(RegistrationData())
     val registrationData: LiveData<RegistrationData> = _registrationData
@@ -96,25 +97,21 @@ class RegistrationViewModel(
 
             Timber.d("Storing RockyRequest JSON %s", rockyRequestJson)
 
-            // TODO Clean up everything below this line
             val registrantName = with(currentData.newRegistrantData!!.name) {
                 listOfNotNull(firstName, middleName, lastName).joinToString(" ")
             }
 
+            val registration = Registration(
+                registrationDate = Date().time ,
+                registrantName = registrantName,
+                // This should only used if there was already an error on registration
+                //  so allowing an empty email is acceptable in this case
+                registrantEmail = currentData.additionalInfoData?.emailAddress ?: "",
+                registrationData = rockyRequestJson
+            )
+
             viewModelScope.launch(Dispatchers.IO) {
-                repeat(3) {
-                    val registration = Registration(
-                        registrationDate = Instant.now().toEpochMilli(),
-                        registrantName = it.toString() + registrantName,
-                        registrationData = rockyRequestJson
-                    )
-
-                    registrationDao.insert(registration)
-                }
-
-                val registrations = registrationDao.getAll()
-
-                Timber.d("Temp: $registrations")
+                registrationDao.insert(registration)
             }
 
 

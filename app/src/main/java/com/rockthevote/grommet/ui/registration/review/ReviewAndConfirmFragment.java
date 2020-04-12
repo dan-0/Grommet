@@ -79,7 +79,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
         ButterKnife.bind(this, view);
         dialog = new DisclosureAgreementDialogFragment();
 
-        // TODO Observe Registration state
         viewModel.getRegistrationState().observe(getViewLifecycleOwner(), registrationState -> {
             if (registrationState instanceof RegistrationState.Complete) {
                 completeForm();
