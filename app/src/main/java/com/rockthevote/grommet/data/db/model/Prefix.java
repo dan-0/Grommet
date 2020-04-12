@@ -30,6 +30,10 @@ public enum Prefix {
         }
     }
 
+    public String toEnString() {
+        return enTitle;
+    }
+
     @NonNull
     public static Prefix fromString(String title) {
         for (Prefix value : Prefix.values()) {

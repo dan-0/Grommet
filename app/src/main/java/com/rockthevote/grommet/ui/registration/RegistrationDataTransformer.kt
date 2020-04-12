@@ -224,7 +224,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             firstName = firstName,
             lastName = lastName,
             middleName = middleName,
-            titlePrefix = title.toString(),
+            titlePrefix = title.toEnString(),
             titleSuffix = suffix?.toString()
         )
     }
