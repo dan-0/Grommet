@@ -15,11 +15,11 @@ fun FragmentPersonalInfoBinding.toAddressData(): PersonalInfoData {
     val previousAddress = if (hasPreviousAddressChanged) previousAddress.toAddress() else null
 
     return PersonalInfoData(
-        homeAddress,
-        isMailingAddressDifferent,
-        hasPreviousAddressChanged,
-        mailingAddress,
-        previousAddress
+        homeAddress = homeAddress,
+        isMailingAddressDifferent = isMailingAddressDifferent,
+        hasPreviousAddress = hasPreviousAddressChanged,
+        mailingAddress = mailingAddress,
+        previousAddress = previousAddress
     )
 }
 

@@ -13,7 +13,7 @@ import java.util.*
  */
 class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) constructor(
     private val registrationData: RegistrationData,
-    private val partnerInformation: PartnerInformation
+    private val sessionData: SessionData
 ) {
 
     init {
@@ -28,31 +28,28 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     private val reviewData = registrationData.reviewData!!
 
     /**
-     * Transforms the [registrationData] and [partnerInformation] into a [RockyRequest]
+     * Transforms the [registrationData] and [sessionData] into a [RockyRequest]
      *
      * @throws [InvalidRegistrationException] if unable to validate [RegistrationData]
      */
-    fun transform(
-        unknown: UnknownDataSource
-    ): RockyRequest {
+    fun transform(): RockyRequest {
 
         val body = RockyRequestBody(
             lang = reviewData.formLanguage,
-            phoneType = null, // TODO I can't find where/what is supposed to populate this
-            partnerId = partnerInformation.partnerId,
-            optInEmail = additionalInfoData.hasOptedIntoNewsUpdates,
-            optInSms = additionalInfoData.hasOptedIntoNewsCallAndText,
-            optInVolunteer = additionalInfoData.hasOptedForVolunteerText,
-            // TODO All of these data sources are unknown, I think they may be from partner information, but don't know for sure
-            partnerOptInSms = unknown.partnerOptInSms,
-            partnerOptInEmail = unknown.partnerOptInEmail,
-            partnerOptInVolunteer = unknown.partnerOptInVolunteer,
-            finishWithState = true, // TODO is this a default value?
-            createdViaApi = true, // TODO is this a default value?
-            sourceTrackingId = unknown.sourceTrackingId,
-            partnerTrackingId = unknown.partnerTrackingId,
-            geoLocation = unknown.geoLocation,
-            openTrackingId = unknown.openTrackingId,
+            optInEmail = false,
+            optInSms = false,
+            optInVolunteer = false,
+            partnerOptInVolunteer = additionalInfoData.partnerVolunteerOptIn,
+            finishWithState = true,
+            createdViaApi = true,
+            partnerOptInSms = additionalInfoData.partnerSmsOptIn,
+            partnerOptInEmail = additionalInfoData.partnerEmailOptIn,
+            phoneType = additionalInfoData.phoneType.toString().toLowerCase(Locale.US),
+            partnerId = sessionData.partnerId,
+            sourceTrackingId = sessionData.sourceTrackingId,
+            partnerTrackingId = sessionData.partnerTrackingId,
+            geoLocation = sessionData.geoLocation,
+            openTrackingId = sessionData.openTrackingId,
             voterRecordsRequest = buildVoterRecordsRequest()
         )
 
@@ -61,12 +58,9 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
 
     private fun buildVoterRecordsRequest(): VoterRecordsRequest {
         return VoterRecordsRequest(
-            type = "registration", // TODO is this a default value?
-            // TODO is this from somewhere else, I can't find a source?
-            // TODO Does this _have_ to be a full datetime stamp? It is in the example, but I don't see a formatter anywhere in the project
-            //  Looks like not? From old RockyRequest.java: Date generatedDate = Dates.parseISO8601_Date(Db.getString(cursor, GENERATED_DATE));
+            type = "registration",
             generatedDate = Dates.formatAsISO8601_Date(Date()),
-            canvasserName = partnerInformation.canvasserName,
+            canvasserName = sessionData.canvasserName,
             voterRegistration = buildVoterRegistration()
         )
     }
@@ -81,7 +75,6 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             null
         }
 
-        // TODO Is this the way that we should be specifying race? It's required in the API, but not in the app
         val race = (additionalInfoData.race ?: Race.DECLINE).toString()
 
         val party = when (additionalInfoData.party) {
@@ -91,22 +84,21 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
                     R.string.must_write_in_party
                 )
             else -> additionalInfoData.party.toString()
-        }.toLowerCase() // TODO i
+        }.toLowerCase(Locale.US)
 
-        // TODO NO_WRAP was specified in ApiSignature, but probably should be in the API docs as well
         val signature = Base64.encodeToString(reviewData.signature, Base64.NO_WRAP)
 
         return VoterRegistration(
             registrationHelper = buildRegistrationHelper(),
-            dateOfBirth = Dates.formatAsISO8601_ShortDate(newRegistrationData.birthday), //TODO DateAdapter used short date, is this correct?
+            dateOfBirth = Dates.formatAsISO8601_ShortDate(newRegistrationData.birthday),
             mailingAddress = mailingAddress?.toApiAddressData(),
             previousRegistrationAddress = addressData.previousAddress?.toApiAddressData(),
             registrationAddress = addressData.homeAddress.toApiAddressData(),
             registrationAddressIsMailingAddress = !addressData.isMailingAddressDifferent,
             name = newRegistrationData.name.toApiName(),
-            previousName = newRegistrationData.previousName?.toApiName(),
+            previousName = if (newRegistrationData.hasChangedName) newRegistrationData.previousName?.toApiName() else null,
             gender = Gender.fromPrefix(newRegistrationData.name.title).toString(),
-            race = race, // TODO race is required in the API, but not in the app?
+            race = race,
             party = party,
             voterClassifications = buildVoterClassifications(),
             signature = Signature(
@@ -121,7 +113,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     }
 
     private fun buildRegistrationHelper(): RegistrationHelper? {
-        if (!assistanceData.hasSomeoneAssisted) return null // TODO is this correct, or should this be based on the canvasser and always non-null?
+        if (!assistanceData.hasSomeoneAssisted) return null
 
         val helperPhone = assistanceData.helperPhone ?: throw InvalidRegistrationException(
             "helperPhone is null",
@@ -129,14 +121,14 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         )
 
         return RegistrationHelper(
-            registrationHelperType = "assistant", // TODO is this a default value?
+            registrationHelperType = "assistant",
             name = assistanceData.helperName?.toApiName(),
             address = assistanceData.helperAddress?.toApiAddressData(),
             contactMethods = listOf(
                 ContactMethod(
-                    type = "phone",
+                    type = "assistant_phone",
                     value = helperPhone,
-                    capabilities = listOf("voice") // TODO should capabilties be more here? IIRC, this is only VOICE from [ApiContactMethod]
+                    capabilities = listOf("voice")
                 )
             )
         )
@@ -153,17 +145,6 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             assertion = newRegistrationData.isUsCitizen
         )
 
-        val sendCopyInEmail = VoterClassification(
-            type = "send_copy_in_mail", // TODO Is this "I give permission to OSET Org to send me news and updates?" It's looking like it may not be, that might be "opt_in_email"? Where does this come from?
-            assertion = additionalInfoData.hasOptedIntoNewsUpdates
-        )
-
-        val agreedToDeclaration = VoterClassification(
-            type = "agreed_to_declaration", // TODO I can't find where this comes from, but it's in the API docs
-            assertion = true // TODO Defaulting to this until source is confirmed
-        )
-
-        // TODO, this isn't in the docs, but is in the old VoterClassification, should it be?
         val politicalPartyChanged = VoterClassification(
             type = "political_party_change",
             assertion = additionalInfoData.hasChangedPoliticalParty
@@ -172,8 +153,6 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         return listOfNotNull(
             is18OnElectionDay,
             isUsCitizen,
-            sendCopyInEmail,
-            agreedToDeclaration,
             politicalPartyChanged
         )
     }
@@ -181,7 +160,6 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     private fun buildVoterIds(): List<VoterId> {
         val driversLicense = VoterId(
             type = "drivers_license",
-            // TODO JSON example has this split with spaces, but app doesn't format it, does that matter? eg 99999999 is 99 999 999 in JSON example
             stringValue = additionalInfoData.pennDotNumber,
             attestNoSuchId = !additionalInfoData.knowsPennDotNumber
         )
@@ -192,13 +170,10 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             attestNoSuchId = !additionalInfoData.knowsSsnLastFour
         )
 
-        // TODO There's a enum value for state_id, but none in the app that I can find. What is the source? Should it be here? It isn't in the old VoterId type
-
         return listOf(driversLicense, ssn4)
     }
 
     private fun buildContactMethods(): List<ContactMethod> {
-        // TODO Do we specify 'fax' anywhere? It's in the API example, but I can't see where we'd derive it from
         val phoneCapabilities = listOfNotNull(
             "voice",
             if (additionalInfoData.phoneType == PhoneType.MOBILE) "sms" else null
@@ -225,7 +200,6 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             stringValue = additionalInfoData.preferredLanguage?.toString()
         )
 
-        // TODO confirming, is assistant_declaration based on "I CONFIRM THAT I HAVE... in assistant, or just "Did someone help you with this form"?
         val assistantDeclaration = AdditionalInfo(
             name = "assistant_declaration",
             stringValue = if (assistanceData.hasSomeoneAssisted) {
@@ -233,7 +207,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
                     "true"
                 } else {
                     throw InvalidRegistrationException(
-                        "assistanceData.hasSomeoneAssisted is true but, did not confirm terms",
+                        "assistanceData.hasSomeoneAssisted is true, but did not confirm terms",
                         R.string.confirm_terms_not_checked
                     )
                 }
@@ -250,8 +224,8 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
             firstName = firstName,
             lastName = lastName,
             middleName = middleName,
-            titlePrefix = title.toString(), // TODO should this be localized?
-            titleSuffix = suffix?.toString() // TODO should this be localized?
+            titlePrefix = title.toString(),
+            titleSuffix = suffix?.toString()
         )
     }
 
@@ -272,13 +246,9 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
         val unitType = unitType?.let {
             if (it.isEmpty()) return@let null
 
-            val subAddressComponents = listOfNotNull(unitType, unitNumber)
-                .nullIfEmpty() ?: return@let null
-
             CompleteSubAddress(
                 subAddressType = it,
-                // TODO Do we use the unitNumber as is, or append a transformed unitType like in the JSON example?
-                subAddress = subAddressComponents.joinToString(" ")
+                subAddress = unitNumber
             )
         }
 
@@ -296,8 +266,6 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     private fun AddressData.buildCompletePlacesNames(): List<CompletePlaceName>? {
         val city = CompletePlaceName("MunicipalJurisdiction", city)
 
-        // TODO Does county need "County" appended to match docs, eg ("Allegheny County")?
-        // TODO Is this mandatory if county is empty?
         val county = county?.let {
             if (it.isNotEmpty()) {
                 CompletePlaceName("County", it)
