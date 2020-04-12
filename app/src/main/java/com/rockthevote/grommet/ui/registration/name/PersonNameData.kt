@@ -52,4 +52,4 @@ fun PersonNameData.bindToNameView(view: NameView) {
     }
 }
 
-fun String.toEditable() = Editable.Factory.getInstance().newEditable(this)
+fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)

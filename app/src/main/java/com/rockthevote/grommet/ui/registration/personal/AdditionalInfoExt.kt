@@ -8,22 +8,24 @@ import com.rockthevote.grommet.databinding.FragmentAdditionalInfoBinding
 import com.rockthevote.grommet.ui.registration.name.toEditable
 
 fun FragmentAdditionalInfoBinding.toAdditionalInfoData(): AdditionalInfoData {
-    val party = spinnerParty.spinnerText.toString().let {
+    // Values with !! should have been validated before this method is allowed to be called
+    //  and should not be null
+    val party = spinnerParty.spinnerText!!.let {
         Party.fromString(it)
     }
 
-    val emailAddress = emailEditText.text.toString()
-    val phoneNumber = phone.text.toString()
-    val phoneType = spinnerPhoneType.spinnerText.toString().let {
+    val emailAddress = emailEditText.text!!.toString()
+    val phoneNumber = phone.text!!.toString()
+    val phoneType = spinnerPhoneType.spinnerText!!.let {
         PhoneType.fromString(it)
     }
 
     val hasChangedPoliticalParty = politicalPartyChangeTextbox.isChecked
     val knowsPennDotNumber = !doesNotHavePennDotCheckbox.isChecked
     val knowsSsnLastFour = !ssnLastFourCheckbox.isChecked
-    val hasOptedIntoNewsUpdates = emailOptIn.isChecked
-    val hasOptedIntoNewsCallAndText = checkboxCanReceiveText.isChecked
-    val hasOptedForVolunteerText = checkboxPartnerVolunteerOptIn.isChecked
+    val isEmailOptInChecked = emailOptIn.isChecked
+    val isCanReceiveTextChecked = checkboxCanReceiveText.isChecked
+    val isPartnerVolunteerOptInChecked = checkboxPartnerVolunteerOptIn.isChecked
     val preferredLanguage = spinnerPreferredLanguage.spinnerText?.let {
         PreferredLanguage.fromString(it)
     }
@@ -41,9 +43,9 @@ fun FragmentAdditionalInfoBinding.toAdditionalInfoData(): AdditionalInfoData {
         hasChangedPoliticalParty = hasChangedPoliticalParty,
         knowsPennDotNumber = knowsPennDotNumber,
         knowsSsnLastFour = knowsSsnLastFour,
-        hasOptedIntoNewsUpdates = hasOptedIntoNewsUpdates,
-        hasOptedIntoNewsCallAndText = hasOptedIntoNewsCallAndText,
-        hasOptedForVolunteerText = hasOptedForVolunteerText,
+        partnerEmailOptIn = isEmailOptInChecked,
+        partnerSmsOptIn = isCanReceiveTextChecked,
+        partnerVolunteerOptIn = isPartnerVolunteerOptInChecked,
         otherPoliticalParty = otherPoliticalParty,
         pennDotNumber = pennDotNumber,
         ssnLastFour = ssnLastFour,
@@ -61,10 +63,12 @@ fun AdditionalInfoData.toFragmentAdditionalInfoBinding(binding: FragmentAddition
         politicalPartyChangeTextbox.isChecked = hasChangedPoliticalParty
         doesNotHavePennDotCheckbox.isChecked = !knowsPennDotNumber
         ssnLastFourCheckbox.isChecked = !knowsSsnLastFour
-        emailOptIn.isChecked = hasOptedIntoNewsUpdates
-        checkboxCanReceiveText.isChecked = hasOptedIntoNewsCallAndText
-        checkboxPartnerVolunteerOptIn.isChecked = hasOptedForVolunteerText
-
+        emailOptIn.isChecked = partnerEmailOptIn
+        checkboxCanReceiveText.isChecked = partnerSmsOptIn
+        checkboxPartnerVolunteerOptIn.isChecked = partnerVolunteerOptIn
+        otherPartyEditText.text = otherPoliticalParty?.toEditable()
+        pennDotEditText.text = pennDotNumber?.toEditable()
+        ssnLastFourEditText.text = ssnLastFour?.toEditable()
         preferredLanguage?.let { spinnerPreferredLanguage.setEditText(it.toString()) }
         race?.let { spinnerRace.setEditText(it.toString()) }
     }

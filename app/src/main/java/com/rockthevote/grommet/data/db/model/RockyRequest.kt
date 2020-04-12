@@ -15,7 +15,7 @@ data class RockyRequestBody(
     @Json(name = "lang")
     val lang: String,
     @Json(name = "phone_type")
-    val phoneType: String? = null, // TODO this is specified in attributes, but not in the example Json, IDK the source
+    val phoneType: String? = null,
     @Json(name = "partner_id")
     val partnerId: Int,
     @Json(name = "opt_in_email")
@@ -85,7 +85,7 @@ data class VoterRegistration(
     @Json(name = "previous_name")
     val previousName: Name?,
     @Json(name = "gender")
-    val gender: String, // TODO this is non-null in the old API request, but not required per API docs, which is correct?
+    val gender: String,
     @Json(name = "race")
     val race: String,
     @Json(name = "party")

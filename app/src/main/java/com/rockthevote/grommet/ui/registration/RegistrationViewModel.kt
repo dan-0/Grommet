@@ -18,11 +18,15 @@ import org.threeten.bp.Instant
 import timber.log.Timber
 
 class RegistrationViewModel(
-    // TODO Remove default args before merge
-    private val partnerInformation: PartnerInformation = PartnerInformation(1, "temp"),
-    // TODO this should not make it into merge, it's a placeholder for data I don't know the origin of yet
-    private val unknownDataSource: UnknownDataSource = UnknownDataSource(true, true, true, "temp", "temp", GeoLocation(1.0, 1.0), "temp"),
-    private val registrationDao: RegistrationDao
+    // TODO this is temporary until we can provide this from the session database
+    private val sessionData: SessionData = SessionData(
+        1,
+        "temp",
+        "temp",
+        "temp",
+        GeoLocation(1.0, 1.0),
+        "temp"
+    )
 ) : ViewModel() {
     private val _registrationData = MutableLiveData(RegistrationData())
     val registrationData: LiveData<RegistrationData> = _registrationData
@@ -77,10 +81,10 @@ class RegistrationViewModel(
         storeReviewData(data)
 
         runCatching {
-            val transformer = RegistrationDataTransformer(currentData, partnerInformation)
-            val requestData = transformer.transform(unknownDataSource)
+            val transformer = RegistrationDataTransformer(currentData, sessionData)
+            val requestData = transformer.transform()
 
-            /* TODO Either inject an adapter, make this an asnc operation, or just pass the data
+            /* TODO Either inject an adapter, make this an async operation, or just pass the data
                 object to whatever class handles storing this to offload the responsibility
              */
             val adapter = Moshi.Builder()
@@ -133,7 +137,6 @@ class RegistrationViewModel(
                 else -> throw it
             }
         }
-
     }
 
     /**
