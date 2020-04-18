@@ -1,10 +1,7 @@
 package com.rockthevote.grommet.ui.registration.review;
 
-import android.graphics.Bitmap;
+import android.app.AlertDialog;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,62 +9,51 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+
 import com.f2prateek.rx.preferences2.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.model.RockyRequest.Language;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.databinding.FragmentReviewAndConfirmBinding;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DisclosureAgreementDialogFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationCompleteDialogFragment;
-import com.rockthevote.grommet.ui.registration.RegistrationData;
-import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
-import com.rockthevote.grommet.util.Images;
+import com.rockthevote.grommet.ui.registration.RegistrationState;
 import com.rockthevote.grommet.util.LocaleUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
-public class ReviewAndConfirmFragment extends BaseRegistrationFragment implements SignaturePad.OnSignedListener {
+public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
 
-    @BindViews({R.id.review_mail_address,
-                       R.id.review_mailing_address_section_title,
-                       R.id.review_mailing_address_divider}) List<View> mailingAddressViews;
+    @BindView(R.id.signature_pad)
+    SignaturePad signaturePad;
+    @BindView(R.id.signature_pad_error)
+    TextView signaturePadError;
+    @BindView(R.id.button_register)
+    Button buttonRegister;
 
-    @BindView(R.id.review_name) TextView name;
-    @BindView(R.id.review_birthday) TextView birthday;
-    @BindView(R.id.review_email) TextView email;
-    @BindView(R.id.review_phone) TextView phone;
-    @BindView(R.id.review_phone_label) TextView phoneLabel;
+    @BindView(R.id.checkbox_agreement)
+    CheckBox confirmCheckbox;
 
-    @BindView(R.id.review_reg_address) TextView registrationAddress;
-    @BindView(R.id.review_mail_address) TextView mailingAddress;
-
-    @BindView(R.id.review_party) TextView party;
-    @BindView(R.id.review_race) TextView race;
-
-    @BindView(R.id.signature_pad) SignaturePad signaturePad;
-    @BindView(R.id.signature_pad_error) TextView signaturePadError;
-    @BindView(R.id.button_register) Button buttonRegister;
-
-    @BindView(R.id.checkbox_agreement) CheckBox confirmCheckbox;
-
-    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
-    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
+    @Inject
+    @CurrentRockyRequestId
+    Preference<Long> rockyRequestRowId;
+    @Inject
+    @CurrentSessionRowId
+    Preference<Long> currentSessionRowId;
 
     private CompositeSubscription subscriptions;
     private DisclosureAgreementDialogFragment dialog;
@@ -84,7 +70,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     @Override
     public void storeState() {
         ReviewData data = ReviewExtKt.toReviewData(binding);
-        viewModel.storeReviewData(data);
+        viewModel.completeRegistration(data);
     }
 
     @Override
@@ -92,6 +78,45 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         dialog = new DisclosureAgreementDialogFragment();
+
+        viewModel.getRegistrationState().observe(getViewLifecycleOwner(), registrationState -> {
+            if (registrationState instanceof RegistrationState.Complete) {
+                completeForm();
+            } else if (registrationState instanceof RegistrationState.RegistrationError) {
+                showErrorDialog((RegistrationState.RegistrationError) registrationState);
+            }
+        });
+    }
+
+    private void showErrorDialog(RegistrationState.RegistrationError error) {
+        if (error.isAcknowledged()) {
+            return;
+        }
+
+        String errorMessage;
+
+        if (error.getFormatVar() != null && error.getFormatVar().length > 0) {
+            int formatVarLen = error.getFormatVar().length;
+            String[] vargs = new String[formatVarLen];
+
+            for (int i = 0; i < formatVarLen; i++) {
+                vargs[i] = getResources().getString(error.getFormatVar()[i]);
+            }
+
+            errorMessage = getResources().getString(error.getErrorMsg(), (Object[]) vargs);
+        } else {
+            errorMessage = getResources().getString(error.getErrorMsg());
+        }
+
+        AlertDialog alertDialog = new AlertDialog.Builder(requireContext())
+                .setMessage(errorMessage)
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .create();
+
+        alertDialog.show();
     }
 
     @Override
@@ -112,9 +137,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         });
 
         subscriptions = new CompositeSubscription();
-
-        signaturePad.setOnSignedListener(this);
-
     }
 
     @Override
@@ -127,7 +149,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
     public void onPause() {
         super.onPause();
         subscriptions.unsubscribe();
-        signaturePad.setOnSignedListener(null);
         dialog.setListener(null);
     }
 
@@ -151,44 +172,24 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment implement
         }
     }
 
-    @Override
-    public void onStartSigning() {
-
-    }
-
-    @Override
-    public void onSigned() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Bitmap image = Images.transformAspectRatio(signaturePad.getSignatureBitmap(), 3, 1);
-        image = Images.aspectSafeScale(image, 180, 60);
-        image.compress(Bitmap.CompressFormat.PNG, 100, baos);
-
-    }
-
-    @Override
-    public void onClear() {
-    }
-
     // the default value is set in the data module
-    @SuppressWarnings("ConstantConditions")
     @OnClick(R.id.button_register)
     public void onRegisterClick(View v) {
         if (!signaturePad.isEmpty()) {
-            signaturePadError.setVisibility(View.GONE);
-
-            // get language the form was completed in
-            Language lang = "es".equals(Locale.getDefault().getLanguage()) ?
-                    Language.SPANISH : Language.ENGLISH;
-
-            RegistrationCompleteDialogFragment dialog = new RegistrationCompleteDialogFragment();
-            dialog.setCancelable(false);
-            dialog.show(getFragmentManager(), "complete_dialog");
-
-            LocaleUtils.setLocale(new Locale("en"));
             storeState();
         } else {
             signaturePadError.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void completeForm() {
+        signaturePadError.setVisibility(View.GONE);
+
+        RegistrationCompleteDialogFragment dialog = new RegistrationCompleteDialogFragment();
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), "complete_dialog");
+
+        LocaleUtils.setLocale(new Locale("en"));
     }
 
 }

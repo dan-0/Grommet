@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,8 +32,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.CompositeDisposable;
 
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.DETAILS_ENTERED;
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.PARTNER_UPDATE;
+import static com.rockthevote.grommet.data.db.model.SessionStatus.DETAILS_ENTERED;
+import static com.rockthevote.grommet.data.db.model.SessionStatus.PARTNER_UPDATE;
 
 
 public class EventDetailsEditable extends LinearLayout implements EventFlowPage {

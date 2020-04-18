@@ -13,3 +13,4 @@ data class RegistrationData(
     val assistanceData: AssistanceData? = null,
     val reviewData: ReviewData? = null
 )
+

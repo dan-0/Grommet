@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -15,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.db.AppDatabase;
+import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.databinding.FragmentRegistrationBaseBinding;
 
 import javax.inject.Inject;
@@ -28,22 +27,17 @@ public abstract class BaseRegistrationFragment extends Fragment {
 
     protected RegistrationViewModel viewModel;
 
-
     @Inject
-    AppDatabase db;
+    RegistrationDao registrationDao;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
-
-        viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Injector.obtain(getActivity()).inject(this);
+        viewModel = new ViewModelProvider(
+                requireActivity(),
+                new RegistrationViewModelFactory(registrationDao)
+        ).get(RegistrationViewModel.class);
     }
 
     @Nullable

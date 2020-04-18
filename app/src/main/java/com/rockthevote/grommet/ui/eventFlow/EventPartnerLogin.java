@@ -39,7 +39,7 @@ import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.rockthevote.grommet.data.db.model.Session.SessionStatus.NEW_SESSION;
+import static com.rockthevote.grommet.data.db.model.SessionStatus.NEW_SESSION;
 
 /**
  * Created by Mechanical Man on 7/14/18.

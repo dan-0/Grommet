@@ -8,8 +8,6 @@ import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.rockthevote.grommet.GrommetApp;
 import com.rockthevote.grommet.IsInstrumentationTest;
 import com.rockthevote.grommet.data.api.DebugApiModule;
-import com.rockthevote.grommet.data.db.AppDatabase;
-import com.rockthevote.grommet.data.db.TestAppDatabase;
 import com.rockthevote.grommet.data.prefs.InetSocketAddressPreferenceAdapter;
 
 import java.net.InetSocketAddress;
@@ -154,20 +152,6 @@ public final class DebugDataModule {
         } catch (Exception e) {
             throw new AssertionError(e);
         }
-    }
-
-    @Provides
-    @Singleton
-    AppDatabase provideAppDatabase(@IsInstrumentationTest boolean isInstrumentationTest,
-                                   Application application) {
-
-        // Return an in-memory DB for testing
-        if (isInstrumentationTest) {
-            return TestAppDatabase.Companion.getInstance(application);
-        } else {
-            return AppDatabase.Companion.getInstance(application);
-        }
-
     }
 
 }

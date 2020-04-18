@@ -25,14 +25,17 @@ fun NameView.toPersonName(): PersonNameData? {
         if (title == Prefix.NONE) return null
 
         val suffix = spinnerSuffix.editText.text?.toString()?.let {
-            Suffix.fromString(it)
+            val result = Suffix.fromString(it)
+            if (result == Suffix.EMPTY) null else result
         }
+
+        val transformedMiddleName = middleName.text?.run { if (isNullOrEmpty()) null else toString() }
 
         PersonNameData(
             firstName = firstName.text?.toString() ?: return null,
             title = title,
             lastName = lastName.text?.toString() ?: return null,
-            middleName = middleName.text?.toString(),
+            middleName = transformedMiddleName,
             suffix = suffix
         )
     }
@@ -49,4 +52,4 @@ fun PersonNameData.bindToNameView(view: NameView) {
     }
 }
 
-fun String.toEditable() = Editable.Factory.getInstance().newEditable(this)
+fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
