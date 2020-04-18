@@ -21,11 +21,12 @@ fun PersonNameData.toFullName(): String {
     val middle = middleName
     val last = lastName
     val suffix = suffix?.toString()
-    return listOfNotNull(
+    return listOf(
         prefix,
         first,
         middle,
         last,
         suffix
-    ).joinToString(" ")
+    ).listOfNotNullOrEmpty()
+        .joinToString(" ")
 }
