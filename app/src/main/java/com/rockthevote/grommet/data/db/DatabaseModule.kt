@@ -17,8 +17,8 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(application: Application?): AppDatabase? {
-        return getInstance(application!!)
+    fun provideAppDatabase(application: Application): AppDatabase {
+        return getInstance(application)
     }
 
     @Provides

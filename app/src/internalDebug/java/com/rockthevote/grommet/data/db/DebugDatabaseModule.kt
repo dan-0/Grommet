@@ -19,11 +19,11 @@ class DebugDatabaseModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@IsInstrumentationTest isInstrumentationTest: Boolean,
-                           application: Application?): AppDatabase? { // Return an in-memory DB for testing
+                           application: Application): AppDatabase { // Return an in-memory DB for testing
         return if (isInstrumentationTest) {
-            TestAppDatabase.getInstance(application!!)
+            TestAppDatabase.getInstance(application)
         } else {
-            AppDatabase.getInstance(application!!)
+            AppDatabase.getInstance(application)
         }
     }
 
