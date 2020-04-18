@@ -92,7 +92,7 @@
         android:layout_marginStart="@dimen/content_margin"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
-        tools:text="@string/section_label_phone"
+        android:text="@string/section_label_phone"
         />
 
     <TextView
@@ -185,8 +185,6 @@
         android:textAppearance="@android:style/TextAppearance.Material.Subhead"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
-        android:visibility="gone"
-        tools:visibility="visible"
         />
 
     <TextView

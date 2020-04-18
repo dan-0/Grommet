@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.registration.review
 
 import android.graphics.Bitmap
+import android.view.View
 import com.rockthevote.grommet.data.db.model.FormLanguage
 import com.rockthevote.grommet.databinding.FragmentReviewAndConfirmBinding
 import com.rockthevote.grommet.util.Images
@@ -28,4 +29,30 @@ fun FragmentReviewAndConfirmBinding.toReviewData(): ReviewData {
         signature,
         lang.toString()
     )
+}
+
+fun FragmentReviewAndConfirmBinding.bindReviewData(data: ReviewAndConfirmStateData) {
+    with(data) {
+        reviewName.text = name
+        reviewBirthday.text = birthday
+        reviewEmail.text = email
+        reviewPhone.text = phone
+        reviewRegAddress.text = residentialAddress
+
+        if (mailingAddress != null) {
+            reviewMailingAddressDivider.visibility = View.VISIBLE
+            reviewMailingAddressSectionTitle.visibility = View.VISIBLE
+            reviewMailAddress.visibility = View.VISIBLE
+            reviewMailAddress.text = mailingAddress
+        } else {
+            // Needs to be set to GONE in case data changes
+            reviewMailingAddressDivider.visibility = View.GONE
+            reviewMailingAddressSectionTitle.visibility = View.GONE
+            reviewMailAddress.visibility = View.GONE
+            reviewMailAddress.text = ""
+        }
+
+        reviewRace.text = race
+        reviewParty.text = party
+    }
 }
