@@ -44,14 +44,13 @@ class RegistrationViewModel(
             postValue(ReviewAndConfirmState.Content(data))
         }
     }
-
     val reviewAndConfirmState: LiveData<ReviewAndConfirmState> = _reviewAndConfirmState
 
-    private val currentData
+    private val currentRegistrationData
         get() = _registrationData.value ?: RegistrationData()
 
     fun storeNewRegistrantData(data: NewRegistrantData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             newRegistrantData = data
         )
 
@@ -59,7 +58,7 @@ class RegistrationViewModel(
     }
 
     fun storeAddressData(data: PersonalInfoData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             addressData = data
         )
 
@@ -67,7 +66,7 @@ class RegistrationViewModel(
     }
 
     fun storeAdditionalInfoData(data: AdditionalInfoData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             additionalInfoData = data
         )
 
@@ -75,7 +74,7 @@ class RegistrationViewModel(
     }
 
     fun storeAssistanceData(data: AssistanceData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             assistanceData = data
         )
 
@@ -83,7 +82,7 @@ class RegistrationViewModel(
     }
 
     private fun storeReviewData(data: ReviewData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             reviewData = data
         )
 
@@ -94,7 +93,7 @@ class RegistrationViewModel(
         storeReviewData(data)
 
         runCatching {
-            val transformer = RegistrationDataTransformer(currentData, sessionData)
+            val transformer = RegistrationDataTransformer(currentRegistrationData, sessionData)
             val requestData = transformer.transform()
 
             /* TODO Either inject an adapter, make this an async operation, or just pass the data
@@ -109,7 +108,7 @@ class RegistrationViewModel(
 
             Timber.d("Storing RockyRequest JSON %s", rockyRequestJson)
 
-            val registrantName = with(currentData.newRegistrantData!!.name) {
+            val registrantName = with(currentRegistrationData.newRegistrantData!!.name) {
                 listOfNotNull(firstName, middleName, lastName).joinToString(" ")
             }
 
@@ -118,7 +117,7 @@ class RegistrationViewModel(
                 registrantName = registrantName,
                 // This should only used if there was already an error on registration
                 //  so allowing an empty email is acceptable in this case
-                registrantEmail = currentData.additionalInfoData?.emailAddress ?: "",
+                registrantEmail = currentRegistrationData.additionalInfoData?.emailAddress ?: "",
                 registrationData = rockyRequestJson
             )
 
