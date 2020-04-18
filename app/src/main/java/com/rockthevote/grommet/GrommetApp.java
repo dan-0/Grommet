@@ -9,6 +9,7 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.LumberYard;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
+import com.rockthevote.grommet.data.db.AppDatabase;
 import com.rockthevote.grommet.data.prefs.AppVersion;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
@@ -55,6 +56,7 @@ public final class GrommetApp extends Application {
     @Inject @EventZip Preference<String> eventZipPref;
     @Inject @DeviceID Preference<String> deviceIdPref;
 
+    @Inject AppDatabase db;
 
     @Override
     public void onCreate() {

@@ -15,6 +15,6 @@ data class PartnerInfo(
 
         @ColumnInfo(name = "partner_name") val partnerName: String,
 
-        @ColumnInfo(name = "registration_deadline_date") val registrationDeadlineDate: String,
+        @ColumnInfo(name = "registration_deadline_date") val registrationDeadlineDate: String
 
         )

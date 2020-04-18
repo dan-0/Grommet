@@ -17,7 +17,7 @@ data class Session(
 
         @ColumnInfo(name = "partner_tracking_id") val partnerTrackingID: String,
 
-        @ColumnInfo(name="geo_location") val geoLocation: ? ,
+//        @ColumnInfo(name="geo_location") val geoLocation: ? ,
 
         @ColumnInfo(name = "open_tracking_id") val openTrackingID: String,
 

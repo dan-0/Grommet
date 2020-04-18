@@ -15,7 +15,10 @@ import android.view.ViewGroup;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.AppDatabase;
 import com.rockthevote.grommet.databinding.FragmentRegistrationBaseBinding;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -25,9 +28,15 @@ public abstract class BaseRegistrationFragment extends Fragment {
 
     protected RegistrationViewModel viewModel;
 
+
+    @Inject
+    AppDatabase db;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Injector.obtain(getActivity()).inject(this);
+
         viewModel = new ViewModelProvider(requireActivity()).get(RegistrationViewModel.class);
     }
 
