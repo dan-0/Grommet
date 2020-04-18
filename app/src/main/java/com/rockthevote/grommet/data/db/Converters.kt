@@ -1,6 +1,11 @@
 package com.rockthevote.grommet.data.db
 
 import androidx.room.TypeConverter
+import com.rockthevote.grommet.data.api.model.ApiGeoLocation
+import com.rockthevote.grommet.data.api.model.PartnerVolunteerText
+import com.rockthevote.grommet.data.api.model.RegistrationNotificationText
+import com.rockthevote.grommet.data.db.model.SessionStatus
+import com.squareup.moshi.Moshi
 import java.util.*
 
 /**
@@ -16,6 +21,52 @@ class Converters {
     @TypeConverter
     fun dateToTimestamp(date: Date?): Long? {
         return date?.time?.toLong()
+    }
+
+    @TypeConverter
+    fun fromPartnerVolunteerText(volunteerText: PartnerVolunteerText): String? {
+        val adapter = PartnerVolunteerText.jsonAdapter(Moshi.Builder().build())
+        return adapter.toJson(volunteerText)
+    }
+
+    @TypeConverter
+    fun jsonToPartnerVolunteerText(value: String): PartnerVolunteerText? {
+        val adapter = PartnerVolunteerText.jsonAdapter(Moshi.Builder().build())
+        return adapter.fromJson(value)
+    }
+
+    @TypeConverter
+    fun fromRegistrationNotificationText(volunteerText: RegistrationNotificationText): String? {
+        val adapter = RegistrationNotificationText.jsonAdapter(Moshi.Builder().build())
+        return adapter.toJson(volunteerText)
+    }
+
+    @TypeConverter
+    fun jsonToRegistrationNotificationText(value: String): RegistrationNotificationText? {
+        val adapter = RegistrationNotificationText.jsonAdapter(Moshi.Builder().build())
+        return adapter.fromJson(value)
+    }
+
+    @TypeConverter
+    fun sessionStatusToString(value: SessionStatus): String? {
+        return value.toString()
+    }
+
+    @TypeConverter
+    fun stringToSessionStatus(value: String): SessionStatus? {
+        return SessionStatus.fromString(value)
+    }
+
+    @TypeConverter
+    fun fromApiGeoLocation(value: ApiGeoLocation): String? {
+        val adapter = ApiGeoLocation.jsonAdapter(Moshi.Builder().build())
+        return adapter.toJson(value)
+    }
+
+    @TypeConverter
+    fun jsonToApiGeoLocation(value: String): ApiGeoLocation? {
+        val adapter = ApiGeoLocation.jsonAdapter(Moshi.Builder().build())
+        return adapter.fromJson(value)
     }
 
 }
