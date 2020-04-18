@@ -5,7 +5,7 @@ import com.rockthevote.grommet.data.db.model.PhoneType
 import com.rockthevote.grommet.data.db.model.PreferredLanguage
 import com.rockthevote.grommet.data.db.model.Race
 import com.rockthevote.grommet.databinding.FragmentAdditionalInfoBinding
-import com.rockthevote.grommet.ui.registration.name.toEditable
+import com.rockthevote.grommet.util.extensions.toEditable
 
 fun FragmentAdditionalInfoBinding.toAdditionalInfoData(): AdditionalInfoData {
     // Values with !! should have been validated before this method is allowed to be called
