@@ -1,4 +1,4 @@
-package com.rockthevote.grommet
+package com.rockthevote.grommet.data
 
 import javax.inject.Qualifier
 

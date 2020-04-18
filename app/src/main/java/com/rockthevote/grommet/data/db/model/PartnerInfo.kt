@@ -1,4 +1,4 @@
-package com.rockthevote.grommet.data.db
+package com.rockthevote.grommet.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

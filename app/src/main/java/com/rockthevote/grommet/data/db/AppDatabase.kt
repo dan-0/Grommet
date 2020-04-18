@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.rockthevote.grommet.data.db.dao.RegistrationDao
+import com.rockthevote.grommet.data.db.model.Registration
 
 /**
  * Created by Mechanical Man on 3/24/20.
@@ -13,7 +15,7 @@ import androidx.room.TypeConverters
 @Database(entities = [Registration::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-    //TODO abstract fun registrationDao(): RegistrationDao
+    abstract fun registrationDao(): RegistrationDao
 
     companion object {
         @Volatile

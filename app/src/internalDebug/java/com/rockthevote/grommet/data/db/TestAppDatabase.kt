@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.TypeConverters
 import com.rockthevote.grommet.data.db.AppDatabase
+import com.rockthevote.grommet.data.db.model.Registration
 
 /**
  * Created by Mechanical Man on 3/24/20.
