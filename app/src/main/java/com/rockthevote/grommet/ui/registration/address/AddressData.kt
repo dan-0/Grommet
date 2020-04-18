@@ -6,7 +6,7 @@ data class AddressData(
     val city: String,
     val state: String,
     val zipCode: String,
-    val county: String,
+    val county: String?,
     // Optional
     val streetAddressTwo: String?,
     val unitType: String?,
