@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
-import com.rockthevote.grommet.IsInstrumentationTest;
+import com.rockthevote.grommet.GrommetApp;
 import com.rockthevote.grommet.data.api.DebugApiModule;
 import com.rockthevote.grommet.data.prefs.InetSocketAddressPreferenceAdapter;
 
@@ -27,7 +27,8 @@ import okhttp3.OkHttpClient;
         includes = DebugApiModule.class,
         complete = false,
         library = true,
-        overrides = true
+        overrides = true,
+        injects = {GrommetApp.class}
 )
 
 public final class DebugDataModule {

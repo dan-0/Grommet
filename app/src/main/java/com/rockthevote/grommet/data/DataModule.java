@@ -13,6 +13,7 @@ import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.api.model.DateAdapter;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
+import com.rockthevote.grommet.data.db.AppDatabase;
 import com.rockthevote.grommet.data.prefs.AppVersion;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
@@ -30,6 +31,7 @@ import com.rockthevote.grommet.data.prefs.RegistrationDeadlinePreferenceConverte
 import com.rockthevote.grommet.data.prefs.RegistrationText;
 import com.rockthevote.grommet.data.prefs.RegistrationTextPreferenceConverter;
 import com.rockthevote.grommet.ui.MainActivity;
+import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.squareup.moshi.Moshi;
 
 import java.io.File;
@@ -54,7 +56,8 @@ import static com.jakewharton.byteunits.DecimalByteUnit.MEGABYTES;
                 ApiModule.class,
         },
         injects = {
-                MainActivity.class
+                MainActivity.class,
+                BaseRegistrationFragment.class
         },
         complete = false,
         library = true
