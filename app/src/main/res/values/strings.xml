@@ -409,5 +409,6 @@ If you have any questions about this privacy statement, please contact info@rock
     <string name="assistants_phone_number_is_empty">Assistant\'s phone number must be filled out if \'Did someone help you with this form?\' is checked.</string>
     <string name="must_write_in_party">Other Political Party was selected, a write in party is required</string>
     <string name="different_mailing_address_not_filled_out">Mailing address must be filled out if \'I get my mail from a different address from the one above\' is checked.</string>
+    <string name="unable_to_complete">Unable to complete registration, please retry</string>
 
 </resources>

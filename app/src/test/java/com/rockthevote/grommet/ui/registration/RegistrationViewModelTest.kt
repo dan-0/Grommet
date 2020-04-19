@@ -1,16 +1,21 @@
 package com.rockthevote.grommet.ui.registration
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.model.GeoLocation
-import com.rockthevote.grommet.data.db.model.Registration
+import com.rockthevote.grommet.data.db.model.RockyRequest
 import com.rockthevote.grommet.testdata.Fake
+import com.rockthevote.grommet.testdata.FakeRegistrationDao
+import com.rockthevote.grommet.testdata.TestDispatcherProvider
 import com.rockthevote.grommet.ui.registration.review.ReviewAndConfirmState
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 class RegistrationViewModelTest {
 
@@ -26,14 +31,20 @@ class RegistrationViewModelTest {
         "temp"
     )
 
-    private lateinit var registrationDao: RegistrationDao
+    private lateinit var testDispatcher: TestCoroutineDispatcher
+
+    private lateinit var fakeRegistrationDao: FakeRegistrationDao
 
     private lateinit var ut: RegistrationViewModel
 
     @Before
     fun setUp() {
-        registrationDao = FakeRegistrationDao()
-        ut = RegistrationViewModel(fakeSessionData, registrationDao)
+        testDispatcher = TestCoroutineDispatcher()
+        val dispatcherProvider = TestDispatcherProvider(testDispatcher)
+
+        fakeRegistrationDao = FakeRegistrationDao()
+
+        ut = RegistrationViewModel(fakeSessionData, fakeRegistrationDao, dispatcherProvider)
 
         // reviewAndConfirmState is backed by a MediatorLiveData, which doesn't produce a value if not observed
         ut.reviewAndConfirmState.observeForever {  }
@@ -98,7 +109,86 @@ class RegistrationViewModelTest {
         assertEquals(fakeAssistanceData, currentRegistrationData.assistanceData)
     }
 
-    // TODO completeRegistration paths
+    @Test
+    fun `completeRegistration happy path`() {
+        val expectedRegistrationData = RegistrationData(
+            Fake.NEW_REGISTRANT_DATA,
+            Fake.PERSONAL_INFO_DATA,
+            Fake.ADDITIONAL_INFO_DATA,
+            Fake.ASSISTANCE_DATA,
+            Fake.REVIEW_DATA
+        )
+
+        val completionDate = Date()
+
+        val expectedJson = getExpectedRequestJson(expectedRegistrationData, completionDate)
+
+        ut.storeNewRegistrantData(expectedRegistrationData.newRegistrantData!!)
+        ut.storeAddressData(expectedRegistrationData.addressData!!)
+        ut.storeAdditionalInfoData(expectedRegistrationData.additionalInfoData!!)
+        ut.storeAssistanceData(expectedRegistrationData.assistanceData!!)
+
+        var timesInsertCalled = 0
+        fakeRegistrationDao.insertHandler = {
+            timesInsertCalled++
+            assertEquals(1, it.size)
+
+            val registration = it[0]
+            assertEquals(expectedJson, registration.registrationData)
+            assertEquals(completionDate.time, registration.registrationDate)
+        }
+
+        ut.completeRegistration(expectedRegistrationData.reviewData!!, completionDate)
+
+        // Database insertion happens on the IO dispatcher, so we need to advance it to complete
+        testDispatcher.advanceUntilIdle()
+
+        assertEquals(1, timesInsertCalled)
+        assert(currentRegistrationState is RegistrationState.Complete)
+    }
+
+    @Test
+    fun `completeRegistration invalid registration exception`() {
+        val badRegistrationData = RegistrationData(
+            Fake.NEW_REGISTRANT_DATA,
+            // This forces an Invalid registration exception
+            Fake.PERSONAL_INFO_DATA.copy(
+                isMailingAddressDifferent = true,
+                mailingAddress = null
+            ),
+            Fake.ADDITIONAL_INFO_DATA,
+            Fake.ASSISTANCE_DATA,
+            Fake.REVIEW_DATA
+        )
+
+        ut.storeNewRegistrantData(badRegistrationData.newRegistrantData!!)
+        ut.storeAddressData(badRegistrationData.addressData!!)
+        ut.storeAdditionalInfoData(badRegistrationData.additionalInfoData!!)
+        ut.storeAssistanceData(badRegistrationData.assistanceData!!)
+
+        ut.completeRegistration(badRegistrationData.reviewData!!)
+
+        assert(currentRegistrationState is RegistrationState.RegistrationError)
+    }
+
+    private fun getExpectedRequestJson(
+        expectedRegistrationData: RegistrationData,
+        completionDate: Date
+    ): String {
+        val transformer = RegistrationDataTransformer(
+            expectedRegistrationData,
+            fakeSessionData,
+            completionDate
+        )
+        val requestData = transformer.transform()
+
+        val adapter = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+            .adapter(RockyRequest::class.java)
+
+        return adapter.toJson(requestData)
+    }
 
     private val currentRegistrationData
         get() = ut.registrationData.value!!
@@ -110,17 +200,3 @@ class RegistrationViewModelTest {
         get() = ut.reviewAndConfirmState.value!!
 }
 
-class FakeRegistrationDao : RegistrationDao {
-
-    override fun getAll(): List<Registration> {
-        TODO("Not yet implemented")
-    }
-
-    override fun insert(vararg registration: Registration) {
-        TODO("Not yet implemented")
-    }
-
-    override fun delete(registration: Registration) {
-        TODO("Not yet implemented")
-    }
-}
