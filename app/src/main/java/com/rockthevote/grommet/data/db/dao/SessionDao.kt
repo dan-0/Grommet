@@ -2,7 +2,9 @@ package com.rockthevote.grommet.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.rockthevote.grommet.data.db.model.Session
+import com.rockthevote.grommet.data.db.relationship.SessionWithRegistrations
 
 /**
  * Created by Mechanical Man on 4/18/20.
@@ -11,4 +13,8 @@ import com.rockthevote.grommet.data.db.model.Session
 interface SessionDao {
     @Query("SELECT * FROM session")
     fun getAll(): List<Session>
+
+    @Transaction
+    @Query("SELECT * FROM session")
+    fun getSessionWithRegistrations(): List<SessionWithRegistrations>
 }

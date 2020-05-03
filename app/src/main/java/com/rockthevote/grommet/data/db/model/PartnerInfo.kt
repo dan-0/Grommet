@@ -13,7 +13,8 @@ import java.util.*
 @Entity(tableName = "partner_info")
 data class PartnerInfo(
         @PrimaryKey(autoGenerate = true)
-        val uid: Long = 0,
+        @ColumnInfo(name = "partner_info_id")
+        val partnerInfoId: Long = 0,
 
         @ColumnInfo(name = "app_version")
         val appVersion: Float,

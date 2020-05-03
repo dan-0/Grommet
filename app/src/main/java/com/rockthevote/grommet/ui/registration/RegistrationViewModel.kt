@@ -102,6 +102,7 @@ class RegistrationViewModel(
             }
 
             val registration = Registration(
+                    //TODO add session ID
                 registrationDate = Date().time ,
                 registrantName = registrantName,
                 // This should only used if there was already an error on registration

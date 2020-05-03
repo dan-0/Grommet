@@ -2,6 +2,7 @@ package com.rockthevote.grommet.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.rockthevote.grommet.data.api.model.ApiGeoLocation
 import java.util.*
@@ -11,25 +12,29 @@ import java.util.*
  */
 @Entity(tableName = "session")
 data class Session(
-        @PrimaryKey val id: Int,
-        val uid: Long = 0,
-        
+        @PrimaryKey(autoGenerate = true)
+        @ColumnInfo(name = "session_id")
+        val sessionId: Long = 0,
+
+        @ColumnInfo(name = "partner_info_id")
+        val partnerInfoId: Long,
+
         @ColumnInfo(name = "source_tracking_id")
-        val sourceTrackingID: String,
+        val sourceTrackingId: String,
 
         @ColumnInfo(name = "partner_tracking_id")
-        val partnerTrackingID: String,
+        val partnerTrackingId: String,
 
         @ColumnInfo(name = "geo_location") val geoLocation: ApiGeoLocation,
 
         @ColumnInfo(name = "open_tracking_id")
-        val openTrackingID: String,
+        val openTrackingId: String,
 
         @ColumnInfo(name = "canvasser_name")
         val canvasserName: String,
 
         @ColumnInfo(name = "device_id")
-        val deviceID: String,
+        val deviceId: String,
 
         @ColumnInfo(name = "abandoned_count")
         val abandonedCount: Int,
