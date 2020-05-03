@@ -1,11 +1,7 @@
 package com.rockthevote.grommet.ui.registration.assistance
 
 import com.rockthevote.grommet.databinding.FragmentAssistantInfoBinding
-import com.rockthevote.grommet.ui.registration.address.bindToAddressView
-import com.rockthevote.grommet.ui.registration.address.toAddress
-import com.rockthevote.grommet.ui.registration.name.bindToNameView
-import com.rockthevote.grommet.ui.registration.name.toEditable
-import com.rockthevote.grommet.ui.registration.name.toPersonName
+import com.rockthevote.grommet.util.extensions.*
 
 fun FragmentAssistantInfoBinding.toAssistanceData(): AssistanceData {
     val hasSomeoneAssisted = checkboxHasAssistant.isChecked

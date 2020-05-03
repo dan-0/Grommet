@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
@@ -25,7 +24,6 @@ import com.rockthevote.grommet.ui.registration.RegistrationCompleteDialogFragmen
 import com.rockthevote.grommet.ui.registration.RegistrationState;
 import com.rockthevote.grommet.util.LocaleUtils;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -84,6 +82,12 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
                 completeForm();
             } else if (registrationState instanceof RegistrationState.RegistrationError) {
                 showErrorDialog((RegistrationState.RegistrationError) registrationState);
+            }
+        });
+
+        viewModel.getReviewAndConfirmState().observe(getViewLifecycleOwner(), state -> {
+            if (state instanceof ReviewAndConfirmState.Content) {
+                ReviewExtKt.bindReviewData(binding, ((ReviewAndConfirmState.Content) state).getData());
             }
         });
     }

@@ -2,6 +2,9 @@ package com.rockthevote.grommet.ui.registration.name
 
 import com.rockthevote.grommet.databinding.FragmentNewRegistrantBinding
 import com.rockthevote.grommet.util.Dates
+import com.rockthevote.grommet.util.extensions.bindToNameView
+import com.rockthevote.grommet.util.extensions.toEditable
+import com.rockthevote.grommet.util.extensions.toPersonName
 
 fun FragmentNewRegistrantBinding.toNameRegistrationData(): NewRegistrantData {
     return NewRegistrantData(

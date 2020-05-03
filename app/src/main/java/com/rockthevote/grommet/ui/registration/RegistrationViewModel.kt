@@ -9,7 +9,9 @@ import com.rockthevote.grommet.ui.registration.address.PersonalInfoData
 import com.rockthevote.grommet.ui.registration.assistance.AssistanceData
 import com.rockthevote.grommet.ui.registration.name.NewRegistrantData
 import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData
+import com.rockthevote.grommet.ui.registration.review.ReviewAndConfirmState
 import com.rockthevote.grommet.ui.registration.review.ReviewData
+import com.rockthevote.grommet.util.extensions.toReviewAndConfirmStateData
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Dispatchers
@@ -29,11 +31,21 @@ class RegistrationViewModel(
     ),
     private val registrationDao: RegistrationDao
 ) : ViewModel() {
+
     private val _registrationData = MutableLiveData(RegistrationData())
     val registrationData: LiveData<RegistrationData> = _registrationData
 
     private val _registrationState: MutableLiveData<RegistrationState> = MutableLiveData(RegistrationState.Init)
     val registrationState: LiveData<RegistrationState> = _registrationState
+
+    private val _reviewAndConfirmState = MediatorLiveData<ReviewAndConfirmState>().apply {
+        addSource(registrationData) {
+            val data = it.toReviewAndConfirmStateData()
+            postValue(ReviewAndConfirmState.Content(data))
+        }
+    }
+
+    val reviewAndConfirmState: LiveData<ReviewAndConfirmState> = _reviewAndConfirmState
 
     private val currentData
         get() = _registrationData.value ?: RegistrationData()
