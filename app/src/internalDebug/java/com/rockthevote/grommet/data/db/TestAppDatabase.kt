@@ -5,13 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.TypeConverters
 import com.rockthevote.grommet.data.db.AppDatabase
+import com.rockthevote.grommet.data.db.model.PartnerInfo
 import com.rockthevote.grommet.data.db.model.Registration
+import com.rockthevote.grommet.data.db.model.Session
 
 /**
  * Created by Mechanical Man on 3/24/20.
  */
 
-@Database(entities = [Registration::class], version = 1)
+@Database(entities = [Registration::class, Session::class, PartnerInfo::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class TestAppDatabase : AppDatabase() {
 
