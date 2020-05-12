@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 
@@ -22,7 +23,6 @@ public class PartnerVolunteerTextPreferenceConverter implements Preference.Conve
     @NonNull
     @Override
     public PartnerVolunteerText deserialize(@NonNull String serialized) {
-
         PartnerVolunteerText value = PartnerVolunteerText.builder()
                 .english("")
                 .spanish("")
