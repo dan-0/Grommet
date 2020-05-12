@@ -13,6 +13,8 @@ import java.util.*
  */
 class Converters {
 
+    val moshi: Moshi by lazy { Moshi.Builder().build() }
+
     @TypeConverter
     fun fromTimestamp(value: Long?): Date? {
         return value?.let { Date(it) }
@@ -25,25 +27,25 @@ class Converters {
 
     @TypeConverter
     fun fromPartnerVolunteerText(volunteerText: PartnerVolunteerText): String? {
-        val adapter = PartnerVolunteerText.jsonAdapter(Moshi.Builder().build())
+        val adapter = PartnerVolunteerText.jsonAdapter(moshi)
         return adapter.toJson(volunteerText)
     }
 
     @TypeConverter
     fun jsonToPartnerVolunteerText(value: String): PartnerVolunteerText? {
-        val adapter = PartnerVolunteerText.jsonAdapter(Moshi.Builder().build())
+        val adapter = PartnerVolunteerText.jsonAdapter(moshi)
         return adapter.fromJson(value)
     }
 
     @TypeConverter
     fun fromRegistrationNotificationText(volunteerText: RegistrationNotificationText): String? {
-        val adapter = RegistrationNotificationText.jsonAdapter(Moshi.Builder().build())
+        val adapter = RegistrationNotificationText.jsonAdapter(moshi)
         return adapter.toJson(volunteerText)
     }
 
     @TypeConverter
     fun jsonToRegistrationNotificationText(value: String): RegistrationNotificationText? {
-        val adapter = RegistrationNotificationText.jsonAdapter(Moshi.Builder().build())
+        val adapter = RegistrationNotificationText.jsonAdapter(moshi)
         return adapter.fromJson(value)
     }
 
@@ -59,13 +61,13 @@ class Converters {
 
     @TypeConverter
     fun fromApiGeoLocation(value: ApiGeoLocation): String? {
-        val adapter = ApiGeoLocation.jsonAdapter(Moshi.Builder().build())
+        val adapter = ApiGeoLocation.jsonAdapter(moshi)
         return adapter.toJson(value)
     }
 
     @TypeConverter
     fun jsonToApiGeoLocation(value: String): ApiGeoLocation? {
-        val adapter = ApiGeoLocation.jsonAdapter(Moshi.Builder().build())
+        val adapter = ApiGeoLocation.jsonAdapter(moshi)
         return adapter.fromJson(value)
     }
 
