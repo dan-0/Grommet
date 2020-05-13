@@ -11,10 +11,11 @@ import com.rockthevote.grommet.ui.registration.name.NewRegistrantData
 import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData
 import com.rockthevote.grommet.ui.registration.review.ReviewAndConfirmState
 import com.rockthevote.grommet.ui.registration.review.ReviewData
+import com.rockthevote.grommet.util.coroutines.DispatcherProvider
+import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import com.rockthevote.grommet.util.extensions.toReviewAndConfirmStateData
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -29,7 +30,8 @@ class RegistrationViewModel(
         GeoLocation(1.0, 1.0),
         "temp"
     ),
-    private val registrationDao: RegistrationDao
+    private val registrationDao: RegistrationDao,
+    private val dispatcherProvider: DispatcherProvider = DispatcherProviderImpl()
 ) : ViewModel() {
 
     private val _registrationData = MutableLiveData(RegistrationData())
@@ -44,14 +46,13 @@ class RegistrationViewModel(
             postValue(ReviewAndConfirmState.Content(data))
         }
     }
-
     val reviewAndConfirmState: LiveData<ReviewAndConfirmState> = _reviewAndConfirmState
 
-    private val currentData
+    private val currentRegistrationData
         get() = _registrationData.value ?: RegistrationData()
 
     fun storeNewRegistrantData(data: NewRegistrantData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             newRegistrantData = data
         )
 
@@ -59,7 +60,7 @@ class RegistrationViewModel(
     }
 
     fun storeAddressData(data: PersonalInfoData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             addressData = data
         )
 
@@ -67,7 +68,7 @@ class RegistrationViewModel(
     }
 
     fun storeAdditionalInfoData(data: AdditionalInfoData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             additionalInfoData = data
         )
 
@@ -75,7 +76,7 @@ class RegistrationViewModel(
     }
 
     fun storeAssistanceData(data: AssistanceData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             assistanceData = data
         )
 
@@ -83,18 +84,22 @@ class RegistrationViewModel(
     }
 
     private fun storeReviewData(data: ReviewData) {
-        val newData = currentData.copy(
+        val newData = currentRegistrationData.copy(
             reviewData = data
         )
 
         updateData(newData, true)
     }
 
-    fun completeRegistration(data: ReviewData) {
+    @JvmOverloads
+    fun completeRegistration(
+        data: ReviewData,
+        completionDate: Date = Date()
+    ) {
         storeReviewData(data)
 
         runCatching {
-            val transformer = RegistrationDataTransformer(currentData, sessionData)
+            val transformer = RegistrationDataTransformer(currentRegistrationData, sessionData, completionDate)
             val requestData = transformer.transform()
 
             /* TODO Either inject an adapter, make this an async operation, or just pass the data
@@ -107,23 +112,20 @@ class RegistrationViewModel(
 
             val rockyRequestJson = adapter.toJson(requestData)
 
-            Timber.d("Storing RockyRequest JSON %s", rockyRequestJson)
-
-            val registrantName = with(currentData.newRegistrantData!!.name) {
+            val registrantName = with(currentRegistrationData.newRegistrantData!!.name) {
                 listOfNotNull(firstName, middleName, lastName).joinToString(" ")
             }
 
             val registration = Registration(
-                    //TODO add session ID
-                registrationDate = Date().time ,
+                registrationDate = completionDate.time,
                 registrantName = registrantName,
                 // This should only used if there was already an error on registration
                 //  so allowing an empty email is acceptable in this case
-                registrantEmail = currentData.additionalInfoData?.emailAddress ?: "",
+                registrantEmail = currentRegistrationData.additionalInfoData?.emailAddress ?: "",
                 registrationData = rockyRequestJson
             )
 
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(dispatcherProvider.io) {
                 registrationDao.insert(registration)
             }
 
@@ -185,3 +187,4 @@ class RegistrationViewModelFactory(
         return RegistrationViewModel(registrationDao = registrationDao) as T
     }
 }
+
