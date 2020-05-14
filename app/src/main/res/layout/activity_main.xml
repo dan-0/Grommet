@@ -69,6 +69,32 @@
                     tools:text="5"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/failed_registrations_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_height="match_parent"
+                    android:text="@string/failed_registration_uploads"/>
+
+                <TextView
+                    android:id="@+id/failed_registrations"
+                    android:layout_width="wrap_content"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/activity_horizontal_margin"
+                    android:paddingEnd="@dimen/activity_horizontal_margin"
+                    android:textColor="@color/clock_out_red"
+                    tools:text="5"/>
+            </LinearLayout>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/upload"
                 android:layout_width="wrap_content"
