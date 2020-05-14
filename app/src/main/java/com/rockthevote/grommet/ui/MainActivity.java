@@ -5,26 +5,32 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.legacy.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.legacy.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -44,6 +50,8 @@ public final class MainActivity extends BaseActivity {
     @BindView(R.id.viewpager) ViewPager viewPager;
     @BindView(R.id.main_content) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.pending_registrations) TextView pendingRegistrations;
+    @BindView(R.id.failed_registrations_container) LinearLayout failedRegistrationsContainer;
+    @BindView(R.id.failed_registrations) TextView failedRegistrations;
     @BindView(R.id.upload) Button upploadButton;
 
     @Inject @PartnerId Preference<String> partnerIdPref;
@@ -62,7 +70,11 @@ public final class MainActivity extends BaseActivity {
 
     @Inject HockeyAppHelper hockeyAppHelper;
 
+    @Inject RockyService rockyService;
+
     private CompositeSubscription subscriptions;
+
+    private MainActivityViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +86,50 @@ public final class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         requestGPSPermission();
         hockeyAppHelper.checkForUpdates(this);
+
+        viewModel = new ViewModelProvider(
+                this,
+                new MainActivityViewModelFactory(rockyService)
+        ).get(MainActivityViewModel.class);
+
+        observeState();
+    }
+
+    private void observeState() {
+        viewModel.getState().observe(this, mainActivityState -> {
+
+            // Reset base states
+            upploadButton.setEnabled(true);
+            failedRegistrationsContainer.setVisibility(View.GONE);
+            failedRegistrations.setText("");
+
+            if (mainActivityState instanceof MainActivityState.Content) {
+                MainActivityState.Content content = (MainActivityState.Content) mainActivityState;
+
+                String pendingUploads = String.format(
+                        Locale.getDefault(),
+                        "%d",
+                        content.getPendingUploads()
+                );
+
+                pendingRegistrations.setText(pendingUploads);
+
+                if (content.getFailedUploads() > 0) {
+                    failedRegistrationsContainer.setVisibility(View.VISIBLE);
+
+                    String failedUploads = String.format(
+                            Locale.getDefault(),
+                            "%d",
+                            content.getFailedUploads()
+                    );
+
+                    failedRegistrations.setText(failedUploads);
+                }
+
+            } else if (mainActivityState instanceof MainActivityState.Loading) {
+                upploadButton.setEnabled(false);
+            }
+        });
     }
 
     @Override
@@ -136,8 +192,7 @@ public final class MainActivity extends BaseActivity {
      */
     @OnClick(R.id.upload)
     public void onClickUpload(View v) {
-
-
+        viewModel.uploadRegistrations();
     }
 
     @Override
