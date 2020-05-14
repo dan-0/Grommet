@@ -13,7 +13,8 @@ import java.util.*
  */
 class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) constructor(
     private val registrationData: RegistrationData,
-    private val sessionData: SessionData
+    private val sessionData: SessionData,
+    private val creationDate: Date
 ) {
 
     init {
@@ -59,7 +60,7 @@ class RegistrationDataTransformer @Throws(InvalidRegistrationException::class) c
     private fun buildVoterRecordsRequest(): VoterRecordsRequest {
         return VoterRecordsRequest(
             type = "registration",
-            generatedDate = Dates.formatAsISO8601_Date(Date()),
+            generatedDate = Dates.formatAsISO8601_Date(creationDate),
             canvasserName = sessionData.canvasserName,
             voterRegistration = buildVoterRegistration()
         )
