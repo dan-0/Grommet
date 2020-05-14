@@ -4,8 +4,8 @@ import androidx.lifecycle.*
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.api.model.RegistrationResponse
 import com.rockthevote.grommet.data.db.model.RockyRequest
-import com.rockthevote.grommet.util.DispatcherProvider
-import com.rockthevote.grommet.util.DispatcherProviderImpl
+import com.rockthevote.grommet.util.coroutines.DispatcherProvider
+import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.*
 import retrofit2.adapter.rxjava.Result
 import rx.Observable
