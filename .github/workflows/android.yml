@@ -20,8 +20,8 @@ jobs:
       - name: Uninstall NDK
         run: sudo ${ANDROID_HOME}/tools/bin/sdkmanager --uninstall `ndk-bundle`
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Assemble Internal Debug
+        run: ./gradlew :app:assembleInternalDebug
       
       - name: Unit Test Internal Debug Variant
         run: ./gradlew :app:testInternalDebugUnitTest
