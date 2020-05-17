@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.databinding.FragmentRegistrationBaseBinding;
 
 import javax.inject.Inject;
@@ -30,13 +31,16 @@ public abstract class BaseRegistrationFragment extends Fragment {
     @Inject
     RegistrationDao registrationDao;
 
+    @Inject
+    SessionDao sessionDao;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
         viewModel = new ViewModelProvider(
                 requireActivity(),
-                new RegistrationViewModelFactory(registrationDao)
+                new RegistrationViewModelFactory(registrationDao, sessionDao)
         ).get(RegistrationViewModel.class);
     }
 

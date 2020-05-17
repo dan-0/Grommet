@@ -2,6 +2,7 @@ package com.rockthevote.grommet.ui.registration
 
 import androidx.lifecycle.*
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
+import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.GeoLocation
 import com.rockthevote.grommet.data.db.model.Registration
 import com.rockthevote.grommet.data.db.model.RockyRequest
@@ -21,17 +22,9 @@ import timber.log.Timber
 import java.util.*
 
 class RegistrationViewModel(
-    // TODO this is temporary until we can provide this from the session database
-    private val sessionData: SessionData = SessionData(
-        1,
-        "temp",
-        "temp",
-        "temp",
-        GeoLocation(1.0, 1.0),
-        "temp"
-    ),
     private val registrationDao: RegistrationDao,
-    private val dispatcherProvider: DispatcherProvider = DispatcherProviderImpl()
+    private val dispatcherProvider: DispatcherProvider = DispatcherProviderImpl(),
+    private val sessionDao: SessionDao
 ) : ViewModel() {
 
     private val _registrationData = MutableLiveData(RegistrationData())
@@ -100,6 +93,29 @@ class RegistrationViewModel(
 
         viewModelScope.launch(dispatcherProvider.io) {
 
+            val currentSession = sessionDao.getCurrentSession()
+
+            val sessionData = currentSession?.let {
+                SessionData(
+                    partnerId = currentSession.partnerInfoId,
+                    canvasserName = currentSession.canvasserName,
+                    sourceTrackingId = currentSession.sourceTrackingId,
+                    partnerTrackingId = currentSession.partnerTrackingId,
+                    geoLocation = GeoLocation(
+                        lat = currentSession.geoLocation.latitude(),
+                        long = currentSession.geoLocation.longitude()
+                    ),
+                    openTrackingId = currentSession.openTrackingId
+                )
+            } ?: SessionData(
+                partnerId = -1,
+                canvasserName = "empty",
+                sourceTrackingId = "empty",
+                partnerTrackingId = "empty",
+                geoLocation = GeoLocation(-1.0, -1.0),
+                openTrackingId = "empty"
+            ) // TODO this is default if a session doesn't exist, probably good to keep it just in case?
+
             runCatching {
                 val transformer = RegistrationDataTransformer(currentRegistrationData, sessionData, completionDate)
                 val requestData = transformer.transform()
@@ -167,11 +183,14 @@ class RegistrationViewModel(
 }
 
 class RegistrationViewModelFactory(
-    private val registrationDao: RegistrationDao
+    private val registrationDao: RegistrationDao,
+    private val sessionDao: SessionDao
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return RegistrationViewModel(registrationDao = registrationDao) as T
+        return RegistrationViewModel(
+            registrationDao = registrationDao,
+            sessionDao = sessionDao) as T
     }
 }
 

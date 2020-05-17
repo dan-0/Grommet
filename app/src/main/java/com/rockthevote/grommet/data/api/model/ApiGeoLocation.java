@@ -8,10 +8,10 @@ import com.squareup.moshi.Moshi;
 @AutoValue
 public abstract class ApiGeoLocation {
     @Json(name = "lat")
-    abstract long latitude();
+    public abstract double latitude();
 
     @Json(name = "long")
-    abstract long longitude();
+    public abstract double longitude();
 
     public static JsonAdapter<ApiGeoLocation> jsonAdapter(Moshi moshi) {
         return new AutoValue_ApiGeoLocation.MoshiJsonAdapter(moshi);
