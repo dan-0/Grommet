@@ -67,6 +67,7 @@ class MainActivityViewModel(
                 runCatching {
                     !it.second.await().isError
                 }.getOrElse {
+                    Timber.w(it, "Error making registration call")
                     false
                 }
             }.map {
