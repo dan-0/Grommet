@@ -13,6 +13,7 @@ import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.api.model.DateAdapter;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
+import com.rockthevote.grommet.data.api.model.RegistrationResponse;
 import com.rockthevote.grommet.data.db.AppDatabase;
 import com.rockthevote.grommet.data.prefs.AppVersion;
 import com.rockthevote.grommet.data.prefs.CanvasserName;

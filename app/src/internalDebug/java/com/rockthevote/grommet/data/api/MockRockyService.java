@@ -24,6 +24,7 @@ import retrofit2.mock.BehaviorDelegate;
 import retrofit2.mock.Calls;
 import retrofit2.mock.MockRetrofit;
 import rx.Observable;
+import rx.Single;
 
 @Singleton
 public final class MockRockyService implements RockyService {
@@ -63,7 +64,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Result<RegistrationResponse> register(@Body RequestBody rockyRequestWrapper) {
+    public Single<Result<RegistrationResponse>> register(@Body RequestBody rockyRequestWrapper) {
         RegistrationResponse response = getResponse(MockRegistrationResponse.class).response;
 
         return delegate.returning(Calls.response(response)).register(rockyRequestWrapper);

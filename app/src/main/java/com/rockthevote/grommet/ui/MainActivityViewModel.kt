@@ -59,7 +59,8 @@ class MainActivityViewModel(
             }
 
             val results = requests.map {
-                it.first to async { rockyService.register(it.second) }
+                // Maps and simultaneously makes the registration request, adding the deferred result to [second]
+                it.first to async { rockyService.register(it.second).toBlocking().value() }
             }
 
             val successfulRegistrations = results.filter {

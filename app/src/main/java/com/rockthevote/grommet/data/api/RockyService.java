@@ -15,11 +15,12 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
+import rx.Single;
 
 public interface RockyService {
 
     @POST("voterregistrationrequest")
-    Result<RegistrationResponse> register(@Body RequestBody rockyRequestBody);
+    Single<Result<RegistrationResponse>> register(@Body RequestBody rockyRequestBody);
 
     @GET("partnerIdValidation")
     Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);
