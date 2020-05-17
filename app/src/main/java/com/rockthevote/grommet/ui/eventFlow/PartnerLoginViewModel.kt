@@ -8,7 +8,6 @@ import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -37,14 +36,10 @@ class PartnerLoginViewModel(
         Timber.e(throwable)
     }
 
-    private val supervisorJob = SupervisorJob()
-
     private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
 
     init {
-        viewModelScope.launch(dispatchers.io) {
-            updateState(PartnerLoginState.Init)
-        }
+        viewModelScope.launch(dispatchers.io) {}
     }
 
     fun validatePartnerId(partnerId: Long) {
@@ -60,21 +55,26 @@ class PartnerLoginViewModel(
                 runCatching {
                     rockyService.getPartnerName(partnerId.toString())
                 }.onSuccess {
-                    //TODO not sure if I should still be checking for the response success if using "runcatching" ?
-                    partnerInfoDao.insertPartnerInfo(PartnerInfo(
-                            partnerId,
-                            it.body()!!.appVersion().toFloat(),
-                            it.body()!!.isValid,
-                            it.body()!!.partnerName(),
-                            it.body()!!.registrationDeadlineDate(),
-                            it.body()!!.registrationNotificationText(),
-                            it.body()!!.partnerVolunteerText()
-                    ))
+                    if (it.isSuccessful) {
+                        partnerInfoDao.insertPartnerInfo(PartnerInfo(
+                                partnerId,
+                                it.body()!!.appVersion().toFloat(),
+                                it.body()!!.isValid,
+                                it.body()!!.partnerName(),
+                                it.body()!!.registrationDeadlineDate(),
+                                it.body()!!.registrationNotificationText(),
+                                it.body()!!.partnerVolunteerText()
+                        ))
 
-                    updateState(PartnerLoginState.Init)
-                    updateEffect(PartnerLoginState.Success)
+                        updateState(PartnerLoginState.Init)
+                        updateEffect(PartnerLoginState.Success)
+                    } else {
+                        updateState(PartnerLoginState.Init)
+                        updateEffect(PartnerLoginState.Error)
+                    }
 
                 }.onFailure {
+                    Timber.d("API request failure - partner validation")
                     updateState(PartnerLoginState.Init)
                     updateEffect(PartnerLoginState.Error)
                 }
