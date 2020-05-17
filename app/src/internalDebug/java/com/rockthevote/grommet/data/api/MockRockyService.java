@@ -63,7 +63,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Response<RegistrationResponse> register(@Body RequestBody rockyRequestWrapper) {
+    public Result<RegistrationResponse> register(@Body RequestBody rockyRequestWrapper) {
         RegistrationResponse response = getResponse(MockRegistrationResponse.class).response;
 
         return delegate.returning(Calls.response(response)).register(rockyRequestWrapper);

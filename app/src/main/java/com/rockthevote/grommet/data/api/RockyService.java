@@ -19,7 +19,7 @@ import rx.Observable;
 public interface RockyService {
 
     @POST("voterregistrationrequest")
-    Response<RegistrationResponse> register(@Body RequestBody rockyRequestBody);
+    Result<RegistrationResponse> register(@Body RequestBody rockyRequestBody);
 
     @GET("partnerIdValidation")
     Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);

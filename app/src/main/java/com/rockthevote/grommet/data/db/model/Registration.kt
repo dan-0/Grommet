@@ -6,17 +6,16 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 /**
- * Entity for registrations in the database. Autogenerates a [uid], taking in a
- * [registrationDate] in millis, [registrantName] and [registrantEmail] for identification,
- * and a full json string as [registrationData]
+ * Entity for registrations in the database. Autogenerates a [registrationId], taking in
+ * full json string as [registrationData]
  */
-@Entity(tableName = "registration",
-        foreignKeys = [ForeignKey(
-                entity = Session::class,
-                parentColumns = ["session_id"],
-                childColumns = ["session_id"],
-                onDelete = ForeignKey.CASCADE
-        )]
+@Entity(tableName = "registration"//,
+//        foreignKeys = [ForeignKey(
+//                entity = Session::class,
+//                parentColumns = ["session_id"],
+//                childColumns = ["session_id"],
+//                onDelete = ForeignKey.CASCADE
+//        )]
 )
 data class Registration(
         @PrimaryKey(autoGenerate = true)

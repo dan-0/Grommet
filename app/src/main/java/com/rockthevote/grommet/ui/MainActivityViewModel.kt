@@ -14,7 +14,7 @@ import retrofit2.Response
 import timber.log.Timber
 
 class MainActivityViewModel(
-    dispatchers: DispatcherProvider = DispatcherProviderImpl(),
+    private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
     private val rockyService: RockyService,
     private val registrationDao: RegistrationDao
 ) : ViewModel() {
@@ -26,11 +26,15 @@ class MainActivityViewModel(
         Timber.e(throwable)
     }
 
+    init {
+        refreshPendingUploads()
+    }
+
     private val supervisorJob = SupervisorJob()
 
     private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
 
-    init {
+    fun refreshPendingUploads() {
         viewModelScope.launch(dispatchers.io) {
             updateState(MainActivityState.Loading)
 
@@ -54,15 +58,13 @@ class MainActivityViewModel(
                 it to RequestBody.create(MediaType.parse("application/json; charset=utf-8"), it.registrationData)
             }
 
-            val resultMap = mutableMapOf<Registration, Response<RegistrationResponse>>()
-
             val results = requests.map {
                 it.first to async { rockyService.register(it.second) }
             }
 
             val successfulRegistrations = results.filter {
                 runCatching {
-                    it.second.await().isSuccessful
+                    !it.second.await().isError
                 }.getOrElse {
                     false
                 }
