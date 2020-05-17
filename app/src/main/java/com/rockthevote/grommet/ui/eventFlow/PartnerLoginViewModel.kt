@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.eventFlow
 
 import androidx.lifecycle.*
+import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.model.PartnerInfo
@@ -22,13 +23,13 @@ class PartnerLoginViewModel(
 
     val partnerInfoId: LiveData<Long> =
             Transformations.map(partnerInfoDao.getCurrentPartnerInfo()) { result ->
-                result.partnerInfoId
+                result?.partnerInfoId ?: -1
             }
 
     private val _partnerLoginState = MutableLiveData<PartnerLoginState>(PartnerLoginState.Init)
     val partnerLoginState: LiveData<PartnerLoginState> = _partnerLoginState
 
-    private val _effect = MutableLiveData<PartnerLoginState.Effect?>()
+    private val _effect = LiveEvent<PartnerLoginState.Effect?>()
     val effect: LiveData<PartnerLoginState.Effect?> = _effect
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -37,10 +38,6 @@ class PartnerLoginViewModel(
     }
 
     private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
-
-    init {
-        viewModelScope.launch(dispatchers.io) {}
-    }
 
     fun validatePartnerId(partnerId: Long) {
         updateState(PartnerLoginState.Loading)
@@ -53,17 +50,19 @@ class PartnerLoginViewModel(
         } else {
             rockyRequestScope.launch {
                 runCatching {
-                    rockyService.getPartnerName(partnerId.toString())
+                    rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
+
                 }.onSuccess {
-                    if (it.isSuccessful) {
+                    if (it.response().isSuccessful) {
+                        partnerInfoDao.deletePartnerInfo()
                         partnerInfoDao.insertPartnerInfo(PartnerInfo(
                                 partnerId,
-                                it.body()!!.appVersion().toFloat(),
-                                it.body()!!.isValid,
-                                it.body()!!.partnerName(),
-                                it.body()!!.registrationDeadlineDate(),
-                                it.body()!!.registrationNotificationText(),
-                                it.body()!!.partnerVolunteerText()
+                                it.response().body()!!.appVersion().toFloat(),
+                                it.response().body()!!.isValid,
+                                it.response().body()!!.partnerName(),
+                                it.response().body()!!.registrationDeadlineDate(),
+                                it.response().body()!!.registrationNotificationText(),
+                                it.response().body()!!.partnerVolunteerText()
                         ))
 
                         updateState(PartnerLoginState.Init)
@@ -85,7 +84,9 @@ class PartnerLoginViewModel(
 
     fun clearPartnerInfo() {
         Timber.d("Deleting partner info")
-        partnerInfoDao.deletePartnerInfo()
+        rockyRequestScope.launch {
+            partnerInfoDao.deletePartnerInfo()
+        }
     }
 
     private fun updateState(newState: PartnerLoginState) {
@@ -96,9 +97,6 @@ class PartnerLoginViewModel(
     private fun updateEffect(newEffect: PartnerLoginState.Effect) {
         Timber.d("Handling new effect: $newEffect")
         _effect.postValue(newEffect)
-
-        // clear effect
-        _effect.postValue(null)
     }
 }
 

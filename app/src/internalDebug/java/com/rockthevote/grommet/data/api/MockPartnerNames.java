@@ -8,6 +8,7 @@ import com.rockthevote.grommet.util.Dates;
 public final class MockPartnerNames {
     static final PartnerNameResponse SUCCESS = PartnerNameResponse.builder()
             .isValid(true)
+            .appVersion(1)
             .partnerName("OSET Org")
             .sessionTimeoutLength(2)
             .registrationDeadlineDate(Dates.parseISO8601_ShortDate("2018-09-01"))

@@ -22,6 +22,7 @@ import retrofit2.mock.BehaviorDelegate;
 import retrofit2.mock.Calls;
 import retrofit2.mock.MockRetrofit;
 import rx.Observable;
+import rx.Single;
 
 @Singleton
 public final class MockRockyService implements RockyService {
@@ -68,7 +69,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId) {
+    public Single<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId) {
         PartnerNameResponse response = getResponse(MockPartnerNameResponse.class).response;
         return delegate.returning(Calls.response(response)).getPartnerName(partnerId);
     }

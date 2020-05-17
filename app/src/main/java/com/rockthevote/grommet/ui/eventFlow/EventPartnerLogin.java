@@ -118,7 +118,13 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                 });
 
         viewModel.getPartnerInfoId().observe(
-                (AppCompatActivity) getContext(), id -> edePartnerId.setText(String.valueOf(id)));
+                (AppCompatActivity) getContext(), id -> {
+                    if (id != -1) {
+                        edePartnerId.setText(String.valueOf(id));
+                    } else {
+                        edePartnerId.setText("");
+                    }
+                });
     }
 
     @OnClick(R.id.event_partner_id_save)
@@ -128,7 +134,6 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                 getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-        // allow the user to not set a partner ID
         if (validator.validate().toBlocking().single()) {
             viewModel.validatePartnerId(Long.parseLong(edePartnerId.getText().toString()));
         }
