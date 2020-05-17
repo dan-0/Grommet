@@ -17,7 +17,7 @@ data class RockyRequestBody(
     @Json(name = "phone_type")
     val phoneType: String? = null,
     @Json(name = "partner_id")
-    val partnerId: Int,
+    val partnerId: Long,
     @Json(name = "opt_in_email")
     val optInEmail: Boolean?,
     @Json(name = "opt_in_sms")

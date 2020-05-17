@@ -23,9 +23,9 @@ public abstract class ApiGeoLocation {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder latitude(long value);
+        public abstract Builder latitude(double value);
 
-        public abstract Builder longitude(long value);
+        public abstract Builder longitude(double value);
 
         public abstract ApiGeoLocation build();
     }
