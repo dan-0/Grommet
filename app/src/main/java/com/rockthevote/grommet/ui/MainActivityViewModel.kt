@@ -32,7 +32,7 @@ class MainActivityViewModel(
 
     private val supervisorJob = SupervisorJob()
 
-    private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
+    private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler + supervisorJob)
 
     fun refreshPendingUploads() {
         viewModelScope.launch(dispatchers.io) {
