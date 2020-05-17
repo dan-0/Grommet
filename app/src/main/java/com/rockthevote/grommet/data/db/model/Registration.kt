@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
  * Entity for registrations in the database. Autogenerates a [registrationId], taking in
  * full json string as [registrationData]
  */
-@Entity(tableName = "registration"//,
+@Entity(tableName = "registration"//, TODO Readd foreign key requirements
 //        foreignKeys = [ForeignKey(
 //                entity = Session::class,
 //                parentColumns = ["session_id"],
