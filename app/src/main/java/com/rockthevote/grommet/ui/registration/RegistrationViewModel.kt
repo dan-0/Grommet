@@ -15,8 +15,10 @@ import com.rockthevote.grommet.ui.registration.review.ReviewData
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import com.rockthevote.grommet.util.extensions.toReviewAndConfirmStateData
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -43,6 +45,12 @@ class RegistrationViewModel(
 
     private val currentRegistrationData
         get() = _registrationData.value ?: RegistrationData()
+
+    private val _requestAdapter = viewModelScope.async(dispatcherProvider.io) { Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+        .adapter(RockyRequest::class.java)
+    }
 
     fun storeNewRegistrantData(data: NewRegistrantData) {
         val newData = currentRegistrationData.copy(
@@ -120,10 +128,7 @@ class RegistrationViewModel(
                 val transformer = RegistrationDataTransformer(currentRegistrationData, sessionData, completionDate)
                 val requestData = transformer.transform()
 
-                val adapter = Moshi.Builder()
-                    .add(KotlinJsonAdapterFactory())
-                    .build()
-                    .adapter(RockyRequest::class.java)
+                val adapter = requestAdapter()
 
                 val rockyRequestJson = adapter.toJson(requestData)
 
@@ -180,6 +185,11 @@ class RegistrationViewModel(
 
         _registrationState.postValue(state)
     }
+
+    /**
+     * Allows the adapter to be constructed eagerly on a different thread
+     */
+    private suspend fun requestAdapter() = _requestAdapter.await()
 }
 
 class RegistrationViewModelFactory(
