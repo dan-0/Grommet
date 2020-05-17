@@ -23,12 +23,6 @@ data class Registration(
         val registrationId: Long = 0,
         @ColumnInfo(name = "session_id")
         val sessionId: Long = 0, // todo remove default
-        @ColumnInfo(name = "registration_date")
-        val registrationDate: Long,
-        @ColumnInfo(name = "registrant_name")
-        val registrantName: String,
-        @ColumnInfo(name = "registrant_email")
-        val registrantEmail: String,
         @ColumnInfo(name = "registration_data")
         val registrationData: String
 )
