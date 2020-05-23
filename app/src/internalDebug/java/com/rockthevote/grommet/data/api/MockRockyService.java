@@ -15,6 +15,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import okhttp3.RequestBody;
+import retrofit2.Response;
 import retrofit2.adapter.rxjava.Result;
 import retrofit2.http.Body;
 import retrofit2.http.Query;
@@ -62,7 +64,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Observable<Result<RegistrationResponse>> register(@Body RockyRequest rockyRequestWrapper) {
+    public Single<Result<RegistrationResponse>> register(@Body RequestBody rockyRequestWrapper) {
         RegistrationResponse response = getResponse(MockRegistrationResponse.class).response;
 
         return delegate.returning(Calls.response(response)).register(rockyRequestWrapper);

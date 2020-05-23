@@ -7,6 +7,8 @@ import com.rockthevote.grommet.data.api.model.PartnerNameResponse;
 import com.rockthevote.grommet.data.api.model.RegistrationResponse;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 
+import okhttp3.RequestBody;
+import retrofit2.Response;
 import retrofit2.adapter.rxjava.Result;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -18,7 +20,7 @@ import rx.Single;
 public interface RockyService {
 
     @POST("voterregistrationrequest")
-    Observable<Result<RegistrationResponse>> register(@Body RockyRequest rockyRequestWrapper);
+    Single<Result<RegistrationResponse>> register(@Body RequestBody rockyRequestBody);
 
     @GET("partnerIdValidation")
     Single<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);
