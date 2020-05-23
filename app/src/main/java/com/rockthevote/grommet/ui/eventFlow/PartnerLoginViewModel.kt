@@ -9,6 +9,7 @@ import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -48,6 +49,7 @@ class PartnerLoginViewModel(
             updateEffect(PartnerLoginState.Success)
 
         } else {
+            viewModelScope
             rockyRequestScope.launch {
                 runCatching {
                     rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
@@ -97,6 +99,11 @@ class PartnerLoginViewModel(
     private fun updateEffect(newEffect: PartnerLoginState.Effect) {
         Timber.d("Handling new effect: $newEffect")
         _effect.postValue(newEffect)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        rockyRequestScope.cancel()
     }
 }
 
