@@ -98,55 +98,42 @@ class RegistrationViewModel(
     ) {
         storeReviewData(data)
 
-        runCatching {
-            val transformer = RegistrationDataTransformer(currentRegistrationData, sessionData, completionDate)
-            val requestData = transformer.transform()
+        viewModelScope.launch(dispatcherProvider.io) {
 
-            /* TODO Either inject an adapter, make this an async operation, or just pass the data
-                object to whatever class handles storing this to offload the responsibility
-             */
-            val adapter = Moshi.Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
-                .adapter(RockyRequest::class.java)
+            runCatching {
+                val transformer = RegistrationDataTransformer(currentRegistrationData, sessionData, completionDate)
+                val requestData = transformer.transform()
 
-            val rockyRequestJson = adapter.toJson(requestData)
+                val adapter = Moshi.Builder()
+                    .add(KotlinJsonAdapterFactory())
+                    .build()
+                    .adapter(RockyRequest::class.java)
 
-            val registrantName = with(currentRegistrationData.newRegistrantData!!.name) {
-                listOfNotNull(firstName, middleName, lastName).joinToString(" ")
-            }
+                val rockyRequestJson = adapter.toJson(requestData)
 
-            val registration = Registration(
-                registrationDate = completionDate.time,
-                registrantName = registrantName,
-                // This should only used if there was already an error on registration
-                //  so allowing an empty email is acceptable in this case
-                registrantEmail = currentRegistrationData.additionalInfoData?.emailAddress ?: "",
-                registrationData = rockyRequestJson
-            )
+                val registration = Registration(
+                    registrationData = rockyRequestJson
+                )
 
-            viewModelScope.launch(dispatcherProvider.io) {
                 registrationDao.insert(registration)
-            }
+                // TODO Send request data to DB
+            }.onSuccess {
+                updateState(RegistrationState.Complete)
+            }.onFailure {
+                Timber.e(it)
+                when (it) {
+                    is InvalidRegistrationException -> {
+                        val newState = RegistrationState.RegistrationError(
+                            isAcknowledged = false,
+                            errorMsg = it.userMessage,
+                            formatVar = it.formatVar
+                        )
 
-
-            // TODO Send request data to DB
-        }.onSuccess {
-            updateState(RegistrationState.Complete)
-        }.onFailure {
-            Timber.e(it)
-            when (it) {
-                is InvalidRegistrationException -> {
-                    val newState = RegistrationState.RegistrationError(
-                        isAcknowledged = false,
-                        errorMsg = it.userMessage,
-                        formatVar = it.formatVar
-                    )
-
-                    updateState(newState)
+                        updateState(newState)
+                    }
+                    // We don't expect other exceptions, so throw it
+                    else -> throw it
                 }
-                // We don't expect other exceptions, so throw it
-                else -> throw it
             }
         }
     }

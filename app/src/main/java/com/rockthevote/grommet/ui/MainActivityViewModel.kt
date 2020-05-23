@@ -3,32 +3,38 @@ package com.rockthevote.grommet.ui
 import androidx.lifecycle.*
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.api.model.RegistrationResponse
-import com.rockthevote.grommet.data.db.model.RockyRequest
+import com.rockthevote.grommet.data.db.dao.RegistrationDao
+import com.rockthevote.grommet.data.db.model.Registration
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.*
-import retrofit2.adapter.rxjava.Result
-import rx.Observable
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import retrofit2.Response
 import timber.log.Timber
 
 class MainActivityViewModel(
-    dispatchers: DispatcherProvider = DispatcherProviderImpl(),
-    private val rockyService: RockyService
+    private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
+    private val rockyService: RockyService,
+    private val registrationDao: RegistrationDao
 ) : ViewModel() {
 
     private val _state = MutableLiveData<MainActivityState>(MainActivityState.Init)
     val state: LiveData<MainActivityState> = _state
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        // TODO Should we handle this another way? Is it needed?
         Timber.e(throwable)
+    }
+
+    init {
+        refreshPendingUploads()
     }
 
     private val supervisorJob = SupervisorJob()
 
-    private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
+    private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler + supervisorJob)
 
-    init {
+    fun refreshPendingUploads() {
         viewModelScope.launch(dispatchers.io) {
             updateState(MainActivityState.Loading)
 
@@ -36,7 +42,7 @@ class MainActivityViewModel(
 
             val content = MainActivityState.Content(
                 pendingUploads = requests.size,
-                failedUploads = 0 // TODO need to figure out how we're going to calculate this
+                failedUploads = 0 // TODO need to figure out how/if we're going to calculate this
             )
 
             updateState(content)
@@ -47,39 +53,42 @@ class MainActivityViewModel(
         updateState(MainActivityState.Loading)
 
         rockyRequestScope.launch {
-            // TODO get all requests from database
-            val requests = loadRequestsFromDb()
 
-            val resultMap = mutableMapOf<RockyRequest, Observable<Result<RegistrationResponse>>>()
+            val requests = loadRequestsFromDb().map {
+                it to RequestBody.create(MediaType.parse("application/json; charset=utf-8"), it.registrationData)
+            }
 
-            requests.forEach {
-                rockyRequestScope.launch {
-                    runCatching {
-                        val result = rockyService.register(it)
-                        resultMap[it] = result
-                        // TODO Error handling for runCatching
-                    }
+            val results = requests.map {
+                // Maps and simultaneously makes the registration request, adding the deferred result to [second]
+                it.first to async { rockyService.register(it.second).toBlocking().value() }
+            }
+
+            val successfulRegistrations = results.filter {
+                runCatching {
+                    !it.second.await().isError
+                }.getOrElse {
+                    Timber.w(it, "Error making registration call")
+                    false
                 }
+            }.map {
+                it.first
             }
 
-            resultMap.forEach {
-                // TODO Handle observable results
-            }
+            registrationDao.delete(*successfulRegistrations.toTypedArray())
 
-            // TODO populate this with real values
+            // Using the database as a source of truth
+            val pendingUploads = registrationDao.getAll().size
+
             val result = MainActivityState.Content(
-                pendingUploads = 1,
-                failedUploads = 2
+                pendingUploads = pendingUploads,
+                failedUploads = 0 // TODO determine if we need failed uploads
             )
 
             updateState(result)
         }
     }
 
-    private suspend fun loadRequestsFromDb(): List<RockyRequest> {
-        // TODO implement real functionality
-        return listOf()
-    }
+    private suspend fun loadRequestsFromDb() = registrationDao.getAll()
 
     private fun updateState(newState: MainActivityState) {
         Timber.d("Handling new state: $newState")
@@ -93,12 +102,13 @@ class MainActivityViewModel(
 }
 
 class MainActivityViewModelFactory(
-    private val rockyService: RockyService
+    private val rockyService: RockyService,
+    private val registrationDao: RegistrationDao
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         val dispatchers = DispatcherProviderImpl()
 
         @Suppress("UNCHECKED_CAST")
-        return MainActivityViewModel(dispatchers, rockyService) as T
+        return MainActivityViewModel(dispatchers, rockyService, registrationDao) as T
     }
 }
