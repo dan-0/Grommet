@@ -10,11 +10,11 @@ class FakeRegistrationDao : RegistrationDao {
         TODO("Not implemented")
     }
 
-    override fun insert(vararg registration: Registration) {
-        insertHandler?.invoke(registration)
+    override fun insert(vararg registrations: Registration) {
+        insertHandler?.invoke(registrations)
     }
 
-    override fun delete(registration: Registration) {
-        TODO("Not implemented")
+    override fun delete(vararg registrations: Registration) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

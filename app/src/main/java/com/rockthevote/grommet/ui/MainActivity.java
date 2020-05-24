@@ -138,6 +138,7 @@ public final class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        viewModel.refreshPendingUploads();
         hockeyAppHelper.checkForCrashes(this);
 
         subscriptions = new CompositeSubscription();

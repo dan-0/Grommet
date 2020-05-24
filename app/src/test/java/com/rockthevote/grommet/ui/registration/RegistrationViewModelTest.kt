@@ -135,7 +135,6 @@ class RegistrationViewModelTest {
 
             val registration = it[0]
             assertEquals(expectedJson, registration.registrationData)
-            assertEquals(completionDate.time, registration.registrationDate)
         }
 
         ut.completeRegistration(expectedRegistrationData.reviewData!!, completionDate)

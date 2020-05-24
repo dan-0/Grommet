@@ -12,9 +12,9 @@ interface RegistrationDao {
     fun getAll(): List<Registration>
 
     @Insert
-    fun insert(vararg registration: Registration)
+    fun insert(vararg registrations: Registration)
 
     @Delete
-    fun delete(registration: Registration)
+    fun delete(vararg registrations: Registration)
 }
 
