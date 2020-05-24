@@ -71,7 +71,7 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId) {
+    public Single<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId) {
         PartnerNameResponse response = getResponse(MockPartnerNameResponse.class).response;
         return delegate.returning(Calls.response(response)).getPartnerName(partnerId);
     }

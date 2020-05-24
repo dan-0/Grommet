@@ -23,7 +23,7 @@ public interface RockyService {
     Single<Result<RegistrationResponse>> register(@Body RequestBody rockyRequestBody);
 
     @GET("partnerIdValidation")
-    Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);
+    Single<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);
 
     @POST("clockIn")
     Observable<Result<Void>> clockIn(@Body ClockInRequest clockInRequest);

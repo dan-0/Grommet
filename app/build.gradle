@@ -265,6 +265,7 @@ dependencies {
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.2'
     implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3'
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta4"
+    implementation "com.github.hadilq.liveevent:liveevent:1.2.0"
 
     // Lifecycle
     def lifeCycleVersion = "2.2.0"
