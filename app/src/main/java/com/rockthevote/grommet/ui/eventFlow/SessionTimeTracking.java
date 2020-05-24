@@ -8,6 +8,8 @@ import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -29,7 +31,10 @@ import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
 import com.rockthevote.grommet.data.prefs.PartnerTimeout;
+import com.rockthevote.grommet.ui.MainActivity;
+import com.rockthevote.grommet.ui.MainActivityViewModel;
 import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
+import com.rockthevote.grommet.util.ContextUtil;
 
 import javax.inject.Inject;
 
@@ -37,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.CompositeDisposable;
+import kotlin.Unit;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_IN;
@@ -164,17 +170,21 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     @OnClick(R.id.clock_in_button)
     public void onClickClockIn(View button) {
+        MainActivity activity = ContextUtil.getMainActivityFromContext(getContext());
+
+        /*
+            Note, activity is nullable, but it should never actually be null as this view
+            is a component of the MainActivity
+         */
+        assert activity != null;
+
+        // The ViewModel is already initialized in the Activity, so just grab it using the activity
+        MainActivityViewModel viewModel = new ViewModelProvider(
+                activity
+        ).get(MainActivityViewModel.class);
 
         if (button.isSelected()) {
-            new AlertDialog.Builder(getContext())
-                    .setMessage(R.string.clock_out_dialog_text)
-                    .setPositiveButton(R.string.dialog_yes, (dialogInterface, i) -> {
-                        clockOut();
-                    })
-                    .setNegativeButton(R.string.dialog_no,
-                            (dialogInterface, i) -> dialogInterface.dismiss())
-                    .create()
-                    .show();
+            viewModel.asyncCanClockOut(this::canClockOut, this::canNotClockOut);
         } else {
 
             TextView text = (TextView) ((ViewGroup) button).getChildAt(0);
@@ -202,8 +212,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
                 @Override
                 public void onAnimationRepeat(Animator animator) {
-                    button.setSelected(!button.isSelected());
-                    text.setText(button.isSelected() ? R.string.clock_out_text : R.string.clock_in_text);
+                    toggleClockInButton();
                 }
             });
 
@@ -228,6 +237,39 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         }
     }
 
+    private void toggleClockInButton() {
+        clockInButton.setSelected(!clockInButton.isSelected());
+
+        TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+        text.setText(clockInButton.isSelected() ? R.string.clock_out_text : R.string.clock_in_text);
+    }
+
+    private Unit canClockOut() {
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.clock_out_dialog_text)
+                .setPositiveButton(R.string.dialog_yes, (dialogInterface, i) -> {
+                    clockOut();
+                })
+                .setNegativeButton(R.string.dialog_no,
+                        (dialogInterface, i) -> dialogInterface.dismiss())
+                .create()
+                .show();
+
+        return Unit.INSTANCE;
+    }
+
+    private Unit canNotClockOut() {
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.clock_out_must_upload)
+                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                })
+                .create()
+                .show();
+
+        return Unit.INSTANCE;
+    }
+
     private void clockIn() {
 
         updateUI(CLOCKED_IN);
@@ -236,6 +278,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     private void clockOut() {
 
+        toggleClockInButton();
         listener.setState(CLOCKED_OUT, true);
     }
 }

@@ -3,6 +3,7 @@ package com.rockthevote.grommet.ui
 import androidx.lifecycle.*
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.api.model.RegistrationResponse
+import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.model.RockyRequest
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
@@ -12,8 +13,9 @@ import rx.Observable
 import timber.log.Timber
 
 class MainActivityViewModel(
-    dispatchers: DispatcherProvider = DispatcherProviderImpl(),
-    private val rockyService: RockyService
+    private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
+    private val rockyService: RockyService,
+    private val registrationDao: RegistrationDao
 ) : ViewModel() {
 
     private val _state = MutableLiveData<MainActivityState>(MainActivityState.Init)
@@ -81,6 +83,26 @@ class MainActivityViewModel(
         return listOf()
     }
 
+    /**
+     * Asynchronously determines if the user can clock out. Calls [successCallback]
+     * when the user can logout, [failCallback] when the user cannot.
+     *
+     * Note: Coroutines cannot be used from Java, so callbacks are necessary
+     */
+    fun asyncCanClockOut(successCallback: () -> Unit, failCallback: () -> Unit) {
+        viewModelScope.launch(dispatchers.io) {
+            val canClockOut = loadRequestsFromDb().isEmpty()
+
+            withContext(dispatchers.main) {
+                if (canClockOut) {
+                    successCallback()
+                } else {
+                    failCallback()
+                }
+            }
+        }
+    }
+
     private fun updateState(newState: MainActivityState) {
         Timber.d("Handling new state: $newState")
         _state.postValue(newState)
@@ -93,12 +115,13 @@ class MainActivityViewModel(
 }
 
 class MainActivityViewModelFactory(
-    private val rockyService: RockyService
+    private val rockyService: RockyService,
+    private val registrationDao: RegistrationDao
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         val dispatchers = DispatcherProviderImpl()
 
         @Suppress("UNCHECKED_CAST")
-        return MainActivityViewModel(dispatchers, rockyService) as T
+        return MainActivityViewModel(dispatchers, rockyService, registrationDao) as T
     }
 }

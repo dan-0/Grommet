@@ -23,6 +23,7 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
+import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
@@ -72,6 +73,8 @@ public final class MainActivity extends BaseActivity {
 
     @Inject RockyService rockyService;
 
+    @Inject RegistrationDao registrationDao;
+
     private CompositeSubscription subscriptions;
 
     private MainActivityViewModel viewModel;
@@ -89,7 +92,7 @@ public final class MainActivity extends BaseActivity {
 
         viewModel = new ViewModelProvider(
                 this,
-                new MainActivityViewModelFactory(rockyService)
+                new MainActivityViewModelFactory(rockyService, registrationDao)
         ).get(MainActivityViewModel.class);
 
         observeState();
