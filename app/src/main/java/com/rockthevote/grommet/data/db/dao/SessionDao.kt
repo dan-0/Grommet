@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import com.rockthevote.grommet.data.db.model.Session
@@ -17,4 +18,10 @@ interface SessionDao {
     @Transaction
     @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): List<SessionWithRegistrations>
+
+    @Query("DELETE FROM session")
+    suspend fun destroyTable()
+
+    @Insert
+    suspend fun addSession(session: Session)
 }

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +27,11 @@ import com.rockthevote.grommet.data.prefs.PartnerTimeout;
 import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.data.prefs.RegistrationText;
+import com.rockthevote.grommet.ui.MainActivity;
+import com.rockthevote.grommet.ui.SessionViewModel;
 import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.util.ContextUtil;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -155,6 +160,20 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
     }
 
     private void updateSessionData(PartnerNameResponse response) {
+        MainActivity activity = ContextUtil.getMainActivityFromContext(getContext());
+
+        /*
+            Note, activity is nullable, but it should never actually be null as this view
+            is a component of the MainActivity
+         */
+        assert activity != null;
+
+        // The ViewModel is already initialized in the Activity, so just grab it using the activity
+        SessionViewModel sessionViewModel = new ViewModelProvider(
+                activity
+        ).get(SessionViewModel.class);
+
+        sessionViewModel.updatePartnerId(edePartnerId.getText().toString());
 
         // update preferences
         partnerIdPref.set(edePartnerId.getText().toString());

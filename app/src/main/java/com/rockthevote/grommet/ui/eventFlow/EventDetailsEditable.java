@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import com.f2prateek.rx.preferences2.Preference;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
@@ -23,7 +25,10 @@ import com.rockthevote.grommet.data.prefs.DeviceID;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.ui.MainActivity;
+import com.rockthevote.grommet.ui.SessionViewModel;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.util.ContextUtil;
 
 import javax.inject.Inject;
 
@@ -125,6 +130,26 @@ public class EventDetailsEditable extends LinearLayout implements EventFlowPage 
     }
 
     private void updateSessionData() {
+
+        MainActivity activity = ContextUtil.getMainActivityFromContext(getContext());
+
+        /*
+            Note, activity is nullable, but it should never actually be null as this view
+            is a component of the MainActivity
+         */
+        assert activity != null;
+
+        // The ViewModel is already initialized in the Activity, so just grab it using the activity
+        SessionViewModel sessionViewModel = new ViewModelProvider(
+                activity
+        ).get(SessionViewModel.class);
+
+        sessionViewModel.startSession(
+                edeCanvasserName.getText().toString(),
+                edeEventName.getText().toString(),
+                edeEventZip.getText().toString(),
+                edeDeviceId.getText().toString()
+        );
 
         canvasserNamePref.set(edeCanvasserName.getText().toString());
         eventNamePref.set(edeEventName.getText().toString());

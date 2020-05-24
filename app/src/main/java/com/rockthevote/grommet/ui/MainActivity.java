@@ -23,12 +23,14 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
+import com.rockthevote.grommet.util.coroutines.DispatcherProvider;
 
 import java.util.Locale;
 
@@ -72,9 +74,15 @@ public final class MainActivity extends BaseActivity {
 
     @Inject RockyService rockyService;
 
+    @Inject SessionDao sessionDao;
+
+    @Inject DispatcherProvider dispatchers;
+
     private CompositeSubscription subscriptions;
 
     private MainActivityViewModel viewModel;
+
+    private SessionViewModel sessionViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +99,14 @@ public final class MainActivity extends BaseActivity {
                 this,
                 new MainActivityViewModelFactory(rockyService)
         ).get(MainActivityViewModel.class);
+
+        sessionViewModel = new ViewModelProvider(
+                this,
+                new SessionViewModelFactory(
+                        sessionDao,
+                        dispatchers
+                )
+        ).get(SessionViewModel.class);
 
         observeState();
     }
