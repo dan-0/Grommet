@@ -2,15 +2,13 @@ package com.rockthevote.grommet.ui
 
 import androidx.lifecycle.*
 import com.rockthevote.grommet.data.api.RockyService
-import com.rockthevote.grommet.data.api.model.RegistrationResponse
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
-import com.rockthevote.grommet.data.db.model.Registration
+import com.rockthevote.grommet.data.db.model.RockyRequest
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import retrofit2.Response
 import timber.log.Timber
 
 class MainActivityViewModel(
@@ -54,8 +52,13 @@ class MainActivityViewModel(
 
         rockyRequestScope.launch {
 
+            val adapter = Moshi.Builder()
+                .add(KotlinJsonAdapterFactory())
+                .build()
+                .adapter(RockyRequest::class.java)
+
             val requests = loadRequestsFromDb().map {
-                it to RequestBody.create(MediaType.parse("application/json; charset=utf-8"), it.registrationData)
+                it to adapter.fromJson(it.registrationData)
             }
 
             val results = requests.map {
@@ -63,10 +66,15 @@ class MainActivityViewModel(
                 it.first to async { rockyService.register(it.second).toBlocking().value() }
             }
 
-            val successfulRegistrations = results.filter {
+            val successfulRegistrations = results.filter { registrationPair ->
                 runCatching {
-                    !it.second.await().isError
+                    !registrationPair.second.await().isError
                 }.getOrElse {
+                    // Bump the number of upload attempts in the registration
+                    val uploadAttempts = registrationPair.first.uploadAttempts + 1
+                    val updatedRegistration = registrationPair.first.copy(uploadAttempts = uploadAttempts)
+                    registrationDao.update(updatedRegistration)
+
                     Timber.w(it, "Error making registration call")
                     false
                 }

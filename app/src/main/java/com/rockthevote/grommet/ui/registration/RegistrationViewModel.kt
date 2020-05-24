@@ -46,10 +46,11 @@ class RegistrationViewModel(
     private val currentRegistrationData
         get() = _registrationData.value ?: RegistrationData()
 
-    private val _requestAdapter = viewModelScope.async(dispatcherProvider.io) { Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
-        .adapter(RockyRequest::class.java)
+    private val _requestAdapter = viewModelScope.async(dispatcherProvider.io) {
+        Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+            .adapter(RockyRequest::class.java)
     }
 
     fun storeNewRegistrantData(data: NewRegistrantData) {
@@ -115,14 +116,19 @@ class RegistrationViewModel(
                     ),
                     openTrackingId = currentSession.openTrackingId
                 )
-            } ?: SessionData(
-                partnerId = -1,
-                canvasserName = "empty",
-                sourceTrackingId = "empty",
-                partnerTrackingId = "empty",
-                geoLocation = GeoLocation(-1.0, -1.0),
-                openTrackingId = "empty"
-            ) // TODO this is default if a session doesn't exist, probably good to keep it just in case?
+            } ?: run {
+                val exception = IllegalStateException("Empty session during registration")
+                Timber.e(exception)
+
+                SessionData(
+                    partnerId = -1,
+                    canvasserName = "empty",
+                    sourceTrackingId = "empty",
+                    partnerTrackingId = "empty",
+                    geoLocation = GeoLocation(-1.0, -1.0),
+                    openTrackingId = "empty"
+                )
+            }
 
             runCatching {
                 val transformer = RegistrationDataTransformer(currentRegistrationData, sessionData, completionDate)
@@ -137,7 +143,6 @@ class RegistrationViewModel(
                 )
 
                 registrationDao.insert(registration)
-                // TODO Send request data to DB
             }.onSuccess {
                 updateState(RegistrationState.Complete)
             }.onFailure {

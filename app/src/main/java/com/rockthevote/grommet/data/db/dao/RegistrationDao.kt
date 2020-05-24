@@ -1,9 +1,6 @@
 package com.rockthevote.grommet.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.rockthevote.grommet.data.db.model.Registration
 
 @Dao
@@ -16,5 +13,8 @@ interface RegistrationDao {
 
     @Delete
     suspend fun delete(vararg registrations: Registration)
+
+    @Update
+    suspend fun update(registration: Registration)
 }
 

@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 
 /**
  * Entity for registrations in the database. Autogenerates a [registrationId], taking in
- * full json string as [registrationData]
+ * full json string as [registrationData]. Retains [uploadAttempts] for error handling
+ * purposes.
  */
 @Entity(tableName = "registration"//, TODO Readd foreign key requirements
 //        foreignKeys = [ForeignKey(
@@ -23,5 +24,7 @@ data class Registration(
         @ColumnInfo(name = "session_id")
         val sessionId: Long = 0, // todo remove default
         @ColumnInfo(name = "registration_data")
-        val registrationData: String
+        val registrationData: String,
+        @ColumnInfo(name = "upload_attempts")
+        val uploadAttempts: Int = 0
 )
