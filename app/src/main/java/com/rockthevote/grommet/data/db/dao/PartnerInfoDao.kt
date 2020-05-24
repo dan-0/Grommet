@@ -29,7 +29,7 @@ interface PartnerInfoDao {
     fun insertPartnerInfo(partnerInfo: PartnerInfo)
 
     @Query("DELETE FROM partner_info")
-    fun deletePartnerInfo()
+    fun deleteAllPartnerInfo()
 
 
 }

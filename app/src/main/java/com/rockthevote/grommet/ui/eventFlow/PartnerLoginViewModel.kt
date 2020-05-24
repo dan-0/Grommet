@@ -17,7 +17,7 @@ import timber.log.Timber
  * Created by Mechanical Man on 5/16/20.
  */
 class PartnerLoginViewModel(
-        dispatchers: DispatcherProvider = DispatcherProviderImpl(),
+        private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
         private val rockyService: RockyService,
         private val partnerInfoDao: PartnerInfoDao
 ) : ViewModel() {
@@ -38,8 +38,6 @@ class PartnerLoginViewModel(
         Timber.e(throwable)
     }
 
-    private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
-
     fun validatePartnerId(partnerId: Long) {
         updateState(PartnerLoginState.Loading)
 
@@ -49,22 +47,24 @@ class PartnerLoginViewModel(
             updateEffect(PartnerLoginState.Success)
 
         } else {
-            viewModelScope
-            rockyRequestScope.launch {
+            viewModelScope.launch(dispatchers.io+ coroutineExceptionHandler) {
                 runCatching {
                     rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
 
                 }.onSuccess {
-                    if (it.response().isSuccessful) {
-                        partnerInfoDao.deletePartnerInfo()
+                    if (it.response()!!.isSuccessful) {
+                        val response = it.response()!!
+                        val body = response.body()!!
+
+                        partnerInfoDao.deleteAllPartnerInfo()
                         partnerInfoDao.insertPartnerInfo(PartnerInfo(
                                 partnerId,
-                                it.response().body()!!.appVersion().toFloat(),
-                                it.response().body()!!.isValid,
-                                it.response().body()!!.partnerName(),
-                                it.response().body()!!.registrationDeadlineDate(),
-                                it.response().body()!!.registrationNotificationText(),
-                                it.response().body()!!.partnerVolunteerText()
+                                body.appVersion().toFloat(),
+                                body.isValid,
+                                body.partnerName(),
+                                body.registrationDeadlineDate(),
+                                body.registrationNotificationText(),
+                                body.partnerVolunteerText()
                         ))
 
                         updateState(PartnerLoginState.Init)
@@ -86,8 +86,8 @@ class PartnerLoginViewModel(
 
     fun clearPartnerInfo() {
         Timber.d("Deleting partner info")
-        rockyRequestScope.launch {
-            partnerInfoDao.deletePartnerInfo()
+        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            partnerInfoDao.deleteAllPartnerInfo()
         }
     }
 
@@ -101,10 +101,6 @@ class PartnerLoginViewModel(
         _effect.postValue(newEffect)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        rockyRequestScope.cancel()
-    }
 }
 
 class PartnerLoginViewModelFactory(
