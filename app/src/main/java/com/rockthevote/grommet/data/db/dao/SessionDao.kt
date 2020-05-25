@@ -3,6 +3,7 @@ package com.rockthevote.grommet.data.db.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.rockthevote.grommet.data.db.model.Session
 import com.rockthevote.grommet.data.db.relationship.SessionWithRegistrations
 
@@ -20,4 +21,7 @@ interface SessionDao {
     @Transaction
     @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): List<SessionWithRegistrations>
+
+    @Update
+    fun updateSession(session: Session)
 }
