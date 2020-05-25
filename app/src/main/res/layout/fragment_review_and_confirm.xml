@@ -318,10 +318,11 @@
         android:text="@string/voter_agreement_text"
         />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_register"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_marginStart="@dimen/content_margin"
+        android:backgroundTint="@color/colorAccent"
         android:enabled="false"
         android:paddingBottom="@dimen/content_area_padding"
         android:paddingTop="@dimen/content_area_padding"
