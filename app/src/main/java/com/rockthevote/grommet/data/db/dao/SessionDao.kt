@@ -14,6 +14,9 @@ interface SessionDao {
     @Query("SELECT * FROM session")
     fun getAll(): List<Session>
 
+    @Query("SELECT * FROM session LIMIT 1")
+    fun getCurrentSession(): Session?
+
     @Transaction
     @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): List<SessionWithRegistrations>
