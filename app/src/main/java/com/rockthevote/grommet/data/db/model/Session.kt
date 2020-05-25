@@ -12,7 +12,7 @@ import java.util.*
  */
 @Entity(tableName = "session")
 data class Session(
-        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey
         @ColumnInfo(name = "session_id")
         val sessionId: Long = 0,
 
