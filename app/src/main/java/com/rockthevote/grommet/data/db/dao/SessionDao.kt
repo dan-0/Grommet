@@ -1,9 +1,13 @@
 package com.rockthevote.grommet.data.db.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.rockthevote.grommet.data.db.model.Registration
 import com.rockthevote.grommet.data.db.model.Session
+import com.rockthevote.grommet.data.db.relationship.SessionWithPartnerInfo
 import com.rockthevote.grommet.data.db.relationship.SessionWithRegistrations
 
 /**
@@ -19,5 +23,13 @@ interface SessionDao {
 
     @Transaction
     @Query("SELECT * FROM session")
+    fun getSessionWithPartnerInfo(): LiveData<SessionWithPartnerInfo>
+
+    @Transaction
+    @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): List<SessionWithRegistrations>
+
+    @Insert
+    suspend fun insert(vararg registrations: Registration)
+
 }

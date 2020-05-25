@@ -19,20 +19,24 @@ data class Session(
         @ColumnInfo(name = "partner_info_id")
         val partnerInfoId: Long,
 
+        // some combination of canvasser name and epoch string
         @ColumnInfo(name = "source_tracking_id")
         val sourceTrackingId: String,
 
+        // the canvasser zip code is the partner tracking id
         @ColumnInfo(name = "partner_tracking_id")
         val partnerTrackingId: String,
 
         @ColumnInfo(name = "geo_location") val geoLocation: ApiGeoLocation,
 
+        // name of the canvasing event, the location field
         @ColumnInfo(name = "open_tracking_id")
         val openTrackingId: String,
 
         @ColumnInfo(name = "canvasser_name")
         val canvasserName: String,
 
+        // the tablet number
         @ColumnInfo(name = "device_id")
         val deviceId: String,
 
