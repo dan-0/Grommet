@@ -3,7 +3,6 @@ package com.rockthevote.grommet.ui.eventFlow;
 
 import android.app.Activity;
 import android.content.Context;
-import com.google.android.material.textfield.TextInputLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,25 +11,23 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences2.Preference;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.api.RockyService;
-import com.rockthevote.grommet.data.prefs.CanvasserName;
-import com.rockthevote.grommet.data.prefs.DeviceID;
-import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventZip;
-import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.disposables.CompositeDisposable;
+import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
+import timber.log.Timber;
 
 import static com.rockthevote.grommet.data.db.model.SessionStatus.DETAILS_ENTERED;
 import static com.rockthevote.grommet.data.db.model.SessionStatus.PARTNER_UPDATE;
@@ -38,13 +35,8 @@ import static com.rockthevote.grommet.data.db.model.SessionStatus.PARTNER_UPDATE
 
 public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
 
-    @Inject RockyService rockyService;
-
-    @Inject @CanvasserName Preference<String> canvasserNamePref;
-    @Inject @EventName Preference<String> eventNamePref;
-    @Inject @EventZip Preference<String> eventZipPref;
-    @Inject @PartnerName Preference<String> partnerNamePref;
-    @Inject @DeviceID Preference<String> deviceIdPref;
+    @Inject ReactiveLocationProvider reactiveLocationProvider;
+    @Inject SessionDao sessionDao;
 
     @BindView(R.id.ede_canvasser_name) EditText edeCanvasserName;
     @BindView(R.id.ede_event_name) EditText edeEventName;
@@ -58,12 +50,11 @@ public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
     @BindView(R.id.ede_til_device_id) TextInputLayout edeDeviceIdTIL;
     @BindView(R.id.ede_device_id) TextView edeDeviceId;
 
-
-    private CompositeDisposable disposables = new CompositeDisposable();
-
     private ObservableValidator validator;
 
     private EventFlowCallback listener;
+
+    private CanvasserInfoViewModel viewModel;
 
     public EventCanvasserInfo(Context context) {
         this(context, null);
@@ -90,20 +81,37 @@ public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
             ButterKnife.bind(this);
             validator = new ObservableValidator(this, getContext());
 
-            disposables.add(partnerNamePref.asObservable()
-                    .subscribe(name -> edePartnerName.setText(name)));
-
-            resetForm();
         }
+
+        viewModel = new ViewModelProvider(
+                (AppCompatActivity) getContext(),
+                new CanvasserInfoViewModelFactory(sessionDao, reactiveLocationProvider)
+        ).get(CanvasserInfoViewModel.class);
+
+        observeData();
     }
 
-    void resetForm() {
-        //TODO can these be disposables?
-        edeCanvasserName.setText(canvasserNamePref.get());
-        edeEventName.setText(eventNamePref.get());
-        edeEventZip.setText(eventZipPref.get());
-        edeCanvasserName.requestFocus();
-        edeDeviceId.setText(deviceIdPref.get());
+    private void observeData() {
+        viewModel.getCanvasserInfoData().observe(
+                (AppCompatActivity) getContext(), data -> {
+                    edePartnerName.setText(data.getPartnerName());
+                    edeCanvasserName.setText(data.getCanvasserName());
+                    edeEventName.setText(data.getOpenTrackingId());
+                    edeEventZip.setText(data.getPartnerTrackingId());
+                    edeDeviceId.setText(data.getDeviceId());
+                }
+        );
+
+        viewModel.getEffect().observe(
+                (AppCompatActivity) getContext(), effect -> {
+                    if (effect instanceof CanvasserInfoState.Success) {
+                        listener.setState(DETAILS_ENTERED, true);
+                    } else if (effect instanceof CanvasserInfoState.Error) {
+                        //todo anything?
+                        Timber.e("error updating view after updating canvasser info");
+                    }
+                }
+        );
     }
 
     @OnClick(R.id.event_update_partner_id)
@@ -120,26 +128,12 @@ public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
 
         // allow the user to not set a partner ID
         if (validator.validate().toBlocking().single()) {
-            updateSessionData();
-        }
-    }
 
-    private void updateSessionData() {
-
-        canvasserNamePref.set(edeCanvasserName.getText().toString());
-        eventNamePref.set(edeEventName.getText().toString());
-        eventZipPref.set(edeEventZip.getText().toString());
-        deviceIdPref.set(edeDeviceId.getText().toString());
-
-        listener.setState(DETAILS_ENTERED, true);
-
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (!isInEditMode()) {
-            disposables.dispose();
+            viewModel.updateCanvasserInfo(
+                    edeCanvasserName.getText().toString(),
+                    edeEventZip.getText().toString(),
+                    edeEventName.getText().toString(),
+                    edeDeviceId.getText().toString());
         }
     }
 

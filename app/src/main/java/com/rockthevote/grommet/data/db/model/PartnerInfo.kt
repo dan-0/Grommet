@@ -12,9 +12,13 @@ import java.util.*
  */
 @Entity(tableName = "partner_info")
 data class PartnerInfo(
-        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey
         @ColumnInfo(name = "partner_info_id")
         val partnerInfoId: Long = 0,
+
+        // the key to login as this partner
+        @ColumnInfo(name = "partner_id")
+        val partnerId: String,
 
         @ColumnInfo(name = "app_version")
         val appVersion: Float,

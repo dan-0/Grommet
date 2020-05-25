@@ -8,8 +8,6 @@ import com.rockthevote.grommet.data.db.model.PartnerInfo
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -22,9 +20,9 @@ class PartnerLoginViewModel(
         private val partnerInfoDao: PartnerInfoDao
 ) : ViewModel() {
 
-    val partnerInfoId: LiveData<Long> =
+    val partnerInfoId: LiveData<String> =
             Transformations.map(partnerInfoDao.getCurrentPartnerInfo()) { result ->
-                result?.partnerInfoId ?: -1
+                result?.partnerId ?: "-1"
             }
 
     private val _partnerLoginState = MutableLiveData<PartnerLoginState>(PartnerLoginState.Init)
@@ -38,16 +36,16 @@ class PartnerLoginViewModel(
         Timber.e(throwable)
     }
 
-    fun validatePartnerId(partnerId: Long) {
+    fun validatePartnerId(partnerId: String) {
         updateState(PartnerLoginState.Loading)
 
-        if (partnerId == partnerInfoId.value) {
+        if (partnerId.equals(partnerInfoId.value)) {
             // just continue on if the value is the same
             updateState(PartnerLoginState.Init)
             updateEffect(PartnerLoginState.Success)
 
         } else {
-            viewModelScope.launch(dispatchers.io+ coroutineExceptionHandler) {
+            viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
                 runCatching {
                     rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
 
@@ -58,13 +56,13 @@ class PartnerLoginViewModel(
 
                         partnerInfoDao.deleteAllPartnerInfo()
                         partnerInfoDao.insertPartnerInfo(PartnerInfo(
-                                partnerId,
-                                body.appVersion().toFloat(),
-                                body.isValid,
-                                body.partnerName(),
-                                body.registrationDeadlineDate(),
-                                body.registrationNotificationText(),
-                                body.partnerVolunteerText()
+                                partnerId = partnerId,
+                                appVersion = body.appVersion().toFloat(),
+                                isValid = body.isValid,
+                                partnerName = body.partnerName(),
+                                registrationDeadlineDate = body.registrationDeadlineDate(),
+                                registrationNotificationText = body.registrationNotificationText(),
+                                volunteerText = body.partnerVolunteerText()
                         ))
 
                         updateState(PartnerLoginState.Init)

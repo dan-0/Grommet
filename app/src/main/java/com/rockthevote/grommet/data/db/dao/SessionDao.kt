@@ -1,11 +1,7 @@
 package com.rockthevote.grommet.data.db.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
-import com.rockthevote.grommet.data.db.model.Registration
+import androidx.room.*
 import com.rockthevote.grommet.data.db.model.Session
 import com.rockthevote.grommet.data.db.relationship.SessionWithPartnerInfo
 import com.rockthevote.grommet.data.db.relationship.SessionWithRegistrations
@@ -29,7 +25,12 @@ interface SessionDao {
     @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): List<SessionWithRegistrations>
 
-    @Insert
-    suspend fun insert(vararg registrations: Registration)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) // there can be only one
+    suspend fun insert(vararg session: Session)
 
+    @Query("DELETE FROM session")
+    suspend fun clearAllSessionInfo()
+
+    @Update
+    suspend fun update(session: Session)
 }

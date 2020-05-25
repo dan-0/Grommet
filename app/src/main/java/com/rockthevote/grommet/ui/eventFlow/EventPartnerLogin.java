@@ -119,8 +119,8 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
 
         viewModel.getPartnerInfoId().observe(
                 (AppCompatActivity) getContext(), id -> {
-                    if (id != -1) {
-                        edePartnerId.setText(String.valueOf(id));
+                    if (!id.equals("-1")) {
+                        edePartnerId.setText(id);
                     } else {
                         edePartnerId.setText("");
                     }
@@ -135,7 +135,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
         inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
         if (validator.validate().toBlocking().single()) {
-            viewModel.validatePartnerId(Long.parseLong(edePartnerId.getText().toString()));
+            viewModel.validatePartnerId(edePartnerId.getText().toString());
         }
     }
 
