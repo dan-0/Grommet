@@ -8,7 +8,7 @@ import com.rockthevote.grommet.data.db.model.GeoLocation
  *  database entry
  */
 data class SessionData(
-    val partnerId: Int,
+    val partnerId: Long,
     val canvasserName: String,
     val sourceTrackingId: String,
     val partnerTrackingId: String,

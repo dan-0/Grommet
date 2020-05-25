@@ -20,7 +20,7 @@ import rx.Single;
 public interface RockyService {
 
     @POST("voterregistrationrequest")
-    Single<Result<RegistrationResponse>> register(@Body RequestBody rockyRequestBody);
+    Single<Result<RegistrationResponse>> register(@Body RockyRequest rockyRequest);
 
     @GET("partnerIdValidation")
     Single<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);

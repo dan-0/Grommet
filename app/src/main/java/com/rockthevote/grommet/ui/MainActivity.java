@@ -102,7 +102,7 @@ public final class MainActivity extends BaseActivity {
         viewModel.getState().observe(this, mainActivityState -> {
 
             // Reset base states
-            upploadButton.setEnabled(true);
+            upploadButton.setEnabled(false);
             failedRegistrationsContainer.setVisibility(View.GONE);
             failedRegistrations.setText("");
 
@@ -116,6 +116,12 @@ public final class MainActivity extends BaseActivity {
                 );
 
                 pendingRegistrations.setText(pendingUploads);
+
+                if (content.getFailedUploads() > 0 || content.getPendingUploads() > 0) {
+                    upploadButton.setEnabled(true);
+                } else {
+                    upploadButton.setEnabled(false);
+                }
 
                 if (content.getFailedUploads() > 0) {
                     failedRegistrationsContainer.setVisibility(View.VISIBLE);

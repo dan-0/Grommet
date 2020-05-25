@@ -1,20 +1,20 @@
 package com.rockthevote.grommet.data.db.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.rockthevote.grommet.data.db.model.Registration
 
 @Dao
 interface RegistrationDao {
     @Query("SELECT * FROM registration")
-    fun getAll(): List<Registration>
+    suspend fun getAll(): List<Registration>
 
     @Insert
-    fun insert(vararg registrations: Registration)
+    suspend fun insert(vararg registrations: Registration)
 
     @Delete
-    fun delete(vararg registrations: Registration)
+    suspend fun delete(vararg registrations: Registration)
+
+    @Update
+    suspend fun update(registration: Registration)
 }
 
