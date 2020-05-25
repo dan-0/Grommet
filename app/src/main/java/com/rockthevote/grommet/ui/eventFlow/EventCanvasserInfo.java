@@ -36,7 +36,7 @@ import static com.rockthevote.grommet.data.db.model.SessionStatus.DETAILS_ENTERE
 import static com.rockthevote.grommet.data.db.model.SessionStatus.PARTNER_UPDATE;
 
 
-public class EventDetailsEditable extends LinearLayout implements EventFlowPage {
+public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
 
     @Inject RockyService rockyService;
 
@@ -65,18 +65,18 @@ public class EventDetailsEditable extends LinearLayout implements EventFlowPage 
 
     private EventFlowCallback listener;
 
-    public EventDetailsEditable(Context context) {
+    public EventCanvasserInfo(Context context) {
         this(context, null);
     }
 
-    public EventDetailsEditable(Context context, AttributeSet attrs) {
+    public EventCanvasserInfo(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public EventDetailsEditable(Context context, AttributeSet attrs, int defStyleAttr) {
+    public EventCanvasserInfo(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        LayoutInflater.from(context).inflate(R.layout.event_details_editable, this);
+        LayoutInflater.from(context).inflate(R.layout.event_canvasser_info, this);
 
         if (!isInEditMode()) {
             Injector.obtain(context).inject(this);

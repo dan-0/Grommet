@@ -1,7 +1,7 @@
 package com.rockthevote.grommet.ui;
 
 
-import com.rockthevote.grommet.ui.eventFlow.EventDetailsEditable;
+import com.rockthevote.grommet.ui.eventFlow.EventCanvasserInfo;
 import com.rockthevote.grommet.ui.eventFlow.EventFlowWizard;
 import com.rockthevote.grommet.ui.eventFlow.EventPartnerLogin;
 import com.rockthevote.grommet.ui.eventFlow.SessionProgressDialogFragment;
@@ -37,7 +37,7 @@ import dagger.Provides;
                 ReviewAndConfirmFragment.class,
                 AddressView.class,
                 NameView.class,
-                EventDetailsEditable.class,
+                EventCanvasserInfo.class,
                 SessionTimeTracking.class,
                 EventFlowWizard.class,
                 SessionSummary.class,
