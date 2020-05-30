@@ -19,18 +19,15 @@ interface SessionDao {
 
     @Transaction
     @Query("SELECT * FROM session")
-    fun getSessionWithPartnerInfo(): LiveData<SessionWithPartnerInfo>
+    fun getSessionWithPartnerInfo(): LiveData<SessionWithPartnerInfo?>
 
     @Transaction
     @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): List<SessionWithRegistrations>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) // there can be only one
-    suspend fun insert(vararg session: Session)
+    @Insert
+    fun insert(vararg session: Session)
 
     @Query("DELETE FROM session")
-    suspend fun clearAllSessionInfo()
-
-    @Update
-    suspend fun update(session: Session)
+    fun clearAllSessionInfo()
 }

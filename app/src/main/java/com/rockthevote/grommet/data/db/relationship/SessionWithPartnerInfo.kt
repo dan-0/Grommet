@@ -17,5 +17,5 @@ data class SessionWithPartnerInfo(
                 parentColumn = "partner_info_id",
                 entityColumn = "partner_info_id"
         )
-        val partnerInfo: PartnerInfo
+        val partnerInfo: PartnerInfo?
 )

@@ -25,14 +25,18 @@ class CanvasserInfoViewModel(
 ) : ViewModel() {
 
     val canvasserInfoData = Transformations.map(sessionDao.getSessionWithPartnerInfo()) { result ->
-        CanvasserInfoData(
-                result.partnerInfo.partnerInfoId,
-                result.partnerInfo.partnerName,
-                result.session?.canvasserName ?: "",
-                result.session?.openTrackingId ?: "",
-                result.session?.partnerTrackingId ?: "",
-                result.session?.deviceId ?: ""
-        )
+        result?.let {
+            CanvasserInfoData(
+                    result.partnerInfo?.partnerInfoId ?: 0,
+                    result.partnerInfo?.partnerName ?: "",
+                    result.session?.canvasserName ?: "",
+                    result.session?.openTrackingId ?: "",
+                    result.session?.partnerTrackingId ?: "",
+                    result.session?.deviceId ?: ""
+            )
+        } ?: run {
+            CanvasserInfoData()
+        }
     }
 
     private val _effect = LiveEvent<CanvasserInfoState.Effect?>()
@@ -51,28 +55,39 @@ class CanvasserInfoViewModel(
 
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
 
-            runCatching {
-                val location: Location = reactiveLocationProvider.lastKnownLocation.toBlocking().first()
+            val data = canvasserInfoData.value ?: CanvasserInfoData()
 
-                sessionDao.clearAllSessionInfo()
-                sessionDao.insert(Session(
-                        partnerInfoId = canvasserInfoData.value?.partnerInfoId ?: 0,
-                        canvasserName = canvasserName,
-                        sourceTrackingId = canvasserName + Calendar.getInstance().timeInMillis,
-                        partnerTrackingId = partnerTrackingId,
-                        geoLocation = ApiGeoLocation.builder()
-                                .latitude(location.latitude)
-                                .longitude(location.longitude)
-                                .build(),
-                        openTrackingId = openTrackingId,
-                        deviceId = deviceId
-                )
-                )
-            }.onSuccess {
+            if (canvasserName == data.canvasserName
+                    && partnerTrackingId == data.partnerTrackingId
+                    && openTrackingId == data.openTrackingId
+                    && deviceId == data.deviceId
+            ) {
+                // nothing changed, don't update the database, just continue
                 updateEffect(CanvasserInfoState.Success)
-            }.onFailure {
-                Timber.d("failure updating canvasser info")
-                updateEffect(CanvasserInfoState.Error)
+            } else {
+                runCatching {
+                    val location: Location = reactiveLocationProvider.lastKnownLocation.toBlocking().first()
+
+                    sessionDao.clearAllSessionInfo()
+                    sessionDao.insert(Session(
+                            partnerInfoId = canvasserInfoData.value?.partnerInfoId ?: 0,
+                            canvasserName = canvasserName,
+                            sourceTrackingId = canvasserName + Calendar.getInstance().timeInMillis,
+                            partnerTrackingId = partnerTrackingId,
+                            geoLocation = ApiGeoLocation.builder()
+                                    .latitude(location.latitude)
+                                    .longitude(location.longitude)
+                                    .build(),
+                            openTrackingId = openTrackingId,
+                            deviceId = deviceId
+                    )
+                    )
+                }.onSuccess {
+                    updateEffect(CanvasserInfoState.Success)
+                }.onFailure {
+                    Timber.d("failure updating canvasser info")
+                    updateEffect(CanvasserInfoState.Error)
+                }
             }
 
         }
