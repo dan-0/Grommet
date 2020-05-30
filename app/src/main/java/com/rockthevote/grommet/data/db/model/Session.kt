@@ -62,6 +62,9 @@ data class Session(
         @ColumnInfo(name = "drivers_license_count")
         val driversLicenseCount: Int = 0,
 
+        @ColumnInfo(name = "ssn_count")
+        val ssnCount: Int = 0,
+
         @ColumnInfo(name = "clock_in_time")
         val clockInTime: Date? = null,
 

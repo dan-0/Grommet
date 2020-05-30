@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,36 +16,27 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
-import com.rockthevote.grommet.data.prefs.CanvasserName;
-import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
-import com.rockthevote.grommet.data.prefs.DeviceID;
-import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventZip;
-import com.rockthevote.grommet.data.prefs.PartnerId;
-import com.rockthevote.grommet.data.prefs.PartnerName;
-import com.rockthevote.grommet.data.prefs.PartnerTimeout;
 import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.disposables.CompositeDisposable;
-import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_IN;
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_OUT;
 import static com.rockthevote.grommet.data.db.model.SessionStatus.NEW_SESSION;
 
 public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
-    @Inject ReactiveLocationProvider locationProvider;
 
-    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
+    @Inject SessionDao sessionDao;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.ed_event_name) TextView edEventName;
@@ -58,17 +48,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @BindView(R.id.session_progress_button) Button sessionProgressButton;
     @BindView(R.id.ed_device_id) TextView edDeviceId;
 
-    @Inject @CanvasserName Preference<String> canvasserNamePref;
-    @Inject @EventName Preference<String> eventNamePref;
-    @Inject @EventZip Preference<String> eventZipPref;
-    @Inject @PartnerId Preference<String> partnerIdPref;
-    @Inject @PartnerName Preference<String> partnerNamePref;
-    @Inject @DeviceID Preference<String> deviceIdPref;
-    @Inject @PartnerTimeout Preference<Long> partnerTimeoutPref;
-
-    private CompositeDisposable disposables = new CompositeDisposable();
-
     private EventFlowCallback listener;
+
+    private SessionTimeTrackingViewModel viewModel;
 
     public SessionTimeTracking(Context context) {
         this(context, null);
@@ -93,30 +75,27 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
             ButterKnife.bind(this);
-
-            disposables.add(canvasserNamePref.asObservable()
-                    .subscribe(name -> edCanvasserName.setText(name)));
-
-            disposables.add(eventNamePref.asObservable()
-                    .subscribe(name -> edEventName.setText(name)));
-
-            disposables.add(eventZipPref.asObservable()
-                    .subscribe(name -> edEventZip.setText(name)));
-
-            disposables.add(partnerNamePref.asObservable()
-                    .subscribe(name -> edPartnerName.setText(name)));
-
-            disposables.add(deviceIdPref.asObservable()
-                    .subscribe(name -> edDeviceId.setText(name)));
         }
+
+        viewModel = new ViewModelProvider(
+                (AppCompatActivity) getContext(),
+                new SessionTimeTrackingViewModelFactory(sessionDao)
+        ).get(SessionTimeTrackingViewModel.class);
+
+        observeData();
+    }
+
+    private void observeData(){
+
+        viewModel.getSessionData().observe(
+                (AppCompatActivity) getContext(), sessionWithRegistrations -> {
+
+                });
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (!isInEditMode()) {
-            disposables.dispose();
-        }
     }
 
     @Override
