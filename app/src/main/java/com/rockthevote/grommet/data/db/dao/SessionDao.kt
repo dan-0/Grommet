@@ -19,6 +19,6 @@ interface SessionDao {
     @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): List<SessionWithRegistrations>
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     fun updateSession(session: Session)
 }
