@@ -29,7 +29,7 @@ public class EventDetailFlowAdapter extends PagerAdapter {
                 view = new EventPartnerLogin(context);
                 break;
             case 1:
-                view = new EventDetailsEditable(context);
+                view = new EventCanvasserInfo(context);
                 break;
             case 2:
                 view = new SessionTimeTracking(context);
@@ -38,7 +38,7 @@ public class EventDetailFlowAdapter extends PagerAdapter {
                 view = new SessionSummary(context);
                 break;
             default:
-                view = new EventDetailsEditable(context);
+                view = new EventCanvasserInfo(context);
                 break;
         }
 

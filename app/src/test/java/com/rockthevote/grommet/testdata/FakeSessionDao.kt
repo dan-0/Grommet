@@ -20,6 +20,14 @@ class FakeSessionDao(
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun insert(vararg session: Session) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun clearAllSessionInfo() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun updateSession(session: Session) {
         _updatedSessions.add(session)
     }

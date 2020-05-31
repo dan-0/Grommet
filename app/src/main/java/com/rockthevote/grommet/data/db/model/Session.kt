@@ -2,7 +2,6 @@ package com.rockthevote.grommet.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.rockthevote.grommet.data.api.model.ApiGeoLocation
 import java.util.*
@@ -19,20 +18,24 @@ data class Session(
         @ColumnInfo(name = "partner_info_id")
         val partnerInfoId: Long,
 
+        // some combination of canvasser name and epoch string
         @ColumnInfo(name = "source_tracking_id")
         val sourceTrackingId: String,
 
+        // the canvasser zip code is the partner tracking id
         @ColumnInfo(name = "partner_tracking_id")
         val partnerTrackingId: String,
 
         @ColumnInfo(name = "geo_location") val geoLocation: ApiGeoLocation,
 
+        // name of the canvasing event, the location field
         @ColumnInfo(name = "open_tracking_id")
         val openTrackingId: String,
 
         @ColumnInfo(name = "canvasser_name")
         val canvasserName: String,
 
+        // the tablet number
         @ColumnInfo(name = "device_id")
         val deviceId: String,
 
@@ -67,11 +70,11 @@ data class Session(
         val emailCount: Int = 0,
 
         @ColumnInfo(name = "clock_in_time")
-        val clockInTime: Date,
+        val clockInTime: Date? = null,
 
         @ColumnInfo(name = "clock_out_time")
-        val clockOutTime: Date,
+        val clockOutTime: Date? = null,
 
         @ColumnInfo(name = "session_status")
-        val sessionStatus: SessionStatus
+        val sessionStatus: SessionStatus = SessionStatus.PARTNER_UPDATE
 )

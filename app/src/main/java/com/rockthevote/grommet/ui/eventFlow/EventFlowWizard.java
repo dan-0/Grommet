@@ -76,7 +76,6 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
             case SESSION_CLEARED:
                 // dummy state to let us clear entry fields in the editable page
                 viewPager.setCurrentItem(1, smoothScroll);
-                ((EventDetailsEditable) adapter.getPageAtPosition(1)).resetForm();
                 break;
             case NEW_SESSION:
                 // show the event details editable screen
