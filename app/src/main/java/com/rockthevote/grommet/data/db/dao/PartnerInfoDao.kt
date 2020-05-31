@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Transaction
 import com.rockthevote.grommet.data.db.model.PartnerInfo
-import com.rockthevote.grommet.data.db.relationship.PartnerInfoWithSessions
+import com.rockthevote.grommet.data.db.relationship.PartnerInfoWithSession
 
 /**
  * Created by Mechanical Man on 4/18/20.
@@ -22,7 +22,7 @@ interface PartnerInfoDao {
 
     @Transaction
     @Query("SELECT * FROM partner_info")
-    fun getPartnerInfoWithSessions(): List<PartnerInfoWithSessions>
+    fun getPartnerInfoWithSession(): LiveData<PartnerInfoWithSession?>
 
     @Insert(onConflict = IGNORE)
     fun insertPartnerInfo(partnerInfo: PartnerInfo)

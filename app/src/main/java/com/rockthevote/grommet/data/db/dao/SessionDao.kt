@@ -1,9 +1,7 @@
 package com.rockthevote.grommet.data.db.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.rockthevote.grommet.data.db.model.Session
-import com.rockthevote.grommet.data.db.relationship.SessionWithPartnerInfo
 import com.rockthevote.grommet.data.db.relationship.SessionWithRegistrations
 
 /**
@@ -16,10 +14,6 @@ interface SessionDao {
 
     @Query("SELECT * FROM session LIMIT 1")
     fun getCurrentSession(): Session?
-
-    @Transaction
-    @Query("SELECT * FROM session")
-    fun getSessionWithPartnerInfo(): LiveData<SessionWithPartnerInfo?>
 
     @Transaction
     @Query("SELECT * FROM session")
