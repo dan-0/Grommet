@@ -42,11 +42,6 @@ data class Session(
         @ColumnInfo(name = "abandoned_count")
         val abandonedCount: Int = 0,
 
-        /**
-         *         TODO do we even need this if we can just count the number in the registration table?
-         *         probably a good idea to keep it since registrations can be uploaded and it would mess the count
-         *         if the clock in/out gets sent after a registration gets sent
-         */
         @ColumnInfo(name = "registration_count")
         val registrationCount: Int = 0,
 
@@ -61,6 +56,18 @@ data class Session(
          */
         @ColumnInfo(name = "drivers_license_count")
         val driversLicenseCount: Int = 0,
+
+        /**
+         * Number of registrants that provided SSN info during a session
+         */
+        @ColumnInfo(name = "ssn_count")
+        val ssnCount: Int = 0,
+
+        /**
+         * Number of registrants that opted in to receiving emails
+         */
+        @ColumnInfo(name = "email_count")
+        val emailCount: Int = 0,
 
         @ColumnInfo(name = "clock_in_time")
         val clockInTime: Date? = null,

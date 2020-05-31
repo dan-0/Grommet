@@ -24,4 +24,7 @@ interface SessionDao {
 
     @Query("DELETE FROM session")
     fun clearAllSessionInfo()
+
+    @Update
+    fun updateSession(session: Session)
 }
