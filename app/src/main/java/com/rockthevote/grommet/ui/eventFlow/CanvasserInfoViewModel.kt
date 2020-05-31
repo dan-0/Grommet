@@ -43,7 +43,6 @@ class CanvasserInfoViewModel(
     val effect: LiveData<CanvasserInfoState.Effect?> = _effect
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        // TODO Should we handle this another way? Is it needed?
         Timber.e(throwable)
     }
 

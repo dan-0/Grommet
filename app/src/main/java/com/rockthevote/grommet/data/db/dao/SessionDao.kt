@@ -25,7 +25,7 @@ interface SessionDao {
     @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): List<SessionWithRegistrations>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg session: Session)
 
     @Query("DELETE FROM session")
