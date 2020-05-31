@@ -1,12 +1,14 @@
 package com.rockthevote.grommet.ui.eventFlow
 
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
+import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * Created by Mechanical Man on 5/30/20.
@@ -16,6 +18,13 @@ class SessionTimeTrackingViewModel(
         private val partnerInfoDao: PartnerInfoDao,
         private val sessionDao: SessionDao
 ) : ViewModel() {
+
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e(throwable)
+    }
+
+    private val _effect = LiveEvent<SessionSummaryState.Effect?>()
+    val effect: LiveData<SessionSummaryState.Effect?> = _effect
 
     val sessionData = Transformations.map(partnerInfoDao.getPartnerInfoWithSessionAndRegistrations()) { result ->
         result?.let{
@@ -44,7 +53,20 @@ class SessionTimeTrackingViewModel(
         }
     }
 
+    fun clearSession() {
+        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            sessionDao.clearAllSessionInfo()
+            // TODO listen for return value and set error state if it fails?
 
+            updateEffect(SessionSummaryState.Cleared)
+        }
+    }
+
+
+    private fun updateEffect(newEffect: SessionSummaryState.Effect) {
+        Timber.d("Handling new effect: $newEffect")
+        _effect.postValue(newEffect)
+    }
 }
 
 class SessionTimeTrackingViewModelFactory(

@@ -109,7 +109,6 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
             case CLOCKED_OUT:
                 // show session summary
                 viewPager.setCurrentItem(3, smoothScroll);
-                ((SessionSummary) adapter.getPageAtPosition(3)).updateUI();
                 break;
         }
 

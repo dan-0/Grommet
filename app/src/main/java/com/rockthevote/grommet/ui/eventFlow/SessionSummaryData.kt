@@ -19,5 +19,6 @@ data class SessionSummaryData(
         val totalRegistrations: Int = 0,
         val abandonedRegistrations: Int = 0,
         val registrations: List<Registration?> = emptyList(),
-        val clockInTime: Date? = null
+        val clockInTime: Date? = null,
+        val clockOutTime: Date? = null
 )
