@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.eventFlow
 
 import com.rockthevote.grommet.data.db.model.Registration
+import java.util.*
 
 /**
  * Created by Mechanical Man on 5/30/20.
@@ -15,8 +16,8 @@ data class SessionSummaryData(
         val dlnCount: Int = 0,
         val ssnCount: Int = 0,
         val emailOptInCount: Int = 0,
-        val smsOptInCount: Int = 0,
         val totalRegistrations: Int = 0,
         val abandonedRegistrations: Int = 0,
-        val registrations: List<Registration> = emptyList()
+        val registrations: List<Registration?> = emptyList(),
+        val clockInTime: Date? = null
 )

@@ -1,20 +1,22 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
+import com.rockthevote.grommet.util.Strings;
 
 import javax.inject.Inject;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -26,7 +28,8 @@ import butterknife.Optional;
 
 public class SessionProgressDialogFragment extends DialogFragment {
 
-    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
+    @Inject PartnerInfoDao partnerInfoDao;
+    @Inject SessionDao sessionDao;
 
     // Total Counts
     @BindView(R.id.summary_total_registrations) TextView totalRegistrations;
@@ -42,6 +45,8 @@ public class SessionProgressDialogFragment extends DialogFragment {
     @BindView(R.id.summary_email_opt_in_percentage) TextView percentEmailOptIn;
     @BindView(R.id.summary_sms_opt_in_percentage) TextView percentSMSOptIn;
 
+    private SessionTimeTrackingViewModel viewModel;
+
     static SessionProgressDialogFragment newInstance() {
         return new SessionProgressDialogFragment();
     }
@@ -50,6 +55,12 @@ public class SessionProgressDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector.obtain(getContext()).inject(this);
+
+        viewModel = new ViewModelProvider(this,
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao)
+        ).get(SessionTimeTrackingViewModel.class);
+
+        observeData();
     }
 
     @Nullable
@@ -63,13 +74,34 @@ public class SessionProgressDialogFragment extends DialogFragment {
         }
 
         ButterKnife.bind(this, view);
-        updateView();
-
         return view;
     }
 
-    public void updateView() {
-        // update count totals
+
+    private void observeData() {
+        viewModel.getSessionData().observe(this, data -> {
+            // update count totals
+            totalRegistrations.setText(String.valueOf(data.getTotalRegistrations()));
+            totalAbandoned.setText(String.valueOf(data.getAbandonedRegistrations()));
+            totalDLN.setText(String.valueOf(data.getDlnCount()));
+            totalSSN.setText(String.valueOf(data.getSsnCount()));
+            totalEmailOptIn.setText(String.valueOf(data.getEmailOptInCount()));
+            totalSMSOptIn.setText(String.valueOf(data.getSmsCount()));
+
+            // update percentages
+            double totalReg = data.getTotalRegistrations() * 1.0;
+
+            if (totalReg > 0) {
+                percentDLN.setText(
+                        Strings.formatNumberAsPercentage(data.getDlnCount() / totalReg));
+                percentSSN.setText(
+                        Strings.formatNumberAsPercentage(data.getSsnCount() / totalReg));
+                percentEmailOptIn.setText(
+                        Strings.formatNumberAsPercentage(data.getEmailOptInCount() / totalReg));
+                percentSMSOptIn.setText(
+                        Strings.formatNumberAsPercentage(data.getSmsCount() / totalReg));
+            }
+        });
 
     }
 

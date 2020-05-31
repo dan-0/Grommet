@@ -18,9 +18,11 @@ import android.widget.TextView;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
 import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
+import com.rockthevote.grommet.util.Dates;
 
 import javax.inject.Inject;
 
@@ -36,6 +38,7 @@ import static com.rockthevote.grommet.data.db.model.SessionStatus.NEW_SESSION;
 
 public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
+    @Inject PartnerInfoDao partnerInfoDao;
     @Inject SessionDao sessionDao;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
@@ -79,7 +82,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new SessionTimeTrackingViewModelFactory(sessionDao)
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();
@@ -88,8 +91,16 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     private void observeData(){
 
         viewModel.getSessionData().observe(
-                (AppCompatActivity) getContext(), sessionWithRegistrations -> {
+                (AppCompatActivity) getContext(), data -> {
+                    edCanvasserName.setText(data.getCanvasserName());
+                    edEventName.setText(data.getOpenTrackingId());
+                    edEventZip.setText(data.getPartnerTrackingId());
+                    edPartnerName.setText(data.getPartnerName());
+                    edDeviceId.setText(data.getDeviceId());
 
+                    if (data.getClockInTime() != null) {
+                        clockInTime.setText(Dates.formatAs_LocalTimeOfDay(data.getClockInTime()));
+                    }
                 });
     }
 

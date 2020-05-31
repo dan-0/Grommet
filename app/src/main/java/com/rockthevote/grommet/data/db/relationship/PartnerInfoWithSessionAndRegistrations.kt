@@ -8,7 +8,7 @@ import com.rockthevote.grommet.data.db.model.Session
 /**
  * Created by Mechanical Man on 5/30/20.
  */
-data class SessionWithRegistrationsAndPartnerInfo(
+data class PartnerInfoWithSessionAndRegistrations(
         @Embedded val partnerInfo: PartnerInfo?,
         @Relation(
                 entity = Session::class,

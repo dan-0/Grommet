@@ -4,7 +4,7 @@ import androidx.room.*
 import androidx.lifecycle.LiveData
 import com.rockthevote.grommet.data.db.model.Session
 import com.rockthevote.grommet.data.db.relationship.SessionWithRegistrations
-import com.rockthevote.grommet.data.db.relationship.SessionWithRegistrationsAndPartnerInfo
+import com.rockthevote.grommet.data.db.relationship.PartnerInfoWithSessionAndRegistrations
 
 /**
  * Created by Mechanical Man on 4/18/20.
@@ -23,10 +23,6 @@ interface SessionDao {
     @Transaction
     @Query("SELECT * FROM session")
     fun getSessionWithRegistrations(): LiveData<SessionWithRegistrations?>
-
-    @Transaction
-    @Query("SELECT * FROM session LIMIT 1")
-    fun getSessionWithRegistrationsAndPartnerInfo(): LiveData<SessionWithRegistrationsAndPartnerInfo?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg session: Session)
