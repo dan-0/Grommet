@@ -4,6 +4,7 @@ import android.location.Location
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.api.model.ApiGeoLocation
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.Session
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
@@ -20,11 +21,12 @@ import java.util.*
 
 class CanvasserInfoViewModel(
         private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
+        private val partnerInfoDao: PartnerInfoDao,
         private val sessionDao: SessionDao,
         private val reactiveLocationProvider: ReactiveLocationProvider
 ) : ViewModel() {
 
-    val canvasserInfoData = Transformations.map(sessionDao.getSessionWithPartnerInfo()) { result ->
+    val canvasserInfoData = Transformations.map(partnerInfoDao.getPartnerInfoWithSession()) { result ->
         result?.let {
             CanvasserInfoData(
                     result.partnerInfo?.partnerInfoId ?: 0,
@@ -43,7 +45,6 @@ class CanvasserInfoViewModel(
     val effect: LiveData<CanvasserInfoState.Effect?> = _effect
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        // TODO Should we handle this another way? Is it needed?
         Timber.e(throwable)
     }
 
@@ -100,6 +101,7 @@ class CanvasserInfoViewModel(
 }
 
 class CanvasserInfoViewModelFactory(
+        private val partnerInfoDao: PartnerInfoDao,
         private val sessionDao: SessionDao,
         private val reactiveLocationProvider: ReactiveLocationProvider
 ) : ViewModelProvider.Factory {
@@ -107,6 +109,10 @@ class CanvasserInfoViewModelFactory(
         val dispatchers = DispatcherProviderImpl()
 
         @Suppress("UNCHECKED_CAST")
-        return CanvasserInfoViewModel(dispatchers, sessionDao, reactiveLocationProvider) as T
+        return CanvasserInfoViewModel(
+                dispatchers,
+                partnerInfoDao,
+                sessionDao,
+                reactiveLocationProvider) as T
     }
 }

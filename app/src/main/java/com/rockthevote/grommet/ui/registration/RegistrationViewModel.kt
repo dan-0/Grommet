@@ -15,10 +15,10 @@ import com.rockthevote.grommet.ui.registration.review.ReviewData
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import com.rockthevote.grommet.util.extensions.toReviewAndConfirmStateData
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -134,6 +134,9 @@ class RegistrationViewModel(
                 val transformer = RegistrationDataTransformer(currentRegistrationData, sessionData, completionDate)
                 val requestData = transformer.transform()
 
+                incrementSessionCounters(currentRegistrationData)
+
+
                 val adapter = requestAdapter()
 
                 val rockyRequestJson = adapter.toJson(requestData)
@@ -161,6 +164,73 @@ class RegistrationViewModel(
                     else -> throw it
                 }
             }
+        }
+    }
+
+    private suspend fun incrementSessionCounters(registrationData: RegistrationData) {
+        coroutineScope {
+            launch {
+                val session = sessionDao.getCurrentSession() ?: run {
+                    val exception = IllegalStateException("Session was unexpectedly empty")
+                    Timber.e(exception)
+                    return@launch
+                }
+
+                val registrationCount = session.registrationCount + 1
+
+                var smsCount = session.smsCount
+                var dlCount = session.driversLicenseCount
+                var ssnCount = session.ssnCount
+                var emailCount = session.emailCount
+
+
+                registrationData.additionalInfoData?.let {
+                    if (it.partnerSmsOptIn) {
+                        smsCount++
+                    }
+
+                    // DL Count
+                    if (!it.pennDotNumber.isNullOrEmpty()) {
+                        dlCount++
+                    }
+
+                    // SSN Count
+                    if (!it.ssnLastFour.isNullOrEmpty()) {
+                        ssnCount++
+                    }
+
+                    // Email Count
+                    if (it.partnerEmailOptIn) {
+                        emailCount++
+                    }
+                }
+
+                val newSession = session.copy(
+                    registrationCount = registrationCount,
+                    smsCount = smsCount,
+                    driversLicenseCount = dlCount,
+                    ssnCount = ssnCount,
+                    emailCount =  emailCount
+                )
+
+                sessionDao.updateSession(newSession)
+            }
+        }
+    }
+
+    fun incrementAbandonedCount() {
+        viewModelScope.launch(dispatcherProvider.io) {
+            val session = sessionDao.getCurrentSession() ?: run {
+                val exception = IllegalStateException("Session was unexpectedly empty")
+                Timber.e(exception)
+                return@launch
+            }
+
+            val newCount = session.abandonedCount + 1
+
+            val newSession = session.copy(abandonedCount = newCount)
+
+            sessionDao.updateSession(newSession)
         }
     }
 

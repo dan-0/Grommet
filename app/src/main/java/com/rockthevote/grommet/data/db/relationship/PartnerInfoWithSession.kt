@@ -8,11 +8,11 @@ import com.rockthevote.grommet.data.db.model.Session
 /**
  * Created by Mechanical Man on 5/3/20.
  */
-data class PartnerInfoWithSessions(
-        @Embedded val partnerInfo: PartnerInfo,
+data class PartnerInfoWithSession(
+        @Embedded val partnerInfo: PartnerInfo?,
         @Relation(
                 parentColumn = "partner_info_id",
                 entityColumn = "partner_info_id"
         )
-        val sessions: List<Session>
+        val session: Session?
 )

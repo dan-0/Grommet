@@ -3,6 +3,8 @@ package com.rockthevote.grommet.ui.registration;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import com.google.android.material.appbar.AppBarLayout;
+
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.widget.Toolbar;
 import android.transition.Slide;
@@ -17,6 +19,8 @@ import android.widget.LinearLayout;
 import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.dao.RegistrationDao;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.ui.BaseActivity;
@@ -44,6 +48,10 @@ public class RegistrationActivity extends BaseActivity {
     @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
     @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
+    @Inject RegistrationDao registrationDao;
+
+    @Inject SessionDao sessionDao;
+
     @BindView(R.id.appbar) AppBarLayout appbar;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.viewPager) ViewPager viewPager;
@@ -61,6 +69,8 @@ public class RegistrationActivity extends BaseActivity {
         LocaleUtils.updateConfig(this);
     }
 
+    private RegistrationViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // inside your activity (if you did not enable transitions in your theme)
@@ -70,6 +80,11 @@ public class RegistrationActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
         Injector.obtain(this).inject(this);
+
+        viewModel = new ViewModelProvider(
+                this,
+                new RegistrationViewModelFactory(registrationDao, sessionDao)
+        ).get(RegistrationViewModel.class);
 
         ViewGroup contentView = getContentView();
         getLayoutInflater().inflate(R.layout.activity_registration, contentView);
@@ -157,8 +172,7 @@ public class RegistrationActivity extends BaseActivity {
         new AlertDialog.Builder(this)
                 .setMessage(R.string.cancel_dialog_message)
                 .setPositiveButton(R.string.dialog_yes, ((dialog, i) -> {
-                    // set the application to abandoned so it gets cleaned up
-
+                    viewModel.incrementAbandonedCount();
 
                     LocaleUtils.setLocale(new Locale("en"));
                     finish();

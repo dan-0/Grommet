@@ -48,6 +48,8 @@ class RegistrationViewModelTest {
         registrationCount = 0,
         smsCount = 0,
         driversLicenseCount = 0,
+        ssnCount = 0,
+        emailCount = 0,
         clockInTime = Date(),
         clockOutTime = Date(),
         sessionStatus = SessionStatus.CLOCKED_IN
@@ -57,7 +59,7 @@ class RegistrationViewModelTest {
 
     private lateinit var fakeRegistrationDao: FakeRegistrationDao
 
-    private lateinit var fakeSessionDao: SessionDao
+    private lateinit var fakeSessionDao: FakeSessionDao
 
     private lateinit var ut: RegistrationViewModel
 
@@ -170,6 +172,20 @@ class RegistrationViewModelTest {
 
         assertEquals(1, timesInsertCalled)
         assert(currentRegistrationState is RegistrationState.Complete)
+
+        // ensure session was updated
+        val updatedSessions = fakeSessionDao.updatedSessions
+        val updatedSession = updatedSessions.first()
+
+        assertEquals(1, updatedSessions.size)
+
+        // Expected results based on default values of Fake.ADDITIONAL_INFO_DATA
+        assertEquals(1, updatedSession.registrationCount)
+        assertEquals(1, updatedSession.driversLicenseCount)
+        assertEquals(1, updatedSession.ssnCount)
+        assertEquals(0, updatedSession.smsCount)
+        assertEquals(0, updatedSession.emailCount)
+        assertEquals(0, updatedSession.abandonedCount)
     }
 
     @Test
@@ -194,6 +210,19 @@ class RegistrationViewModelTest {
         ut.completeRegistration(badRegistrationData.reviewData!!)
 
         assert(currentRegistrationState is RegistrationState.RegistrationError)
+    }
+
+    @Test
+    fun `incrementAbandonedCount happy path`() {
+        ut.incrementAbandonedCount()
+
+        // ensure session was updated
+        val updatedSessions = fakeSessionDao.updatedSessions
+        val updatedSession = updatedSessions.first()
+
+        assertEquals(1, updatedSessions.size)
+
+        assertEquals(1, updatedSession.abandonedCount)
     }
 
     private fun getExpectedRequestJson(
