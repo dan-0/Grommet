@@ -1,20 +1,26 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 import android.content.Context;
-import android.os.Handler;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RockyService;
+import com.rockthevote.grommet.data.db.dao.RegistrationDao;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
+import com.rockthevote.grommet.ui.MainActivityViewModel;
+import com.rockthevote.grommet.ui.MainActivityViewModelFactory;
 
+import javax.inject.Inject;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.rockthevote.grommet.data.db.model.SessionStatus.DETAILS_ENTERED;
 
 /**
  * Created by Mechanical Man, LLC on 7/19/17. Grommet
@@ -22,9 +28,15 @@ import static com.rockthevote.grommet.data.db.model.SessionStatus.DETAILS_ENTERE
 
 public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
+    @Inject RockyService rockyService;
+    @Inject RegistrationDao registrationDao;
+    @Inject SessionDao sessionDao;
+
     @BindView(R.id.viewpager) ViewPager viewPager;
 
     private EventDetailFlowAdapter adapter;
+
+    private MainActivityViewModel viewModel;
 
     public EventFlowWizard(Context context) {
         this(context, null);
@@ -57,8 +69,13 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
             //disable scrolling on the view pager
             viewPager.setOnTouchListener((v, event) -> true);
 
-            new Handler().post(() -> setState(DETAILS_ENTERED, false));
         }
+
+        viewModel = new ViewModelProvider(
+                (AppCompatActivity) getContext(),
+                new MainActivityViewModelFactory(rockyService, registrationDao, sessionDao)
+        ).get(MainActivityViewModel.class);
+
     }
 
 
@@ -68,6 +85,8 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
         // unregister the current page from callbacks
         adapter.getPageAtPosition(viewPager.getCurrentItem())
                 .unregisterCallbackListener();
+
+        viewModel.updateSessionStatus(status);
 
         switch (status) {
             case PARTNER_UPDATE:
