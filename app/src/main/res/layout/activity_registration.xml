@@ -28,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/increment"
             android:background="@android:color/transparent"
-            android:elevation="4dp"
             app:tabMode="fixed"
             app:tabGravity="fill"
             tools:background="@color/colorSecondaryText"

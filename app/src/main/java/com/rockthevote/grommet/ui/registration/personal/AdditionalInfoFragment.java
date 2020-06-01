@@ -191,6 +191,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
             phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(0).toString());
         }
 
+        // TODO ensure partnerNamePref and partnerVolunteerText gets updated again with partner response
         phoneOptIn.setText(getString(R.string.label_receive_text, partnerNamePref.get()));
         emailOptIn.setText(getString(R.string.label_receive_email, partnerNamePref.get()));
 

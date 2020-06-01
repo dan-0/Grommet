@@ -2,7 +2,6 @@ package com.rockthevote.grommet.data.db.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.rockthevote.grommet.data.api.model.ApiGeoLocation
 import java.util.*
@@ -12,59 +11,70 @@ import java.util.*
  */
 @Entity(tableName = "session")
 data class Session(
-        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey
         @ColumnInfo(name = "session_id")
         val sessionId: Long = 0,
 
         @ColumnInfo(name = "partner_info_id")
         val partnerInfoId: Long,
 
+        // some combination of canvasser name and epoch string
         @ColumnInfo(name = "source_tracking_id")
         val sourceTrackingId: String,
 
+        // the canvasser zip code is the partner tracking id
         @ColumnInfo(name = "partner_tracking_id")
         val partnerTrackingId: String,
 
         @ColumnInfo(name = "geo_location") val geoLocation: ApiGeoLocation,
 
+        // name of the canvasing event, the location field
         @ColumnInfo(name = "open_tracking_id")
         val openTrackingId: String,
 
         @ColumnInfo(name = "canvasser_name")
         val canvasserName: String,
 
+        // the tablet number
         @ColumnInfo(name = "device_id")
         val deviceId: String,
 
         @ColumnInfo(name = "abandoned_count")
-        val abandonedCount: Int,
+        val abandonedCount: Int = 0,
 
-        /**
-         *         TODO do we even need this if we can just count the number in the registration table?
-         *         probably a good idea to keep it since registrations can be uploaded and it would mess the count
-         *         if the clock in/out gets sent after a registration gets sent
-         */
         @ColumnInfo(name = "registration_count")
-        val registrationCount: Int,
+        val registrationCount: Int = 0,
 
         /**
          * Number of registrants that opted into receiving SMS during a session
          */
         @ColumnInfo(name = "sms_count")
-        val smsCount: Int,
+        val smsCount: Int = 0,
 
         /**
          * Number of registrants that provided DL info during a session
          */
         @ColumnInfo(name = "drivers_license_count")
-        val driversLicenseCount: Int,
+        val driversLicenseCount: Int = 0,
+
+        /**
+         * Number of registrants that provided SSN info during a session
+         */
+        @ColumnInfo(name = "ssn_count")
+        val ssnCount: Int = 0,
+
+        /**
+         * Number of registrants that opted in to receiving emails
+         */
+        @ColumnInfo(name = "email_count")
+        val emailCount: Int = 0,
 
         @ColumnInfo(name = "clock_in_time")
-        val clockInTime: Date,
+        val clockInTime: Date? = null,
 
         @ColumnInfo(name = "clock_out_time")
-        val clockOutTime: Date,
+        val clockOutTime: Date? = null,
 
         @ColumnInfo(name = "session_status")
-        val sessionStatus: SessionStatus
+        val sessionStatus: SessionStatus = SessionStatus.PARTNER_UPDATE
 )

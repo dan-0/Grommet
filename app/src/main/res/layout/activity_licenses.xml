@@ -158,6 +158,18 @@
                 android:layout_height="wrap_content"
                 android:text="@string/saripaar_license"/>
 
+            <TextView
+                style="@android:style/TextAppearance.Material.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Live Event"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/liveevent_license"/>
+
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

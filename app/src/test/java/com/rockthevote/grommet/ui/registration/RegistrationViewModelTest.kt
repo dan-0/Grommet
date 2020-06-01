@@ -1,10 +1,15 @@
 package com.rockthevote.grommet.ui.registration
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.rockthevote.grommet.data.api.model.ApiGeoLocation
+import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.GeoLocation
 import com.rockthevote.grommet.data.db.model.RockyRequest
+import com.rockthevote.grommet.data.db.model.Session
+import com.rockthevote.grommet.data.db.model.SessionStatus
 import com.rockthevote.grommet.testdata.Fake
 import com.rockthevote.grommet.testdata.FakeRegistrationDao
+import com.rockthevote.grommet.testdata.FakeSessionDao
 import com.rockthevote.grommet.testdata.TestDispatcherProvider
 import com.rockthevote.grommet.ui.registration.review.ReviewAndConfirmState
 import com.squareup.moshi.Moshi
@@ -31,9 +36,30 @@ class RegistrationViewModelTest {
         "temp"
     )
 
+    private val fakeSession = Session(
+        partnerInfoId = 1,
+        canvasserName = "temp",
+        sourceTrackingId = "temp",
+        partnerTrackingId = "temp",
+        geoLocation = ApiGeoLocation.builder().latitude(1.0).longitude(1.0).build(),
+        openTrackingId = "temp",
+        deviceId = "1",
+        abandonedCount = 0,
+        registrationCount = 0,
+        smsCount = 0,
+        driversLicenseCount = 0,
+        ssnCount = 0,
+        emailCount = 0,
+        clockInTime = Date(),
+        clockOutTime = Date(),
+        sessionStatus = SessionStatus.CLOCKED_IN
+    )
+
     private lateinit var testDispatcher: TestCoroutineDispatcher
 
     private lateinit var fakeRegistrationDao: FakeRegistrationDao
+
+    private lateinit var fakeSessionDao: FakeSessionDao
 
     private lateinit var ut: RegistrationViewModel
 
@@ -44,7 +70,9 @@ class RegistrationViewModelTest {
 
         fakeRegistrationDao = FakeRegistrationDao()
 
-        ut = RegistrationViewModel(fakeSessionData, fakeRegistrationDao, dispatcherProvider)
+        fakeSessionDao = FakeSessionDao(mutableListOf(fakeSession))
+
+        ut = RegistrationViewModel(fakeRegistrationDao, dispatcherProvider, fakeSessionDao)
 
         // reviewAndConfirmState is backed by a MediatorLiveData, which doesn't produce a value if not observed
         ut.reviewAndConfirmState.observeForever {  }
@@ -144,6 +172,20 @@ class RegistrationViewModelTest {
 
         assertEquals(1, timesInsertCalled)
         assert(currentRegistrationState is RegistrationState.Complete)
+
+        // ensure session was updated
+        val updatedSessions = fakeSessionDao.updatedSessions
+        val updatedSession = updatedSessions.first()
+
+        assertEquals(1, updatedSessions.size)
+
+        // Expected results based on default values of Fake.ADDITIONAL_INFO_DATA
+        assertEquals(1, updatedSession.registrationCount)
+        assertEquals(1, updatedSession.driversLicenseCount)
+        assertEquals(1, updatedSession.ssnCount)
+        assertEquals(0, updatedSession.smsCount)
+        assertEquals(0, updatedSession.emailCount)
+        assertEquals(0, updatedSession.abandonedCount)
     }
 
     @Test
@@ -168,6 +210,19 @@ class RegistrationViewModelTest {
         ut.completeRegistration(badRegistrationData.reviewData!!)
 
         assert(currentRegistrationState is RegistrationState.RegistrationError)
+    }
+
+    @Test
+    fun `incrementAbandonedCount happy path`() {
+        ut.incrementAbandonedCount()
+
+        // ensure session was updated
+        val updatedSessions = fakeSessionDao.updatedSessions
+        val updatedSession = updatedSessions.first()
+
+        assertEquals(1, updatedSessions.size)
+
+        assertEquals(1, updatedSession.abandonedCount)
     }
 
     private fun getExpectedRequestJson(
@@ -198,4 +253,3 @@ class RegistrationViewModelTest {
     private val currentReviewAndConfirmState
         get() = ut.reviewAndConfirmState.value!!
 }
-

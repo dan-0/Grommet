@@ -24,11 +24,13 @@ import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
 import com.rockthevote.grommet.data.prefs.EventZip;
 import com.rockthevote.grommet.data.prefs.PartnerId;
+import com.rockthevote.grommet.ui.eventFlow.EventFlowWizard;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
 
 import java.util.Locale;
@@ -54,6 +56,7 @@ public final class MainActivity extends BaseActivity {
     @BindView(R.id.failed_registrations_container) LinearLayout failedRegistrationsContainer;
     @BindView(R.id.failed_registrations) TextView failedRegistrations;
     @BindView(R.id.upload) Button upploadButton;
+    @BindView(R.id.event_flow_wizard) EventFlowWizard eventFlowWizard;
 
     @Inject @PartnerId Preference<String> partnerIdPref;
 
@@ -75,6 +78,8 @@ public final class MainActivity extends BaseActivity {
 
     @Inject RegistrationDao registrationDao;
 
+    @Inject SessionDao sessionDao;
+
     private CompositeSubscription subscriptions;
 
     private MainActivityViewModel viewModel;
@@ -92,17 +97,26 @@ public final class MainActivity extends BaseActivity {
 
         viewModel = new ViewModelProvider(
                 this,
-                new MainActivityViewModelFactory(rockyService, registrationDao)
+                new MainActivityViewModelFactory(rockyService, registrationDao, sessionDao)
         ).get(MainActivityViewModel.class);
 
         observeState();
     }
 
     private void observeState() {
+        viewModel.getSessionStatus().observe(this, sessionStatus -> {
+            if (sessionStatus == null) {
+                return;
+            }
+
+            eventFlowWizard.setState(sessionStatus, true);
+        });
+
+
         viewModel.getState().observe(this, mainActivityState -> {
 
             // Reset base states
-            upploadButton.setEnabled(true);
+            upploadButton.setEnabled(false);
             failedRegistrationsContainer.setVisibility(View.GONE);
             failedRegistrations.setText("");
 
@@ -116,6 +130,12 @@ public final class MainActivity extends BaseActivity {
                 );
 
                 pendingRegistrations.setText(pendingUploads);
+
+                if (content.getFailedUploads() > 0 || content.getPendingUploads() > 0) {
+                    upploadButton.setEnabled(true);
+                } else {
+                    upploadButton.setEnabled(false);
+                }
 
                 if (content.getFailedUploads() > 0) {
                     failedRegistrationsContainer.setVisibility(View.VISIBLE);
@@ -131,6 +151,9 @@ public final class MainActivity extends BaseActivity {
 
             } else if (mainActivityState instanceof MainActivityState.Loading) {
                 upploadButton.setEnabled(false);
+            } else if (mainActivityState instanceof MainActivityState.Init) {
+                viewModel.loadSessionStatus();
+                viewModel.refreshPendingUploads();
             }
         });
     }

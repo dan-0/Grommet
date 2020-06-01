@@ -64,14 +64,14 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Single<Result<RegistrationResponse>> register(@Body RequestBody rockyRequestWrapper) {
+    public Single<Result<RegistrationResponse>> register(@Body RockyRequest rockyRequest) {
         RegistrationResponse response = getResponse(MockRegistrationResponse.class).response;
 
-        return delegate.returning(Calls.response(response)).register(rockyRequestWrapper);
+        return delegate.returning(Calls.response(response)).register(rockyRequest);
     }
 
     @Override
-    public Observable<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId) {
+    public Single<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId) {
         PartnerNameResponse response = getResponse(MockPartnerNameResponse.class).response;
         return delegate.returning(Calls.response(response)).getPartnerName(partnerId);
     }
