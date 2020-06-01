@@ -16,6 +16,7 @@ import com.rockthevote.grommet.util.Strings;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -62,8 +63,6 @@ public class SessionProgressDialogFragment extends DialogFragment {
         viewModel = new ViewModelProvider(this,
                 new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
         ).get(SessionTimeTrackingViewModel.class);
-
-        observeData();
     }
 
     @Nullable
@@ -80,9 +79,14 @@ public class SessionProgressDialogFragment extends DialogFragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        observeData();
+    }
 
     private void observeData() {
-        viewModel.getSessionData().observe(this, data -> {
+        viewModel.getSessionData().observe(getViewLifecycleOwner(), data -> {
             // update count totals
             totalRegistrations.setText(String.valueOf(data.getTotalRegistrations()));
             totalAbandoned.setText(String.valueOf(data.getAbandonedRegistrations()));

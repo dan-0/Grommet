@@ -115,7 +115,7 @@ class MainActivityViewModel(
         }
     }
 
-    fun updateSessionStatus(sessionStatus: SessionStatus){
+    fun updateSessionStatus(sessionStatus: SessionStatus) {
         viewModelScope.launch(dispatchers.io) {
             sharedPreferences
                 .edit()
