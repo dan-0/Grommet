@@ -22,12 +22,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
+import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
-import com.rockthevote.grommet.ui.MainActivity;
-import com.rockthevote.grommet.ui.MainActivityViewModel;
 import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
-import com.rockthevote.grommet.util.ContextUtil;
 import com.rockthevote.grommet.util.Dates;
 
 import javax.inject.Inject;
@@ -45,6 +43,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     @Inject PartnerInfoDao partnerInfoDao;
     @Inject SessionDao sessionDao;
+    @Inject RegistrationDao registrationDao;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.ed_event_name) TextView edEventName;
@@ -87,7 +86,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao)
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();
@@ -159,19 +158,6 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     @OnClick(R.id.clock_in_button)
     public void onClickClockIn(View button) {
-        MainActivity activity = ContextUtil.getMainActivityFromContext(getContext());
-
-        /*
-            Note, activity is nullable, but it should never actually be null as this view
-            is a component of the MainActivity
-         */
-        assert activity != null;
-
-        // The ViewModel is already initialized in the Activity, so just grab it using the activity
-        MainActivityViewModel viewModel = new ViewModelProvider(
-                activity
-        ).get(MainActivityViewModel.class);
-
         if (button.isSelected()) {
             viewModel.asyncCanClockOut(this::canClockOut, this::canNotClockOut);
         } else {

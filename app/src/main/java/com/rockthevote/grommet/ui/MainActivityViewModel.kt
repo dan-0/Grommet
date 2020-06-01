@@ -126,26 +126,6 @@ class MainActivityViewModel(
 
     private suspend fun loadRequestsFromDb() = registrationDao.getAll()
 
-    /**
-     * Asynchronously determines if the user can clock out. Calls [successCallback]
-     * when the user can logout, [failCallback] when the user cannot.
-     *
-     * Note: Coroutines cannot be used from Java, so callbacks are necessary
-     */
-    fun asyncCanClockOut(successCallback: () -> Unit, failCallback: () -> Unit) {
-        viewModelScope.launch(dispatchers.io) {
-            val canClockOut = loadRequestsFromDb().isEmpty()
-
-            withContext(dispatchers.main) {
-                if (canClockOut) {
-                    successCallback()
-                } else {
-                    failCallback()
-                }
-            }
-        }
-    }
-
     private fun updateState(newState: MainActivityState) {
         Timber.d("Handling new state: $newState")
         _state.postValue(newState)
