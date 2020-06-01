@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -30,7 +31,7 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
     @Inject RockyService rockyService;
     @Inject RegistrationDao registrationDao;
-    @Inject SessionDao sessionDao;
+    @Inject SharedPreferences sharedPreferences;
 
     @BindView(R.id.viewpager) ViewPager viewPager;
 
@@ -73,7 +74,7 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new MainActivityViewModelFactory(rockyService, registrationDao, sessionDao)
+                new MainActivityViewModelFactory(rockyService, registrationDao, sharedPreferences)
         ).get(MainActivityViewModel.class);
 
     }

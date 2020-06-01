@@ -73,8 +73,5 @@ data class Session(
         val clockInTime: Date? = null,
 
         @ColumnInfo(name = "clock_out_time")
-        val clockOutTime: Date? = null,
-
-        @ColumnInfo(name = "session_status")
-        val sessionStatus: SessionStatus = SessionStatus.PARTNER_UPDATE
+        val clockOutTime: Date? = null
 )
