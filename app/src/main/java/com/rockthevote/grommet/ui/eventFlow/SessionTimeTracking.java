@@ -19,9 +19,10 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
@@ -34,10 +35,13 @@ import com.rockthevote.grommet.data.prefs.PartnerTimeout;
 import com.rockthevote.grommet.ui.MainActivity;
 import com.rockthevote.grommet.ui.MainActivityViewModel;
 import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
+import com.rockthevote.grommet.util.Dates;
 import com.rockthevote.grommet.util.ContextUtil;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -50,9 +54,9 @@ import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_OUT;
 import static com.rockthevote.grommet.data.db.model.SessionStatus.NEW_SESSION;
 
 public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
-    @Inject ReactiveLocationProvider locationProvider;
 
-    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
+    @Inject PartnerInfoDao partnerInfoDao;
+    @Inject SessionDao sessionDao;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.ed_event_name) TextView edEventName;
@@ -64,17 +68,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @BindView(R.id.session_progress_button) Button sessionProgressButton;
     @BindView(R.id.ed_device_id) TextView edDeviceId;
 
-    @Inject @CanvasserName Preference<String> canvasserNamePref;
-    @Inject @EventName Preference<String> eventNamePref;
-    @Inject @EventZip Preference<String> eventZipPref;
-    @Inject @PartnerId Preference<String> partnerIdPref;
-    @Inject @PartnerName Preference<String> partnerNamePref;
-    @Inject @DeviceID Preference<String> deviceIdPref;
-    @Inject @PartnerTimeout Preference<Long> partnerTimeoutPref;
-
-    private CompositeDisposable disposables = new CompositeDisposable();
-
     private EventFlowCallback listener;
+
+    private SessionTimeTrackingViewModel viewModel;
 
     public SessionTimeTracking(Context context) {
         this(context, null);
@@ -99,30 +95,35 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
             ButterKnife.bind(this);
-
-            disposables.add(canvasserNamePref.asObservable()
-                    .subscribe(name -> edCanvasserName.setText(name)));
-
-            disposables.add(eventNamePref.asObservable()
-                    .subscribe(name -> edEventName.setText(name)));
-
-            disposables.add(eventZipPref.asObservable()
-                    .subscribe(name -> edEventZip.setText(name)));
-
-            disposables.add(partnerNamePref.asObservable()
-                    .subscribe(name -> edPartnerName.setText(name)));
-
-            disposables.add(deviceIdPref.asObservable()
-                    .subscribe(name -> edDeviceId.setText(name)));
         }
+
+        viewModel = new ViewModelProvider(
+                (AppCompatActivity) getContext(),
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao)
+        ).get(SessionTimeTrackingViewModel.class);
+
+        observeData();
+    }
+
+    private void observeData(){
+
+        viewModel.getSessionData().observe(
+                (AppCompatActivity) getContext(), data -> {
+                    edCanvasserName.setText(data.getCanvasserName());
+                    edEventName.setText(data.getOpenTrackingId());
+                    edEventZip.setText(data.getPartnerTrackingId());
+                    edPartnerName.setText(data.getPartnerName());
+                    edDeviceId.setText(data.getDeviceId());
+
+                    if (data.getClockInTime() != null) {
+                        clockInTime.setText(Dates.formatAs_LocalTimeOfDay(data.getClockInTime()));
+                    }
+                });
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (!isInEditMode()) {
-            disposables.dispose();
-        }
     }
 
     @Override

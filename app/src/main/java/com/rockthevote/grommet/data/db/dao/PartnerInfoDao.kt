@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.rockthevote.grommet.data.db.model.PartnerInfo
 import com.rockthevote.grommet.data.db.relationship.PartnerInfoWithSession
+import com.rockthevote.grommet.data.db.relationship.PartnerInfoWithSessionAndRegistrations
 
 /**
  * Created by Mechanical Man on 4/18/20.
@@ -23,6 +24,10 @@ interface PartnerInfoDao {
     @Transaction
     @Query("SELECT * FROM partner_info")
     fun getPartnerInfoWithSession(): LiveData<PartnerInfoWithSession?>
+
+    @Transaction
+    @Query("SELECT * FROM partner_info")
+    fun getPartnerInfoWithSessionAndRegistrations(): LiveData<PartnerInfoWithSessionAndRegistrations?>
 
     @Insert(onConflict = IGNORE)
     fun insertPartnerInfo(partnerInfo: PartnerInfo)
