@@ -38,31 +38,21 @@ import static com.rockthevote.grommet.data.db.model.SessionStatus.PARTNER_UPDATE
 
 public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
 
-    @Inject
-    ReactiveLocationProvider reactiveLocationProvider;
-    @Inject
-    PartnerInfoDao partnerInfoDao;
-    @Inject
-    SessionDao sessionDao;
+    @Inject ReactiveLocationProvider reactiveLocationProvider;
+    @Inject PartnerInfoDao partnerInfoDao;
+    @Inject SessionDao sessionDao;
 
-    @BindView(R.id.ede_canvasser_name)
-    EditText edeCanvasserName;
-    @BindView(R.id.ede_event_name)
-    EditText edeEventName;
+    @BindView(R.id.ede_canvasser_name)EditText edeCanvasserName;
+    @BindView(R.id.ede_event_name)EditText edeEventName;
 
     @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
-    @BindView(R.id.ede_til_event_zip)
-    TextInputLayout edeEventZipTIL;
-    @BindView(R.id.ede_event_zip)
-    EditText edeEventZip;
-    @BindView(R.id.ede_partner_name)
-    TextView edePartnerName;
+    @BindView(R.id.ede_til_event_zip)TextInputLayout edeEventZipTIL;
+    @BindView(R.id.ede_event_zip)EditText edeEventZip;
+    @BindView(R.id.ede_partner_name)TextView edePartnerName;
 
     @NotEmpty
-    @BindView(R.id.ede_til_device_id)
-    TextInputLayout edeDeviceIdTIL;
-    @BindView(R.id.ede_device_id)
-    TextView edeDeviceId;
+    @BindView(R.id.ede_til_device_id)TextInputLayout edeDeviceIdTIL;
+    @BindView(R.id.ede_device_id)TextView edeDeviceId;
 
     private ObservableValidator validator;
 
