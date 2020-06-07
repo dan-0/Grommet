@@ -7,7 +7,6 @@ import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.model.PartnerInfo
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -31,11 +30,6 @@ class PartnerLoginViewModel(
     private val _effect = LiveEvent<PartnerLoginState.Effect?>()
     val effect: LiveData<PartnerLoginState.Effect?> = _effect
 
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        // TODO Should we handle this another way? Is it needed?
-        Timber.e(throwable)
-    }
-
     fun validatePartnerId(partnerId: String) {
         updateState(PartnerLoginState.Loading)
 
@@ -45,7 +39,7 @@ class PartnerLoginViewModel(
             updateEffect(PartnerLoginState.Success)
 
         } else {
-            viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            viewModelScope.launch(dispatchers.io) {
                 runCatching {
                     rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
 
@@ -84,7 +78,7 @@ class PartnerLoginViewModel(
 
     fun clearPartnerInfo() {
         Timber.d("Deleting partner info")
-        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+        viewModelScope.launch(dispatchers.io) {
             partnerInfoDao.deleteAllPartnerInfo()
         }
     }

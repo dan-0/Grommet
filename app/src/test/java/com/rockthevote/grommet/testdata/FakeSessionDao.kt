@@ -11,21 +11,21 @@ class FakeSessionDao(
     val updatedSessions: List<Session> get() = _updatedSessions
 
     override fun getAll(): List<Session> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override fun getCurrentSession() = getCurrentSessionResult[0]
 
     override fun getSessionWithRegistrations(): List<SessionWithRegistrations> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override fun insert(vararg session: Session) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override fun clearAllSessionInfo() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override fun updateSession(session: Session) {

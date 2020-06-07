@@ -21,7 +21,7 @@ import java.util.*
 
 class CanvasserInfoViewModel(
         private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
-        private val partnerInfoDao: PartnerInfoDao,
+        partnerInfoDao: PartnerInfoDao,
         private val sessionDao: SessionDao,
         private val reactiveLocationProvider: ReactiveLocationProvider
 ) : ViewModel() {
@@ -46,6 +46,7 @@ class CanvasserInfoViewModel(
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable)
+        updateEffect(CanvasserInfoState.Error)
     }
 
     fun updateCanvasserInfo(canvasserName: String,

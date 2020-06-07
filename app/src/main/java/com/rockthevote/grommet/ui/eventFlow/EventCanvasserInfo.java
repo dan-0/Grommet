@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -36,21 +38,31 @@ import static com.rockthevote.grommet.data.db.model.SessionStatus.PARTNER_UPDATE
 
 public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
 
-    @Inject ReactiveLocationProvider reactiveLocationProvider;
-    @Inject PartnerInfoDao partnerInfoDao;
-    @Inject SessionDao sessionDao;
+    @Inject
+    ReactiveLocationProvider reactiveLocationProvider;
+    @Inject
+    PartnerInfoDao partnerInfoDao;
+    @Inject
+    SessionDao sessionDao;
 
-    @BindView(R.id.ede_canvasser_name) EditText edeCanvasserName;
-    @BindView(R.id.ede_event_name) EditText edeEventName;
+    @BindView(R.id.ede_canvasser_name)
+    EditText edeCanvasserName;
+    @BindView(R.id.ede_event_name)
+    EditText edeEventName;
 
     @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
-    @BindView(R.id.ede_til_event_zip) TextInputLayout edeEventZipTIL;
-    @BindView(R.id.ede_event_zip) EditText edeEventZip;
-    @BindView(R.id.ede_partner_name) TextView edePartnerName;
+    @BindView(R.id.ede_til_event_zip)
+    TextInputLayout edeEventZipTIL;
+    @BindView(R.id.ede_event_zip)
+    EditText edeEventZip;
+    @BindView(R.id.ede_partner_name)
+    TextView edePartnerName;
 
     @NotEmpty
-    @BindView(R.id.ede_til_device_id) TextInputLayout edeDeviceIdTIL;
-    @BindView(R.id.ede_device_id) TextView edeDeviceId;
+    @BindView(R.id.ede_til_device_id)
+    TextInputLayout edeDeviceIdTIL;
+    @BindView(R.id.ede_device_id)
+    TextView edeDeviceId;
 
     private ObservableValidator validator;
 
@@ -109,7 +121,11 @@ public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
                     if (effect instanceof CanvasserInfoState.Success) {
                         listener.setState(DETAILS_ENTERED, true);
                     } else if (effect instanceof CanvasserInfoState.Error) {
-                        //todo anything?
+                        Toast.makeText(
+                                getContext(),
+                                R.string.error_updating_canvasser_info,
+                                Toast.LENGTH_LONG
+                        ).show();
                         Timber.e("error updating view after updating canvasser info");
                     }
                 }
