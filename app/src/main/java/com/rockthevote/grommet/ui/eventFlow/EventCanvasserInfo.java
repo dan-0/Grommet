@@ -43,7 +43,7 @@ public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
     @Inject SessionDao sessionDao;
 
     @BindView(R.id.ede_canvasser_name) EditText edeCanvasserName;
-    @BindView(R.id.ede_event_name )EditText edeEventName;
+    @BindView(R.id.ede_event_name) EditText edeEventName;
 
     @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
     @BindView(R.id.ede_til_event_zip) TextInputLayout edeEventZipTIL;
