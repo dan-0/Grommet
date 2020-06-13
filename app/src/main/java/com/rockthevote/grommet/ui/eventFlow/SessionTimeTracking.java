@@ -16,9 +16,13 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
+import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
 import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
@@ -26,11 +30,10 @@ import com.rockthevote.grommet.util.Dates;
 
 import javax.inject.Inject;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kotlin.Unit;
 
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_IN;
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_OUT;
@@ -40,6 +43,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     @Inject PartnerInfoDao partnerInfoDao;
     @Inject SessionDao sessionDao;
+    @Inject RegistrationDao registrationDao;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.ed_event_name) TextView edEventName;
@@ -82,7 +86,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao)
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();
@@ -154,17 +158,8 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     @OnClick(R.id.clock_in_button)
     public void onClickClockIn(View button) {
-
         if (button.isSelected()) {
-            new AlertDialog.Builder(getContext())
-                    .setMessage(R.string.clock_out_dialog_text)
-                    .setPositiveButton(R.string.dialog_yes, (dialogInterface, i) -> {
-                        clockOut();
-                    })
-                    .setNegativeButton(R.string.dialog_no,
-                            (dialogInterface, i) -> dialogInterface.dismiss())
-                    .create()
-                    .show();
+            viewModel.asyncCanClockOut(this::canClockOut, this::canNotClockOut);
         } else {
 
             TextView text = (TextView) ((ViewGroup) button).getChildAt(0);
@@ -192,8 +187,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
                 @Override
                 public void onAnimationRepeat(Animator animator) {
-                    button.setSelected(!button.isSelected());
-                    text.setText(button.isSelected() ? R.string.clock_out_text : R.string.clock_in_text);
+                    toggleClockInButton();
                 }
             });
 
@@ -218,6 +212,39 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         }
     }
 
+    private void toggleClockInButton() {
+        clockInButton.setSelected(!clockInButton.isSelected());
+
+        TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+        text.setText(clockInButton.isSelected() ? R.string.clock_out_text : R.string.clock_in_text);
+    }
+
+    private Unit canClockOut() {
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.clock_out_dialog_text)
+                .setPositiveButton(R.string.dialog_yes, (dialogInterface, i) -> {
+                    clockOut();
+                })
+                .setNegativeButton(R.string.dialog_no,
+                        (dialogInterface, i) -> dialogInterface.dismiss())
+                .create()
+                .show();
+
+        return Unit.INSTANCE;
+    }
+
+    private Unit canNotClockOut() {
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.clock_out_must_upload)
+                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                })
+                .create()
+                .show();
+
+        return Unit.INSTANCE;
+    }
+
     private void clockIn() {
 
         updateUI(CLOCKED_IN);
@@ -226,6 +253,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
     private void clockOut() {
 
+        toggleClockInButton();
         listener.setState(CLOCKED_OUT, true);
     }
 }

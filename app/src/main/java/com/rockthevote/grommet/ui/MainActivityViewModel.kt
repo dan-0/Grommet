@@ -105,7 +105,7 @@ class MainActivityViewModel(
      */
     fun loadSessionStatus() {
         viewModelScope.launch(dispatchers.io) {
-            val retainedStatus  = sessionDao.getCurrentSession()?.sessionStatus
+            val retainedStatus = sessionDao.getCurrentSession()?.sessionStatus
 
             val status = retainedStatus ?: SessionStatus.PARTNER_UPDATE
 
