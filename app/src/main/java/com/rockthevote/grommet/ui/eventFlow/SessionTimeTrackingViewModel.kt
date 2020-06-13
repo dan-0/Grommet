@@ -24,6 +24,7 @@ class SessionTimeTrackingViewModel(
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable)
+        throw throwable
     }
 
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
@@ -79,8 +80,6 @@ class SessionTimeTrackingViewModel(
     fun clearSession() {
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
             sessionDao.clearAllSessionInfo()
-            // TODO listen for return value and set error state if it fails?
-
             updateEffect(SessionSummaryState.Cleared)
         }
     }

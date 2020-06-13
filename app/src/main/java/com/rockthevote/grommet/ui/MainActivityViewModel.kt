@@ -1,5 +1,6 @@
 package com.rockthevote.grommet.ui
 
+import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.api.RockyService
@@ -7,6 +8,7 @@ import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.model.RockyRequest
 import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.SessionStatus
+import com.rockthevote.grommet.util.SharedPrefKeys.KEY_SESSION_STATUS
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import com.squareup.moshi.Moshi
@@ -18,7 +20,7 @@ class MainActivityViewModel(
     private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
     private val rockyService: RockyService,
     private val registrationDao: RegistrationDao,
-    private val sessionDao: SessionDao
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
     private val _state = MutableLiveData<MainActivityState>(MainActivityState.Init)
@@ -105,22 +107,20 @@ class MainActivityViewModel(
      */
     fun loadSessionStatus() {
         viewModelScope.launch(dispatchers.io) {
-            val retainedStatus = sessionDao.getCurrentSession()?.sessionStatus
+            val rawState = sharedPreferences.getString(KEY_SESSION_STATUS, null)
 
-            val status = retainedStatus ?: SessionStatus.PARTNER_UPDATE
+            val status = SessionStatus.fromString(rawState) ?: SessionStatus.PARTNER_UPDATE
 
             _sessionStatus.postValue(status)
         }
     }
 
-    fun updateSessionStatus(sessionStatus: SessionStatus){
+    fun updateSessionStatus(sessionStatus: SessionStatus) {
         viewModelScope.launch(dispatchers.io) {
-            /*
-            TODO - how to implement this method?
-                session status actually has to live ouside the session table.
-                When the app first loads, or even after the user has entered a partner ID,
-                there’s still no session data, but there is a state associated with the app.
-             */
+            sharedPreferences
+                .edit()
+                .putString(KEY_SESSION_STATUS, sessionStatus.toString())
+                .apply()
         }
     }
 
@@ -140,12 +140,12 @@ class MainActivityViewModel(
 class MainActivityViewModelFactory(
     private val rockyService: RockyService,
     private val registrationDao: RegistrationDao,
-    private val sessionDao: SessionDao
+    private val sharedPreferences: SharedPreferences
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         val dispatchers = DispatcherProviderImpl()
 
         @Suppress("UNCHECKED_CAST")
-        return MainActivityViewModel(dispatchers, rockyService, registrationDao, sessionDao) as T
+        return MainActivityViewModel(dispatchers, rockyService, registrationDao, sharedPreferences) as T
     }
 }

@@ -58,7 +58,7 @@ public class SessionProgressDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Injector.obtain(getContext()).inject(this);
+        Injector.obtain(requireContext()).inject(this);
 
     }
 
@@ -68,8 +68,6 @@ public class SessionProgressDialogFragment extends DialogFragment {
         viewModel = new ViewModelProvider(this,
                 new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
         ).get(SessionTimeTrackingViewModel.class);
-
-        observeData();
     }
 
     @Nullable
@@ -86,6 +84,11 @@ public class SessionProgressDialogFragment extends DialogFragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        observeData();
+    }
 
     private void observeData() {
         viewModel.getSessionData().observe(getViewLifecycleOwner(), data -> {
