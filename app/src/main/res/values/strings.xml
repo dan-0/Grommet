@@ -415,5 +415,6 @@ If you have any questions about this privacy statement, please contact info@rock
     <string name="must_write_in_party">Other Political Party was selected, a write in party is required</string>
     <string name="different_mailing_address_not_filled_out">Mailing address must be filled out if \'I get my mail from a different address from the one above\' is checked.</string>
     <string translatable="false" name="error_updating_canvasser_info">Error updating canvasser info</string>
+    <string translatable="false" name="error_location">Error logging in, ensure GPS and location are enabled</string>
 
 </resources>
