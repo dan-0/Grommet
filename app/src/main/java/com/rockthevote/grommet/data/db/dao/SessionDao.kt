@@ -21,7 +21,7 @@ interface SessionDao {
     fun getCurrentSessionLive(): LiveData<Session?>
 
     @Transaction
-    @Query("SELECT * FROM session")
+    @Query("SELECT * FROM session LIMIT 1")
     fun getSessionWithRegistrations(): LiveData<SessionWithRegistrations?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
