@@ -1,7 +1,6 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -9,34 +8,33 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.prefs.CanvasserName;
-import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
-import com.rockthevote.grommet.data.prefs.DeviceID;
-import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventZip;
-import com.rockthevote.grommet.data.prefs.PartnerName;
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
+import com.rockthevote.grommet.data.db.dao.RegistrationDao;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
+import com.rockthevote.grommet.util.Dates;
+
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.disposables.CompositeDisposable;
+import timber.log.Timber;
 
 import static com.rockthevote.grommet.data.db.model.SessionStatus.SESSION_CLEARED;
 
 public class SessionSummary extends FrameLayout implements EventFlowPage {
 
-    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
-
-    @Inject @CanvasserName Preference<String> canvasserNamePref;
-    @Inject @EventName Preference<String> eventNamePref;
-    @Inject @EventZip Preference<String> eventZipPref;
-    @Inject @PartnerName Preference<String> partnerNamePref;
-    @Inject @DeviceID Preference<String> deviceIdPref;
+    @Inject PartnerInfoDao partnerInfoDao;
+    @Inject SessionDao sessionDao;
+    @Inject RegistrationDao registrationDao;
 
     // Session Details
     @BindView(R.id.summary_canvasser_name) TextView edCanvasserName;
@@ -50,9 +48,9 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
     @BindView(R.id.summary_clock_out_time) TextView clockOutTime;
     @BindView(R.id.summary_total_time) TextView totalTime;
 
-    private CompositeDisposable disposables = new CompositeDisposable();
-
     private EventFlowCallback listener;
+
+    private SessionTimeTrackingViewModel viewModel;
 
     public SessionSummary(Context context) {
         this(context, null);
@@ -77,31 +75,57 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
             ButterKnife.bind(this);
-
-            disposables.add(canvasserNamePref.asObservable()
-                    .subscribe(name -> edCanvasserName.setText(name)));
-
-            disposables.add(eventNamePref.asObservable()
-                    .subscribe(name -> edEventName.setText(name)));
-
-            disposables.add(eventZipPref.asObservable()
-                    .subscribe(name -> edEventZip.setText(name)));
-
-            disposables.add(partnerNamePref.asObservable()
-                    .subscribe(name -> edPartnerName.setText(name)));
-
-            disposables.add(deviceIdPref.asObservable()
-                    .subscribe(name -> edDeviceId.setText(name)));
-
         }
+        viewModel = new ViewModelProvider(
+                (AppCompatActivity) getContext(),
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
+        ).get(SessionTimeTrackingViewModel.class);
+
+        observeData();
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (!isInEditMode()) {
-            disposables.dispose();
-        }
+    private void observeData() {
+
+        viewModel.getSessionData().observe(
+                (AppCompatActivity) getContext(), data -> {
+                    edCanvasserName.setText(data.getCanvasserName());
+                    edEventName.setText(data.getOpenTrackingId());
+                    edEventZip.setText(data.getPartnerTrackingId());
+                    edPartnerName.setText(data.getPartnerName());
+                    edDeviceId.setText(data.getDeviceId());
+
+                    if (data.getClockInTime() != null && data.getClockOutTime() != null) {
+                        Date clockIn = data.getClockInTime();
+                        Date clockOut = data.getClockOutTime();
+
+                        clockInTime.setText(Dates.formatAs_LocalTimeOfDay(clockIn));
+                        clockOutTime.setText(Dates.formatAs_LocalTimeOfDay(clockOut));
+
+                        long elapsedMilliseconds = clockOut.getTime() - clockIn.getTime();
+
+                        String elapsedTime = String.format(Locale.getDefault(), "%d hours, %d min",
+                                TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
+                                TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
+                                        TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
+                        );
+
+                        totalTime.setText(elapsedTime);
+
+                    }
+
+                });
+
+        viewModel.getEffect().observe(
+                (AppCompatActivity) getContext(), effect -> {
+                    if (effect instanceof SessionSummaryState.Cleared) {
+                        // update wizard view pager to SESSION_CLEARED to tell the first page to reset
+                        listener.setState(SESSION_CLEARED, false);
+                    } else if (effect instanceof SessionSummaryState.Error) {
+                        //todo anything?
+                        Timber.e("error updating view after updating canvasser info");
+                    }
+                }
+        );
     }
 
     @Override
@@ -114,26 +138,9 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         listener = null;
     }
 
-    @SuppressLint("DefaultLocale")
-    void updateUI() {
-
-//        String elapsedTime = String.format("%d hours, %d min",
-//                TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds),
-//                TimeUnit.MILLISECONDS.toMinutes(elapsedMilliseconds) -
-//                        TimeUnit.MINUTES.toMinutes(TimeUnit.MILLISECONDS.toHours(elapsedMilliseconds))
-    }
-
     @OnClick(R.id.session_summary_clear)
     public void onClickClear(View v) {
-        // Clear visible session data
-        canvasserNamePref.delete();
-        eventNamePref.delete();
-        eventZipPref.delete();
-        deviceIdPref.delete();
-
-
-        // update wizard view pager to SESSION_CLEARED to tell the first page to reset
-        listener.setState(SESSION_CLEARED, false);
+        viewModel.clearSession();
     }
 
 }

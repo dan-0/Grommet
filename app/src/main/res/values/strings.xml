@@ -38,6 +38,7 @@
     <string name="label_time_tracking" translatable="false">Time Tracking</string>
     <string name="time_tracking_default_value" translatable="false">--:--:--</string>
     <string name="clock_out_dialog_text" translatable="false">Do you want to end your canvassing shift?</string>
+    <string name="clock_out_must_upload" translatable="false">There are still pending registrations for upload. All registrations have to be uploaded to clock out.</string>
     <string name="shift_timeout_title" translatable="false">Shift Timed Out</string>
     <string name="shift_timeout_message" translatable="false">Your canvassing shift has timed out. Please start a new shift to continue.</string>
     <string name="validating_partner_id" translatable="false">Validating Partner ID</string>

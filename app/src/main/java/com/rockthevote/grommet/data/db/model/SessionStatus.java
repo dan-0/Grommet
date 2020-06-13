@@ -23,6 +23,10 @@ public enum SessionStatus {
 
     @Nullable
     public static SessionStatus fromString(String type) {
+        if (type == null) {
+            return null;
+        }
+
         for (SessionStatus val : values()) {
             if (val.toString().equals(type)) {
                 return val;

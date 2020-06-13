@@ -1,5 +1,6 @@
 package com.rockthevote.grommet.testdata
 
+import androidx.lifecycle.LiveData
 import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.Session
 import com.rockthevote.grommet.data.db.relationship.SessionWithRegistrations
@@ -16,8 +17,12 @@ class FakeSessionDao(
 
     override fun getCurrentSession() = getCurrentSessionResult[0]
 
-    override fun getSessionWithRegistrations(): List<SessionWithRegistrations> {
-        TODO("not implemented")
+    override fun getCurrentSessionLive(): LiveData<Session?> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getSessionWithRegistrations(): LiveData<SessionWithRegistrations?> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun insert(vararg session: Session) {

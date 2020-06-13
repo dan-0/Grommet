@@ -3,6 +3,7 @@ package com.rockthevote.grommet.ui;
 import android.Manifest;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -24,7 +25,6 @@ import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
-import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.prefs.CanvasserName;
 import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.EventName;
@@ -78,7 +78,7 @@ public final class MainActivity extends BaseActivity {
 
     @Inject RegistrationDao registrationDao;
 
-    @Inject SessionDao sessionDao;
+    @Inject SharedPreferences sharedPreferences;
 
     private CompositeSubscription subscriptions;
 
@@ -97,7 +97,7 @@ public final class MainActivity extends BaseActivity {
 
         viewModel = new ViewModelProvider(
                 this,
-                new MainActivityViewModelFactory(rockyService, registrationDao, sessionDao)
+                new MainActivityViewModelFactory(rockyService, registrationDao, sharedPreferences)
         ).get(MainActivityViewModel.class);
 
         observeState();

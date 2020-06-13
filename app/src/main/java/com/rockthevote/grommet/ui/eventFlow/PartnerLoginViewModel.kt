@@ -30,6 +30,11 @@ class PartnerLoginViewModel(
     private val _effect = LiveEvent<PartnerLoginState.Effect?>()
     val effect: LiveData<PartnerLoginState.Effect?> = _effect
 
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e(throwable)
+        setStateToError()
+    }
+
     fun validatePartnerId(partnerId: String) {
         updateState(PartnerLoginState.Loading)
 
@@ -41,35 +46,31 @@ class PartnerLoginViewModel(
         } else {
             viewModelScope.launch(dispatchers.io) {
                 runCatching {
-                    rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
-
-                }.onSuccess {
-                    if (it.response()!!.isSuccessful) {
-                        val response = it.response()!!
-                        val body = response.body()!!
-
-                        partnerInfoDao.deleteAllPartnerInfo()
-                        partnerInfoDao.insertPartnerInfo(PartnerInfo(
-                                partnerId = partnerId,
-                                appVersion = body.appVersion().toFloat(),
-                                isValid = body.isValid,
-                                partnerName = body.partnerName(),
-                                registrationDeadlineDate = body.registrationDeadlineDate(),
-                                registrationNotificationText = body.registrationNotificationText(),
-                                volunteerText = body.partnerVolunteerText()
-                        ))
-
-                        updateState(PartnerLoginState.Init)
-                        updateEffect(PartnerLoginState.Success)
+                    val result = rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
+                    if (result.isError) {
+                        throw result.error() ?: PartnerLoginViewModelException("Error retrieving result")
                     } else {
-                        updateState(PartnerLoginState.Init)
-                        updateEffect(PartnerLoginState.Error)
+                        result?.response()?.body()
+                            ?: throw PartnerLoginViewModelException("Successful result with empty body received")
                     }
+                }.onSuccess {
+                    partnerInfoDao.deleteAllPartnerInfo()
+                    partnerInfoDao.insertPartnerInfo(PartnerInfo(
+                        partnerId = partnerId,
+                        appVersion = it.appVersion().toFloat(),
+                        isValid = it.isValid,
+                        partnerName = it.partnerName(),
+                        registrationDeadlineDate = it.registrationDeadlineDate(),
+                        registrationNotificationText = it.registrationNotificationText(),
+                        volunteerText = it.partnerVolunteerText()
+                    ))
+
+                    updateState(PartnerLoginState.Init)
+                    updateEffect(PartnerLoginState.Success)
 
                 }.onFailure {
                     Timber.d("API request failure - partner validation")
-                    updateState(PartnerLoginState.Init)
-                    updateEffect(PartnerLoginState.Error)
+                    setStateToError()
                 }
             }
         }
@@ -83,6 +84,11 @@ class PartnerLoginViewModel(
         }
     }
 
+    private fun setStateToError() {
+        updateState(PartnerLoginState.Init)
+        updateEffect(PartnerLoginState.Error)
+    }
+
     private fun updateState(newState: PartnerLoginState) {
         Timber.d("Handling new state: $newState")
         _partnerLoginState.postValue(newState)
@@ -93,6 +99,7 @@ class PartnerLoginViewModel(
         _effect.postValue(newEffect)
     }
 
+    private class PartnerLoginViewModelException(msg: String) : Exception(msg)
 }
 
 class PartnerLoginViewModelFactory(

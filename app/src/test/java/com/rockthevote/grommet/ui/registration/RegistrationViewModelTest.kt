@@ -51,8 +51,7 @@ class RegistrationViewModelTest {
         ssnCount = 0,
         emailCount = 0,
         clockInTime = Date(),
-        clockOutTime = Date(),
-        sessionStatus = SessionStatus.CLOCKED_IN
+        clockOutTime = Date()
     )
 
     private lateinit var testDispatcher: TestCoroutineDispatcher
