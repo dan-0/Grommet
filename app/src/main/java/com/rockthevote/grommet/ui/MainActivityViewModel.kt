@@ -113,6 +113,17 @@ class MainActivityViewModel(
         }
     }
 
+    fun updateSessionStatus(sessionStatus: SessionStatus){
+        viewModelScope.launch(dispatchers.io) {
+            /*
+            TODO - how to implement this method?
+                session status actually has to live ouside the session table.
+                When the app first loads, or even after the user has entered a partner ID,
+                there’s still no session data, but there is a state associated with the app.
+             */
+        }
+    }
+
     private suspend fun loadRequestsFromDb() = registrationDao.getAll()
 
     private fun updateState(newState: MainActivityState) {
