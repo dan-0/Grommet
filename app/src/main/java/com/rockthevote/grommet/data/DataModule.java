@@ -13,18 +13,7 @@ import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.api.model.DateAdapter;
 import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
-import com.rockthevote.grommet.data.api.model.RegistrationResponse;
-import com.rockthevote.grommet.data.db.AppDatabase;
-import com.rockthevote.grommet.data.prefs.AppVersion;
-import com.rockthevote.grommet.data.prefs.CanvasserName;
-import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
-import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
-import com.rockthevote.grommet.data.prefs.DeviceID;
-import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventZip;
-import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.data.prefs.PartnerName;
-import com.rockthevote.grommet.data.prefs.PartnerTimeout;
 import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
 import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPreferenceConverter;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
@@ -96,14 +85,6 @@ public final class DataModule {
 
     @Provides
     @Singleton
-    @AppVersion
-    Preference<Integer> provideAppVersion(RxSharedPreferences prefs, Application app) {
-        return prefs.getInteger(
-                app.getResources().getString(R.string.pref_key_app_version), 0);
-    }
-
-    @Provides
-    @Singleton
     @RegistrationText
     Preference<RegistrationNotificationText> provideRegistrationText(RxSharedPreferences prefs, Application app,
                                                                      Moshi moshi) {
@@ -121,58 +102,9 @@ public final class DataModule {
 
     @Provides
     @Singleton
-    @PartnerId
-    Preference<String> providePartnerId(RxSharedPreferences prefs, Application app) {
-        return prefs.getString(app.getResources().getString(R.string.pref_key_partner_id));
-    }
-
-    @Provides
-    @Singleton
-    @PartnerTimeout
-    Preference<Long> providePartnerTimeout(RxSharedPreferences prefs, Application app) {
-        return prefs.getLong(app.getResources().getString(R.string.pref_key_partner_timeout));
-    }
-
-    @Provides
-    @Singleton
-    @DeviceID
-    Preference<String> provideDeviceId(RxSharedPreferences prefs, Application app) {
-        return prefs.getString(app.getResources().getString(R.string.pref_key_device_id));
-    }
-
-    @Provides
-    @Singleton
     @PartnerName
     Preference<String> providePartnerName(RxSharedPreferences prefs, Application app) {
         return prefs.getString(app.getResources().getString(R.string.pref_key_partner_name));
-    }
-
-    @Provides
-    @Singleton
-    @CanvasserName
-    Preference<String> provideCanvasserName(RxSharedPreferences prefs, Application app) {
-        return prefs.getString(app.getResources().getString(R.string.pref_key_canvasser_name));
-    }
-
-    @Provides
-    @Singleton
-    @EventZip
-    Preference<String> provideEventZip(RxSharedPreferences prefs, Application app) {
-        return prefs.getString(app.getResources().getString(R.string.pref_key_event_zip_code));
-    }
-
-    @Provides
-    @Singleton
-    @EventName
-    Preference<String> provideEventName(RxSharedPreferences prefs, Application app) {
-        return prefs.getString(app.getResources().getString(R.string.pref_key_event_name));
-    }
-
-    @Provides
-    @Singleton
-    @CurrentRockyRequestId
-    Preference<Long> provideCurrentRockyRequestId(RxSharedPreferences prefs) {
-        return prefs.getLong("cur_rocky_request_id");
     }
 
     @Provides
@@ -189,13 +121,6 @@ public final class DataModule {
                 app.getResources().getString(R.string.pref_key_partner_volunteer_text),
                 defaultValue,
                 new PartnerVolunteerTextPreferenceConverter(PartnerVolunteerText.jsonAdapter(moshi)));
-    }
-
-    @Provides
-    @Singleton
-    @CurrentSessionRowId
-    Preference<Long> provideCurrentSessionRowtId(RxSharedPreferences prefs) {
-        return prefs.getLong("cur_session_row_id");
     }
 
     @Provides

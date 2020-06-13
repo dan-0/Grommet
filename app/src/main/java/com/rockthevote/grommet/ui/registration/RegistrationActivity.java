@@ -2,11 +2,6 @@ package com.rockthevote.grommet.ui.registration;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import com.google.android.material.appbar.AppBarLayout;
-
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
 import android.transition.Slide;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,13 +11,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.f2prateek.rx.preferences2.Preference;
+import com.google.android.material.appbar.AppBarLayout;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
-import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
-import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.ui.BaseActivity;
 import com.rockthevote.grommet.ui.ViewContainer;
 import com.rockthevote.grommet.ui.misc.StepperTabLayout;
@@ -33,6 +26,9 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -44,9 +40,6 @@ import static androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 public class RegistrationActivity extends BaseActivity {
 
     @Inject ViewContainer viewContainer;
-
-    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
-    @Inject @CurrentSessionRowId Preference<Long> currentSessionRowId;
 
     @Inject RegistrationDao registrationDao;
 

@@ -11,25 +11,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.legacy.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
-
-import com.f2prateek.rx.preferences2.Preference;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
-import com.rockthevote.grommet.data.prefs.CanvasserName;
-import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
-import com.rockthevote.grommet.data.prefs.EventName;
-import com.rockthevote.grommet.data.prefs.EventZip;
-import com.rockthevote.grommet.data.prefs.PartnerId;
 import com.rockthevote.grommet.ui.eventFlow.EventFlowWizard;
 import com.rockthevote.grommet.ui.registration.RegistrationActivity;
 
@@ -37,6 +23,13 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.legacy.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -57,16 +50,6 @@ public final class MainActivity extends BaseActivity {
     @BindView(R.id.failed_registrations) TextView failedRegistrations;
     @BindView(R.id.upload) Button upploadButton;
     @BindView(R.id.event_flow_wizard) EventFlowWizard eventFlowWizard;
-
-    @Inject @PartnerId Preference<String> partnerIdPref;
-
-    @Inject @CanvasserName Preference<String> canvasserNamePref;
-
-    @Inject @EventName Preference<String> eventNamePref;
-
-    @Inject @EventZip Preference<String> eventZipPref;
-
-    @Inject @CurrentRockyRequestId Preference<Long> currentRockyRequestId;
 
     @Inject ViewContainer viewContainer;
 
