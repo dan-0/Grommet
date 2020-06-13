@@ -7,6 +7,7 @@ import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.model.PartnerInfo
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -44,7 +45,7 @@ class PartnerLoginViewModel(
             updateEffect(PartnerLoginState.Success)
 
         } else {
-            viewModelScope.launch(dispatchers.io) {
+            viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
                 runCatching {
                     val result = rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
                     if (result.isError) {
@@ -79,7 +80,7 @@ class PartnerLoginViewModel(
 
     fun clearPartnerInfo() {
         Timber.d("Deleting partner info")
-        viewModelScope.launch(dispatchers.io) {
+        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
             partnerInfoDao.deleteAllPartnerInfo()
         }
     }

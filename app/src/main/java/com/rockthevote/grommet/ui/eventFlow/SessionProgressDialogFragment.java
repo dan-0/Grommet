@@ -68,6 +68,8 @@ public class SessionProgressDialogFragment extends DialogFragment {
         viewModel = new ViewModelProvider(this,
                 new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
         ).get(SessionTimeTrackingViewModel.class);
+
+        observeData();
     }
 
     @Nullable
@@ -82,12 +84,6 @@ public class SessionProgressDialogFragment extends DialogFragment {
 
         ButterKnife.bind(this, view);
         return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        observeData();
     }
 
     private void observeData() {
