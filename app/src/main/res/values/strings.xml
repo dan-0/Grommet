@@ -228,10 +228,7 @@ Submitting an application containing false information may also subject a person
 </p>
 ]]>
     </string>
-
-    <!-- Preference Strings -->
-    <string name="pref_key_registration_text" translatable="false">registration_text</string>
-
+    
     <string name="pref_title_partner_name" translatable="false">Organization</string>
     <string name="pref_title_partner_id" translatable="false">Partner ID</string>
     <string name="pref_title_canvaser_name" translatable="false">Canvaser Name</string>

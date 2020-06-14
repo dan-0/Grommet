@@ -3,19 +3,14 @@ package com.rockthevote.grommet.data;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.f2prateek.rx.preferences2.Preference;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
 import com.rockthevote.grommet.data.api.RockyAdapterFactory;
 import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.api.model.DateAdapter;
-import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
-import com.rockthevote.grommet.data.prefs.RegistrationText;
-import com.rockthevote.grommet.data.prefs.RegistrationTextPreferenceConverter;
 import com.rockthevote.grommet.ui.MainActivity;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.squareup.moshi.Moshi;
@@ -64,23 +59,6 @@ public final class DataModule {
     @Singleton
     RxSharedPreferences provideRxSharedPreferences(SharedPreferences prefs) {
         return RxSharedPreferences.create(prefs);
-    }
-
-    @Provides
-    @Singleton
-    @RegistrationText
-    Preference<RegistrationNotificationText> provideRegistrationText(RxSharedPreferences prefs, Application app,
-                                                                     Moshi moshi) {
-
-        RegistrationNotificationText defaultValue = RegistrationNotificationText.builder()
-                .english("")
-                .spanish("")
-                .build();
-
-        return prefs.getObject(
-                app.getResources().getString(R.string.pref_key_registration_text),
-                defaultValue,
-                new RegistrationTextPreferenceConverter(RegistrationNotificationText.jsonAdapter(moshi)));
     }
 
     @Provides

@@ -28,6 +28,10 @@ class PartnerPreferenceViewModel(
                 )
             }
 
+    val registrationText = Transformations.map(partnerInfoDao.getCurrentPartnerInfoLive()) {
+        it.registrationNotificationText
+    }
+
     private val _birthdayValidationState = LiveEvent<BirthdayValidationState>()
     val birthdayValidationState: LiveData<BirthdayValidationState> = _birthdayValidationState
 
