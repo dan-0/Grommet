@@ -231,9 +231,6 @@ Submitting an application containing false information may also subject a person
 
     <!-- Preference Strings -->
     <string name="pref_key_registration_text" translatable="false">registration_text</string>
-    <string name="pref_key_registration_deadline" translatable="false">registration_deadline</string>
-    <string name="pref_key_partner_name" translatable="false">partner_name</string>
-    <string name="pref_key_partner_volunteer_text" translatable="false">partner_volunteer_text</string>
 
     <string name="pref_title_partner_name" translatable="false">Organization</string>
     <string name="pref_title_partner_id" translatable="false">Partner ID</string>

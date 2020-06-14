@@ -11,7 +11,7 @@ public final class MockPartnerNames {
             .appVersion(1)
             .partnerName("OSET Org")
             .sessionTimeoutLength(2)
-            .registrationDeadlineDate(Dates.parseISO8601_ShortDate("2018-09-01"))
+            .registrationDeadlineDate(Dates.parseISO8601_ShortDate("2020-09-01"))
             .registrationNotificationText(RegistrationNotificationText.builder()
                     .english("mock english text")
                     .spanish("mock spanish text")

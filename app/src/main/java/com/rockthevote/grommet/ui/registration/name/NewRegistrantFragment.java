@@ -30,7 +30,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import kotlin.Unit;
 import rx.Observable;
 
 public class NewRegistrantFragment extends BaseRegistrationFragment {
@@ -72,6 +71,8 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
                 new PartnerPreferenceViewModelFactory(partnerInfoDao)
         ).get(PartnerPreferenceViewModel.class);
 
+        observePartnerPrefs();
+
         validator = new ObservableValidator(this, getActivity());
 
         binding.edittextBirthday.setOnClickListener(v -> {
@@ -86,6 +87,19 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
         });
     }
 
+    private void observePartnerPrefs() {
+        partnerPrefViewModel.getBirthdayValidationState().observe(getViewLifecycleOwner(), birthdayValidationState -> {
+            if (birthdayValidationState instanceof BirthdayValidationState.Success) {
+                binding.tilBirthday.setError(null);
+            } else if (birthdayValidationState instanceof BirthdayValidationState.Error) {
+
+                String regDate = ((BirthdayValidationState.Error) birthdayValidationState).getRegDate();
+                String errorMsg = String.format(getString(R.string.birthday_error), regDate);
+                binding.tilBirthday.setError(errorMsg);
+            }
+        });
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -97,35 +111,25 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
         binding.edittextBirthday.setText(Dates.formatAsISO8601_ShortDate(date.getTime()));
 
         partnerPrefViewModel.validateBirthDay(
-                Dates.parseISO8601_ShortDate(binding.edittextBirthday.getText().toString()),
-                this::isEighteenByDeadline, this::isNotEighteenByDeadline(String));
+                Dates.parseISO8601_ShortDate(binding.edittextBirthday.getText().toString()));
     }
-
-    private Unit isEighteenByDeadline() {
-        binding.tilBirthday.setError(null);
-        return Unit.INSTANCE;
-    }
-
-    private Unit isNotEighteenByDeadline(String error) {
-        binding.tilBirthday.setError(error);
-        return Unit.INSTANCE;
-    }
-
-
 
     @Override
     public Observable<Boolean> verify() {
 
-        Observable<Boolean> previousNameObs = binding.previousName.verify()
-                .flatMap(val -> Observable.just(binding.nameChanged.isChecked() ? val : true));
+        if (binding.tilBirthday.getError() != null) {
+            // special case since there is an additional validation on the birth date
+            return Observable.just(false);
+        } else {
+            Observable<Boolean> previousNameObs = binding.previousName.verify()
+                    .flatMap(val -> Observable.just(binding.nameChanged.isChecked() ? val : true));
 
-        return Observable.zip(
-                validator.validate(),
-                binding.name.verify(),
-                previousNameObs,
-                Observable.just(isEighteenByDeadline()),
-                (validator, name, prevName, birthday)
-                        -> validator && name && prevName && birthday);
+            return Observable.zip(
+                    validator.validate(),
+                    binding.name.verify(),
+                    previousNameObs,
+                    (validator, name, prevName) -> validator && name && prevName);
+        }
     }
 
     @Override

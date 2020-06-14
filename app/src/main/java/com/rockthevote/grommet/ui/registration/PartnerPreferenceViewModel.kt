@@ -1,12 +1,11 @@
 package com.rockthevote.grommet.ui.registration
 
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
-import com.rockthevote.grommet.ui.registration.name.NewRegistrantPartnerData
+import com.rockthevote.grommet.ui.registration.name.BirthdayValidationState
 import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoPartnerData
+import com.rockthevote.grommet.util.Dates
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.launch
@@ -29,18 +28,14 @@ class PartnerPreferenceViewModel(
                 )
             }
 
-    val newRegistrantPartnerData = Transformations.map(partnerInfoDao.getCurrentPartnerInfoLive()) {
-        NewRegistrantPartnerData(
-                it.registrationDeadlineDate,
-                it.registrationNotificationText
-        )
-    }
+    private val _birthdayValidationState = LiveEvent<BirthdayValidationState>()
+    val birthdayValidationState: LiveData<BirthdayValidationState> = _birthdayValidationState
 
     /*
         check if registrant will be 18 by the election date.
         Calendar uses 0 as the first month but LocalDate does not, so make sure and add 1 to it
      */
-    fun validateBirthDay(birthDate: Date, successCallback: () -> Unit, failCallback: () -> Unit) {
+    fun validateBirthDay(birthDate: Date) {
         viewModelScope.launch(dispatchers.io) {
             val registrationDeadline = partnerInfoDao.getCurrentPartnerInfo().registrationDeadlineDate
 
@@ -62,11 +57,10 @@ class PartnerPreferenceViewModel(
 
 
             if (ChronoUnit.YEARS.between(birthday, regDate) >= 18) {
-                successCallback()
+                _birthdayValidationState.postValue(BirthdayValidationState.Success)
             } else {
-                String.format(getString(R.string.birthday_error),
-                Dates.formatAsISO8601_ShortDate(registrationDeadline.get())));
-                failCallback()
+                _birthdayValidationState.postValue(
+                        BirthdayValidationState.Error(Dates.formatAsISO8601_ShortDate(registrationDeadline)))
             }
         }
     }

@@ -14,8 +14,6 @@ import com.rockthevote.grommet.data.api.RockyAdapterFactory;
 import com.rockthevote.grommet.data.api.StringNormalizerFactory;
 import com.rockthevote.grommet.data.api.model.DateAdapter;
 import com.rockthevote.grommet.data.api.model.RegistrationNotificationText;
-import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
-import com.rockthevote.grommet.data.prefs.RegistrationDeadlinePreferenceConverter;
 import com.rockthevote.grommet.data.prefs.RegistrationText;
 import com.rockthevote.grommet.data.prefs.RegistrationTextPreferenceConverter;
 import com.rockthevote.grommet.ui.MainActivity;
@@ -23,8 +21,6 @@ import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.squareup.moshi.Moshi;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
 
 import javax.inject.Singleton;
 
@@ -68,16 +64,6 @@ public final class DataModule {
     @Singleton
     RxSharedPreferences provideRxSharedPreferences(SharedPreferences prefs) {
         return RxSharedPreferences.create(prefs);
-    }
-
-    @Provides
-    @Singleton
-    @RegistrationDeadline
-    Preference<Date> provideRegistrationDeadline(RxSharedPreferences prefs, Application app) {
-        return prefs.getObject(
-                app.getResources().getString(R.string.pref_key_registration_deadline),
-                Calendar.getInstance().getTime(),
-                new RegistrationDeadlinePreferenceConverter());
     }
 
     @Provides
