@@ -1,10 +1,6 @@
 package com.rockthevote.grommet.ui.registration.assistance;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-
-import com.google.android.material.textfield.TextInputLayout;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,29 +8,24 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.f2prateek.rx.preferences2.Preference;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.databinding.FragmentAssistantInfoBinding;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
-import com.rockthevote.grommet.ui.registration.RegistrationData;
-import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Phone;
 
-import javax.inject.Inject;
-
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 public class AssistantInfoFragment extends BaseRegistrationFragment {
 
@@ -53,8 +44,6 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
     @Checked(messageResId = R.string.must_be_checked)
     @BindView(R.id.checkbox_assistant_affirmation) CheckBox assistantAffirmation;
-
-    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
 
     private ObservableValidator validator;
 

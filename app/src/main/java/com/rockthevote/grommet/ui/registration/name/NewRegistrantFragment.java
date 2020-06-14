@@ -1,13 +1,6 @@
 package com.rockthevote.grommet.ui.registration.name;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.textfield.TextInputLayout;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +8,16 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 
 import com.f2prateek.rx.preferences2.Preference;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
 import com.rockthevote.grommet.databinding.FragmentNewRegistrantBinding;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DatePickerDialogFragment;
-import com.rockthevote.grommet.ui.registration.RegistrationData;
-import com.rockthevote.grommet.ui.registration.RegistrationViewModel;
 import com.rockthevote.grommet.util.Dates;
 
 import org.threeten.bp.LocalDate;
@@ -38,11 +29,11 @@ import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 public class NewRegistrantFragment extends BaseRegistrationFragment {
 
@@ -58,9 +49,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
     @BindView(R.id.checkbox_is_us_citizen)
     CheckBox checkBoxIsUSCitizen;
 
-    @Inject
-    @CurrentRockyRequestId
-    Preference<Long> rockyRequestRowId;
     @Inject
     @RegistrationDeadline
     Preference<Date> registrationDeadline;

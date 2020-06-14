@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
-import com.google.android.material.textfield.TextInputLayout;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -12,20 +11,17 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
-import com.f2prateek.rx.preferences2.Preference;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.NameType;
 import com.rockthevote.grommet.data.db.model.Prefix;
 import com.rockthevote.grommet.data.db.model.Suffix;
-import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,8 +49,6 @@ public class NameView extends GridLayout {
     @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_last_name) TextInputLayout lastNameTIL;
     @BindView(R.id.last_name) EditText lastNameEditText;
-
-    @Inject @CurrentRockyRequestId Preference<Long> rockyRequestRowId;
 
     private ObservableValidator validator;
 

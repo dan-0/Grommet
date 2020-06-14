@@ -9,14 +9,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-
-import com.f2prateek.rx.preferences2.Preference;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.prefs.CurrentRockyRequestId;
-import com.rockthevote.grommet.data.prefs.CurrentSessionRowId;
 import com.rockthevote.grommet.databinding.FragmentReviewAndConfirmBinding;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DisclosureAgreementDialogFragment;
@@ -26,8 +21,7 @@ import com.rockthevote.grommet.util.LocaleUtils;
 
 import java.util.Locale;
 
-import javax.inject.Inject;
-
+import androidx.annotation.Nullable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -45,13 +39,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.checkbox_agreement)
     CheckBox confirmCheckbox;
-
-    @Inject
-    @CurrentRockyRequestId
-    Preference<Long> rockyRequestRowId;
-    @Inject
-    @CurrentSessionRowId
-    Preference<Long> currentSessionRowId;
 
     private CompositeSubscription subscriptions;
     private DisclosureAgreementDialogFragment dialog;
