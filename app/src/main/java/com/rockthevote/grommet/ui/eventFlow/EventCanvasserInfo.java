@@ -10,7 +10,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
@@ -24,10 +26,10 @@ import javax.inject.Inject;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import timber.log.Timber;
 
 import static com.rockthevote.grommet.data.db.model.SessionStatus.DETAILS_ENTERED;
@@ -36,7 +38,7 @@ import static com.rockthevote.grommet.data.db.model.SessionStatus.PARTNER_UPDATE
 
 public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
 
-    @Inject ReactiveLocationProvider reactiveLocationProvider;
+    @Inject FusedLocationProviderClient fusedLocationProviderClient;
     @Inject PartnerInfoDao partnerInfoDao;
     @Inject SessionDao sessionDao;
 
@@ -87,7 +89,7 @@ public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new CanvasserInfoViewModelFactory(partnerInfoDao, sessionDao, reactiveLocationProvider)
+                new CanvasserInfoViewModelFactory(partnerInfoDao, sessionDao, fusedLocationProviderClient)
         ).get(CanvasserInfoViewModel.class);
 
         observeData();
@@ -109,8 +111,19 @@ public class EventCanvasserInfo extends LinearLayout implements EventFlowPage {
                     if (effect instanceof CanvasserInfoState.Success) {
                         listener.setState(DETAILS_ENTERED, true);
                     } else if (effect instanceof CanvasserInfoState.Error) {
-                        //todo anything?
+                        Toast.makeText(
+                                getContext(),
+                                R.string.error_updating_canvasser_info,
+                                Toast.LENGTH_LONG
+                        ).show();
                         Timber.e("error updating view after updating canvasser info");
+                    } else if (effect instanceof CanvasserInfoState.LocationError) {
+                        Toast.makeText(
+                                getContext(),
+                                R.string.error_location,
+                                Toast.LENGTH_LONG
+                        ).show();
+                        Timber.e("error updating view due to location error");
                     }
                 }
         );

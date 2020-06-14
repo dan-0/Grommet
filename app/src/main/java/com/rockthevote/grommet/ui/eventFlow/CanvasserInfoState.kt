@@ -8,4 +8,5 @@ sealed class CanvasserInfoState {
     abstract class Effect : CanvasserInfoState()
     object Success : Effect()
     object Error : Effect()
+    object LocationError : Effect()
 }

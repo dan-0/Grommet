@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import com.f2prateek.rx.preferences2.Preference;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.api.ApiModule;
@@ -46,7 +48,6 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
-import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.jakewharton.byteunits.DecimalByteUnit.MEGABYTES;
@@ -74,8 +75,8 @@ public final class DataModule {
 
     @Provides
     @Singleton
-    ReactiveLocationProvider provideReactiveLocationProvider(Application app){
-        return new ReactiveLocationProvider(app);
+    FusedLocationProviderClient provideFusedLocationProviderClient(Application app) {
+        return LocationServices.getFusedLocationProviderClient(app);
     }
 
     @Provides
