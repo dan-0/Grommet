@@ -11,6 +11,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.legacy.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
@@ -23,17 +32,9 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.legacy.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.subscriptions.CompositeSubscription;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -53,7 +54,7 @@ public final class MainActivity extends BaseActivity {
 
     @Inject ViewContainer viewContainer;
 
-    @Inject ReactiveLocationProvider locationProvider;
+    @Inject FusedLocationProviderClient locationProvider;
 
     @Inject HockeyAppHelper hockeyAppHelper;
 

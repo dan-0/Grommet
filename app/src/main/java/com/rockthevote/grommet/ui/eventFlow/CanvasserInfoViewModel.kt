@@ -1,7 +1,9 @@
 package com.rockthevote.grommet.ui.eventFlow
 
+import android.annotation.SuppressLint
 import android.location.Location
 import androidx.lifecycle.*
+import com.google.android.gms.location.*
 import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.api.model.ApiGeoLocation
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
@@ -11,7 +13,6 @@ import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import pl.charmas.android.reactivelocation.ReactiveLocationProvider
 import timber.log.Timber
 import java.util.*
 
@@ -21,9 +22,9 @@ import java.util.*
 
 class CanvasserInfoViewModel(
         private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
-        private val partnerInfoDao: PartnerInfoDao,
+        partnerInfoDao: PartnerInfoDao,
         private val sessionDao: SessionDao,
-        private val reactiveLocationProvider: ReactiveLocationProvider
+        private val fusedLocationProviderClient: FusedLocationProviderClient
 ) : ViewModel() {
 
     val canvasserInfoData = Transformations.map(partnerInfoDao.getPartnerInfoWithSession()) { result ->
@@ -45,9 +46,11 @@ class CanvasserInfoViewModel(
     val effect: LiveData<CanvasserInfoState.Effect?> = _effect
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e(throwable)
+        Timber.e(throwable, "Error getting data")
+        updateEffect(CanvasserInfoState.Error)
     }
 
+    @SuppressLint("MissingPermission")
     fun updateCanvasserInfo(canvasserName: String,
                             partnerTrackingId: String,
                             openTrackingId: String,
@@ -67,27 +70,34 @@ class CanvasserInfoViewModel(
                 updateEffect(CanvasserInfoState.Success)
             } else {
                 runCatching {
-                    val location: Location = reactiveLocationProvider.lastKnownLocation.toBlocking().first()
+
+                    val location: Location = fusedLocationProviderClient.getLocation()
 
                     sessionDao.clearAllSessionInfo()
-                    sessionDao.insert(Session(
-                            partnerInfoId = canvasserInfoData.value?.partnerInfoId ?: 0,
-                            canvasserName = canvasserName,
-                            sourceTrackingId = canvasserName + Calendar.getInstance().timeInMillis,
-                            partnerTrackingId = partnerTrackingId,
-                            geoLocation = ApiGeoLocation.builder()
-                                    .latitude(location.latitude)
-                                    .longitude(location.longitude)
-                                    .build(),
-                            openTrackingId = openTrackingId,
-                            deviceId = deviceId
-                    )
+                    sessionDao.insert(
+                            Session(
+                                    partnerInfoId = canvasserInfoData.value?.partnerInfoId ?: 0,
+                                    canvasserName = canvasserName,
+                                    sourceTrackingId = canvasserName + Calendar.getInstance().timeInMillis,
+                                    partnerTrackingId = partnerTrackingId,
+                                    geoLocation = ApiGeoLocation.builder()
+                                            .latitude(location.latitude)
+                                            .longitude(location.longitude)
+                                            .build(),
+                                    openTrackingId = openTrackingId,
+                                    deviceId = deviceId
+                            )
                     )
                 }.onSuccess {
                     updateEffect(CanvasserInfoState.Success)
                 }.onFailure {
-                    Timber.d("failure updating canvasser info")
-                    updateEffect(CanvasserInfoState.Error)
+                    Timber.d(it, "failure updating canvasser info")
+
+                   val effect = when (it) {
+                        is LocationException -> CanvasserInfoState.Error
+                        else -> CanvasserInfoState.Error
+                    }
+                    updateEffect(effect)
                 }
             }
 
@@ -103,7 +113,7 @@ class CanvasserInfoViewModel(
 class CanvasserInfoViewModelFactory(
         private val partnerInfoDao: PartnerInfoDao,
         private val sessionDao: SessionDao,
-        private val reactiveLocationProvider: ReactiveLocationProvider
+        private val fusedLocationProviderClient: FusedLocationProviderClient
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         val dispatchers = DispatcherProviderImpl()
@@ -113,6 +123,6 @@ class CanvasserInfoViewModelFactory(
                 dispatchers,
                 partnerInfoDao,
                 sessionDao,
-                reactiveLocationProvider) as T
+                fusedLocationProviderClient) as T
     }
 }
