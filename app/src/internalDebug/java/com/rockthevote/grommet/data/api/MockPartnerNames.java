@@ -13,12 +13,12 @@ public final class MockPartnerNames {
             .sessionTimeoutLength(2)
             .registrationDeadlineDate(Dates.parseISO8601_ShortDate("2018-09-01"))
             .registrationNotificationText(RegistrationNotificationText.builder()
-                    .english("english text")
-                    .spanish("spanish text")
+                    .english("mock english text")
+                    .spanish("mock spanish text")
                     .build())
             .partnerVolunteerText(PartnerVolunteerText.builder()
-                    .english("english volunteer text")
-                    .spanish("spanish volunteer text")
+                    .english("mock english volunteer text")
+                    .spanish("mock spanish volunteer text")
                     .build())
             .build();
 }

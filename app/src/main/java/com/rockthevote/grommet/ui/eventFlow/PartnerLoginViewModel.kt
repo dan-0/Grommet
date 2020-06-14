@@ -21,7 +21,7 @@ class PartnerLoginViewModel(
 ) : ViewModel() {
 
     val partnerInfoId: LiveData<String> =
-            Transformations.map(partnerInfoDao.getCurrentPartnerInfo()) { result ->
+            Transformations.map(partnerInfoDao.getCurrentPartnerInfoLive()) { result ->
                 result?.partnerId ?: "-1"
             }
 
