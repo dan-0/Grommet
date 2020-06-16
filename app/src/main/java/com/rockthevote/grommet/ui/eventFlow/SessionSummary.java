@@ -2,6 +2,7 @@ package com.rockthevote.grommet.ui.eventFlow;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
     @Inject PartnerInfoDao partnerInfoDao;
     @Inject SessionDao sessionDao;
     @Inject RegistrationDao registrationDao;
+    @Inject SharedPreferences sharedPreferences;
 
     // Session Details
     @BindView(R.id.summary_canvasser_name) TextView edCanvasserName;
@@ -78,7 +80,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
         }
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao, sharedPreferences)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();
@@ -93,7 +95,10 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
                     edEventZip.setText(data.getPartnerTrackingId());
                     edPartnerName.setText(data.getPartnerName());
                     edDeviceId.setText(data.getDeviceId());
+                });
 
+        viewModel.getClockOutData().observe(
+                (AppCompatActivity) getContext(), data -> {
                     if (data.getClockInTime() != null && data.getClockOutTime() != null) {
                         Date clockIn = data.getClockInTime();
                         Date clockOut = data.getClockOutTime();
@@ -111,9 +116,12 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
 
                         totalTime.setText(elapsedTime);
 
+                    } else {
+                        clockInTime.setText("");
+                        clockOutTime.setText("");
                     }
-
-                });
+                }
+        );
 
         viewModel.getEffect().observe(
                 (AppCompatActivity) getContext(), effect -> {

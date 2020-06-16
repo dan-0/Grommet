@@ -34,6 +34,7 @@ public class SessionProgressDialogFragment extends DialogFragment {
     @Inject PartnerInfoDao partnerInfoDao;
     @Inject SessionDao sessionDao;
     @Inject RegistrationDao registrationDao;
+    @Inject SharedPreferences sharedPreferences;
 
     // Total Counts
     @BindView(R.id.summary_total_registrations) TextView totalRegistrations;
@@ -66,7 +67,7 @@ public class SessionProgressDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this,
-                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao, sharedPreferences)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();
