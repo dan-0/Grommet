@@ -1,13 +1,6 @@
 package com.rockthevote.grommet.ui.registration.personal;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.textfield.TextInputLayout;
-
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,25 +8,24 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.f2prateek.rx.preferences2.Preference;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.api.model.PartnerVolunteerText;
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
+import com.rockthevote.grommet.data.db.model.Party;
 import com.rockthevote.grommet.data.db.model.PhoneType;
 import com.rockthevote.grommet.data.db.model.PreferredLanguage;
-import com.rockthevote.grommet.data.prefs.PartnerName;
-import com.rockthevote.grommet.data.prefs.PartnerVolunteerTextPref;
+import com.rockthevote.grommet.data.db.model.Race;
 import com.rockthevote.grommet.databinding.FragmentAdditionalInfoBinding;
+import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModel;
+import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModelFactory;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
-import com.rockthevote.grommet.ui.registration.RegistrationData;
-import com.rockthevote.grommet.ui.registration.RegistrationViewModel;
-import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 import com.rockthevote.grommet.util.EmailOrEmpty;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;
@@ -42,25 +34,21 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
-
-import com.rockthevote.grommet.data.db.model.Party;
 
 import static com.rockthevote.grommet.data.db.model.Party.OTHER_PARTY;
-
-import com.rockthevote.grommet.data.db.model.Race;
 
 public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private static final String OTHER_PARTY_VISIBILITY_KEY = "other_party_visibility_key";
 
-    @Inject @PartnerName Preference<String> partnerNamePref;
-    @Inject @PartnerVolunteerTextPref Preference<PartnerVolunteerText> partnerVolunteerText;
+    @Inject PartnerInfoDao partnerInfoDao;
     @BindView(R.id.spinner_race) BetterSpinner raceSpinner;
 
     @NotEmpty(messageResId = R.string.required_field)
@@ -111,6 +99,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     private final BehaviorSubject<Boolean> doesNotHaveSSN = BehaviorSubject.create(false);
 
     private FragmentAdditionalInfoBinding binding;
+    private PartnerPreferenceViewModel partnerPrefViewModel;
 
     @Nullable
     @Override
@@ -123,6 +112,13 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        partnerPrefViewModel = new ViewModelProvider(
+                getActivity(),
+                new PartnerPreferenceViewModelFactory(partnerInfoDao)
+        ).get(PartnerPreferenceViewModel.class);
+
+        observerPartnerData();
 
         Validator.registerAnnotation(Phone.class);
         Validator.registerAnnotation(EmailOrEmpty.class);
@@ -181,6 +177,25 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     }
 
+    private void observerPartnerData() {
+        partnerPrefViewModel.getAdditionalInfoPartnerData().observe(getViewLifecycleOwner(), data -> {
+
+            phoneOptIn.setText(getString(R.string.label_receive_text, data.getPartnerName()));
+            emailOptIn.setText(getString(R.string.label_receive_email, data.getPartnerName()));
+
+            // update partner volunteer checkbox text
+            Locale curLocale = getResources().getConfiguration().locale;
+            switch (curLocale.getLanguage()) {
+                case "es":
+                    partnerVolunteerCheckBox.setText(data.getPartnerVolunteerText().spanish());
+                    break;
+                default: // use english for default
+                    partnerVolunteerCheckBox.setText(data.getPartnerVolunteerText().english());
+                    break;
+            }
+        });
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -189,21 +204,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
         // set up defaults
         if (null == savedInstanceState) {
             phoneTypeSpinner.getEditText().setText(phoneTypeEnumAdapter.getItem(0).toString());
-        }
-
-        // TODO ensure partnerNamePref and partnerVolunteerText gets updated again with partner response
-        phoneOptIn.setText(getString(R.string.label_receive_text, partnerNamePref.get()));
-        emailOptIn.setText(getString(R.string.label_receive_email, partnerNamePref.get()));
-
-        // update partner volunteer checkbox text
-        Locale curLocale = getResources().getConfiguration().locale;
-        switch (curLocale.getLanguage()) {
-            case "es":
-                partnerVolunteerCheckBox.setText(partnerVolunteerText.get().spanish());
-                break;
-            default: // use english for default
-                partnerVolunteerCheckBox.setText(partnerVolunteerText.get().english());
-                break;
         }
     }
 

@@ -16,7 +16,10 @@ import com.rockthevote.grommet.data.db.relationship.PartnerInfoWithSessionAndReg
 @Dao
 interface PartnerInfoDao {
     @Query("SELECT * FROM partner_info LIMIT 1")
-    fun getCurrentPartnerInfo(): LiveData<PartnerInfo>
+    fun getCurrentPartnerInfoLive(): LiveData<PartnerInfo>
+
+    @Query("SELECT * FROM partner_info LIMIT 1")
+    fun getCurrentPartnerInfo(): PartnerInfo
 
     @Query("SELECT * FROM partner_info")
     fun getAll(): List<PartnerInfo>
