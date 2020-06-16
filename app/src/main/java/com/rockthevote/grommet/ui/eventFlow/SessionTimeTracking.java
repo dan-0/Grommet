@@ -16,9 +16,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
@@ -30,6 +27,8 @@ import com.rockthevote.grommet.util.Dates;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -248,6 +247,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     private void clockIn() {
 
         updateUI(CLOCKED_IN);
+        listener.setState(CLOCKED_IN, true);
 
     }
 

@@ -6,7 +6,6 @@ import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.model.RockyRequest
-import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.SessionStatus
 import com.rockthevote.grommet.util.SharedPrefKeys.KEY_SESSION_STATUS
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
@@ -135,6 +134,23 @@ class MainActivityViewModel(
         super.onCleared()
         supervisorJob.cancelChildren()
     }
+
+    fun asyncCanRegister(successCallback: () -> Unit, failCallback: () -> Unit) {
+        viewModelScope.launch(dispatchers.io) {
+            val rawState = sharedPreferences.getString(KEY_SESSION_STATUS, null)
+
+            val status = SessionStatus.fromString(rawState) ?: SessionStatus.PARTNER_UPDATE
+
+            withContext(dispatchers.main) {
+                if (status == SessionStatus.CLOCKED_IN) {
+                    successCallback()
+                } else {
+                    failCallback()
+                }
+            }
+        }
+    }
+
 }
 
 class MainActivityViewModelFactory(
