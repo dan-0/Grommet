@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Counties;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.AddressType;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
@@ -23,6 +24,7 @@ import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.Strings;
 import com.rockthevote.grommet.util.ZipTextWatcher;
+import com.squareup.moshi.Moshi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +35,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +51,8 @@ public class AddressView extends GridLayout {
 
     private String childrenStateKey;
     private String superStateKey;
+
+    @Inject Moshi moshi;
 
     @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
