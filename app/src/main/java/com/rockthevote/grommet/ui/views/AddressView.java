@@ -24,6 +24,16 @@ import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.Strings;
 import com.rockthevote.grommet.util.ZipTextWatcher;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
@@ -73,6 +83,8 @@ public class AddressView extends GridLayout {
     private AddressType type;
     private CompositeSubscription subscriptions;
     private ZipTextWatcher zipTextWatcher = new ZipTextWatcher();
+
+    private HashMap<String, List<String>> counties;
 
     public AddressView(Context context) {
         this(context, null);
@@ -141,8 +153,31 @@ public class AddressView extends GridLayout {
                     sectionTitle.setText(R.string.section_label_registration_address);
             }
 
-            countyAdapter = ArrayAdapter.createFromResource(getContext(),
-                    R.array.pa_counties, android.R.layout.simple_list_item_1);
+            InputStream is = getResources().openRawResource(R.raw.pa_county_zip);
+            Writer writer = new StringWriter();
+            char[] buffer = new char[1024];
+            counties = new HashMap<>(0);
+
+            try {
+                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+
+                is.close();
+
+                counties = Counties.jsonAdapter(moshi).fromJson(writer.toString()).toHashMap();
+
+            } catch (IOException e) {
+
+            }
+
+            countyAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+                    counties.keySet().toArray(new String[0]));
+
+//            countyAdapter = ArrayAdapter.createFromResource(getContext(),
+//                    R.array.pa_counties, android.R.layout.simple_list_item_1);
 
             countySpinner.setAdapter(countyAdapter);
             countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
