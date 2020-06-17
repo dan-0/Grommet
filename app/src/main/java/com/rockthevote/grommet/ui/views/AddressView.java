@@ -182,6 +182,8 @@ public class AddressView extends GridLayout {
             countyAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
                     counties.keySet().toArray(new String[0]));
 
+            countyAdapter.sort((o1, o2) -> o1.toString().compareTo(o2.toString()));
+
             countySpinner.setAdapter(countyAdapter);
             countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
             countySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
