@@ -182,14 +182,12 @@ public class AddressView extends GridLayout {
             countyAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
                     counties.keySet().toArray(new String[0]));
 
-//            countyAdapter = ArrayAdapter.createFromResource(getContext(),
-//                    R.array.pa_counties, android.R.layout.simple_list_item_1);
-
             countySpinner.setAdapter(countyAdapter);
             countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
             countySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
                 countySpinner.getEditText().setText(countyAdapter.getItem(i));
                 countySpinner.dismiss();
+                validateZipCode();
             });
 
             stateAdapter = ArrayAdapter.createFromResource(getContext(),
@@ -275,25 +273,45 @@ public class AddressView extends GridLayout {
         dispatchThawSelfOnly(container);
     }
 
+    /**
+     * should only trigger on county adapter update, which should only be possible if
+     * PA is the selected state
+     */
+    private void validateZipCode() {
+        String chosenCounty = countySpinner.getEditText().getText().toString();
+        boolean zipcodeInCounty = !chosenCounty.isEmpty() &&
+                counties.get(chosenCounty).contains(zipEditText.getText().toString());
+
+        zipTIL.setError(zipcodeInCounty ?
+                null : getContext().getString(R.string.zip_code_error));
+    }
+
     public Observable<Boolean> verify() {
 
-        unitTypeSpinner.setError(null);
-        unitTIL.setError(null);
 
-        String unit = unitEditText.getText().toString();
-        String type = unitTypeSpinner.getEditText().getText().toString();
+        if (zipTIL.getError() != null) {
+            // remember there are three of these that are evaluated at the same time in the PersonalInfoFragment
+            // these should probably not be validated if they are not used
+            return Observable.just(false);
+        } else {
+            unitTypeSpinner.setError(null);
+            unitTIL.setError(null);
 
-        boolean typeValidation = (Strings.isBlank(unit) || !Strings.isBlank(type));
-        if (!typeValidation) {
-            unitTypeSpinner.setError(getContext().getString(R.string.required_field));
+            String unit = unitEditText.getText().toString();
+            String type = unitTypeSpinner.getEditText().getText().toString();
+
+            boolean typeValidation = (Strings.isBlank(unit) || !Strings.isBlank(type));
+            if (!typeValidation) {
+                unitTypeSpinner.setError(getContext().getString(R.string.required_field));
+            }
+
+            boolean unitValidation = (!Strings.isBlank(unit) || Strings.isBlank(type));
+            if (!unitValidation) {
+                unitTIL.setError(getContext().getString(R.string.required_field));
+            }
+
+            return validator.validate()
+                    .map(valid -> valid && (typeValidation && unitValidation));
         }
-
-        boolean unitValidation = (!Strings.isBlank(unit) || Strings.isBlank(type));
-        if (!unitValidation) {
-            unitTIL.setError(getContext().getString(R.string.required_field));
-        }
-
-        return validator.validate()
-                .map(valid -> valid && (typeValidation && unitValidation));
     }
 }
