@@ -43,6 +43,9 @@ class SessionTimeTrackingViewModel(
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
     val effect: LiveData<SessionSummaryState.Effect?> = _effect
 
+    private val _clockInState = LiveEvent<ClockInState>()
+    val clockInState: LiveData<ClockInState> = _clockInState
+
     private val _sessionStatus = LiveEvent<SessionStatus>()
     val sessionStatus: LiveData<SessionStatus> = _sessionStatus
 
