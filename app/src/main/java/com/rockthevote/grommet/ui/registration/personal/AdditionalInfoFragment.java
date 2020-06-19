@@ -46,6 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
+import rx.Single;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -179,6 +180,16 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
             langPrefSpinner.dismiss();
         });
 
+        observeState();
+    }
+
+    private void observeState() {
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationData -> {
+            AdditionalInfoData data = registrationData.getAdditionalInfoData();
+            if (data != null) {
+                AdditionalInfoExtKt.toFragmentAdditionalInfoBinding(data, binding);
+            }
+        });
     }
 
     @Override

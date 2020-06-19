@@ -18,6 +18,8 @@ import com.rockthevote.grommet.databinding.FragmentNewRegistrantBinding;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DatePickerDialogFragment;
+import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData;
+import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoExtKt;
 import com.rockthevote.grommet.util.Dates;
 
 import org.threeten.bp.LocalDate;
@@ -82,6 +84,8 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
             binding.previousName.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             binding.previousNameDivider.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
+
+        observeState();
     }
 
     @Override
@@ -100,6 +104,15 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
     public void onPause() {
         super.onPause();
         subscriptions.unsubscribe();
+    }
+
+    private void observeState() {
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationData -> {
+            NewRegistrantData data = registrationData.getNewRegistrantData();
+            if (data != null) {
+                NewRegistrantExtKt.toFragmentNewRegistratntBinding(data, binding);
+            }
+        });
     }
 
     private void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

@@ -16,6 +16,8 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.databinding.FragmentAssistantInfoBinding;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.address.PersonalInfoData;
+import com.rockthevote.grommet.ui.registration.address.PersonalInfoExtKt;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Phone;
@@ -73,6 +75,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
+        observeState();
     }
 
     @Override
@@ -95,6 +98,15 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void observeState() {
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationData -> {
+            AssistanceData data = registrationData.getAssistanceData();
+            if (data != null) {
+                AssistanceExtKt.toFragmentAssistantInfoBinding(data, binding);
+            }
+        });
     }
 
     @OnCheckedChanged(R.id.checkbox_has_assistant)

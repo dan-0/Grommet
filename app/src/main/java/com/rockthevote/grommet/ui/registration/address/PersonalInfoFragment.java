@@ -14,6 +14,8 @@ import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.databinding.FragmentPersonalInfoBinding;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.RegistrationData;
+import com.rockthevote.grommet.ui.registration.name.NewRegistrantData;
+import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -42,12 +44,22 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
+        observeState();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void observeState() {
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationData -> {
+            PersonalInfoData data = registrationData.getAddressData();
+            if (data != null) {
+                PersonalInfoExtKt.toFragmentPersonalInfoBinding(data, binding);
+            }
+        });
     }
 
     @OnCheckedChanged(R.id.mailing_address_is_different)
