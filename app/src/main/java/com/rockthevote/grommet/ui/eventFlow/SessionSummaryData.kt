@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.eventFlow
 
 import com.rockthevote.grommet.data.db.model.Registration
+import com.rockthevote.grommet.data.db.model.SessionStatus
 import java.util.*
 
 /**

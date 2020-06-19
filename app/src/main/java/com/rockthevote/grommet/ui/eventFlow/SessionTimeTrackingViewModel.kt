@@ -43,8 +43,8 @@ class SessionTimeTrackingViewModel(
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
     val effect: LiveData<SessionSummaryState.Effect?> = _effect
 
-    private val _clockInState = LiveEvent<ClockInState>()
-    val clockInState: LiveData<ClockInState> = _clockInState
+    private val _clockInState = LiveEvent<SessionTimeTrackingState>()
+    val clockInState: LiveData<SessionTimeTrackingState> = _clockInState
 
     private val _sessionStatus = LiveEvent<SessionStatus>()
     val sessionStatus: LiveData<SessionStatus> = _sessionStatus
@@ -168,6 +168,20 @@ class SessionTimeTrackingViewModel(
                 //Todo network api error
             }
         }
+    }
+
+    private fun combineSessionDataAndStatus(sessionSummaryData: LiveData<SessionSummaryData>,
+                                    sessionStatus: LiveData<SessionStatus>): SessionTimeTrackingState {
+        val data = sessionSummaryData.value
+        val status = sessionStatus.value
+
+        // Don't send a success until we have both results
+        if(data == null || status == null){
+            return SessionTimeTrackingState.Loading
+        }
+
+
+
     }
 
     fun clearSession() {
