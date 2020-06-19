@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
@@ -45,6 +46,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Inject SessionDao sessionDao;
     @Inject RegistrationDao registrationDao;
     @Inject SharedPreferences sharedPreferences;
+    @Inject RockyService rockyService;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.ed_event_name) TextView edEventName;
@@ -87,7 +89,12 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao, sharedPreferences)
+                new SessionTimeTrackingViewModelFactory(
+                        partnerInfoDao,
+                        sessionDao,
+                        registrationDao,
+                        sharedPreferences,
+                        rockyService)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();

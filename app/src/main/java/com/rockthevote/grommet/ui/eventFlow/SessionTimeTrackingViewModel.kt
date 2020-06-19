@@ -4,10 +4,13 @@ import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.api.RockyService
+import com.rockthevote.grommet.data.api.model.ClockInRequest
+import com.rockthevote.grommet.data.api.model.ClockOutRequest
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.SessionStatus
+import com.rockthevote.grommet.util.Dates
 import com.rockthevote.grommet.util.SharedPrefKeys
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
@@ -93,7 +96,7 @@ class SessionTimeTrackingViewModel(
 
             withContext(dispatchers.main) {
                 if (canClockOut) {
-                    clockOut(successCallback)
+                    makeClockOutRequest(successCallback)
                 } else {
                     failCallback()
                 }
@@ -101,12 +104,68 @@ class SessionTimeTrackingViewModel(
         }
     }
 
-//    private fun clockOut(successCallback: () -> Unit) {
-//
-////        rockyRequestScope.launch {
-////            rockyService.clockOut()
-////        }
-//    }
+    private fun makeClockInRequest(successCallback: () -> Unit) {
+        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            runCatching {
+                val session = sessionDao.getCurrentSession()
+                val clockInRequest = ClockInRequest.builder()
+                        .canvasserName(session?.canvasserName)
+                        .geoLocation(session?.geoLocation)
+                        .clockInDatetime(Dates.formatAsISO8601_Date(session?.clockOutTime))
+                        .openTrackingId(session?.openTrackingId)
+                        .partnerTrackingId(session?.partnerTrackingId)
+                        .sourceTrackingId(session?.sourceTrackingId)
+                        .build()
+
+                val result = rockyService.clockIn(clockInRequest).toBlocking().value()
+
+                if (result.isError) {
+//                    throw result.error()
+//                            ?: PartnerLoginViewModel.PartnerLoginViewModelException("Error retrieving result")
+                } else {
+//                    result?.response()?.body()
+//                            ?: throw PartnerLoginViewModel.PartnerLoginViewModelException("Successful result with empty body received")
+                }
+            }.onSuccess {
+                successCallback()
+            }.onFailure {
+                //Todo network api error
+            }
+        }
+    }
+
+    private fun makeClockOutRequest(successCallback: () -> Unit) {
+
+        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            runCatching {
+                val session = sessionDao.getCurrentSession()
+                val clockoutRequest = ClockOutRequest.builder()
+                        .canvasserName(session?.canvasserName)
+                        .abandonedRegistrations(session?.abandonedCount ?: 0)
+                        .completedRegistrations(session?.registrationCount ?: 0)
+                        .geoLocation(session?.geoLocation)
+                        .clockOutDatetime(Dates.formatAsISO8601_Date(session?.clockOutTime))
+                        .openTrackingId(session?.openTrackingId)
+                        .partnerTrackingId(session?.partnerTrackingId)
+                        .sourceTrackingId(session?.sourceTrackingId)
+                        .build()
+
+                val result = rockyService.clockOut(clockoutRequest).toBlocking().value()
+
+                if (result.isError) {
+//                    throw result.error()
+//                            ?: PartnerLoginViewModel.PartnerLoginViewModelException("Error retrieving result")
+                } else {
+//                    result?.response()?.body()
+//                            ?: throw PartnerLoginViewModel.PartnerLoginViewModelException("Successful result with empty body received")
+                }
+            }.onSuccess {
+                successCallback()
+            }.onFailure {
+                //Todo network api error
+            }
+        }
+    }
 
     fun clearSession() {
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
