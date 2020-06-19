@@ -40,7 +40,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
-import rx.Single;
 import rx.subjects.BehaviorSubject;
 import rx.subscriptions.CompositeSubscription;
 

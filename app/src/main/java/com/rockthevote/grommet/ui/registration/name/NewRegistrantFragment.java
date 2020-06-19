@@ -17,8 +17,6 @@ import com.rockthevote.grommet.databinding.FragmentNewRegistrantBinding;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DatePickerDialogFragment;
-import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData;
-import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoExtKt;
 import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModel;
 import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModelFactory;
 import com.rockthevote.grommet.util.Dates;
@@ -108,18 +106,6 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        subscriptions = new CompositeSubscription();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        subscriptions.unsubscribe();
     }
 
     private void observeState() {

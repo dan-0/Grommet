@@ -6,21 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.databinding.FragmentPersonalInfoBinding;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
-import com.rockthevote.grommet.ui.registration.RegistrationData;
-import com.rockthevote.grommet.ui.registration.name.NewRegistrantData;
-import com.rockthevote.grommet.ui.registration.name.NewRegistrantExtKt;
 
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
-import timber.log.Timber;
 
 
 public class PersonalInfoFragment extends BaseRegistrationFragment {
