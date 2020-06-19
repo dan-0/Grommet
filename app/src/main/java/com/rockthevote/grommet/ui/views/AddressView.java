@@ -41,7 +41,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 
 public class AddressView extends GridLayout {
@@ -164,32 +167,44 @@ public class AddressView extends GridLayout {
             char[] buffer = new char[1024];
             counties = new HashMap<>(0);
 
-            try {
-                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                int n;
-                while ((n = reader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, n);
-                }
+            Observable.just(R.raw.pa_county_zip)
+                    .flatMap(integer -> {
+                        try {
+                            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                            int n;
+                            while ((n = reader.read(buffer)) != -1) {
+                                writer.write(buffer, 0, n);
+                            }
+                            is.close();
 
-                is.close();
 
-                counties = Counties.jsonAdapter(moshi).fromJson(writer.toString()).toHashMap();
+                        } catch (IOException e) {
+                            Timber.e(e, "AddressView: error loading zip codes");
+                        }
 
-            } catch (IOException e) {
+                        return Observable.just(writer.toString());
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()) // observe on UI, or choose another Scheduler
+                    .subscribe(string -> {
+                        try {
+                            counties = Counties.jsonAdapter(moshi).fromJson(string).toHashMap();
+                        } catch (IOException e) {
+                            Timber.e(e, "AddressView: error loading zip codes");
+                        }
+                        countyAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+                                counties.keySet().toArray(new String[0]));
 
-            }
+                        countyAdapter.sort((o1, o2) -> o1.toString().compareTo(o2.toString()));
 
-            countyAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
-                    counties.keySet().toArray(new String[0]));
+                        countySpinner.setAdapter(countyAdapter);
 
-            countyAdapter.sort((o1, o2) -> o1.toString().compareTo(o2.toString()));
+                    });
 
-            countySpinner.setAdapter(countyAdapter);
             countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
             countySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
                 countySpinner.getEditText().setText(countyAdapter.getItem(i));
                 countySpinner.dismiss();
-                validateZipCode();
             });
 
             stateAdapter = ArrayAdapter.createFromResource(getContext(),
@@ -290,6 +305,7 @@ public class AddressView extends GridLayout {
 
     public Observable<Boolean> verify() {
 
+        validateZipCode();
 
         if (zipTIL.getError() != null) {
             // remember there are three of these that are evaluated at the same time in the PersonalInfoFragment
