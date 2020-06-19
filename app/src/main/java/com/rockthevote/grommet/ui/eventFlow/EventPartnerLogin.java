@@ -15,6 +15,7 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
+import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.ui.misc.BetterViewAnimator;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 
@@ -36,6 +37,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
 
     @Inject RockyService rockyService;
     @Inject PartnerInfoDao partnerInfoDao;
+    @Inject SessionDao sessionDao;
 
     @NotEmpty
     @BindView(R.id.ede_til_partner_id) TextInputLayout edePartnerIdTIL;
@@ -78,7 +80,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new PartnerLoginViewModelFactory(rockyService, partnerInfoDao)
+                new PartnerLoginViewModelFactory(rockyService, partnerInfoDao, sessionDao)
         ).get(PartnerLoginViewModel.class);
 
         observeData();

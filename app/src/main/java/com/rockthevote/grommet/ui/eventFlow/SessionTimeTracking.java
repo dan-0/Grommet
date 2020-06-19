@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Inject PartnerInfoDao partnerInfoDao;
     @Inject SessionDao sessionDao;
     @Inject RegistrationDao registrationDao;
+    @Inject SharedPreferences sharedPreferences;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.ed_event_name) TextView edEventName;
@@ -85,7 +87,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao)
+                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao, sharedPreferences)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();
@@ -103,8 +105,12 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
                     if (data.getClockInTime() != null) {
                         clockInTime.setText(Dates.formatAs_LocalTimeOfDay(data.getClockInTime()));
+                    } else {
+                        clockInTime.setText(R.string.time_tracking_default_value);
                     }
                 });
+
+        viewModel.getSessionStatus().observe((AppCompatActivity) getContext(), this::updateUI);
     }
 
     @Override
@@ -245,14 +251,12 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     }
 
     private void clockIn() {
-
-        updateUI(CLOCKED_IN);
+        viewModel.clockIn();
         listener.setState(CLOCKED_IN, true);
-
     }
 
     private void clockOut() {
-
+        viewModel.clockOut();
         toggleClockInButton();
         listener.setState(CLOCKED_OUT, true);
     }
