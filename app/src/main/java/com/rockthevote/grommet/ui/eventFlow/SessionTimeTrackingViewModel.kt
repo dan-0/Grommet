@@ -2,12 +2,14 @@ package com.rockthevote.grommet.ui.eventFlow
 
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
+import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -19,13 +21,16 @@ class SessionTimeTrackingViewModel(
     private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
     private val partnerInfoDao: PartnerInfoDao,
     private val sessionDao: SessionDao,
-    private val registrationDao: RegistrationDao
+    private val registrationDao: RegistrationDao,
+    private val rockyService: RockyService
 ) : ViewModel() {
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable)
         throw throwable
     }
+
+    private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
 
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
     val effect: LiveData<SessionSummaryState.Effect?> = _effect
@@ -69,12 +74,19 @@ class SessionTimeTrackingViewModel(
 
             withContext(dispatchers.main) {
                 if (canClockOut) {
-                    successCallback()
+                    clockOut(successCallback)
                 } else {
                     failCallback()
                 }
             }
         }
+    }
+
+    private fun clockOut(successCallback: () -> Unit) {
+
+//        rockyRequestScope.launch {
+//            rockyService.clockOut()
+//        }
     }
 
     fun clearSession() {
@@ -94,12 +106,18 @@ class SessionTimeTrackingViewModel(
 class SessionTimeTrackingViewModelFactory(
         private val partnerInfoDao: PartnerInfoDao,
         private val sessionDao: SessionDao,
-        private val registrationDao: RegistrationDao
+        private val registrationDao: RegistrationDao,
+        private val rockyService: RockyService
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         val dispatchers = DispatcherProviderImpl()
 
         @Suppress("UNCHECKED_CAST")
-        return SessionTimeTrackingViewModel(dispatchers, partnerInfoDao, sessionDao, registrationDao) as T
+        return SessionTimeTrackingViewModel(
+                dispatchers,
+                partnerInfoDao,
+                sessionDao,
+                registrationDao,
+                rockyService) as T
     }
 }
