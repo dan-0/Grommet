@@ -1,11 +1,14 @@
 package com.rockthevote.grommet.ui.eventFlow
 
+import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.dao.SessionDao
+import com.rockthevote.grommet.data.db.model.SessionStatus
+import com.rockthevote.grommet.util.SharedPrefKeys
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -13,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.*
 
 /**
  * Created by Mechanical Man on 5/30/20.
@@ -22,6 +26,7 @@ class SessionTimeTrackingViewModel(
     private val partnerInfoDao: PartnerInfoDao,
     private val sessionDao: SessionDao,
     private val registrationDao: RegistrationDao,
+    private val sharedPreferences: SharedPreferences,
     private val rockyService: RockyService
 ) : ViewModel() {
 
@@ -35,8 +40,11 @@ class SessionTimeTrackingViewModel(
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
     val effect: LiveData<SessionSummaryState.Effect?> = _effect
 
+    private val _sessionStatus = LiveEvent<SessionStatus>()
+    val sessionStatus: LiveData<SessionStatus> = _sessionStatus
+
     val sessionData = Transformations.map(partnerInfoDao.getPartnerInfoWithSessionAndRegistrations()) { result ->
-        result?.let{
+        result?.let {
             val partnerInfo = result.partnerInfo
             val session = result.sessionWithRegistrations?.session
             val registrations = result.sessionWithRegistrations?.registrations
@@ -47,19 +55,30 @@ class SessionTimeTrackingViewModel(
                     session?.openTrackingId ?: "",
                     session?.partnerTrackingId ?: "",
                     session?.deviceId ?: "",
-                     session?.smsCount ?: 0,
+                    session?.smsCount ?: 0,
                     session?.driversLicenseCount ?: 0,
-                    session?.ssnCount ?:0,
+                    session?.ssnCount ?: 0,
                     session?.emailCount ?: 0,
                     session?.registrationCount ?: 0,
                     session?.abandonedCount ?: 0,
                     registrations ?: emptyList(),
-                    session?.clockInTime
-
+                    session?.clockInTime,
+                    session?.clockOutTime
             )
         } ?: run {
             SessionSummaryData()
         }
+    }
+
+    private val sharedPrefListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        when (key) {
+            SharedPrefKeys.KEY_SESSION_STATUS -> updateSessionStatus()
+        }
+    }
+
+    init {
+        updateSessionStatus()
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPrefListener)
     }
 
     /**
@@ -82,12 +101,12 @@ class SessionTimeTrackingViewModel(
         }
     }
 
-    private fun clockOut(successCallback: () -> Unit) {
-
-//        rockyRequestScope.launch {
-//            rockyService.clockOut()
-//        }
-    }
+//    private fun clockOut(successCallback: () -> Unit) {
+//
+////        rockyRequestScope.launch {
+////            rockyService.clockOut()
+////        }
+//    }
 
     fun clearSession() {
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
@@ -96,10 +115,38 @@ class SessionTimeTrackingViewModel(
         }
     }
 
+    fun clockIn() {
+        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            val session = sessionDao.getCurrentSession() ?: return@launch
+            val newSessionData = session.copy(clockInTime = Date())
+            sessionDao.updateSession(newSessionData)
+    }
+    }
+
+    fun clockOut() {
+        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            val session = sessionDao.getCurrentSession() ?: return@launch
+            val newSessionData = session.copy(clockOutTime = Date())
+            sessionDao.updateSession(newSessionData)
+        }
+    }
+
+    private fun updateSessionStatus() {
+        viewModelScope.launch(dispatchers.io) {
+            val statusString = sharedPreferences.getString(SharedPrefKeys.KEY_SESSION_STATUS, null) ?: return@launch
+            val status = SessionStatus.fromString(statusString) ?: return@launch
+            _sessionStatus.postValue(status)
+        }
+    }
 
     private fun updateEffect(newEffect: SessionSummaryState.Effect) {
         Timber.d("Handling new effect: $newEffect")
         _effect.postValue(newEffect)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPrefListener)
     }
 }
 
@@ -107,6 +154,7 @@ class SessionTimeTrackingViewModelFactory(
         private val partnerInfoDao: PartnerInfoDao,
         private val sessionDao: SessionDao,
         private val registrationDao: RegistrationDao,
+        private val sharedPreferences: SharedPreferences,
         private val rockyService: RockyService
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -118,6 +166,7 @@ class SessionTimeTrackingViewModelFactory(
                 partnerInfoDao,
                 sessionDao,
                 registrationDao,
+                sharedPreferences,
                 rockyService) as T
     }
 }

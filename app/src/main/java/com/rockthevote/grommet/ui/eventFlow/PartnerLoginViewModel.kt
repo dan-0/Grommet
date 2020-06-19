@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
+import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.PartnerInfo
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
@@ -17,7 +18,8 @@ import timber.log.Timber
 class PartnerLoginViewModel(
         private val dispatchers: DispatcherProvider = DispatcherProviderImpl(),
         private val rockyService: RockyService,
-        private val partnerInfoDao: PartnerInfoDao
+        private val partnerInfoDao: PartnerInfoDao,
+        private val sessionDao: SessionDao
 ) : ViewModel() {
 
     val partnerInfoId: LiveData<String> =
@@ -56,6 +58,7 @@ class PartnerLoginViewModel(
                     }
                 }.onSuccess {
                     partnerInfoDao.deleteAllPartnerInfo()
+                    sessionDao.clearAllSessionInfo()
                     partnerInfoDao.insertPartnerInfo(PartnerInfo(
                         partnerId = partnerId,
                         appVersion = it.appVersion().toFloat(),
@@ -82,6 +85,7 @@ class PartnerLoginViewModel(
         Timber.d("Deleting partner info")
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
             partnerInfoDao.deleteAllPartnerInfo()
+            sessionDao.clearAllSessionInfo()
         }
     }
 
@@ -105,12 +109,13 @@ class PartnerLoginViewModel(
 
 class PartnerLoginViewModelFactory(
         private val rockyService: RockyService,
-        private val partnerInfoDao: PartnerInfoDao
+        private val partnerInfoDao: PartnerInfoDao,
+        private val sessionDao: SessionDao
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         val dispatchers = DispatcherProviderImpl()
 
         @Suppress("UNCHECKED_CAST")
-        return PartnerLoginViewModel(dispatchers, rockyService, partnerInfoDao) as T
+        return PartnerLoginViewModel(dispatchers, rockyService, partnerInfoDao, sessionDao) as T
     }
 }

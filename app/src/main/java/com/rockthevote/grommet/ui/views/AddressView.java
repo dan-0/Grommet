@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
+import com.rockthevote.grommet.data.Counties;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.AddressType;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
@@ -23,11 +24,27 @@ import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.util.Strings;
 import com.rockthevote.grommet.util.ZipTextWatcher;
+import com.squareup.moshi.Moshi;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 
 public class AddressView extends GridLayout {
@@ -37,6 +54,8 @@ public class AddressView extends GridLayout {
 
     private String childrenStateKey;
     private String superStateKey;
+
+    @Inject Moshi moshi;
 
     @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
@@ -73,6 +92,8 @@ public class AddressView extends GridLayout {
     private AddressType type;
     private CompositeSubscription subscriptions;
     private ZipTextWatcher zipTextWatcher = new ZipTextWatcher();
+
+    private HashMap<String, List<String>> counties;
 
     public AddressView(Context context) {
         this(context, null);
@@ -141,10 +162,45 @@ public class AddressView extends GridLayout {
                     sectionTitle.setText(R.string.section_label_registration_address);
             }
 
-            countyAdapter = ArrayAdapter.createFromResource(getContext(),
-                    R.array.pa_counties, android.R.layout.simple_list_item_1);
+            InputStream is = getResources().openRawResource(R.raw.pa_county_zip);
+            Writer writer = new StringWriter();
+            char[] buffer = new char[1024];
+            counties = new HashMap<>(0);
 
-            countySpinner.setAdapter(countyAdapter);
+            Observable.just(R.raw.pa_county_zip)
+                    .flatMap(integer -> {
+                        try {
+                            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                            int n;
+                            while ((n = reader.read(buffer)) != -1) {
+                                writer.write(buffer, 0, n);
+                            }
+                            is.close();
+
+
+                        } catch (IOException e) {
+                            Timber.e(e, "AddressView: error loading zip codes");
+                        }
+
+                        return Observable.just(writer.toString());
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()) // observe on UI, or choose another Scheduler
+                    .subscribe(string -> {
+                        try {
+                            counties = Counties.jsonAdapter(moshi).fromJson(string).toHashMap();
+                        } catch (IOException e) {
+                            Timber.e(e, "AddressView: error loading zip codes");
+                        }
+                        countyAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+                                counties.keySet().toArray(new String[0]));
+
+                        countyAdapter.sort((o1, o2) -> o1.toString().compareTo(o2.toString()));
+
+                        countySpinner.setAdapter(countyAdapter);
+
+                    });
+
             countySpinner.setHeight((int) getResources().getDimension(R.dimen.list_pop_up_max_height));
             countySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
                 countySpinner.getEditText().setText(countyAdapter.getItem(i));
@@ -234,25 +290,46 @@ public class AddressView extends GridLayout {
         dispatchThawSelfOnly(container);
     }
 
+    /**
+     * should only trigger on county adapter update, which should only be possible if
+     * PA is the selected state
+     */
+    private void validateZipCode() {
+        String chosenCounty = countySpinner.getEditText().getText().toString();
+        boolean zipcodeInCounty = !chosenCounty.isEmpty() &&
+                counties.get(chosenCounty).contains(zipEditText.getText().toString());
+
+        zipTIL.setError(zipcodeInCounty ?
+                null : getContext().getString(R.string.zip_code_error));
+    }
+
     public Observable<Boolean> verify() {
 
-        unitTypeSpinner.setError(null);
-        unitTIL.setError(null);
+        validateZipCode();
 
-        String unit = unitEditText.getText().toString();
-        String type = unitTypeSpinner.getEditText().getText().toString();
+        if (zipTIL.getError() != null) {
+            // remember there are three of these that are evaluated at the same time in the PersonalInfoFragment
+            // these should probably not be validated if they are not used
+            return Observable.just(false);
+        } else {
+            unitTypeSpinner.setError(null);
+            unitTIL.setError(null);
 
-        boolean typeValidation = (Strings.isBlank(unit) || !Strings.isBlank(type));
-        if (!typeValidation) {
-            unitTypeSpinner.setError(getContext().getString(R.string.required_field));
+            String unit = unitEditText.getText().toString();
+            String type = unitTypeSpinner.getEditText().getText().toString();
+
+            boolean typeValidation = (Strings.isBlank(unit) || !Strings.isBlank(type));
+            if (!typeValidation) {
+                unitTypeSpinner.setError(getContext().getString(R.string.required_field));
+            }
+
+            boolean unitValidation = (!Strings.isBlank(unit) || Strings.isBlank(type));
+            if (!unitValidation) {
+                unitTIL.setError(getContext().getString(R.string.required_field));
+            }
+
+            return validator.validate()
+                    .map(valid -> valid && (typeValidation && unitValidation));
         }
-
-        boolean unitValidation = (!Strings.isBlank(unit) || Strings.isBlank(type));
-        if (!unitValidation) {
-            unitTIL.setError(getContext().getString(R.string.required_field));
-        }
-
-        return validator.validate()
-                .map(valid -> valid && (typeValidation && unitValidation));
     }
 }
