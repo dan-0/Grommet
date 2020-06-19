@@ -11,14 +11,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.legacy.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.HockeyAppHelper;
@@ -32,9 +24,18 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.legacy.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kotlin.Unit;
 import rx.subscriptions.CompositeSubscription;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -188,11 +189,28 @@ public final class MainActivity extends BaseActivity {
 
     @OnClick(R.id.fab)
     public void onClick(View v) {
-        //TODO add back in the checks to make sure the user is clocked-in and has no pending registraitons to upload
-        // Also make sure and grab the location data for the specific registration
-        // then create a new voter registration record (or not, still not sure how this is gonna work)
+        viewModel.asyncCanRegister(this::canRegister, this::cantRegister);
+    }
+
+    private Unit canRegister() {
         startActivity(new Intent(this, RegistrationActivity.class),
                 ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+
+        return Unit.INSTANCE;
+    }
+
+    private Unit cantRegister() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.clock_in_alert_title)
+                .setIcon(R.drawable.ic_timer_black_24dp)
+                .setMessage(R.string.clock_in_alert_message)
+                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                })
+                .create()
+                .show();
+
+        return Unit.INSTANCE;
     }
 
     /**

@@ -7,37 +7,36 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 
-import com.f2prateek.rx.preferences2.Preference;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.Checked;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
-import com.rockthevote.grommet.data.prefs.RegistrationDeadline;
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.databinding.FragmentNewRegistrantBinding;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.registration.DatePickerDialogFragment;
 import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoData;
 import com.rockthevote.grommet.ui.registration.personal.AdditionalInfoExtKt;
+import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModel;
+import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModelFactory;
 import com.rockthevote.grommet.util.Dates;
 
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.temporal.ChronoUnit;
-
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.subscriptions.CompositeSubscription;
 
 public class NewRegistrantFragment extends BaseRegistrationFragment {
+
+    @Inject PartnerInfoDao partnerInfoDao;
 
     @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_birthday)
@@ -51,15 +50,11 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
     @BindView(R.id.checkbox_is_us_citizen)
     CheckBox checkBoxIsUSCitizen;
 
-    @Inject
-    @RegistrationDeadline
-    Preference<Date> registrationDeadline;
-
     private ObservableValidator validator;
 
-    private CompositeSubscription subscriptions;
-
     private FragmentNewRegistrantBinding binding;
+
+    private PartnerPreferenceViewModel partnerPrefViewModel;
 
     @Nullable
     @Override
@@ -72,6 +67,14 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        partnerPrefViewModel = new ViewModelProvider(
+                getActivity(),
+                new PartnerPreferenceViewModelFactory(partnerInfoDao)
+        ).get(PartnerPreferenceViewModel.class);
+
+        observePartnerPrefs();
+
         validator = new ObservableValidator(this, getActivity());
 
         binding.edittextBirthday.setOnClickListener(v -> {
@@ -86,6 +89,19 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
         });
 
         observeState();
+    }
+
+    private void observePartnerPrefs() {
+        partnerPrefViewModel.getBirthdayValidationState().observe(getViewLifecycleOwner(), birthdayValidationState -> {
+            if (birthdayValidationState instanceof BirthdayValidationState.Success) {
+                binding.tilBirthday.setError(null);
+            } else if (birthdayValidationState instanceof BirthdayValidationState.Error) {
+
+                String regDate = ((BirthdayValidationState.Error) birthdayValidationState).getRegDate();
+                String errorMsg = String.format(getString(R.string.birthday_error), regDate);
+                binding.tilBirthday.setError(errorMsg);
+            }
+        });
     }
 
     @Override
@@ -119,64 +135,26 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
         GregorianCalendar date = new GregorianCalendar(year, monthOfYear, dayOfMonth);
         binding.edittextBirthday.setText(Dates.formatAsISO8601_ShortDate(date.getTime()));
 
-        validateBirthday();
-    }
-
-    private boolean validateBirthday() {
-        boolean valid = isEighteenByDeadline();
-        if (!valid) {
-            binding.tilBirthday.setError(String.format(getString(R.string.birthday_error),
-                    Dates.formatAsISO8601_ShortDate(registrationDeadline.get())));
-        } else {
-            binding.tilBirthday.setError(null);
-        }
-
-        return valid;
-    }
-
-    private boolean isEighteenByDeadline() {
-        /*
-            check if registrant will be 18 by the election date.
-            Calendar uses 0 as the first month but LocalDate does not, so make sure and add 1 to it
-         */
-
-        Date birthDate = Dates.parseISO8601_ShortDate(binding.edittextBirthday.getText().toString());
-        if (birthDate == null) {
-            return false;
-        }
-
-        Calendar birthCal = Calendar.getInstance();
-        birthCal.setTime(birthDate);
-
-        Calendar regCal = Calendar.getInstance();
-        regCal.setTime(registrationDeadline.get());
-
-        LocalDate regDate = LocalDate.of(
-                regCal.get(Calendar.YEAR),
-                regCal.get(Calendar.MONTH) + 1,
-                regCal.get(Calendar.DAY_OF_MONTH));
-
-        LocalDate birthday = LocalDate.of(
-                birthCal.get(Calendar.YEAR),
-                birthCal.get(Calendar.MONTH) + 1,
-                birthCal.get(Calendar.DAY_OF_MONTH));
-
-        return ChronoUnit.YEARS.between(birthday, regDate) >= 18;
+        partnerPrefViewModel.validateBirthDay(
+                Dates.parseISO8601_ShortDate(binding.edittextBirthday.getText().toString()));
     }
 
     @Override
     public Observable<Boolean> verify() {
 
-        Observable<Boolean> previousNameObs = binding.previousName.verify()
-                .flatMap(val -> Observable.just(binding.nameChanged.isChecked() ? val : true));
+        if (binding.tilBirthday.getError() != null) {
+            // special case since there is an additional validation on the birth date
+            return Observable.just(false);
+        } else {
+            Observable<Boolean> previousNameObs = binding.previousName.verify()
+                    .flatMap(val -> Observable.just(binding.nameChanged.isChecked() ? val : true));
 
-        return Observable.zip(
-                validator.validate(),
-                binding.name.verify(),
-                previousNameObs,
-                Observable.just(isEighteenByDeadline()),
-                (validator, name, prevName, birthday)
-                        -> validator && name && prevName && birthday);
+            return Observable.zip(
+                    validator.validate(),
+                    binding.name.verify(),
+                    previousNameObs,
+                    (validator, name, prevName) -> validator && name && prevName);
+        }
     }
 
     @Override
