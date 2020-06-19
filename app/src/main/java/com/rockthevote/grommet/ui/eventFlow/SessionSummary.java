@@ -95,10 +95,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
                     edEventZip.setText(data.getPartnerTrackingId());
                     edPartnerName.setText(data.getPartnerName());
                     edDeviceId.setText(data.getDeviceId());
-                });
 
-        viewModel.getClockOutData().observe(
-                (AppCompatActivity) getContext(), data -> {
                     if (data.getClockInTime() != null && data.getClockOutTime() != null) {
                         Date clockIn = data.getClockInTime();
                         Date clockOut = data.getClockOutTime();
@@ -120,8 +117,7 @@ public class SessionSummary extends FrameLayout implements EventFlowPage {
                         clockInTime.setText("");
                         clockOutTime.setText("");
                     }
-                }
-        );
+                });
 
         viewModel.getEffect().observe(
                 (AppCompatActivity) getContext(), effect -> {

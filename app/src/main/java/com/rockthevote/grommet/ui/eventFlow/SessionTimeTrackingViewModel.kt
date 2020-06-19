@@ -35,9 +35,6 @@ class SessionTimeTrackingViewModel(
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
     val effect: LiveData<SessionSummaryState.Effect?> = _effect
 
-    private val _clockOutData = LiveEvent<ClockInOutTimes>()
-    val clockOutData: LiveData<ClockInOutTimes> = _clockOutData
-
     private val _sessionStatus = LiveEvent<SessionStatus>()
     val sessionStatus: LiveData<SessionStatus> = _sessionStatus
 
@@ -60,8 +57,8 @@ class SessionTimeTrackingViewModel(
                     session?.registrationCount ?: 0,
                     session?.abandonedCount ?: 0,
                     registrations ?: emptyList(),
-                    session?.clockInTime
-
+                    session?.clockInTime,
+                    session?.clockOutTime
             )
         } ?: run {
             SessionSummaryData()
@@ -111,7 +108,7 @@ class SessionTimeTrackingViewModel(
             val session = sessionDao.getCurrentSession() ?: return@launch
             val newSessionData = session.copy(clockInTime = Date())
             sessionDao.updateSession(newSessionData)
-        }
+    }
     }
 
     fun clockOut() {
@@ -119,12 +116,6 @@ class SessionTimeTrackingViewModel(
             val session = sessionDao.getCurrentSession() ?: return@launch
             val newSessionData = session.copy(clockOutTime = Date())
             sessionDao.updateSession(newSessionData)
-
-            val inOutTimes = ClockInOutTimes(
-                    newSessionData.clockInTime,
-                    newSessionData.clockOutTime
-            )
-            _clockOutData.postValue(inOutTimes)
         }
     }
 
