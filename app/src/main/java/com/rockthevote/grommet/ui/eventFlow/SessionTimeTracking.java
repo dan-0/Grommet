@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.rockthevote.grommet.R;
@@ -23,6 +25,7 @@ import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
+import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
 import com.rockthevote.grommet.util.Dates;
 
 import javax.inject.Inject;
@@ -120,6 +123,17 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         viewModel.getClockState().observe((AppCompatActivity) getContext(), clockState -> {
             if (clockState instanceof ClockEvent.ClockingError) {
                 displayClockEventDialog(((ClockEvent.ClockingError) clockState).getErrorMsgId());
+            } else if (clockState instanceof ClockEvent.Loading) {
+
+                TextView text = (TextView) ((ViewGroup) clockInButton)
+                        .getChildAt(0);
+                ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton)
+                        .findViewById(R.id.clock_in_spinner);
+
+                text.setVisibility(View.GONE);
+                spinner.setVisibility(View.VISIBLE);
+                clockInButton.setEnabled(false);
+
             }
         });
     }
@@ -142,20 +156,35 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     void updateUI(SessionStatus status) {
         switch (status) {
             case CLOCKED_IN: {
-                editButton.setEnabled(false);
-                clockInButton.setSelected(true);
-                runClockInAnimation();
 
+                editButton.setEnabled(false);
+                clockInButton.setEnabled(true);
+                clockInButton.setSelected(true);
+
+                ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton)
+                        .findViewById(R.id.clock_in_spinner);
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
-                text.setText(R.string.clock_in_text);
+
+                spinner.setVisibility(View.GONE);
+                text.setText(R.string.clock_out_text);
+                text.setVisibility(View.VISIBLE);
+
                 listener.setState(CLOCKED_IN, true);
                 break;
             }
             case CLOCKED_OUT: {
                 editButton.setEnabled(true);
+                clockInButton.setEnabled(true);
                 clockInButton.setSelected(false);
+
+                ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton)
+                        .findViewById(R.id.clock_in_spinner);
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
-                text.setText(R.string.clock_out_text);
+
+                spinner.setVisibility(View.GONE);
+                text.setText(R.string.clock_in_text);
+                text.setVisibility(View.VISIBLE);
+
                 listener.setState(CLOCKED_OUT, true);
                 break;
             }
@@ -200,45 +229,14 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         }
     }
 
-    private void runClockInAnimation() {
-        TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
-        AnimatorSet animSet = new AnimatorSet();
-
-        int width = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                getResources().getDimension(R.dimen.clock_in_transition_width),
-                getResources().getDisplayMetrics());
-
-        ValueAnimator shrinkAnim = ValueAnimator.ofInt(clockInButton.getMeasuredWidth(), width);
-
-        shrinkAnim.addUpdateListener(valueAnimator -> {
-            int val = (Integer) valueAnimator.getAnimatedValue();
-            ViewGroup.LayoutParams layoutParams = clockInButton.getLayoutParams();
-            layoutParams.width = val;
-            clockInButton.requestLayout();
-        });
-
-        ValueAnimator fadeOutAnim = ObjectAnimator.ofFloat(text, "alpha", 1f, 0f);
-        ValueAnimator fadeInAnim = ObjectAnimator.ofFloat(text, "alpha", 0f, 1f);
-
-        // this is 500 ms each way, so with a "reverse" it's a total of 1 second
-        shrinkAnim.setDuration(500);
-        shrinkAnim.setRepeatMode(ValueAnimator.REVERSE);
-        shrinkAnim.setRepeatCount(1);
-
-        fadeOutAnim.setDuration(200);
-        fadeInAnim.setDuration(200);
-
-        animSet.play(fadeOutAnim)
-                .with(shrinkAnim);
-        animSet.play(fadeInAnim)
-                .after(fadeOutAnim)
-                .after(750); // wait to fade in so we don't get jittery text
-
-        animSet.start();
-    }
-
     private void displayClockEventDialog(@StringRes int msgId) {
+        TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+        ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton).findViewById(R.id.clock_in_spinner);
+
+        spinner.setVisibility(View.GONE);
+        text.setVisibility(View.VISIBLE);
+        clockInButton.setEnabled(true);
+
         new AlertDialog.Builder(getContext())
                 .setMessage(msgId)
                 .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {

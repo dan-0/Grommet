@@ -112,6 +112,8 @@ class SessionTimeTrackingViewModel(
 
     private fun makeClockInRequest() {
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            updateClockState(ClockEvent.Loading)
+
             runCatching {
                 val session = sessionDao.getCurrentSession()
                 val clockInRequest = ClockInRequest.builder()
@@ -151,6 +153,8 @@ class SessionTimeTrackingViewModel(
     private fun makeClockOutRequest() {
 
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+            updateClockState(ClockEvent.Loading)
+
             runCatching {
                 val session = sessionDao.getCurrentSession()
                 val clockoutRequest = ClockOutRequest.builder()
