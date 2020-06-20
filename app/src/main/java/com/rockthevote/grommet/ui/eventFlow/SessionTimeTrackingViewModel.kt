@@ -145,7 +145,7 @@ class SessionTimeTrackingViewModel(
                         .apply()
 
             }.onFailure {
-                updateClockState(ClockEvent.ClockingError(R.string.check_wifi))
+                updateClockState(ClockEvent.ClockingError(R.string.generic_network_error))
             }
         }
     }

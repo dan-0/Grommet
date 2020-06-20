@@ -1,15 +1,10 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +20,6 @@ import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
-import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
 import com.rockthevote.grommet.util.Dates;
 
 import javax.inject.Inject;
@@ -101,7 +95,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         observeData();
     }
 
-    private void observeData(){
+    private void observeData() {
 
         viewModel.getSessionData().observe(
                 (AppCompatActivity) getContext(), data -> {
@@ -124,16 +118,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
             if (clockState instanceof ClockEvent.ClockingError) {
                 displayClockEventDialog(((ClockEvent.ClockingError) clockState).getErrorMsgId());
             } else if (clockState instanceof ClockEvent.Loading) {
-
-                TextView text = (TextView) ((ViewGroup) clockInButton)
-                        .getChildAt(0);
-                ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton)
-                        .findViewById(R.id.clock_in_spinner);
-
-                text.setVisibility(View.GONE);
-                spinner.setVisibility(View.VISIBLE);
-                clockInButton.setEnabled(false);
-
+               showClockInSpinner();
             }
         });
     }
@@ -161,13 +146,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 clockInButton.setEnabled(true);
                 clockInButton.setSelected(true);
 
-                ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton)
-                        .findViewById(R.id.clock_in_spinner);
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
-
-                spinner.setVisibility(View.GONE);
+                hideClockInSpinner();
                 text.setText(R.string.clock_out_text);
-                text.setVisibility(View.VISIBLE);
 
                 listener.setState(CLOCKED_IN, true);
                 break;
@@ -177,13 +158,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 clockInButton.setEnabled(true);
                 clockInButton.setSelected(false);
 
-                ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton)
-                        .findViewById(R.id.clock_in_spinner);
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
-
-                spinner.setVisibility(View.GONE);
+                hideClockInSpinner();
                 text.setText(R.string.clock_in_text);
-                text.setVisibility(View.VISIBLE);
 
                 listener.setState(CLOCKED_OUT, true);
                 break;
@@ -197,6 +174,24 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 break;
             }
         }
+    }
+
+    private void hideClockInSpinner() {
+        ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton).findViewById(R.id.clock_in_spinner);
+        TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+
+        spinner.setVisibility(View.GONE);
+        text.setVisibility(View.VISIBLE);
+        clockInButton.setEnabled(true);
+    }
+
+    private void showClockInSpinner() {
+        ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton).findViewById(R.id.clock_in_spinner);
+        TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+
+        text.setVisibility(View.GONE);
+        spinner.setVisibility(View.VISIBLE);
+        clockInButton.setEnabled(false);
     }
 
     @OnClick(R.id.session_progress_button)
@@ -233,15 +228,14 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
         ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton).findViewById(R.id.clock_in_spinner);
 
-        spinner.setVisibility(View.GONE);
-        text.setVisibility(View.VISIBLE);
+        hideClockInSpinner();
         clockInButton.setEnabled(true);
 
-        new AlertDialog.Builder(getContext())
+        new androidx.appcompat.app.AlertDialog.Builder(getContext())
+                .setTitle(R.string.check_wifi)
+                .setIcon(R.drawable.ic_warning_24dp)
                 .setMessage(msgId)
-                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                })
+                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> dialogInterface.dismiss())
                 .create()
                 .show();
     }
