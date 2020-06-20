@@ -143,6 +143,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         switch (status) {
             case CLOCKED_IN: {
                 editButton.setEnabled(false);
+                clockInButton.setSelected(true);
                 runClockInAnimation();
 
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
@@ -152,6 +153,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
             }
             case CLOCKED_OUT: {
                 editButton.setEnabled(true);
+                clockInButton.setSelected(false);
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
                 text.setText(R.string.clock_out_text);
                 listener.setState(CLOCKED_OUT, true);
@@ -159,6 +161,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
             }
             default: {
                 editButton.setEnabled(true);
+                clockInButton.setSelected(false);
                 clockInTime.setText(R.string.time_tracking_default_value);
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
                 text.setText(R.string.clock_in_text);
