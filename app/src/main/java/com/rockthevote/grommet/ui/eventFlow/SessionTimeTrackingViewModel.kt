@@ -195,22 +195,6 @@ class SessionTimeTrackingViewModel(
         }
     }
 
-//    fun clockIn() {
-//        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
-//            val session = sessionDao.getCurrentSession() ?: return@launch
-//            val newSessionData = session.copy(clockInTime = Date())
-//            sessionDao.updateSession(newSessionData)
-//    }
-//    }
-//
-//    fun clockOut() {
-//        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
-//            val session = sessionDao.getCurrentSession() ?: return@launch
-//            val newSessionData = session.copy(clockOutTime = Date())
-//            sessionDao.updateSession(newSessionData)
-//        }
-//    }
-
     private fun updateSessionStatus() {
         viewModelScope.launch(dispatchers.io) {
             val statusString = sharedPreferences.getString(SharedPrefKeys.KEY_SESSION_STATUS, null) ?: return@launch

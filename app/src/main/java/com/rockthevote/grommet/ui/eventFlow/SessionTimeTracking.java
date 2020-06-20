@@ -223,18 +223,6 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
             clockInButton.requestLayout();
         });
 
-//        shrinkAnim.addListener(new AnimatorListenerHelper() {
-//            @Override
-//            public void onAnimationEnd(Animator animator) {
-//                clockIn();
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animator) {
-//                toggleClockInButton();
-//            }
-//        });
-
         ValueAnimator fadeOutAnim = ObjectAnimator.ofFloat(text, "alpha", 1f, 0f);
         ValueAnimator fadeInAnim = ObjectAnimator.ofFloat(text, "alpha", 0f, 1f);
 
@@ -254,20 +242,6 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
         animSet.start();
     }
-
-//    private Unit canClockOut() {
-//        new AlertDialog.Builder(getContext())
-//                .setMessage(R.string.clock_out_dialog_text)
-//                .setPositiveButton(R.string.dialog_yes, (dialogInterface, i) -> {
-//                    clockOut();
-//                })
-//                .setNegativeButton(R.string.dialog_no,
-//                        (dialogInterface, i) -> dialogInterface.dismiss())
-//                .create()
-//                .show();
-//
-//        return Unit.INSTANCE;
-//    }
 
     private void displayClockEventDialog(@StringRes int msgId) {
         new AlertDialog.Builder(getContext())
