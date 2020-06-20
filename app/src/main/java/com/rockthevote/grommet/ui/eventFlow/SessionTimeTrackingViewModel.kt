@@ -3,6 +3,7 @@ package com.rockthevote.grommet.ui.eventFlow
 import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
+import com.rockthevote.grommet.R
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.api.model.ClockInRequest
 import com.rockthevote.grommet.data.api.model.ClockOutRequest
@@ -43,8 +44,8 @@ class SessionTimeTrackingViewModel(
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
     val effect: LiveData<SessionSummaryState.Effect?> = _effect
 
-    private val _clockInState = LiveEvent<SessionTimeTrackingState>()
-    val clockInState: LiveData<SessionTimeTrackingState> = _clockInState
+    private val _clockState = LiveEvent<ClockEvent>()
+    val clockState: LiveData<ClockEvent> = _clockState
 
     private val _sessionStatus = LiveEvent<SessionStatus>()
     val sessionStatus: LiveData<SessionStatus> = _sessionStatus
@@ -87,27 +88,29 @@ class SessionTimeTrackingViewModel(
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPrefListener)
     }
 
-    /**
-     * Asynchronously determines if the user can clock out. Calls [successCallback]
-     * when the user can logout, [failCallback] when the user cannot.
-     *
-     * Note: Coroutines cannot be used from Java, so callbacks are necessary
-     */
-    fun asyncCanClockOut(successCallback: () -> Unit, failCallback: () -> Unit) {
+    fun clockOut() {
         viewModelScope.launch(dispatchers.io) {
             val canClockOut = registrationDao.getAll().isEmpty()
 
             withContext(dispatchers.main) {
                 if (canClockOut) {
-                    makeClockOutRequest(successCallback)
+                    makeClockOutRequest()
                 } else {
-                    failCallback()
+                    updateClockState(ClockEvent.ClockingError(R.string.clock_out_must_upload))
                 }
             }
         }
     }
 
-    private fun makeClockInRequest(successCallback: () -> Unit) {
+    fun clockIn() {
+        makeClockInRequest()
+    }
+
+    private fun updateClockState(value: ClockEvent) {
+        _clockState.postValue(value)
+    }
+
+    private fun makeClockInRequest() {
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
             runCatching {
                 val session = sessionDao.getCurrentSession()
@@ -123,21 +126,29 @@ class SessionTimeTrackingViewModel(
                 val result = rockyService.clockIn(clockInRequest).toBlocking().value()
 
                 if (result.isError) {
-//                    throw result.error()
-//                            ?: PartnerLoginViewModel.PartnerLoginViewModelException("Error retrieving result")
-                } else {
-//                    result?.response()?.body()
-//                            ?: throw PartnerLoginViewModel.PartnerLoginViewModelException("Successful result with empty body received")
+                    throw result.error()
+                            ?: ClockInOutException("Error retrieving result")
                 }
             }.onSuccess {
-                successCallback()
+                // update session data and status
+                viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+                    val session = sessionDao.getCurrentSession() ?: return@launch
+                    val newSessionData = session.copy(clockInTime = Date())
+                    sessionDao.updateSession(newSessionData)
+                }
+
+                sharedPreferences.edit().putString(
+                        SharedPrefKeys.KEY_SESSION_STATUS,
+                        SessionStatus.CLOCKED_IN.toString())
+                        .apply()
+
             }.onFailure {
-                //Todo network api error
+                updateClockState(ClockEvent.ClockingError(R.string.check_wifi))
             }
         }
     }
 
-    private fun makeClockOutRequest(successCallback: () -> Unit) {
+    private fun makeClockOutRequest() {
 
         viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
             runCatching {
@@ -156,32 +167,25 @@ class SessionTimeTrackingViewModel(
                 val result = rockyService.clockOut(clockoutRequest).toBlocking().value()
 
                 if (result.isError) {
-//                    throw result.error()
-//                            ?: PartnerLoginViewModel.PartnerLoginViewModelException("Error retrieving result")
-                } else {
-//                    result?.response()?.body()
-//                            ?: throw PartnerLoginViewModel.PartnerLoginViewModelException("Successful result with empty body received")
+                    throw result.error()
+                            ?: ClockInOutException("Error retrieving result")
                 }
             }.onSuccess {
-                successCallback()
+                // update session data and status
+                viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+                    val session = sessionDao.getCurrentSession() ?: return@launch
+                    val newSessionData = session.copy(clockOutTime = Date())
+                    sessionDao.updateSession(newSessionData)
+                }
+
+                sharedPreferences.edit().putString(
+                        SharedPrefKeys.KEY_SESSION_STATUS,
+                        SessionStatus.CLOCKED_OUT.toString())
+                        .apply()
             }.onFailure {
-                //Todo network api error
+                updateClockState(ClockEvent.ClockingError(R.string.check_wifi))
             }
         }
-    }
-
-    private fun combineSessionDataAndStatus(sessionSummaryData: LiveData<SessionSummaryData>,
-                                    sessionStatus: LiveData<SessionStatus>): SessionTimeTrackingState {
-        val data = sessionSummaryData.value
-        val status = sessionStatus.value
-
-        // Don't send a success until we have both results
-        if(data == null || status == null){
-            return SessionTimeTrackingState.Loading
-        }
-
-
-
     }
 
     fun clearSession() {
@@ -191,21 +195,21 @@ class SessionTimeTrackingViewModel(
         }
     }
 
-    fun clockIn() {
-        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
-            val session = sessionDao.getCurrentSession() ?: return@launch
-            val newSessionData = session.copy(clockInTime = Date())
-            sessionDao.updateSession(newSessionData)
-    }
-    }
-
-    fun clockOut() {
-        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
-            val session = sessionDao.getCurrentSession() ?: return@launch
-            val newSessionData = session.copy(clockOutTime = Date())
-            sessionDao.updateSession(newSessionData)
-        }
-    }
+//    fun clockIn() {
+//        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+//            val session = sessionDao.getCurrentSession() ?: return@launch
+//            val newSessionData = session.copy(clockInTime = Date())
+//            sessionDao.updateSession(newSessionData)
+//    }
+//    }
+//
+//    fun clockOut() {
+//        viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
+//            val session = sessionDao.getCurrentSession() ?: return@launch
+//            val newSessionData = session.copy(clockOutTime = Date())
+//            sessionDao.updateSession(newSessionData)
+//        }
+//    }
 
     private fun updateSessionStatus() {
         viewModelScope.launch(dispatchers.io) {
@@ -224,6 +228,9 @@ class SessionTimeTrackingViewModel(
         super.onCleared()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPrefListener)
     }
+
+    private class ClockInOutException(msg: String) : Exception(msg)
+
 }
 
 class SessionTimeTrackingViewModelFactory(
