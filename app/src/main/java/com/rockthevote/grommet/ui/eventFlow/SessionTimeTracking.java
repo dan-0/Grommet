@@ -140,12 +140,9 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     }
 
     void updateUI(SessionStatus status) {
-
-        // we can check for this via the DB and if there are no rows, it's fine
-
         switch (status) {
             case CLOCKED_IN: {
-                clockInButton.setSelected(true);
+                editButton.setEnabled(false);
                 runClockInAnimation();
 
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
@@ -154,25 +151,20 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 break;
             }
             case CLOCKED_OUT: {
-                clockInButton.setSelected(false);
+                editButton.setEnabled(true);
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
                 text.setText(R.string.clock_out_text);
                 listener.setState(CLOCKED_OUT, true);
                 break;
             }
             default: {
-                clockInButton.setSelected(false);
+                editButton.setEnabled(true);
                 clockInTime.setText(R.string.time_tracking_default_value);
                 TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
                 text.setText(R.string.clock_in_text);
                 break;
             }
         }
-
-        editButton.setEnabled(!clockInButton.isSelected());
-
-        TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
-        text.setText(clockInButton.isSelected() ? R.string.clock_out_text : R.string.clock_in_text);
     }
 
     @OnClick(R.id.session_progress_button)
