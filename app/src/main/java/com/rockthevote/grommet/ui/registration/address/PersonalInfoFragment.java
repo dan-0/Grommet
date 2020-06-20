@@ -6,19 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.databinding.FragmentPersonalInfoBinding;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
-import com.rockthevote.grommet.ui.registration.RegistrationData;
 
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
-import timber.log.Timber;
 
 
 public class PersonalInfoFragment extends BaseRegistrationFragment {
@@ -42,12 +38,22 @@ public class PersonalInfoFragment extends BaseRegistrationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
+        observeState();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void observeState() {
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationData -> {
+            PersonalInfoData data = registrationData.getAddressData();
+            if (data != null) {
+                PersonalInfoExtKt.toFragmentPersonalInfoBinding(data, binding);
+            }
+        });
     }
 
     @OnCheckedChanged(R.id.mailing_address_is_different)

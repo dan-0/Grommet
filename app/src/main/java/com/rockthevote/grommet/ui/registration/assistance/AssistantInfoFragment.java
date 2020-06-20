@@ -73,6 +73,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
+        observeState();
     }
 
     @Override
@@ -95,6 +96,15 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void observeState() {
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationData -> {
+            AssistanceData data = registrationData.getAssistanceData();
+            if (data != null) {
+                AssistanceExtKt.toFragmentAssistantInfoBinding(data, binding);
+            }
+        });
     }
 
     @OnCheckedChanged(R.id.checkbox_has_assistant)

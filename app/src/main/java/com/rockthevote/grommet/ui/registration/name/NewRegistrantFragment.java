@@ -85,6 +85,8 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
             binding.previousName.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             binding.previousNameDivider.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
+
+        observeState();
     }
 
     private void observePartnerPrefs() {
@@ -104,6 +106,15 @@ public class NewRegistrantFragment extends BaseRegistrationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
+    }
+
+    private void observeState() {
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationData -> {
+            NewRegistrantData data = registrationData.getNewRegistrantData();
+            if (data != null) {
+                NewRegistrantExtKt.toFragmentNewRegistratntBinding(data, binding);
+            }
+        });
     }
 
     private void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

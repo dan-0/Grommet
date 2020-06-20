@@ -175,6 +175,16 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
             langPrefSpinner.dismiss();
         });
 
+        observeState();
+    }
+
+    private void observeState() {
+        viewModel.getRegistrationData().observe(getViewLifecycleOwner(), registrationData -> {
+            AdditionalInfoData data = registrationData.getAdditionalInfoData();
+            if (data != null) {
+                AdditionalInfoExtKt.toFragmentAdditionalInfoBinding(data, binding);
+            }
+        });
     }
 
     private void observerPartnerData() {
