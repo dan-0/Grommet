@@ -116,6 +116,14 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                                 .create()
                                 .show();
 
+                    } else if (effect instanceof PartnerLoginState.InvalidVersion) {
+                        new AlertDialog.Builder(getContext())
+                                .setTitle(R.string.update_required)
+                                .setIcon(R.drawable.ic_warning_24dp)
+                                .setMessage(R.string.login_invalid_version)
+                                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> dialogInterface.dismiss())
+                                .create()
+                                .show();
                     }
                 });
 

@@ -10,4 +10,5 @@ sealed class PartnerLoginState {
     abstract class Effect : PartnerLoginState()
     object Success : Effect()
     object Error : Effect()
+    object InvalidVersion : Effect()
 }
