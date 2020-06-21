@@ -19,7 +19,6 @@ import java.io.File;
 
 import javax.inject.Singleton;
 
-import androidx.appcompat.app.AppCompatActivity;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
@@ -81,27 +80,6 @@ public final class DataModule {
     @Singleton
     FirebaseAnalytics provideFirebase(Application app) {
         return FirebaseAnalytics.getInstance(app);
-    }
-
-    @Provides
-    @Singleton
-    HockeyAppHelper provideHockeyAppHelper() {
-        return new HockeyAppHelper() {
-            @Override
-            public void checkForUpdates(AppCompatActivity activity) {
-                // do nothing
-            }
-
-            @Override
-            public void checkForCrashes(AppCompatActivity activity) {
-                // do nothing
-            }
-
-            @Override
-            public void unRegister() {
-                // do nothing
-            }
-        };
     }
 
     static OkHttpClient.Builder createOkHttpClient(Application app) {
