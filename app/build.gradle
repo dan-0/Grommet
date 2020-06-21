@@ -99,10 +99,6 @@ android {
             dimension "default"
             applicationId 'com.rockethevote.grommet'
         }
-        practice {
-            dimension "default"
-            applicationId 'com.rockthevote.grommet.practice'
-        }
     }
 
     lintOptions {
