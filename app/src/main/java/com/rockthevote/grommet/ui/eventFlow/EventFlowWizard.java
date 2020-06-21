@@ -65,7 +65,6 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
             adapter = new EventDetailFlowAdapter(getContext());
             viewPager.setAdapter(adapter);
-            viewPager.setOffscreenPageLimit(3);
 
             //disable scrolling on the view pager
             viewPager.setOnTouchListener((v, event) -> true);
