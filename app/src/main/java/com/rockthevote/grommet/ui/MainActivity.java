@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.rockthevote.grommet.R;
-import com.rockthevote.grommet.data.HockeyAppHelper;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
@@ -57,8 +56,6 @@ public final class MainActivity extends BaseActivity {
 
     @Inject FusedLocationProviderClient locationProvider;
 
-    @Inject HockeyAppHelper hockeyAppHelper;
-
     @Inject RockyService rockyService;
 
     @Inject RegistrationDao registrationDao;
@@ -78,7 +75,6 @@ public final class MainActivity extends BaseActivity {
         ButterKnife.bind(this, view);
         setSupportActionBar(toolbar);
         requestGPSPermission();
-        hockeyAppHelper.checkForUpdates(this);
 
         viewModel = new ViewModelProvider(
                 this,
@@ -147,23 +143,13 @@ public final class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         viewModel.refreshPendingUploads();
-        hockeyAppHelper.checkForCrashes(this);
-
         subscriptions = new CompositeSubscription();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        hockeyAppHelper.unRegister();
         subscriptions.unsubscribe();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        hockeyAppHelper.unRegister();
     }
 
     private void requestGPSPermission() {
