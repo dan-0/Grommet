@@ -9,21 +9,19 @@ import com.rockthevote.grommet.data.api.model.RegistrationResponse;
 import com.rockthevote.grommet.data.db.model.RockyRequest;
 import com.rockthevote.grommet.util.EnumPreferences;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import okhttp3.RequestBody;
-import retrofit2.Response;
 import retrofit2.adapter.rxjava.Result;
 import retrofit2.http.Body;
 import retrofit2.http.Query;
 import retrofit2.mock.BehaviorDelegate;
 import retrofit2.mock.Calls;
 import retrofit2.mock.MockRetrofit;
-import rx.Observable;
 import rx.Single;
 
 @Singleton
@@ -77,28 +75,24 @@ public final class MockRockyService implements RockyService {
     }
 
     @Override
-    public Observable<Result<Void>> clockIn(@Body ClockInRequest clockInRequest) {
+    public Single<Result<Void>> clockIn(@Body ClockInRequest clockInRequest) {
         MockClockInResponse response = getResponse(MockClockInResponse.class);
         switch (response) {
-            case SUCCESS:
-                return delegate.returning(Calls.response(null)).clockIn(clockInRequest);
             case FAILURE:
-                return delegate.returning(Calls.failure(null)).clockIn(clockInRequest);
+                return delegate.returning(Calls.failure(new IOException("mock network failure"))).clockIn(clockInRequest);
             default:
-                return delegate.returning(Calls.response(null)).clockIn(clockInRequest);
+                return delegate.returning(Calls.response("")).clockIn(clockInRequest);
         }
     }
 
     @Override
-    public Observable<Result<Void>> clockOut(@Body ClockOutRequest clockOutRequest) {
+    public Single<Result<Void>> clockOut(@Body ClockOutRequest clockOutRequest) {
         MockClockOutResponse response = getResponse(MockClockOutResponse.class);
         switch (response) {
-            case SUCCESS:
-                return delegate.returning(Calls.response(null)).clockOut(clockOutRequest);
             case FAILURE:
-                return delegate.returning(Calls.failure(null)).clockOut(clockOutRequest);
+                return delegate.returning(Calls.failure(new IOException("mock network failure"))).clockOut(clockOutRequest);
             default:
-                return delegate.returning(Calls.response(null)).clockOut(clockOutRequest);
+                return delegate.returning(Calls.response("")).clockOut(clockOutRequest);
         }
     }
 }

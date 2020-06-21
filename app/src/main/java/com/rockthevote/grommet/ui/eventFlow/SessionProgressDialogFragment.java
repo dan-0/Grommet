@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
@@ -35,6 +36,7 @@ public class SessionProgressDialogFragment extends DialogFragment {
     @Inject SessionDao sessionDao;
     @Inject RegistrationDao registrationDao;
     @Inject SharedPreferences sharedPreferences;
+    @Inject RockyService rockyService;
 
     // Total Counts
     @BindView(R.id.summary_total_registrations) TextView totalRegistrations;
@@ -67,7 +69,12 @@ public class SessionProgressDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this,
-                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao, sharedPreferences)
+                new SessionTimeTrackingViewModelFactory(
+                        partnerInfoDao,
+                        sessionDao,
+                        registrationDao,
+                        sharedPreferences,
+                        rockyService)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();

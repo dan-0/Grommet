@@ -245,6 +245,16 @@
             android:textAllCaps="true"
             android:textColor="#FFFFFF"/>
 
+        <ProgressBar
+            android:id="@+id/clock_in_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:padding="5dp"
+            android:visibility="gone"
+            />
+
     </FrameLayout>
 
     <Button

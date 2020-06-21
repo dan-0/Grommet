@@ -1,39 +1,35 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
-import com.rockthevote.grommet.ui.misc.AnimatorListenerHelper;
 import com.rockthevote.grommet.util.Dates;
 
 import javax.inject.Inject;
 
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import kotlin.Unit;
 
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_IN;
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_OUT;
@@ -45,6 +41,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Inject SessionDao sessionDao;
     @Inject RegistrationDao registrationDao;
     @Inject SharedPreferences sharedPreferences;
+    @Inject RockyService rockyService;
 
     @BindView(R.id.ed_canvasser_name) TextView edCanvasserName;
     @BindView(R.id.ed_event_name) TextView edEventName;
@@ -87,13 +84,18 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
 
         viewModel = new ViewModelProvider(
                 (AppCompatActivity) getContext(),
-                new SessionTimeTrackingViewModelFactory(partnerInfoDao, sessionDao, registrationDao, sharedPreferences)
+                new SessionTimeTrackingViewModelFactory(
+                        partnerInfoDao,
+                        sessionDao,
+                        registrationDao,
+                        sharedPreferences,
+                        rockyService)
         ).get(SessionTimeTrackingViewModel.class);
 
         observeData();
     }
 
-    private void observeData(){
+    private void observeData() {
 
         viewModel.getSessionData().observe(
                 (AppCompatActivity) getContext(), data -> {
@@ -111,6 +113,14 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                 });
 
         viewModel.getSessionStatus().observe((AppCompatActivity) getContext(), this::updateUI);
+
+        viewModel.getClockState().observe((AppCompatActivity) getContext(), clockState -> {
+            if (clockState instanceof ClockEvent.ClockingError) {
+                displayClockEventDialog(((ClockEvent.ClockingError) clockState).getErrorMsgId());
+            } else if (clockState instanceof ClockEvent.Loading) {
+               showClockInSpinner();
+            }
+        });
     }
 
     @Override
@@ -129,24 +139,59 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     }
 
     void updateUI(SessionStatus status) {
-
-        // we can check for this via the DB and if there are no rows, it's fine
-
         switch (status) {
-            case CLOCKED_IN:
+            case CLOCKED_IN: {
+
+                editButton.setEnabled(false);
+                clockInButton.setEnabled(true);
                 clockInButton.setSelected(true);
 
+                TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+                hideClockInSpinner();
+                text.setText(R.string.clock_out_text);
+
+                listener.setState(CLOCKED_IN, true);
                 break;
-            default:
+            }
+            case CLOCKED_OUT: {
+                editButton.setEnabled(true);
+                clockInButton.setEnabled(true);
+                clockInButton.setSelected(false);
+
+                TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+                hideClockInSpinner();
+                text.setText(R.string.clock_in_text);
+
+                listener.setState(CLOCKED_OUT, true);
+                break;
+            }
+            default: {
+                editButton.setEnabled(true);
                 clockInButton.setSelected(false);
                 clockInTime.setText(R.string.time_tracking_default_value);
+                TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+                text.setText(R.string.clock_in_text);
                 break;
+            }
         }
+    }
 
-        editButton.setEnabled(!clockInButton.isSelected());
-
+    private void hideClockInSpinner() {
+        ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton).findViewById(R.id.clock_in_spinner);
         TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
-        text.setText(clockInButton.isSelected() ? R.string.clock_out_text : R.string.clock_in_text);
+
+        spinner.setVisibility(View.GONE);
+        text.setVisibility(View.VISIBLE);
+        clockInButton.setEnabled(true);
+    }
+
+    private void showClockInSpinner() {
+        ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton).findViewById(R.id.clock_in_spinner);
+        TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
+
+        text.setVisibility(View.GONE);
+        spinner.setVisibility(View.VISIBLE);
+        clockInButton.setEnabled(false);
     }
 
     @OnClick(R.id.session_progress_button)
@@ -164,100 +209,34 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @OnClick(R.id.clock_in_button)
     public void onClickClockIn(View button) {
         if (button.isSelected()) {
-            viewModel.asyncCanClockOut(this::canClockOut, this::canNotClockOut);
+
+            new AlertDialog.Builder(getContext())
+                    .setMessage(R.string.clock_out_dialog_text)
+                    .setPositiveButton(R.string.dialog_yes, (dialogInterface, i) -> {
+                        viewModel.clockOut();
+                    })
+                    .setNegativeButton(R.string.dialog_no,
+                            (dialogInterface, i) -> dialogInterface.dismiss())
+                    .create()
+                    .show();
         } else {
-
-            TextView text = (TextView) ((ViewGroup) button).getChildAt(0);
-            AnimatorSet animSet = new AnimatorSet();
-
-            int width = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    getResources().getDimension(R.dimen.clock_in_transition_width),
-                    getResources().getDisplayMetrics());
-
-            ValueAnimator shrinkAnim = ValueAnimator.ofInt(button.getMeasuredWidth(), width);
-
-            shrinkAnim.addUpdateListener(valueAnimator -> {
-                int val = (Integer) valueAnimator.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = button.getLayoutParams();
-                layoutParams.width = val;
-                button.requestLayout();
-            });
-
-            shrinkAnim.addListener(new AnimatorListenerHelper() {
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    clockIn();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animator) {
-                    toggleClockInButton();
-                }
-            });
-
-            ValueAnimator fadeOutAnim = ObjectAnimator.ofFloat(text, "alpha", 1f, 0f);
-            ValueAnimator fadeInAnim = ObjectAnimator.ofFloat(text, "alpha", 0f, 1f);
-
-            // this is 500 ms each way, so with a "reverse" it's a total of 1 second
-            shrinkAnim.setDuration(500);
-            shrinkAnim.setRepeatMode(ValueAnimator.REVERSE);
-            shrinkAnim.setRepeatCount(1);
-
-            fadeOutAnim.setDuration(200);
-            fadeInAnim.setDuration(200);
-
-            animSet.play(fadeOutAnim)
-                    .with(shrinkAnim);
-            animSet.play(fadeInAnim)
-                    .after(fadeOutAnim)
-                    .after(750); // wait to fade in so we don't get jittery text
-
-            animSet.start();
+            viewModel.clockIn();
         }
     }
 
-    private void toggleClockInButton() {
-        clockInButton.setSelected(!clockInButton.isSelected());
-
+    private void displayClockEventDialog(@StringRes int msgId) {
         TextView text = (TextView) ((ViewGroup) clockInButton).getChildAt(0);
-        text.setText(clockInButton.isSelected() ? R.string.clock_out_text : R.string.clock_in_text);
-    }
+        ProgressBar spinner = (ProgressBar) ((ViewGroup) clockInButton).findViewById(R.id.clock_in_spinner);
 
-    private Unit canClockOut() {
+        hideClockInSpinner();
+        clockInButton.setEnabled(true);
+
         new AlertDialog.Builder(getContext())
-                .setMessage(R.string.clock_out_dialog_text)
-                .setPositiveButton(R.string.dialog_yes, (dialogInterface, i) -> {
-                    clockOut();
-                })
-                .setNegativeButton(R.string.dialog_no,
-                        (dialogInterface, i) -> dialogInterface.dismiss())
+                .setTitle(R.string.check_wifi)
+                .setIcon(R.drawable.ic_warning_24dp)
+                .setMessage(msgId)
+                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> dialogInterface.dismiss())
                 .create()
                 .show();
-
-        return Unit.INSTANCE;
-    }
-
-    private Unit canNotClockOut() {
-        new AlertDialog.Builder(getContext())
-                .setMessage(R.string.clock_out_must_upload)
-                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> {
-                    dialogInterface.dismiss();
-                })
-                .create()
-                .show();
-
-        return Unit.INSTANCE;
-    }
-
-    private void clockIn() {
-        viewModel.clockIn();
-        listener.setState(CLOCKED_IN, true);
-    }
-
-    private void clockOut() {
-        viewModel.clockOut();
-        toggleClockInButton();
-        listener.setState(CLOCKED_OUT, true);
     }
 }
