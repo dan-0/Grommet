@@ -1,7 +1,6 @@
 package com.rockthevote.grommet.ui.eventFlow;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
@@ -25,6 +24,7 @@ import com.rockthevote.grommet.util.Dates;
 import javax.inject.Inject;
 
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
@@ -231,7 +231,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         hideClockInSpinner();
         clockInButton.setEnabled(true);
 
-        new androidx.appcompat.app.AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext())
                 .setTitle(R.string.check_wifi)
                 .setIcon(R.drawable.ic_warning_24dp)
                 .setMessage(msgId)
