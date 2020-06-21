@@ -52,14 +52,13 @@ class PartnerLoginViewModel(
             viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
                 runCatching {
                     val result = rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
+
                     if (result.isError) {
                         throw result.error() ?: PartnerLoginViewModelException("Error retrieving result")
                     } else {
                         result?.response()?.body()
                             ?: throw PartnerLoginViewModelException("Successful result with empty body received")
                     }
-
-
                 }.onSuccess {
 
                     updateState(PartnerLoginState.Init)
