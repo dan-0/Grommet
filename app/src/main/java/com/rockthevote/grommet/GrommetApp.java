@@ -44,9 +44,6 @@ public final class GrommetApp extends Application {
         lumberYard.cleanUp();
         Timber.plant(lumberYard.tree());
 
-        //clear out old data if we're upgrading the app
-        versionUpgradeCheck();
-
         registerActivityLifecycleCallbacks(activityHierarchyServer);
 
     }
@@ -57,14 +54,5 @@ public final class GrommetApp extends Application {
             return objectGraph;
         }
         return super.getSystemService(name);
-    }
-
-    private void versionUpgradeCheck() {
-
-//        if (BuildConfig.VERSION_CODE != appVersionPref.get()) {
-//            // TODO https://mechanical-man.atlassian.net/browse/GROM-157
-//
-//            appVersionPref.set(BuildConfig.VERSION_CODE);
-//        }
     }
 }

@@ -2,7 +2,9 @@ package com.rockthevote.grommet.ui.eventFlow
 
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
+import com.rockthevote.grommet.BuildConfig
 import com.rockthevote.grommet.data.api.RockyService
+import com.rockthevote.grommet.data.api.model.PartnerNameResponse
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.PartnerInfo
@@ -50,6 +52,7 @@ class PartnerLoginViewModel(
             viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
                 runCatching {
                     val result = rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
+
                     if (result.isError) {
                         throw result.error() ?: PartnerLoginViewModelException("Error retrieving result")
                     } else {
@@ -57,28 +60,43 @@ class PartnerLoginViewModel(
                             ?: throw PartnerLoginViewModelException("Successful result with empty body received")
                     }
                 }.onSuccess {
-                    partnerInfoDao.deleteAllPartnerInfo()
-                    sessionDao.clearAllSessionInfo()
-                    partnerInfoDao.insertPartnerInfo(PartnerInfo(
-                        partnerId = partnerId,
-                        appVersion = it.appVersion().toFloat(),
-                        isValid = it.isValid,
-                        partnerName = it.partnerName(),
-                        registrationDeadlineDate = it.registrationDeadlineDate(),
-                        registrationNotificationText = it.registrationNotificationText(),
-                        volunteerText = it.partnerVolunteerText()
-                    ))
 
                     updateState(PartnerLoginState.Init)
-                    updateEffect(PartnerLoginState.Success)
 
+                    val currentVersion = BuildConfig.VERSION_CODE
+                    val requiredVersion = it.appVersion()
+
+                    val effect = if (currentVersion < requiredVersion) {
+                        PartnerLoginState.InvalidVersion
+                    } else {
+                        completePartnerValidation(partnerId, it)
+                    }
+
+                    updateEffect(effect)
                 }.onFailure {
                     Timber.d("API request failure - partner validation")
                     setStateToError()
                 }
             }
         }
+    }
 
+    private fun completePartnerValidation(
+        partnerId: String,
+        partnerNameResponse: PartnerNameResponse
+    ): PartnerLoginState.Effect {
+        partnerInfoDao.deleteAllPartnerInfo()
+        sessionDao.clearAllSessionInfo()
+        partnerInfoDao.insertPartnerInfo(PartnerInfo(
+            partnerId = partnerId,
+            appVersion = partnerNameResponse.appVersion().toFloat(),
+            isValid = partnerNameResponse.isValid,
+            partnerName = partnerNameResponse.partnerName(),
+            registrationDeadlineDate = partnerNameResponse.registrationDeadlineDate(),
+            registrationNotificationText = partnerNameResponse.registrationNotificationText(),
+            volunteerText = partnerNameResponse.partnerVolunteerText()
+        ))
+        return PartnerLoginState.Success
     }
 
     fun clearPartnerInfo() {
