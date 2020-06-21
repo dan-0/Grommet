@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.data;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.f2prateek.rx.preferences2.Preference;
@@ -40,6 +41,12 @@ public final class DebugDataModule {
     private static final boolean DEFAULT_SCALPEL_WIREFRAME_ENABLED = false; // Draw views by default.
     private static final boolean DEFAULT_SEEN_DEBUG_DRAWER = false; // Show debug drawer first time.
     private static final boolean DEFAULT_CAPTURE_INTENTS = true; // Capture external intents.
+
+    @Provides
+    @Singleton
+    SharedPreferences provideSharedPreferences(Application app) {
+        return app.getSharedPreferences("grommet", Context.MODE_PRIVATE);
+    }
 
     @Provides
     @Singleton
