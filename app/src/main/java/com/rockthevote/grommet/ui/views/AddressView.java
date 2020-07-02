@@ -13,6 +13,7 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
@@ -22,7 +23,9 @@ import com.rockthevote.grommet.data.db.model.AddressType;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.util.PennValidations;
 import com.rockthevote.grommet.util.Strings;
+import com.rockthevote.grommet.util.ValidationRegex;
 import com.rockthevote.grommet.util.ZipTextWatcher;
 import com.squareup.moshi.Moshi;
 
@@ -57,27 +60,31 @@ public class AddressView extends GridLayout {
 
     @Inject Moshi moshi;
 
+    @Pattern(regex = ValidationRegex.ADDRESS)
     @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
     @BindView(R.id.street) EditText streetEditText;
 
+    @Pattern(regex = ValidationRegex.ADDRESS)
     @BindView(R.id.til_street_address_2) TextInputLayout streetTIL2;
     @BindView(R.id.street_2) EditText streetEditText2;
 
     @BindView(R.id.til_unit) TextInputLayout unitTIL;
+    @Length(max = PennValidations.UNIT_MAX_CHARS)
     @BindView(R.id.unit) EditText unitEditText;
 
     @NotEmpty(messageResId = R.string.required_field)
     @BindView(R.id.spinner_county) BetterSpinner countySpinner;
 
     @NotEmpty(messageResId = R.string.required_field)
+    @Pattern(regex = ValidationRegex.CITY)
     @BindView(R.id.til_city) TextInputLayout cityTIL;
     @BindView(R.id.city) EditText cityEditText;
 
     @BindView(R.id.spinner_state) BetterSpinner stateSpinner;
     @BindView(R.id.spinner_unit_type) BetterSpinner unitTypeSpinner;
 
-    @Pattern(regex = "^[0-9]{5}(?:-[0-9]{4})?$", messageResId = R.string.zip_code_error)
+    @Pattern(regex = ValidationRegex.ZIP, messageResId = R.string.zip_code_error)
     @BindView(R.id.til_zip_code) TextInputLayout zipTIL;
     @BindView(R.id.zip) EditText zipEditText;
 

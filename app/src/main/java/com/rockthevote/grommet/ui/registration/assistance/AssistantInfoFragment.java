@@ -11,6 +11,7 @@ import android.widget.EditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Checked;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.databinding.FragmentAssistantInfoBinding;
@@ -19,6 +20,7 @@ import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.rockthevote.grommet.ui.views.AddressView;
 import com.rockthevote.grommet.ui.views.NameView;
 import com.rockthevote.grommet.util.Phone;
+import com.rockthevote.grommet.util.ValidationRegex;
 
 import androidx.annotation.Nullable;
 import butterknife.BindView;
@@ -35,6 +37,7 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.assistant_address) AddressView addressView;
 
+    @Pattern(regex = ValidationRegex.PHONE)
     @Phone(messageResId = R.string.phone_format_error)
     @BindView(R.id.til_assistant_phone) TextInputLayout phoneTIL;
 
