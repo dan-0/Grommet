@@ -42,17 +42,19 @@ public class NameView extends GridLayout {
 
     @BindView(R.id.spinner_suffix) BetterSpinner suffixSpinner;
 
-    @Pattern(regex = ValidationRegex.NAME)
     @NotEmpty(messageResId = R.string.required_field)
+    @Pattern(regex = ValidationRegex.NAME, messageResId = R.string.name_format_error)
     @BindView(R.id.til_first_name) TextInputLayout firstNameTIL;
+
     @BindView(R.id.first_name) EditText firstNameEditText;
 
-    @Pattern(regex = ValidationRegex.NAME)
+    @Pattern(regex = ValidationRegex.NAME, messageResId = R.string.name_format_error)
     @BindView(R.id.middle_name) EditText middleNameEditText;
 
-    @Pattern(regex = ValidationRegex.NAME)
     @NotEmpty(messageResId = R.string.required_field)
+    @Pattern(regex = ValidationRegex.NAME, messageResId = R.string.name_format_error)
     @BindView(R.id.til_last_name) TextInputLayout lastNameTIL;
+
     @BindView(R.id.last_name) EditText lastNameEditText;
 
     private ObservableValidator validator;

@@ -128,6 +128,9 @@
     <string name="section_label_assistant_address">Helper Address</string>
     <string name="section_label_assistant_contact_info">Helper Contact Info</string>
     <string name="phone_format_error">Invalid phone number</string>
+    <string name="address_format_error">Invalid address</string>
+    <string name="city_format_error">Invalid city</string>
+    <string name="name_format_error">Invalid name</string>
     <string name="label_email">Email Address</string>
     <string name="label_phone">Phone Number</string>
     <string name="label_phone_type">Type</string>

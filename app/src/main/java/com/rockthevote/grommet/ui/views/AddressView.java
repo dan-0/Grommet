@@ -60,12 +60,12 @@ public class AddressView extends GridLayout {
 
     @Inject Moshi moshi;
 
-    @Pattern(regex = ValidationRegex.ADDRESS)
     @NotEmpty(messageResId = R.string.required_field)
+    @Pattern(regex = ValidationRegex.ADDRESS, messageResId = R.string.address_format_error)
     @BindView(R.id.til_street_address) TextInputLayout streetTIL;
     @BindView(R.id.street) EditText streetEditText;
 
-    @Pattern(regex = ValidationRegex.ADDRESS)
+    @Pattern(regex = ValidationRegex.ADDRESS, messageResId = R.string.address_format_error)
     @BindView(R.id.til_street_address_2) TextInputLayout streetTIL2;
     @BindView(R.id.street_2) EditText streetEditText2;
 
@@ -77,7 +77,7 @@ public class AddressView extends GridLayout {
     @BindView(R.id.spinner_county) BetterSpinner countySpinner;
 
     @NotEmpty(messageResId = R.string.required_field)
-    @Pattern(regex = ValidationRegex.CITY)
+    @Pattern(regex = ValidationRegex.CITY, messageResId = R.string.city_format_error)
     @BindView(R.id.til_city) TextInputLayout cityTIL;
     @BindView(R.id.city) EditText cityEditText;
 

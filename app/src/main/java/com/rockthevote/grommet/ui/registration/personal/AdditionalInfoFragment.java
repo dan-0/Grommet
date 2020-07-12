@@ -21,12 +21,12 @@ import com.rockthevote.grommet.data.db.model.PhoneType;
 import com.rockthevote.grommet.data.db.model.PreferredLanguage;
 import com.rockthevote.grommet.data.db.model.Race;
 import com.rockthevote.grommet.databinding.FragmentAdditionalInfoBinding;
-import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModel;
-import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModelFactory;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModel;
+import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModelFactory;
 import com.rockthevote.grommet.util.EmailOrEmpty;
 import com.rockthevote.grommet.util.PennValidations;
 import com.rockthevote.grommet.util.Phone;
@@ -74,15 +74,14 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.ssn_last_four_edit_text) EditText ssnEditText;
 
-    @Pattern(regex = ValidationRegex.EMAIL)
     @EmailOrEmpty(messageResId = R.string.email_error)
     @BindView(R.id.til_email) TextInputLayout textInputEmail;
 
     @BindView(R.id.email_edit_text) EditText email;
     @BindView(R.id.email_opt_in) CheckBox emailOptIn;
 
-    @Pattern(regex = ValidationRegex.PHONE)
     @Phone(messageResId = R.string.phone_format_error, allowEmpty = true)
+    @Pattern(regex = ValidationRegex.PHONE, messageResId = R.string.phone_format_error)
     @BindView(R.id.til_phone_number) TextInputLayout phoneNumber;
 
     @BindView(R.id.phone) EditText phone;
