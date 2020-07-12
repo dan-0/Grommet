@@ -298,16 +298,19 @@ public class AddressView extends GridLayout {
     }
 
     /**
-     * should only trigger on county adapter update, which should only be possible if
-     * PA is the selected state
+     * should only try to validate if PA is the selected state
      */
     private void validateZipCode() {
-        String chosenCounty = countySpinner.getEditText().getText().toString();
-        boolean zipcodeInCounty = !chosenCounty.isEmpty() &&
-                counties.get(chosenCounty).contains(zipEditText.getText().toString());
+        if (PA_ABREV.equals(stateSpinner.getEditText().getText().toString())) {
+            String chosenCounty = countySpinner.getEditText().getText().toString();
+            boolean zipcodeInCounty = !chosenCounty.isEmpty() &&
+                    counties.get(chosenCounty).contains(zipEditText.getText().toString());
 
-        zipTIL.setError(zipcodeInCounty ?
-                null : getContext().getString(R.string.zip_code_error));
+            zipTIL.setError(zipcodeInCounty ?
+                    null : getContext().getString(R.string.zip_code_error));
+        } else {
+            zipTIL.setError(null);
+        }
     }
 
     public Observable<Boolean> verify() {
