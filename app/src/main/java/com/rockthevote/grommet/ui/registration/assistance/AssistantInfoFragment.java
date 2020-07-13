@@ -37,8 +37,8 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.assistant_address) AddressView addressView;
 
-    @Pattern(regex = ValidationRegex.PHONE)
     @Phone(messageResId = R.string.phone_format_error)
+    @Pattern(regex = ValidationRegex.PHONE, messageResId = R.string.phone_format_error)
     @BindView(R.id.til_assistant_phone) TextInputLayout phoneTIL;
 
     @BindView(R.id.assistant_phone) EditText phoneEditText;
