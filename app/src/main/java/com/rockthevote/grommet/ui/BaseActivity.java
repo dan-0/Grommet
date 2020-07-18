@@ -3,25 +3,25 @@ package com.rockthevote.grommet.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.navigation.NavigationView;
 import com.rockthevote.grommet.BuildConfig;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 
 import javax.inject.Inject;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import dagger.ObjectGraph;
 
 
@@ -54,7 +54,7 @@ public class BaseActivity extends AppCompatActivity {
 
         if (getSelfNavDrawerItem() != NAVDRAWER_INVALID) {
 
-            inflater.inflate(R.layout.activity_base, container);
+            inflater.inflate(R.layout.activity_base, container, true);
             drawerLayout = (DrawerLayout) findViewById(R.id.base_drawer_layout);
             drawer = (NavigationView) findViewById(R.id.base_navigation);
             content = (ViewGroup) findViewById(R.id.base_content);

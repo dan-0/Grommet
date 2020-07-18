@@ -218,9 +218,7 @@ dependencies {
     def moshiVersion = "1.9.2"
     implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
     implementation "com.squareup.moshi:moshi:$moshiVersion"
-
-    internalDebugImplementation 'com.jakewharton:process-phoenix:1.0.2'
-
+    
     def leakCanaryVersion = "1.6.2"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     internalReleaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
@@ -270,7 +268,6 @@ dependencies {
 
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
-    implementation 'com.google.firebase:firebase-core:17.2.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Coroutines
@@ -282,5 +279,3 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
 }
-
-apply plugin: 'com.google.gms.google-services'

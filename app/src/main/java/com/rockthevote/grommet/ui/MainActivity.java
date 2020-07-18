@@ -62,8 +62,6 @@ public final class MainActivity extends BaseActivity {
 
     @Inject SharedPreferences sharedPreferences;
 
-    private CompositeSubscription subscriptions;
-
     private MainActivityViewModel viewModel;
 
     @Override
@@ -71,7 +69,7 @@ public final class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Injector.obtain(this).inject(this);
 
-        View view = getLayoutInflater().inflate(R.layout.activity_main, getContentView());
+        View view = getLayoutInflater().inflate(R.layout.activity_main, getContentView(), true);
         ButterKnife.bind(this, view);
         setSupportActionBar(toolbar);
         requestGPSPermission();
@@ -85,14 +83,6 @@ public final class MainActivity extends BaseActivity {
     }
 
     private void observeState() {
-        viewModel.getSessionStatus().observe(this, sessionStatus -> {
-            if (sessionStatus == null) {
-                return;
-            }
-
-            eventFlowWizard.setState(sessionStatus, true);
-        });
-
 
         viewModel.getState().observe(this, mainActivityState -> {
 
@@ -143,13 +133,6 @@ public final class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         viewModel.refreshPendingUploads();
-        subscriptions = new CompositeSubscription();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        subscriptions.unsubscribe();
     }
 
     private void requestGPSPermission() {

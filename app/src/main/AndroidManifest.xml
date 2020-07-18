@@ -22,7 +22,7 @@
         android:theme="@style/GrommetTheme">
         <activity
             android:name=".ui.MainActivity"
-            android:launchMode="singleTop"
+            android:launchMode="standard"
             android:windowSoftInputMode="stateHidden|adjustNothing"
             android:screenOrientation="portrait">
             <intent-filter>
