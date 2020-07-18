@@ -12,6 +12,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
@@ -20,15 +21,17 @@ import com.rockthevote.grommet.data.db.model.PhoneType;
 import com.rockthevote.grommet.data.db.model.PreferredLanguage;
 import com.rockthevote.grommet.data.db.model.Race;
 import com.rockthevote.grommet.databinding.FragmentAdditionalInfoBinding;
-import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModel;
-import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModelFactory;
 import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
+import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModel;
+import com.rockthevote.grommet.ui.registration.PartnerPreferenceViewModelFactory;
 import com.rockthevote.grommet.util.EmailOrEmpty;
+import com.rockthevote.grommet.util.PennValidations;
 import com.rockthevote.grommet.util.Phone;
 import com.rockthevote.grommet.util.Strings;
+import com.rockthevote.grommet.util.ValidationRegex;
 
 import java.util.Locale;
 
@@ -61,12 +64,12 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
 
     @BindView(R.id.spinner_preferred_language) BetterSpinner langPrefSpinner;
 
-    @Length(min = 8, max = 8, messageResId = R.string.error_penn_dot)
+    @Length(min = PennValidations.DRIVERS_LICENSE_CHARS, max = PennValidations.DRIVERS_LICENSE_CHARS, messageResId = R.string.error_penn_dot)
     @BindView(R.id.til_penn_dot) TextInputLayout pennDOTTIL;
 
     @BindView(R.id.penn_dot_edit_text) EditText pennDOTEditText;
 
-    @Length(min = 4, max = 4, messageResId = R.string.error_ssn)
+    @Length(min = PennValidations.SSN_LAST_4_CHARS, max = PennValidations.SSN_LAST_4_CHARS, messageResId = R.string.error_ssn)
     @BindView(R.id.til_ssn_last_four) TextInputLayout ssnTIL;
 
     @BindView(R.id.ssn_last_four_edit_text) EditText ssnEditText;
@@ -78,6 +81,7 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @BindView(R.id.email_opt_in) CheckBox emailOptIn;
 
     @Phone(messageResId = R.string.phone_format_error, allowEmpty = true)
+    @Pattern(regex = ValidationRegex.PHONE, messageResId = R.string.phone_format_error)
     @BindView(R.id.til_phone_number) TextInputLayout phoneNumber;
 
     @BindView(R.id.phone) EditText phone;

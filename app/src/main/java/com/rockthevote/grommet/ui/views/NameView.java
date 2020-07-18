@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Pattern;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.db.model.NameType;
@@ -22,6 +23,7 @@ import com.rockthevote.grommet.ui.misc.BetterSpinner;
 import com.rockthevote.grommet.ui.misc.ChildrenViewStateHelper;
 import com.rockthevote.grommet.ui.misc.EnumAdapter;
 import com.rockthevote.grommet.ui.misc.ObservableValidator;
+import com.rockthevote.grommet.util.ValidationRegex;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,13 +43,18 @@ public class NameView extends GridLayout {
     @BindView(R.id.spinner_suffix) BetterSpinner suffixSpinner;
 
     @NotEmpty(messageResId = R.string.required_field)
+    @Pattern(regex = ValidationRegex.NAME, messageResId = R.string.name_format_error)
     @BindView(R.id.til_first_name) TextInputLayout firstNameTIL;
+
     @BindView(R.id.first_name) EditText firstNameEditText;
 
+    @Pattern(regex = ValidationRegex.NAME, messageResId = R.string.name_format_error)
     @BindView(R.id.middle_name) EditText middleNameEditText;
 
     @NotEmpty(messageResId = R.string.required_field)
+    @Pattern(regex = ValidationRegex.NAME, messageResId = R.string.name_format_error)
     @BindView(R.id.til_last_name) TextInputLayout lastNameTIL;
+
     @BindView(R.id.last_name) EditText lastNameEditText;
 
     private ObservableValidator validator;
