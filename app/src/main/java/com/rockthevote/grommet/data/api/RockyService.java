@@ -20,7 +20,7 @@ public interface RockyService {
     Single<Result<RegistrationResponse>> register(@Body RockyRequest rockyRequest);
 
     @GET("partnerIdValidation")
-    Single<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId);
+    Single<Result<PartnerNameResponse>> getPartnerName(@Query("partner_id") String partnerId, @Query("grommet_version") String version);
 
     @POST("clockIn")
     Single<Result<Void>> clockIn(@Body ClockInRequest clockInRequest);
