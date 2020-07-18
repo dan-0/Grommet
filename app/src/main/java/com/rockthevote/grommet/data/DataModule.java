@@ -3,7 +3,7 @@ package com.rockthevote.grommet.data;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.f2prateek.rx.preferences2.CustomRxSharedPreferences;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.rockthevote.grommet.data.api.ApiModule;
@@ -55,8 +55,8 @@ public final class DataModule {
 
     @Provides
     @Singleton
-    RxSharedPreferences provideRxSharedPreferences(SharedPreferences prefs) {
-        return RxSharedPreferences.create(prefs);
+    CustomRxSharedPreferences provideCustomRxSharedPreferences(SharedPreferences prefs) {
+        return CustomRxSharedPreferences.create(prefs);
     }
 
     @Provides
