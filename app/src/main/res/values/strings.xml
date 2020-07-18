@@ -49,7 +49,7 @@
     <string name="failed_registration_uploads" translatable="false">Requires Admin For Upload</string>
 
     <string name="upload">upload</string>
-    <string name="check_wifi">Bad Network Connection</string>
+    <string name="error_title">Error</string>
     <string name="login_no_wifi_error">Cannot login. Please check network connection</string>
     <string name="update_required" translatable="false">Update Required</string>
     <string name="login_invalid_version" translatable="false">Cannot login, update required. Please upgrade to the latest version of the application.</string>
