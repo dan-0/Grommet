@@ -67,8 +67,8 @@ public final class DataModule {
         return new Moshi.Builder()
                 .add(new StringNormalizerFactory())
                 .add(RockyAdapterFactory.create())
-                .add(new KotlinJsonAdapterFactory())
                 .add(new DateAdapter())
+                .add(new KotlinJsonAdapterFactory())
                 .build();
     }
 
