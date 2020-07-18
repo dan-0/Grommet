@@ -98,21 +98,6 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         ).get(SessionTimeTrackingViewModel.class);
     }
 
-    private void observeData() {
-
-        viewModel.getSessionData().observe(
-                (AppCompatActivity) getContext(), sessionSummaryDataObserver);
-
-        viewModel.getSessionStatus().observe((AppCompatActivity) getContext(), sessionStatusObserver);
-        viewModel.getClockState().observe((AppCompatActivity) getContext(), clockEventObserver);
-    }
-
-    private void unregisterDataObservers() {
-        viewModel.getSessionData().removeObserver(sessionSummaryDataObserver);
-        viewModel.getSessionStatus().removeObserver(sessionStatusObserver);
-        viewModel.getClockState().removeObserver(clockEventObserver);
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -121,13 +106,25 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Override
     public void registerCallbackListener(EventFlowCallback listener) {
         this.listener = listener;
-        observeData();
+        registerDataObservers();
     }
 
     @Override
     public void unregisterCallbackListener() {
         unregisterDataObservers();
         listener = null;
+    }
+
+    private void registerDataObservers() {
+        viewModel.getSessionData().observe((AppCompatActivity) getContext(), sessionSummaryDataObserver);
+        viewModel.getSessionStatus().observe((AppCompatActivity) getContext(), sessionStatusObserver);
+        viewModel.getClockState().observe((AppCompatActivity) getContext(), clockEventObserver);
+    }
+
+    private void unregisterDataObservers() {
+        viewModel.getSessionData().removeObserver(sessionSummaryDataObserver);
+        viewModel.getSessionStatus().removeObserver(sessionStatusObserver);
+        viewModel.getClockState().removeObserver(clockEventObserver);
     }
 
     private void handleClockEvent(ClockEvent clockState) {
