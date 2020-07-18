@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,6 +57,10 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     private EventFlowCallback listener;
 
     private SessionTimeTrackingViewModel viewModel;
+
+    private Observer<? super SessionStatus> sessionStatusObserver = this::updateUI;
+    private Observer<? super SessionSummaryData> sessionSummaryDataObserver = this::handleSessionSummary;
+    private Observer<? super ClockEvent> clockEventObserver = this::handleClockEvent;
 
     public SessionTimeTracking(Context context) {
         this(context, null);
@@ -91,36 +96,21 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
                         sharedPreferences,
                         rockyService)
         ).get(SessionTimeTrackingViewModel.class);
-
-        observeData();
     }
 
     private void observeData() {
 
         viewModel.getSessionData().observe(
-                (AppCompatActivity) getContext(), data -> {
-                    edCanvasserName.setText(data.getCanvasserName());
-                    edEventName.setText(data.getOpenTrackingId());
-                    edEventZip.setText(data.getPartnerTrackingId());
-                    edPartnerName.setText(data.getPartnerName());
-                    edDeviceId.setText(data.getDeviceId());
+                (AppCompatActivity) getContext(), sessionSummaryDataObserver);
 
-                    if (data.getClockInTime() != null) {
-                        clockInTime.setText(Dates.formatAs_LocalTimeOfDay(data.getClockInTime()));
-                    } else {
-                        clockInTime.setText(R.string.time_tracking_default_value);
-                    }
-                });
+        viewModel.getSessionStatus().observe((AppCompatActivity) getContext(), sessionStatusObserver);
+        viewModel.getClockState().observe((AppCompatActivity) getContext(), clockEventObserver);
+    }
 
-        viewModel.getSessionStatus().observe((AppCompatActivity) getContext(), this::updateUI);
-
-        viewModel.getClockState().observe((AppCompatActivity) getContext(), clockState -> {
-            if (clockState instanceof ClockEvent.ClockingError) {
-                displayClockEventDialog(((ClockEvent.ClockingError) clockState).getErrorMsgId());
-            } else if (clockState instanceof ClockEvent.Loading) {
-               showClockInSpinner();
-            }
-        });
+    private void unregisterDataObservers() {
+        viewModel.getSessionData().removeObserver(sessionSummaryDataObserver);
+        viewModel.getSessionStatus().removeObserver(sessionStatusObserver);
+        viewModel.getClockState().removeObserver(clockEventObserver);
     }
 
     @Override
@@ -131,11 +121,35 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     @Override
     public void registerCallbackListener(EventFlowCallback listener) {
         this.listener = listener;
+        observeData();
     }
 
     @Override
     public void unregisterCallbackListener() {
+        unregisterDataObservers();
         listener = null;
+    }
+
+    private void handleClockEvent(ClockEvent clockState) {
+        if (clockState instanceof ClockEvent.ClockingError) {
+            displayClockEventDialog(((ClockEvent.ClockingError) clockState).getErrorMsgId());
+        } else if (clockState instanceof ClockEvent.Loading) {
+            showClockInSpinner();
+        }
+    }
+
+    private void handleSessionSummary(SessionSummaryData data) {
+        edCanvasserName.setText(data.getCanvasserName());
+        edEventName.setText(data.getOpenTrackingId());
+        edEventZip.setText(data.getPartnerTrackingId());
+        edPartnerName.setText(data.getPartnerName());
+        edDeviceId.setText(data.getDeviceId());
+
+        if (data.getClockInTime() != null) {
+            clockInTime.setText(Dates.formatAs_LocalTimeOfDay(data.getClockInTime()));
+        } else {
+            clockInTime.setText(R.string.time_tracking_default_value);
+        }
     }
 
     void updateUI(SessionStatus status) {
