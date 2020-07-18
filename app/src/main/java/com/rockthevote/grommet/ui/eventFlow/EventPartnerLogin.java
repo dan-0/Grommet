@@ -151,6 +151,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
 
     @OnClick(R.id.clear_partner_info)
     public void onClickClearPartnerInfo(View v) {
+        edePartnerId.setText("");
         viewModel.clearPartnerInfo();
     }
 

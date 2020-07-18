@@ -51,7 +51,7 @@ class PartnerLoginViewModel(
         } else {
             viewModelScope.launch(dispatchers.io + coroutineExceptionHandler) {
                 runCatching {
-                    val result = rockyService.getPartnerName(partnerId.toString()).toBlocking().value()
+                    val result = rockyService.getPartnerName(partnerId.toString(), BuildConfig.VERSION_CODE.toString()).toBlocking().value()
 
                     if (result.isError) {
                         throw result.error() ?: PartnerLoginViewModelException("Error retrieving result")

@@ -3,10 +3,9 @@ package com.rockthevote.grommet.data;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.f2prateek.rx.preferences2.CustomRxSharedPreferences;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.rockthevote.grommet.data.api.ApiModule;
 import com.rockthevote.grommet.data.api.RockyAdapterFactory;
 import com.rockthevote.grommet.data.api.StringNormalizerFactory;
@@ -19,12 +18,12 @@ import java.io.File;
 
 import javax.inject.Singleton;
 
+import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.jakewharton.byteunits.DecimalByteUnit.MEGABYTES;
 
 
@@ -45,7 +44,8 @@ public final class DataModule {
     @Provides
     @Singleton
     SharedPreferences provideSharedPreferences(Application app) {
-        return app.getSharedPreferences("grommet", MODE_PRIVATE);
+        return PreferenceManager.getDefaultSharedPreferences(app);
+//        return app.getSharedPreferences("grommet", MODE_PRIVATE);
     }
 
     @Provides
@@ -56,8 +56,8 @@ public final class DataModule {
 
     @Provides
     @Singleton
-    RxSharedPreferences provideRxSharedPreferences(SharedPreferences prefs) {
-        return RxSharedPreferences.create(prefs);
+    CustomRxSharedPreferences provideCustomRxSharedPreferences(SharedPreferences prefs) {
+        return CustomRxSharedPreferences.create(prefs);
     }
 
     @Provides
@@ -74,12 +74,6 @@ public final class DataModule {
     @Singleton
     OkHttpClient provideOkHttpClient(Application app) {
         return createOkHttpClient(app).build();
-    }
-
-    @Provides
-    @Singleton
-    FirebaseAnalytics provideFirebase(Application app) {
-        return FirebaseAnalytics.getInstance(app);
     }
 
     static OkHttpClient.Builder createOkHttpClient(Application app) {

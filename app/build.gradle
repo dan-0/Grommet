@@ -194,6 +194,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.googlecode.libphonenumber:libphonenumber:7.5.2'
+    implementation 'androidx.preference:preference:1.1.1'
 
     // Room
     def roomVersion = "2.2.5"
@@ -218,8 +219,6 @@ dependencies {
     def moshiVersion = "1.9.2"
     implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
     implementation "com.squareup.moshi:moshi:$moshiVersion"
-
-    internalDebugImplementation 'com.jakewharton:process-phoenix:1.0.2'
 
     def leakCanaryVersion = "1.6.2"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
@@ -258,7 +257,7 @@ dependencies {
     implementation 'io.reactivex:rxjava:1.1.8'
     implementation 'io.reactivex:rxandroid:1.1.0'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.2'
-    implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0-RC3'
+    implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.1-beta1'
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta4"
     implementation "com.github.hadilq.liveevent:liveevent:1.2.0"
 
@@ -270,7 +269,6 @@ dependencies {
 
     implementation 'com.mobsandgeeks:android-saripaar:2.0.3'
 
-    implementation 'com.google.firebase:firebase-core:17.2.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Coroutines
@@ -282,5 +280,3 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
 }
-
-apply plugin: 'com.google.gms.google-services'

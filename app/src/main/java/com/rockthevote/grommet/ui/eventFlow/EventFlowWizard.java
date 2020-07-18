@@ -17,11 +17,17 @@ import com.rockthevote.grommet.ui.MainActivityViewModelFactory;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by Mechanical Man, LLC on 7/19/17. Grommet
@@ -39,6 +45,7 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
     private MainActivityViewModel viewModel;
 
+
     public EventFlowWizard(Context context) {
         this(context, null);
     }
@@ -49,8 +56,9 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
     public EventFlowWizard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        Timber.d("viewpager : constructor");
 
-        LayoutInflater.from(context).inflate(R.layout.event_flow_wizard, this);
+        LayoutInflater.from(context).inflate(R.layout.event_flow_wizard, this, true);
 
         if (!isInEditMode()) {
             Injector.obtain(context).inject(this);
@@ -59,6 +67,7 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
     @Override
     protected void onAttachedToWindow() {
+        Timber.d("viewpager : attached to window");
         super.onAttachedToWindow();
         if (!isInEditMode()) {
             ButterKnife.bind(this);
@@ -76,17 +85,19 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
                 new MainActivityViewModelFactory(rockyService, registrationDao, sharedPreferences)
         ).get(MainActivityViewModel.class);
 
+
+        viewModel.getSessionStatus().observe((AppCompatActivity) getContext(), sessionStatus -> {
+            if (sessionStatus == null) {
+                return;
+            }
+            updateState(sessionStatus, true);
+        });
+
     }
 
-
-    @Override
-    public void setState(SessionStatus status, boolean smoothScroll) {
-
-        // unregister the current page from callbacks
+    private void updateState(SessionStatus status, boolean smoothScroll){
         adapter.getPageAtPosition(viewPager.getCurrentItem())
                 .unregisterCallbackListener();
-
-        viewModel.updateSessionStatus(status);
 
         switch (status) {
             case PARTNER_UPDATE:
@@ -115,6 +126,16 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
         // register the current page for callbacks
         adapter.getPageAtPosition(viewPager.getCurrentItem())
                 .registerCallbackListener(this);
+    }
+    @Override
+    public void setState(SessionStatus status, boolean smoothScroll) {
+
+        // unregister the current page from callbacks
+        Timber.d("viewpager : %1$s", null == viewPager);
+
+
+        viewModel.updateSessionStatus(status);
+
     }
 
 

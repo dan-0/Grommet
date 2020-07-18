@@ -120,6 +120,8 @@ class MainActivityViewModel(
                 .edit()
                 .putString(KEY_SESSION_STATUS, sessionStatus.toString())
                 .apply()
+
+            loadSessionStatus()
         }
     }
 
