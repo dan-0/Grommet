@@ -218,7 +218,7 @@ dependencies {
     def moshiVersion = "1.9.2"
     implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
     implementation "com.squareup.moshi:moshi:$moshiVersion"
-    
+
     def leakCanaryVersion = "1.6.2"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     internalReleaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
