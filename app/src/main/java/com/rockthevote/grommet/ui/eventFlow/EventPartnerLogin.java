@@ -109,7 +109,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                                 getContext().getString(R.string.error_partner_id));
 
                         new AlertDialog.Builder(getContext())
-                                .setTitle(R.string.check_wifi)
+                                .setTitle(R.string.error_title)
                                 .setIcon(R.drawable.ic_warning_24dp)
                                 .setMessage(R.string.login_no_wifi_error)
                                 .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> dialogInterface.dismiss())

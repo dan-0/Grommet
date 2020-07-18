@@ -232,7 +232,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         clockInButton.setEnabled(true);
 
         new AlertDialog.Builder(getContext())
-                .setTitle(R.string.check_wifi)
+                .setTitle(R.string.error_title)
                 .setIcon(R.drawable.ic_warning_24dp)
                 .setMessage(msgId)
                 .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> dialogInterface.dismiss())

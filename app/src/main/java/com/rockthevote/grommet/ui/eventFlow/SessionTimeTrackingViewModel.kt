@@ -187,7 +187,7 @@ class SessionTimeTrackingViewModel(
                         SessionStatus.CLOCKED_OUT.toString())
                         .apply()
             }.onFailure {
-                updateClockState(ClockEvent.ClockingError(R.string.check_wifi))
+                updateClockState(ClockEvent.ClockingError(R.string.error_title))
             }
         }
     }
