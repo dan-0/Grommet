@@ -59,9 +59,12 @@ import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.mock.NetworkBehavior;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -452,7 +455,13 @@ public final class DebugView extends FrameLayout {
 
     private void setEndpointAndRelaunch(String endpoint) {
         Timber.d("Setting network endpoint to %s", endpoint);
+        networkEndpoint.asObservable()
+                .observeOn(Schedulers.io())
+                .delay(1000, MILLISECONDS)
+                .subscribe(s -> {
+                    ProcessPhoenix.triggerRebirth(getContext());
+                });
         networkEndpoint.set(endpoint);
-        ProcessPhoenix.triggerRebirth(getContext());
+
     }
 }
