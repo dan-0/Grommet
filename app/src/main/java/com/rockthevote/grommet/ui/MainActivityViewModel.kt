@@ -72,7 +72,8 @@ class MainActivityViewModel(
 
             val successfulRegistrations = results.filter { registrationPair ->
                 runCatching {
-                    !registrationPair.second.await().isError
+                    val result = registrationPair.second.await()
+                    !result.isError
                 }.getOrElse {
                     // Bump the number of upload attempts in the registration
                     val uploadAttempts = registrationPair.first.uploadAttempts + 1
