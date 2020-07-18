@@ -14,6 +14,7 @@ import com.rockthevote.grommet.data.api.model.DateAdapter;
 import com.rockthevote.grommet.ui.MainActivity;
 import com.rockthevote.grommet.ui.registration.BaseRegistrationFragment;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory;
 
 import java.io.File;
 
@@ -66,6 +67,7 @@ public final class DataModule {
         return new Moshi.Builder()
                 .add(new StringNormalizerFactory())
                 .add(RockyAdapterFactory.create())
+                .add(new KotlinJsonAdapterFactory())
                 .add(new DateAdapter())
                 .build();
     }

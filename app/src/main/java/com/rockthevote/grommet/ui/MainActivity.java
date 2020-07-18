@@ -135,6 +135,14 @@ public final class MainActivity extends BaseActivity {
             } else if (mainActivityState instanceof MainActivityState.Init) {
                 viewModel.loadSessionStatus();
                 viewModel.refreshPendingUploads();
+            } else if (mainActivityState instanceof MainActivityState.Error) {
+                /*
+                    Right now, if there's an error, we do nothing. The "UPLOAD" button will be
+                    disabled because that's the default, but will be re-enabled when app restarts
+                    because VM state is not retained. We need guidance on error handling to
+                    implement any changes here
+                 */
+                // TODO: 18 July 2020, Still need guidance on error handling behavior here
             }
         });
     }
