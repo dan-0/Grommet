@@ -54,6 +54,10 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
 
     @Override
     public void storeState() {
+        /* Stub */
+    }
+
+    public void completeRegistration() {
         ReviewData data = ReviewExtKt.toReviewData(binding);
         viewModel.completeRegistration(data);
     }
@@ -167,7 +171,7 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
     @OnClick(R.id.button_register)
     public void onRegisterClick(View v) {
         if (!signaturePad.isEmpty()) {
-            storeState();
+            completeRegistration();
         } else {
             signaturePadError.setVisibility(View.VISIBLE);
         }
