@@ -39,15 +39,13 @@ class SessionTimeTrackingViewModel(
         throw throwable
     }
 
-    private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
-
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
     val effect: LiveData<SessionSummaryState.Effect?> = _effect
 
     private val _clockState = LiveEvent<ClockEvent>()
     val clockState: LiveData<ClockEvent> = _clockState
 
-    private val _sessionStatus = LiveEvent<SessionStatus>()
+    private val _sessionStatus = MutableLiveData<SessionStatus>()
     val sessionStatus: LiveData<SessionStatus> = _sessionStatus
 
     val sessionData = Transformations.map(partnerInfoDao.getPartnerInfoWithSessionAndRegistrations()) { result ->
