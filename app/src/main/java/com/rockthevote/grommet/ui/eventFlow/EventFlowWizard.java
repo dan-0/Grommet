@@ -10,19 +10,13 @@ import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
 import com.rockthevote.grommet.data.api.RockyService;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
-import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.data.db.model.SessionStatus;
 import com.rockthevote.grommet.ui.MainActivityViewModel;
 import com.rockthevote.grommet.ui.MainActivityViewModelFactory;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
@@ -56,7 +50,6 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
     public EventFlowWizard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        Timber.d("viewpager : constructor");
 
         LayoutInflater.from(context).inflate(R.layout.event_flow_wizard, this, true);
 
@@ -67,7 +60,6 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
 
     @Override
     protected void onAttachedToWindow() {
-        Timber.d("viewpager : attached to window");
         super.onAttachedToWindow();
         if (!isInEditMode()) {
             ButterKnife.bind(this);
@@ -93,6 +85,8 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
             }
             updateState(sessionStatus, true);
         });
+
+        viewModel.loadSessionStatus();
 
     }
 
@@ -130,13 +124,7 @@ public class EventFlowWizard extends FrameLayout implements EventFlowCallback {
     }
     @Override
     public void setState(SessionStatus status, boolean smoothScroll) {
-
-        // unregister the current page from callbacks
-        Timber.d("viewpager : %1$s", null == viewPager);
-
-
         viewModel.updateSessionStatus(status);
-
     }
 
 
