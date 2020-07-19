@@ -107,6 +107,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
     public void registerCallbackListener(EventFlowCallback listener) {
         this.listener = listener;
         registerDataObservers();
+        viewModel.updateSessionStatus();
     }
 
     @Override
@@ -149,7 +150,7 @@ public class SessionTimeTracking extends FrameLayout implements EventFlowPage {
         }
     }
 
-    void updateUI(SessionStatus status) {
+    private void updateUI(SessionStatus status) {
         switch (status) {
             case CLOCKED_IN: {
 

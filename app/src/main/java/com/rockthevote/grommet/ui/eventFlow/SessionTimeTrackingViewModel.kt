@@ -16,7 +16,6 @@ import com.rockthevote.grommet.util.SharedPrefKeys
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -45,7 +44,7 @@ class SessionTimeTrackingViewModel(
     private val _clockState = LiveEvent<ClockEvent>()
     val clockState: LiveData<ClockEvent> = _clockState
 
-    private val _sessionStatus = MutableLiveData<SessionStatus>()
+    private val _sessionStatus = LiveEvent<SessionStatus>()
     val sessionStatus: LiveData<SessionStatus> = _sessionStatus
 
     val sessionData = Transformations.map(partnerInfoDao.getPartnerInfoWithSessionAndRegistrations()) { result ->
@@ -197,7 +196,7 @@ class SessionTimeTrackingViewModel(
         }
     }
 
-    private fun updateSessionStatus() {
+    fun updateSessionStatus() {
         viewModelScope.launch(dispatchers.io) {
             val statusString = sharedPreferences.getString(SharedPrefKeys.KEY_SESSION_STATUS, null) ?: return@launch
             val status = SessionStatus.fromString(statusString) ?: return@launch
