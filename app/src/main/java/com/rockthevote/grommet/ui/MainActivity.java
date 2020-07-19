@@ -123,7 +123,6 @@ public final class MainActivity extends BaseActivity {
             } else if (mainActivityState instanceof MainActivityState.Loading) {
                 upploadButton.setEnabled(false);
             } else if (mainActivityState instanceof MainActivityState.Init) {
-                viewModel.loadSessionStatus();
                 viewModel.refreshPendingUploads();
             } else if (mainActivityState instanceof MainActivityState.Error) {
                 /*
