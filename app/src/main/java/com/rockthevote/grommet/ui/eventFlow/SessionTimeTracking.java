@@ -31,7 +31,6 @@ import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_IN;
 import static com.rockthevote.grommet.data.db.model.SessionStatus.CLOCKED_OUT;
