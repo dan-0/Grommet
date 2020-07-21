@@ -24,6 +24,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -35,7 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kotlin.Unit;
-import rx.subscriptions.CompositeSubscription;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -83,6 +83,13 @@ public final class MainActivity extends BaseActivity {
     }
 
     private void observeState() {
+
+        viewModel.getErrorStream().observe(this, error -> {
+            if (error instanceof MainActivityError.UploadRegistrationError) {
+                int errorMessage = ((MainActivityError.UploadRegistrationError) error).getStringMessageId();
+                showErrorMessageDialog(errorMessage);
+            }
+        });
 
         viewModel.getState().observe(this, mainActivityState -> {
 
@@ -134,6 +141,21 @@ public final class MainActivity extends BaseActivity {
                 // TODO: 18 July 2020, Still need guidance on error handling behavior here
             }
         });
+    }
+
+    /**
+     * Show an error message dialog.
+     *
+     * @param errorMessage StringRes error message value
+     */
+    private void showErrorMessageDialog(@StringRes int errorMessage) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.error_title)
+                .setIcon(R.drawable.ic_warning_24dp)
+                .setMessage(errorMessage)
+                .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> dialogInterface.dismiss())
+                .create()
+                .show();
     }
 
     @Override
