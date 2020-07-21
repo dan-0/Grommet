@@ -16,7 +16,6 @@ import com.rockthevote.grommet.util.SharedPrefKeys
 import com.rockthevote.grommet.util.coroutines.DispatcherProvider
 import com.rockthevote.grommet.util.coroutines.DispatcherProviderImpl
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -38,8 +37,6 @@ class SessionTimeTrackingViewModel(
         Timber.e(throwable)
         throw throwable
     }
-
-    private val rockyRequestScope = CoroutineScope(dispatchers.io + coroutineExceptionHandler)
 
     private val _effect = LiveEvent<SessionSummaryState.Effect?>()
     val effect: LiveData<SessionSummaryState.Effect?> = _effect
@@ -199,7 +196,7 @@ class SessionTimeTrackingViewModel(
         }
     }
 
-    private fun updateSessionStatus() {
+    fun updateSessionStatus() {
         viewModelScope.launch(dispatchers.io) {
             val statusString = sharedPreferences.getString(SharedPrefKeys.KEY_SESSION_STATUS, null) ?: return@launch
             val status = SessionStatus.fromString(statusString) ?: return@launch

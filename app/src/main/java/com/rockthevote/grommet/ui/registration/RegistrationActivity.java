@@ -181,11 +181,6 @@ public class RegistrationActivity extends BaseActivity {
         int curPage = viewPager.getCurrentItem();
         if (curPage > 0) {
             int previousItem = curPage - 1;
-
-            BaseRegistrationFragment currentFragment =
-                    ((BaseRegistrationFragment) adapter.getItem(curPage));
-            currentFragment.storeState();
-
             viewPager.setCurrentItem(previousItem);
         }
     }
