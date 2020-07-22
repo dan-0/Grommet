@@ -3,6 +3,7 @@ package com.rockthevote.grommet.ui
 import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.hadilq.liveevent.LiveEvent
+import com.rockthevote.grommet.R
 import com.rockthevote.grommet.data.api.RockyService
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.model.RockyRequest
@@ -27,6 +28,9 @@ class MainActivityViewModel(
 
     private val _sessionStatus = LiveEvent<SessionStatus>()
     val sessionStatus: LiveData<SessionStatus> = _sessionStatus
+
+    private val _errorStream = MediatorLiveData<MainActivityError>()
+    val errorStream: LiveData<MainActivityError> = _errorStream
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Timber.e(throwable)
@@ -85,6 +89,10 @@ class MainActivityViewModel(
                 }
             }.map {
                 it.first
+            }
+
+            if (successfulRegistrations.size != results.size) {
+                _errorStream.postValue(MainActivityError.UploadRegistrationError(R.string.generic_upload_error))
             }
 
             registrationDao.delete(*successfulRegistrations.toTypedArray())

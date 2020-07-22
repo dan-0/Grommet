@@ -409,5 +409,6 @@ If you have any questions about this privacy statement, please contact info@rock
     <string name="different_mailing_address_not_filled_out">Mailing address must be filled out if \'I get my mail from a different address from the one above\' is checked.</string>
     <string translatable="false" name="error_updating_canvasser_info">Error updating canvasser info</string>
     <string translatable="false" name="error_location">Error logging in, ensure GPS and location are enabled</string>
+    <string translatable="false" name="generic_upload_error">We’re having issues talking to the server, check your Wi-Fi connection and try again.</string>
 
 </resources>
