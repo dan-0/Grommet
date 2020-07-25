@@ -1,6 +1,7 @@
 package com.rockthevote.grommet.ui.registration
 
 import androidx.lifecycle.*
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao
 import com.rockthevote.grommet.data.db.dao.RegistrationDao
 import com.rockthevote.grommet.data.db.dao.SessionDao
 import com.rockthevote.grommet.data.db.model.GeoLocation
@@ -24,9 +25,10 @@ import timber.log.Timber
 import java.util.*
 
 class RegistrationViewModel(
-    private val registrationDao: RegistrationDao,
-    private val dispatcherProvider: DispatcherProvider = DispatcherProviderImpl(),
-    private val sessionDao: SessionDao
+        private val registrationDao: RegistrationDao,
+        private val dispatcherProvider: DispatcherProvider = DispatcherProviderImpl(),
+        private val sessionDao: SessionDao,
+        private val partnerInfoDao: PartnerInfoDao
 ) : ViewModel() {
 
     private val _registrationData = MutableLiveData(RegistrationData())
@@ -48,14 +50,14 @@ class RegistrationViewModel(
 
     private val _requestAdapter = viewModelScope.async(dispatcherProvider.io) {
         Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-            .adapter(RockyRequest::class.java)
+                .add(KotlinJsonAdapterFactory())
+                .build()
+                .adapter(RockyRequest::class.java)
     }
 
     fun storeNewRegistrantData(data: NewRegistrantData) {
         val newData = currentRegistrationData.copy(
-            newRegistrantData = data
+                newRegistrantData = data
         )
 
         updateData(newData)
@@ -63,7 +65,7 @@ class RegistrationViewModel(
 
     fun storeAddressData(data: PersonalInfoData) {
         val newData = currentRegistrationData.copy(
-            addressData = data
+                addressData = data
         )
 
         updateData(newData)
@@ -71,7 +73,7 @@ class RegistrationViewModel(
 
     fun storeAdditionalInfoData(data: AdditionalInfoData) {
         val newData = currentRegistrationData.copy(
-            additionalInfoData = data
+                additionalInfoData = data
         )
 
         updateData(newData)
@@ -79,7 +81,7 @@ class RegistrationViewModel(
 
     fun storeAssistanceData(data: AssistanceData) {
         val newData = currentRegistrationData.copy(
-            assistanceData = data
+                assistanceData = data
         )
 
         updateData(newData)
@@ -87,7 +89,7 @@ class RegistrationViewModel(
 
     private fun storeReviewData(data: ReviewData) {
         val newData = currentRegistrationData.copy(
-            reviewData = data
+                reviewData = data
         )
 
         updateData(newData, true)
@@ -95,38 +97,39 @@ class RegistrationViewModel(
 
     @JvmOverloads
     fun completeRegistration(
-        data: ReviewData,
-        completionDate: Date = Date()
+            data: ReviewData,
+            completionDate: Date = Date()
     ) {
         storeReviewData(data)
 
         viewModelScope.launch(dispatcherProvider.io) {
 
             val currentSession = sessionDao.getCurrentSession()
+            val partnerInfo = partnerInfoDao.getPartnerInfo(currentSession?.partnerInfoId ?: 0)
 
             val sessionData = currentSession?.let {
                 SessionData(
-                    partnerId = currentSession.partnerInfoId,
-                    canvasserName = currentSession.canvasserName,
-                    sourceTrackingId = currentSession.sourceTrackingId,
-                    partnerTrackingId = currentSession.partnerTrackingId,
-                    geoLocation = GeoLocation(
-                        lat = currentSession.geoLocation.latitude(),
-                        long = currentSession.geoLocation.longitude()
-                    ),
-                    openTrackingId = currentSession.openTrackingId
+                        partnerId = partnerInfo.partnerId,
+                        canvasserName = currentSession.canvasserName,
+                        sourceTrackingId = currentSession.sourceTrackingId,
+                        partnerTrackingId = currentSession.partnerTrackingId,
+                        geoLocation = GeoLocation(
+                                lat = currentSession.geoLocation.latitude(),
+                                long = currentSession.geoLocation.longitude()
+                        ),
+                        openTrackingId = currentSession.openTrackingId
                 )
             } ?: run {
                 val exception = IllegalStateException("Empty session during registration")
                 Timber.e(exception)
 
                 SessionData(
-                    partnerId = -1,
-                    canvasserName = "empty",
-                    sourceTrackingId = "empty",
-                    partnerTrackingId = "empty",
-                    geoLocation = GeoLocation(-1.0, -1.0),
-                    openTrackingId = "empty"
+                        partnerId = -1,
+                        canvasserName = "empty",
+                        sourceTrackingId = "empty",
+                        partnerTrackingId = "empty",
+                        geoLocation = GeoLocation(-1.0, -1.0),
+                        openTrackingId = "empty"
                 )
             }
 
@@ -142,7 +145,7 @@ class RegistrationViewModel(
                 val rockyRequestJson = adapter.toJson(requestData)
 
                 val registration = Registration(
-                    registrationData = rockyRequestJson
+                        registrationData = rockyRequestJson
                 )
 
                 registrationDao.insert(registration)
@@ -153,9 +156,9 @@ class RegistrationViewModel(
                 when (it) {
                     is InvalidRegistrationException -> {
                         val newState = RegistrationState.RegistrationError(
-                            isAcknowledged = false,
-                            errorMsg = it.userMessage,
-                            formatVar = it.formatVar
+                                isAcknowledged = false,
+                                errorMsg = it.userMessage,
+                                formatVar = it.formatVar
                         )
 
                         updateState(newState)
@@ -206,11 +209,11 @@ class RegistrationViewModel(
                 }
 
                 val newSession = session.copy(
-                    registrationCount = registrationCount,
-                    smsCount = smsCount,
-                    driversLicenseCount = dlCount,
-                    ssnCount = ssnCount,
-                    emailCount =  emailCount
+                        registrationCount = registrationCount,
+                        smsCount = smsCount,
+                        driversLicenseCount = dlCount,
+                        ssnCount = ssnCount,
+                        emailCount = emailCount
                 )
 
                 sessionDao.updateSession(newSession)
@@ -268,14 +271,16 @@ class RegistrationViewModel(
 }
 
 class RegistrationViewModelFactory(
-    private val registrationDao: RegistrationDao,
-    private val sessionDao: SessionDao
+        private val registrationDao: RegistrationDao,
+        private val sessionDao: SessionDao,
+        private val partnerInfoDao: PartnerInfoDao
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return RegistrationViewModel(
-            registrationDao = registrationDao,
-            sessionDao = sessionDao) as T
+                registrationDao = registrationDao,
+                sessionDao = sessionDao,
+                partnerInfoDao = partnerInfoDao) as T
     }
 }
 

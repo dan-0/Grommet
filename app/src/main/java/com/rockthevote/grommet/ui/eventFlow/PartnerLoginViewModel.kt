@@ -24,9 +24,9 @@ class PartnerLoginViewModel(
         private val sessionDao: SessionDao
 ) : ViewModel() {
 
-    val partnerInfoId: LiveData<String> =
+    val partnerInfoPartnerID: LiveData<Long> =
             Transformations.map(partnerInfoDao.getCurrentPartnerInfoLive()) { result ->
-                result?.partnerId ?: "-1"
+                result?.partnerId ?: -1
             }
 
     private val _partnerLoginState = MutableLiveData<PartnerLoginState>(PartnerLoginState.Init)
@@ -40,10 +40,10 @@ class PartnerLoginViewModel(
         setStateToError()
     }
 
-    fun validatePartnerId(partnerId: String) {
+    fun validatePartnerId(partnerId: Long) {
         updateState(PartnerLoginState.Loading)
 
-        if (partnerId.equals(partnerInfoId.value)) {
+        if (partnerId == partnerInfoPartnerID.value) {
             // just continue on if the value is the same
             updateState(PartnerLoginState.Init)
             updateEffect(PartnerLoginState.Success)
@@ -82,8 +82,8 @@ class PartnerLoginViewModel(
     }
 
     private fun completePartnerValidation(
-        partnerId: String,
-        partnerNameResponse: PartnerNameResponse
+            partnerId: Long,
+            partnerNameResponse: PartnerNameResponse
     ): PartnerLoginState.Effect {
         partnerInfoDao.deleteAllPartnerInfo()
         sessionDao.clearAllSessionInfo()
