@@ -18,7 +18,7 @@ data class PartnerInfo(
 
         // the key to login as this partner
         @ColumnInfo(name = "partner_id")
-        val partnerId: String,
+        val partnerId: Long,
 
         @ColumnInfo(name = "app_version")
         val appVersion: Float,

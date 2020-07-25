@@ -1,25 +1,25 @@
 package com.rockthevote.grommet.ui.registration;
 
 import android.os.Bundle;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.cardview.widget.CardView;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.databinding.FragmentRegistrationBaseBinding;
 
 import javax.inject.Inject;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import rx.Observable;
 
 public abstract class BaseRegistrationFragment extends Fragment {
@@ -34,13 +34,16 @@ public abstract class BaseRegistrationFragment extends Fragment {
     @Inject
     SessionDao sessionDao;
 
+    @Inject
+    PartnerInfoDao partnerInfoDao;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Injector.obtain(getActivity()).inject(this);
         viewModel = new ViewModelProvider(
                 requireActivity(),
-                new RegistrationViewModelFactory(registrationDao, sessionDao)
+                new RegistrationViewModelFactory(registrationDao, sessionDao, partnerInfoDao)
         ).get(RegistrationViewModel.class);
     }
 

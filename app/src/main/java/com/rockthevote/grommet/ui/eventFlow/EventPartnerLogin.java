@@ -127,10 +127,10 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                     }
                 });
 
-        viewModel.getPartnerInfoId().observe(
+        viewModel.getPartnerInfoPartnerID().observe(
                 (AppCompatActivity) getContext(), id -> {
-                    if (!id.equals("-1")) {
-                        edePartnerId.setText(id);
+                    if (id != -1) {
+                        edePartnerId.setText(String.valueOf(id));
                     } else {
                         edePartnerId.setText("");
                     }
@@ -145,7 +145,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
         inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
         if (validator.validate().toBlocking().single()) {
-            viewModel.validatePartnerId(edePartnerId.getText().toString());
+            viewModel.validatePartnerId(Long.parseLong(edePartnerId.getText().toString()));
         }
     }
 

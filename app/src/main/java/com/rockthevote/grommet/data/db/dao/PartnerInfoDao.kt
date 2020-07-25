@@ -18,6 +18,9 @@ interface PartnerInfoDao {
     @Query("SELECT * FROM partner_info LIMIT 1")
     fun getCurrentPartnerInfoLive(): LiveData<PartnerInfo>
 
+    @Query("SELECT * FROM partner_info WHERE partner_info_id = :partnerInfoId LIMIT 1")
+    fun getPartnerInfo(partnerInfoId: Long?): PartnerInfo
+
     @Query("SELECT * FROM partner_info LIMIT 1")
     fun getCurrentPartnerInfo(): PartnerInfo
 

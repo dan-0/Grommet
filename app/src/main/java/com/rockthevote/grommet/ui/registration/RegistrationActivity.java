@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import com.google.android.material.appbar.AppBarLayout;
 import com.rockthevote.grommet.R;
 import com.rockthevote.grommet.data.Injector;
+import com.rockthevote.grommet.data.db.dao.PartnerInfoDao;
 import com.rockthevote.grommet.data.db.dao.RegistrationDao;
 import com.rockthevote.grommet.data.db.dao.SessionDao;
 import com.rockthevote.grommet.ui.BaseActivity;
@@ -44,6 +45,8 @@ public class RegistrationActivity extends BaseActivity {
     @Inject RegistrationDao registrationDao;
 
     @Inject SessionDao sessionDao;
+
+    @Inject PartnerInfoDao partnerInfoDao;
 
     @BindView(R.id.appbar) AppBarLayout appbar;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -76,7 +79,7 @@ public class RegistrationActivity extends BaseActivity {
 
         viewModel = new ViewModelProvider(
                 this,
-                new RegistrationViewModelFactory(registrationDao, sessionDao)
+                new RegistrationViewModelFactory(registrationDao, sessionDao, partnerInfoDao)
         ).get(RegistrationViewModel.class);
 
         ViewGroup contentView = getContentView();
