@@ -2,15 +2,13 @@ package com.rockthevote.grommet.ui.registration
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.rockthevote.grommet.data.api.model.ApiGeoLocation
-import com.rockthevote.grommet.data.db.dao.SessionDao
+import com.rockthevote.grommet.data.api.model.PartnerVolunteerText
+import com.rockthevote.grommet.data.api.model.RegistrationNotificationText
 import com.rockthevote.grommet.data.db.model.GeoLocation
+import com.rockthevote.grommet.data.db.model.PartnerInfo
 import com.rockthevote.grommet.data.db.model.RockyRequest
 import com.rockthevote.grommet.data.db.model.Session
-import com.rockthevote.grommet.data.db.model.SessionStatus
-import com.rockthevote.grommet.testdata.Fake
-import com.rockthevote.grommet.testdata.FakeRegistrationDao
-import com.rockthevote.grommet.testdata.FakeSessionDao
-import com.rockthevote.grommet.testdata.TestDispatcherProvider
+import com.rockthevote.grommet.testdata.*
 import com.rockthevote.grommet.ui.registration.review.ReviewAndConfirmState
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -27,31 +25,48 @@ class RegistrationViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val fakePartnerInfo = PartnerInfo(
+            partnerInfoId = 0,
+            partnerId = 1,
+            appVersion = 3f,
+            isValid = true,
+            partnerName = "OSET",
+            registrationDeadlineDate = Date(),
+            registrationNotificationText = RegistrationNotificationText.builder()
+                    .english("english text")
+                    .spanish("spanish text")
+                    .build(),
+            volunteerText = PartnerVolunteerText.builder()
+                    .english("english")
+                    .spanish("spanish")
+                    .build()
+    )
+
     private val fakeSessionData = SessionData(
-        1,
-        "temp",
-        "temp",
-        "temp",
-        GeoLocation(1.0, 1.0),
-        "temp"
+            1,
+            "temp",
+            "temp",
+            "temp",
+            GeoLocation(1.0, 1.0),
+            "temp"
     )
 
     private val fakeSession = Session(
-        partnerInfoId = 1,
-        canvasserName = "temp",
-        sourceTrackingId = "temp",
-        partnerTrackingId = "temp",
-        geoLocation = ApiGeoLocation.builder().latitude(1.0).longitude(1.0).build(),
-        openTrackingId = "temp",
-        deviceId = "1",
-        abandonedCount = 0,
-        registrationCount = 0,
-        smsCount = 0,
-        driversLicenseCount = 0,
-        ssnCount = 0,
-        emailCount = 0,
-        clockInTime = Date(),
-        clockOutTime = Date()
+            partnerInfoId = 0,
+            canvasserName = "temp",
+            sourceTrackingId = "temp",
+            partnerTrackingId = "temp",
+            geoLocation = ApiGeoLocation.builder().latitude(1.0).longitude(1.0).build(),
+            openTrackingId = "temp",
+            deviceId = "1",
+            abandonedCount = 0,
+            registrationCount = 0,
+            smsCount = 0,
+            driversLicenseCount = 0,
+            ssnCount = 0,
+            emailCount = 0,
+            clockInTime = Date(),
+            clockOutTime = Date()
     )
 
     private lateinit var testDispatcher: TestCoroutineDispatcher
@@ -59,6 +74,8 @@ class RegistrationViewModelTest {
     private lateinit var fakeRegistrationDao: FakeRegistrationDao
 
     private lateinit var fakeSessionDao: FakeSessionDao
+
+    private lateinit var fakePartnerInfoDao: FakePartnerInfoDao
 
     private lateinit var ut: RegistrationViewModel
 
@@ -71,10 +88,12 @@ class RegistrationViewModelTest {
 
         fakeSessionDao = FakeSessionDao(mutableListOf(fakeSession))
 
-        ut = RegistrationViewModel(fakeRegistrationDao, dispatcherProvider, fakeSessionDao)
+        fakePartnerInfoDao = FakePartnerInfoDao(fakePartnerInfo)
+
+        ut = RegistrationViewModel(fakeRegistrationDao, dispatcherProvider, fakeSessionDao, fakePartnerInfoDao)
 
         // reviewAndConfirmState is backed by a MediatorLiveData, which doesn't produce a value if not observed
-        ut.reviewAndConfirmState.observeForever {  }
+        ut.reviewAndConfirmState.observeForever { }
     }
 
     @Test
@@ -139,11 +158,11 @@ class RegistrationViewModelTest {
     @Test
     fun `completeRegistration happy path`() {
         val expectedRegistrationData = RegistrationData(
-            Fake.NEW_REGISTRANT_DATA,
-            Fake.PERSONAL_INFO_DATA,
-            Fake.ADDITIONAL_INFO_DATA,
-            Fake.ASSISTANCE_DATA,
-            Fake.REVIEW_DATA
+                Fake.NEW_REGISTRANT_DATA,
+                Fake.PERSONAL_INFO_DATA,
+                Fake.ADDITIONAL_INFO_DATA,
+                Fake.ASSISTANCE_DATA,
+                Fake.REVIEW_DATA
         )
 
         val completionDate = Date()
@@ -190,15 +209,15 @@ class RegistrationViewModelTest {
     @Test
     fun `completeRegistration invalid registration exception`() {
         val badRegistrationData = RegistrationData(
-            Fake.NEW_REGISTRANT_DATA,
-            // This forces an Invalid registration exception
-            Fake.PERSONAL_INFO_DATA.copy(
-                isMailingAddressDifferent = true,
-                mailingAddress = null
-            ),
-            Fake.ADDITIONAL_INFO_DATA,
-            Fake.ASSISTANCE_DATA,
-            Fake.REVIEW_DATA
+                Fake.NEW_REGISTRANT_DATA,
+                // This forces an Invalid registration exception
+                Fake.PERSONAL_INFO_DATA.copy(
+                        isMailingAddressDifferent = true,
+                        mailingAddress = null
+                ),
+                Fake.ADDITIONAL_INFO_DATA,
+                Fake.ASSISTANCE_DATA,
+                Fake.REVIEW_DATA
         )
 
         ut.storeNewRegistrantData(badRegistrationData.newRegistrantData!!)
@@ -225,20 +244,20 @@ class RegistrationViewModelTest {
     }
 
     private fun getExpectedRequestJson(
-        expectedRegistrationData: RegistrationData,
-        completionDate: Date
+            expectedRegistrationData: RegistrationData,
+            completionDate: Date
     ): String {
         val transformer = RegistrationDataTransformer(
-            expectedRegistrationData,
-            fakeSessionData,
-            completionDate
+                expectedRegistrationData,
+                fakeSessionData,
+                completionDate
         )
         val requestData = transformer.transform()
 
         val adapter = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-            .adapter(RockyRequest::class.java)
+                .add(KotlinJsonAdapterFactory())
+                .build()
+                .adapter(RockyRequest::class.java)
 
         return adapter.toJson(requestData)
     }
