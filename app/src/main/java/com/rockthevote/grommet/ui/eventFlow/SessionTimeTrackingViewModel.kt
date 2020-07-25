@@ -184,7 +184,7 @@ class SessionTimeTrackingViewModel(
                         SessionStatus.CLOCKED_OUT.toString())
                         .apply()
             }.onFailure {
-                updateClockState(ClockEvent.ClockingError(R.string.error_title))
+                updateClockState(ClockEvent.ClockingError(R.string.generic_error))
             }
         }
     }
