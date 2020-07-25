@@ -53,10 +53,16 @@ class PartnerLoginViewModel(
                 runCatching {
                     val result = rockyService.getPartnerName(partnerId.toString(), BuildConfig.VERSION_CODE.toString()).toBlocking().value()
 
+                    val response = result.response()
+
+                    if (response?.code() == 404) {
+                        throw PartnerLoginNotFoundException("404 not found")
+                    }
+
                     if (result.isError) {
                         throw result.error() ?: PartnerLoginViewModelException("Error retrieving result")
                     } else {
-                        result?.response()?.body()
+                        response?.body()
                             ?: throw PartnerLoginViewModelException("Successful result with empty body received")
                     }
                 }.onSuccess {
@@ -66,16 +72,24 @@ class PartnerLoginViewModel(
                     val currentVersion = BuildConfig.VERSION_CODE
                     val requiredVersion = it.appVersion()
 
-                    val effect = if (currentVersion < requiredVersion) {
-                        PartnerLoginState.InvalidVersion
-                    } else {
-                        completePartnerValidation(partnerId, it)
+                    val effect = when {
+                        currentVersion < requiredVersion -> PartnerLoginState.InvalidVersion
+                        else -> completePartnerValidation(partnerId, it)
                     }
 
                     updateEffect(effect)
                 }.onFailure {
-                    Timber.d("API request failure - partner validation")
-                    setStateToError()
+                    Timber.d(it, "API request failure - partner validation")
+
+                    when (it) {
+                        is PartnerLoginNotFoundException -> {
+                            val effect = PartnerLoginState.NotFound
+                            updateEffect(effect)
+                        }
+                        else -> {
+                            setStateToError()
+                        }
+                    }
                 }
             }
         }
@@ -123,6 +137,7 @@ class PartnerLoginViewModel(
     }
 
     private class PartnerLoginViewModelException(msg: String) : Exception(msg)
+    private class PartnerLoginNotFoundException(msg: String) : Exception(msg)
 }
 
 class PartnerLoginViewModelFactory(
