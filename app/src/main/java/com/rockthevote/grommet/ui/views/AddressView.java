@@ -46,7 +46,6 @@ import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 
@@ -97,7 +96,6 @@ public class AddressView extends GridLayout {
     private ArrayAdapter<CharSequence> unitTypeAdapter;
 
     private AddressType type;
-    private CompositeSubscription subscriptions;
     private ZipTextWatcher zipTextWatcher = new ZipTextWatcher();
 
     private HashMap<String, List<String>> counties;
@@ -251,16 +249,12 @@ public class AddressView extends GridLayout {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
             zipEditText.addTextChangedListener(zipTextWatcher);
-
-            subscriptions = new CompositeSubscription();
-
         }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        subscriptions.unsubscribe();
         zipEditText.removeTextChangedListener(zipTextWatcher);
     }
 

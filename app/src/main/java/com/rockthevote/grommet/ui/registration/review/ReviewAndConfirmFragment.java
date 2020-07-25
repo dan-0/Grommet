@@ -26,7 +26,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import rx.subscriptions.CompositeSubscription;
 
 public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
 
@@ -40,7 +39,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
     @BindView(R.id.checkbox_agreement)
     CheckBox confirmCheckbox;
 
-    private CompositeSubscription subscriptions;
     private DisclosureAgreementDialogFragment dialog;
 
     private FragmentReviewAndConfirmBinding binding;
@@ -130,8 +128,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
                 dialog.dismiss();
             }
         });
-
-        subscriptions = new CompositeSubscription();
     }
 
     @Override
@@ -143,7 +139,6 @@ public class ReviewAndConfirmFragment extends BaseRegistrationFragment {
     @Override
     public void onPause() {
         super.onPause();
-        subscriptions.unsubscribe();
         dialog.setListener(null);
     }
 
