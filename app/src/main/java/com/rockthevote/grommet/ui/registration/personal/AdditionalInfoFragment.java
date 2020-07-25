@@ -44,7 +44,6 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.rockthevote.grommet.data.db.model.Party.OTHER_PARTY;
 
@@ -90,7 +89,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @BindView(R.id.checkbox_partner_volunteer_opt_in) CheckBox partnerVolunteerCheckBox;
 
     private ObservableValidator validator;
-    private CompositeSubscription subscriptions;
     private EnumAdapter<Race> raceEnumAdapter;
     private EnumAdapter<Party> partyEnumAdapter;
 
@@ -225,8 +223,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     public void onResume() {
         super.onResume();
 
-        subscriptions = new CompositeSubscription();
-
         phoneFormatter = new PhoneNumberFormattingTextWatcher("US");
         phone.addTextChangedListener(phoneFormatter);
 
@@ -235,7 +231,6 @@ public class AdditionalInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onPause() {
         super.onPause();
-        subscriptions.unsubscribe();
         phone.removeTextChangedListener(phoneFormatter);
     }
 

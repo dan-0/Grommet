@@ -27,7 +27,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import rx.Observable;
-import rx.subscriptions.CompositeSubscription;
 
 public class AssistantInfoFragment extends BaseRegistrationFragment {
 
@@ -51,8 +50,6 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     private ObservableValidator validator;
 
     private PhoneNumberFormattingTextWatcher phoneFormatter;
-
-    private CompositeSubscription subscriptions;
 
     private FragmentAssistantInfoBinding binding;
 
@@ -82,7 +79,6 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        subscriptions = new CompositeSubscription();
 
         phoneFormatter = new PhoneNumberFormattingTextWatcher("US");
         phoneEditText.addTextChangedListener(phoneFormatter);
@@ -91,7 +87,6 @@ public class AssistantInfoFragment extends BaseRegistrationFragment {
     @Override
     public void onPause() {
         super.onPause();
-        subscriptions.unsubscribe();
         phoneEditText.removeTextChangedListener(phoneFormatter);
     }
 

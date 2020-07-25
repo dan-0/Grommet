@@ -28,7 +28,6 @@ import com.rockthevote.grommet.util.ValidationRegex;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.subscriptions.CompositeSubscription;
 
 public class NameView extends GridLayout {
 
@@ -64,8 +63,6 @@ public class NameView extends GridLayout {
     private EnumAdapter<Suffix> suffixEnumAdapter;
 
     private NameType type;
-
-    private CompositeSubscription subscriptions;
 
     public NameView(Context context) {
         this(context, null);
@@ -142,20 +139,6 @@ public class NameView extends GridLayout {
                 suffixSpinner.dismiss();
             });
         }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (!isInEditMode()) {
-            subscriptions = new CompositeSubscription();
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        subscriptions.unsubscribe();
     }
 
     @Override
