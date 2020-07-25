@@ -92,7 +92,7 @@ class MainActivityViewModel(
             }
 
             if (successfulRegistrations.size != results.size) {
-                _errorStream.postValue(MainActivityError.UploadRegistrationError(R.string.generic_upload_error))
+                _errorStream.postValue(MainActivityError.UploadRegistrationError(R.string.generic_error))
             }
 
             registrationDao.delete(*successfulRegistrations.toTypedArray())
