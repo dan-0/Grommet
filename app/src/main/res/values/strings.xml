@@ -53,6 +53,7 @@
     <string name="login_no_wifi_error">Cannot login. Please check network connection</string>
     <string name="update_required" translatable="false">Update Required</string>
     <string name="login_invalid_version" translatable="false">Cannot login, update required. Please upgrade to the latest version of the application.</string>
+    <string name="login_invalid_partner_id" translatable="false">Cannot login, invalid partner ID.</string>
     <string name="no_wifi_upload_message">Cannot upload registrations. Please check network connection</string>
     <string name="generic_network_error">Please check network connection</string>
 

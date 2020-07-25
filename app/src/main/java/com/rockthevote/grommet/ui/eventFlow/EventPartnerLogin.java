@@ -102,6 +102,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
         viewModel.getEffect().observe(
                 (AppCompatActivity) getContext(), effect -> {
                     if (effect instanceof PartnerLoginState.Success) {
+                        edePartnerIdTIL.setError(null);
                         listener.setState(NEW_SESSION, true);
 
                     } else if (effect instanceof PartnerLoginState.Error) {
@@ -117,6 +118,7 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                                 .show();
 
                     } else if (effect instanceof PartnerLoginState.InvalidVersion) {
+                        edePartnerIdTIL.setError(null);
                         new AlertDialog.Builder(getContext())
                                 .setTitle(R.string.update_required)
                                 .setIcon(R.drawable.ic_warning_24dp)
@@ -124,6 +126,9 @@ public class EventPartnerLogin extends FrameLayout implements EventFlowPage {
                                 .setPositiveButton(R.string.action_ok, (dialogInterface, i) -> dialogInterface.dismiss())
                                 .create()
                                 .show();
+                    } else if (effect instanceof PartnerLoginState.NotFound) {
+                        edePartnerIdTIL.setError(
+                                getContext().getString(R.string.error_partner_id));
                     }
                 });
 

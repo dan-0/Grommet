@@ -11,4 +11,5 @@ sealed class PartnerLoginState {
     object Success : Effect()
     object Error : Effect()
     object InvalidVersion : Effect()
+    object NotFound : Effect()
 }
